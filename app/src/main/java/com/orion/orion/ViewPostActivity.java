@@ -452,6 +452,29 @@ public class ViewPostActivity extends AppCompatActivity {
                 Log.d(VolleyLog.TAG, "onFailure: did not delete file");
             }
         });
+        DatabaseReference reference3 = FirebaseDatabase.getInstance().getReference();
+        reference3.child(getString(R.string.dbname_follower))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot snapshot1:snapshot.getChildren()){
+
+                            DatabaseReference reference3 = FirebaseDatabase.getInstance().getReference();
+                            reference3.child(getString(R.string.dbname_users))
+                                    .child(snapshot1.getKey())
+                                    .child(getString(R.string.post_updates))
+                                    .child(mphoto.getPhoto_id())
+                                    .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
 
         DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
         reference2.child(getString(R.string.dbname_user_photos))

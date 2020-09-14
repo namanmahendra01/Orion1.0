@@ -529,47 +529,63 @@ public class Homefragment extends Fragment {
                     .child(getString(R.string.dbname_user_photos))
                     .child(uid.get(x))
                     .child(key.get(x));
+            int finalX = x;
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot singleSnapshot) {
-                    Photo photo = new Photo();
-                    Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                    if (singleSnapshot.exists()) {
+                        Photo photo = new Photo();
+                        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
-                    photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
+                        photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
 
-                    photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
+                        photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
 
-                    photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+                        photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
 
-                    photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
+                        photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
 
-                    photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
+                        photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
 
-                    photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+                        photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
 
-                    ArrayList<Comment> comments = new ArrayList<>();
+                        ArrayList<Comment> comments = new ArrayList<>();
 
-                    for (DataSnapshot dSnapshot : singleSnapshot
-                            .child(getString(R.string.field_comment)).getChildren()) {
-                        Comment comment = new Comment();
-                        comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                        comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                        comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                        comments.add(comment);
+                        for (DataSnapshot dSnapshot : singleSnapshot
+                                .child(getString(R.string.field_comment)).getChildren()) {
+                            Comment comment = new Comment();
+                            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                            comments.add(comment);
 
-                    }
-                    photo.setComments(comments);
-//                    add photo to mPhotos list
-                    mPhotos.add(photo);
-//                    sort mPhotos
-                    Collections.sort(mPhotos, new Comparator<Photo>() {
-                        @Override
-                        public int compare(Photo o1, Photo o2) {
-                            return o2.getDate_created().compareTo(o1.getDate_created());
                         }
-                    });
+                        photo.setComments(comments);
+//                    add photo to mPhotos list
+                        mPhotos.add(photo);
+//                    sort mPhotos
+                        Collections.sort(mPhotos, new Comparator<Photo>() {
+                            @Override
+                            public int compare(Photo o1, Photo o2) {
+                                return o2.getDate_created().compareTo(o1.getDate_created());
+                            }
+                        });
 
-//                add updated list to Shared Preference
+
+
+                    }else{
+                        ArrayList<Photo> l = new ArrayList<>(mPhotos);
+                        for (Photo a : l) {
+                            if (a.getPhoto_id().equals(key.get(finalX))) {
+                                mPhotos.remove(a);
+
+                            }
+                        }
+
+
+
+                }
+                    //                add updated list to Shared Preference
                     SharedPreferences.Editor editor = sp.edit();
                     String json = gson.toJson(mPhotos);
                     editor.putString("pl", json);
@@ -579,9 +595,7 @@ public class Homefragment extends Fragment {
 //                  display post
                     displayPhotos();
 
-
                 }
-
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
