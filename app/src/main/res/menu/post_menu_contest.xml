@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/ic_house"
+        android:title="Copy Contest Key">
+    </item>
+    <item
+        android:id="@+id/ic_house1"
+        android:title="Share Contest">
+    </item>
+    <item
+        android:id="@+id/ic_house2"
+        android:title="Report Contest">
+    </item>
+
+</menu>

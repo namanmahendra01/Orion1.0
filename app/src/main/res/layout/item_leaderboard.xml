@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    app:cardBackgroundColor="@color/white"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="3dp"
+    app:contentPadding="3dp"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:id="@+id/leaderboardCard"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:weightSum="100">
+
+            <TextView
+                android:id="@+id/position"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="11"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/positionProfile"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="13"
+                android:padding="3dp"
+                app:civ_border_color="@color/orange"
+                app:civ_border_width="1dp" />
+
+            <TextView
+                android:id="@+id/positionName"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="52"
+                android:gravity="center|start"
+                android:paddingStart="10dp"
+                android:paddingLeft="10dp"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/positionPararmeter"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="24"
+                android:gravity="center"
+                android:textColor="@color/orange"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_below="@+id/leaderboardCard"
+            android:layout_height="1dp"
+            android:background="#E5E6EB" />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

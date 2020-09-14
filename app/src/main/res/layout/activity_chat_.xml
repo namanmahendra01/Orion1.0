@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".home.Chat_Activity">
+
+     <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+         android:padding="5dp"
+    android:id="@+id/relLayout1">
+    <include layout="@layout/snippet_chat_toolbar" />
+
+
+</RelativeLayout>
+
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/relLayout1"
+    android:id="@id/relLayout2"
+   >
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/chat_recyclerView"
+        android:layout_above="@+id/chatLayout"
+        />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/chatLayout"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/black_border"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/messageEt"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="Start typing.."
+            android:padding="15dp"
+            android:inputType="textMultiLine|textCapSentences"/>
+
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@null"
+            android:src="@drawable/ic_send"
+            android:id="@+id/sendBtn"/>
+
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/requestLayout"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/white_border"
+        android:gravity="center"
+        android:visibility="gone"
+
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Accept"
+            android:layout_weight="1"
+            android:id="@+id/accept"
+            android:gravity="center_horizontal"
+            android:textColor="@color/black"
+            android:layout_marginBottom="10dp"
+            android:textSize="20sp"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="#F44336"
+            android:layout_marginBottom="10dp"
+
+            android:id="@+id/decline"
+            android:gravity="center_horizontal"
+
+            android:textSize="20sp"
+            android:text="Decline"
+/>
+
+
+
+    </LinearLayout>
+
+</RelativeLayout>
+
+
+</RelativeLayout>

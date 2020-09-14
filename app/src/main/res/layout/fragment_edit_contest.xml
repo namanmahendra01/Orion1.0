@@ -1,0 +1,750 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".contest.create.CheckContest"
+    >
+
+    <RelativeLayout
+        android:id="@+id/reLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/reLayout1">
+
+        <RelativeLayout
+            android:id="@+id/relLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="3dp">
+
+
+            <ImageView
+                android:id="@+id/posterIv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerInside"
+                android:adjustViewBounds="true"
+                android:src="@drawable/rainbow" />
+
+            <LinearLayout
+                android:id="@+id/host"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/titleTv"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hosted by: "
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/hostedbyTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Naman"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/titleTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/posterIv"
+                android:gravity="center"
+                android:text="KIET PHOTOGRAPHY CONTEST"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/prizell"
+                android:layout_below="@+id/host"
+                android:layout_marginBottom="30dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1st prize:"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/p1Tv"
+                    android:textColor="@color/black"
+                    android:background="@drawable/white_border"
+                    android:layout_marginRight="15dp"
+
+                    android:hint="150"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2nd prize:"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/p2Tv"
+
+                    android:textColor="@color/black"
+                    android:background="@drawable/white_border"
+                    android:layout_marginRight="15dp"
+
+
+                    android:hint="100"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3rd prize:"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:layout_weight="1"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginRight="15dp"
+                    android:id="@+id/p3Tv"
+                    android:textColor="@color/black"
+                    android:background="@drawable/white_border"
+
+
+                    android:hint="50"/>
+
+
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/prizell"
+                android:text="Descritpion:"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <EditText
+
+                android:id="@+id/descripTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/description"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/white_border"
+                android:padding="5dp"
+                 />
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/descripText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/description"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/white_border"
+                android:padding="5dp"
+                />
+
+            <TextView
+                android:id="@+id/rule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/descripTv"
+                android:text="Rules: "
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/ruleTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rule"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/white_border"
+                android:padding="5dp"
+              />
+            <TextView
+                android:id="@+id/ruleText"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rule"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/white_border"
+                android:padding="5dp"
+                />
+
+            <TextView
+                android:id="@+id/details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ruleTv"
+                android:text="Details: "
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/details"
+                app:cardBackgroundColor="@color/white"
+                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="2dp"
+                app:contentPadding="3dp"
+                android:id="@+id/detailTable">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:text="Entry Fee"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+
+                            android:text="Total Prize"
+                            android:textColor="@color/black" />
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginBottom="15dp">
+
+                        <TextView
+                            android:id="@+id/entryfeeTv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:text="₹10"
+                            android:textColor="@color/grey" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:id="@+id/totalprizeTv"
+                            android:gravity="center_horizontal"
+                            android:text="₹100"
+
+                            android:textColor="@color/grey" />
+
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:text="Max number of Participant"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+
+                            android:text="Voting Type"
+                            android:textColor="@color/black" />
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginBottom="15dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:id="@+id/maxPartTv"
+
+                            android:text="15"
+                            android:textColor="@color/grey" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:id="@+id/voteTypeTv"
+
+                            android:text="public"
+
+                            android:textColor="@color/grey" />
+
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:text="Registration Begin"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+
+                            android:text="Registration End"
+                            android:textColor="@color/black" />
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginBottom="15dp">
+
+                        <TextView
+                            android:id="@+id/regB"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:text="3/3/2020"
+                            android:textColor="@color/grey" />
+
+                        <TextView
+                            android:id="@+id/regE"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:text="9/3/2020"
+                            android:textColor="@color/grey" />
+
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:text="Domain"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+
+                            android:text="Open for"
+                            android:textColor="@color/black" />
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginBottom="15dp">
+
+                        <TextView
+                            android:id="@+id/domainTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:text="Film Maker"
+                            android:textColor="@color/grey" />
+
+                        <TextView
+                            android:id="@+id/openForTv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:text="All"
+                            android:textColor="@color/grey" />
+
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:text="Public Voting Begin"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+
+                            android:text="Public Voting End"
+                            android:textColor="@color/black" />
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginBottom="15dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:id="@+id/votB"
+
+                            android:gravity="center_horizontal"
+                            android:text="5/3/2020"
+                            android:textColor="@color/grey" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:id="@+id/votE"
+
+                            android:gravity="center_horizontal"
+                            android:text="7/3/2020"
+                            android:textColor="@color/grey" />
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+                            android:text="Winner Announcement Date"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_horizontal"
+
+                            android:text="File Type Allowed"
+                            android:textColor="@color/black" />
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginBottom="15dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:id="@+id/winDate"
+
+                            android:gravity="center_horizontal"
+                            android:text="5/3/2020"
+                            android:textColor="@color/grey" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:id="@+id/fileTv"
+
+                            android:gravity="center_horizontal"
+                            android:text="Picture"
+                            android:textColor="@color/grey" />
+
+                    </TableRow>
+
+                </TableLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Jury: "
+                android:visibility="gone"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:id="@+id/jury"
+                android:layout_below="@+id/detailTable"/>
+            <androidx.cardview.widget.CardView
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/jurydetail"
+                android:layout_below="@+id/jury"
+                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="2dp"
+                app:contentPadding="3dp">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TableRow
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:visibility="gone"
+
+                            android:layout_margin="10dp"
+                            android:layout_height="100dp"
+                            android:layout_width="100dp"
+                            android:scaleType="centerInside"
+                            android:adjustViewBounds="true"
+                            android:id="@+id/jpic1"
+                            android:src="@drawable/rainbow"
+                            android:layout_weight="1"/>
+                        <ImageView
+                            android:visibility="gone"
+
+                            android:layout_margin="10dp"
+                            android:id="@+id/jpic2"
+
+                            android:layout_height="100dp"
+                            android:layout_width="100dp"
+                            android:layout_weight="1"
+                            android:scaleType="centerInside"
+                            android:adjustViewBounds="true"
+                            android:src="@drawable/rainbow"/>
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:text="Naman"
+                            android:visibility="gone"
+
+                            android:id="@+id/jname1Tv"
+                            android:layout_weight="1"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textAlignment="center"
+                            android:gravity="center_horizontal" />
+                        <TextView
+                            android:visibility="gone"
+
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:id="@+id/jname2Tv"
+
+                            android:text="Naman"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_weight="1"
+                            android:textAlignment="center"
+                            android:gravity="center_horizontal" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:visibility="gone"
+
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:id="@+id/jpl1Tv"
+                            android:autoLink="all"
+                            android:layout_weight="1"
+                            android:textColor="#03A9F4"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textAlignment="center"
+                            android:gravity="center_horizontal" />
+                        <TextView
+                            android:id="@+id/jpl2Tv"
+                            android:visibility="gone"
+
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:autoLink="all"
+                            android:textColor="#03A9F4"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:layout_weight="1"
+                            android:textAlignment="center"
+                            android:gravity="center_horizontal" />
+
+                    </TableRow>
+                    <TableRow
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:visibility="gone"
+                            android:id="@+id/jpic3"
+                            android:layout_margin="10dp"
+                            android:layout_height="100dp"
+                            android:layout_width="100dp"
+                            android:scaleType="centerInside"
+                            android:adjustViewBounds="true"
+                            android:src="@drawable/rainbow"                            android:layout_weight="1"/>
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:text="Naman"
+                            android:visibility="gone"
+
+                            android:id="@+id/jname3Tv"
+                            android:layout_weight="1"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textAlignment="center"
+                            android:gravity="center_horizontal" />
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_weight="1">
+                        <TextView                android:visibility="gone"
+
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_weight="1"
+                            android:id="@+id/jpl3Tv"
+                            android:textColor="#03A9F4"
+                            android:textSize="18sp"
+                            android:autoLink="all"
+                            android:textStyle="bold"
+                            android:textAlignment="center"
+                            android:gravity="center_horizontal" />
+
+
+                    </TableRow>
+                </TableLayout>
+
+            </androidx.cardview.widget.CardView>
+
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save Edit"
+                android:textAlignment="gravity"
+
+
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/jurydetail"
+                android:id="@+id/save"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/white_border"/>
+
+        </RelativeLayout>
+    </ScrollView>
+
+
+</RelativeLayout>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/white"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="2dp"
+    android:background="@drawable/grey_border_bottom"
+    app:contentPadding="3dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/white_border">
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_profile"
+        android:layout_centerVertical="true"
+        android:id="@+id/profileCv"/>
+
+
+    <TextView
+        android:id="@+id/NameTv"
+        android:layout_marginStart="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="His Name"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:layout_toEndOf="@id/profileCv"
+        android:layout_toRightOf="@id/profileCv"
+
+        android:layout_marginLeft="10dp" />
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_toEndOf="@+id/NameTv"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/onlineStatusCv"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/NameTv" />
+        <TextView
+            android:id="@+id/LastmessageTv"
+            android:layout_marginStart="4dp"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="this is last messge"
+            android:textColor="@color/grey"
+            android:maxLines="1"
+            android:textSize="15sp"
+            android:layout_toEndOf="@id/profileCv"
+            android:layout_toRightOf="@id/profileCv"
+            android:layout_below="@id/NameTv"
+            android:layout_marginLeft="4dp" />
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/circle_online"
+            android:layout_centerVertical="true"
+            android:visibility="gone"
+            android:id="@+id/notSeen"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

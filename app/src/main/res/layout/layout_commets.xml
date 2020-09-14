@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="@color/white"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="10dp"
+    app:contentPadding="3dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+>
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:id="@+id/commet_profile_image"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/ic_media"
+        app:civ_border_color="@color/black"
+        app:civ_border_width="0.5dp"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/relLayout1"
+        android:layout_toRightOf="@+id/commet_profile_image"
+        android:layout_marginTop="15dp"
+        >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="60dp"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="naman"
+            android:id="@+id/comment_username"
+            android:layout_marginLeft="15dp"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="this is a comment"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:layout_toRightOf="@+id/comment_username"
+            android:id="@+id/addcomment"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3 D"
+            android:layout_marginLeft="15dp"
+            android:textColor="@color/grey"
+            android:id="@+id/comment_time_posted"
+            android:layout_below="@+id/addcomment"
+            android:textSize="13sp"
+            android:layout_marginTop="10dp"/>
+            />
+
+
+
+    </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

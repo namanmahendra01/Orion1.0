@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:gravity="end"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/relRequest">
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:rotation="-25"
+            android:src="@drawable/ic_send"
+            android:elevation="6dp"
+            app:backgroundTint="#FFFFFF"
+            android:layout_centerVertical="true"
+            app:fabSize="normal"
+            android:layout_margin="20dp"
+            android:id="@+id/float_btn"
+           />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/request"
+            android:gravity="end"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:text="Requests"/>
+        </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_below="@id/relRequest"
+        android:layout_height="wrap_content"
+        android:id="@+id/recycler_view4">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

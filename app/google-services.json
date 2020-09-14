@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "258064424059",
+    "firebase_url": "https://orion-6f75c.firebaseio.com",
+    "project_id": "orion-6f75c",
+    "storage_bucket": "orion-6f75c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:258064424059:android:c1c93aea1b65fd300e16de",
+        "android_client_info": {
+          "package_name": "com.orion.orion"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "258064424059-d6luv8c4a3btl8pcnvbsgfn96al1se71.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.orion.orion",
+            "certificate_hash": "48bdfd5bd3c4c92d227fa8b42cf12514d7073c88"
+          }
+        },
+        {
+          "client_id": "258064424059-pkoc05e5jqr10mvpkq87ta5v5h5d6212.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBET9lzaLeILAwZGwUScS6v1ls2QdPSCpM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "258064424059-pkoc05e5jqr10mvpkq87ta5v5h5d6212.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

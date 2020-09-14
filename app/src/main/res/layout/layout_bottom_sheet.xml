@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+
+    android:id="@+id/layout_bottom_sheet_container"
+    android:background="@drawable/bottom_sheet_background">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:text="Participant Detail"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/grey"
+        android:layout_marginBottom="10dp"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_star"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/profileBs"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" Display Name"
+            android:textColor="@color/black"
+            android:id="@+id/displaynameBs"
+            android:textSize="18sp"
+            android:layout_gravity="center_horizontal"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="uername"
+        android:id="@+id/usernameBs"
+        android:layout_marginBottom="40dp"
+        android:layout_gravity="center_horizontal"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:id="@+id/collegeLinear"
+
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="College/School: "
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="KIET"
+            android:id="@+id/collegeBs"
+            android:textColor="@color/black"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="see ID card"
+            android:gravity="right"
+            android:id="@+id/idBs"
+            android:textColor="#03A9F4"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="See his/her Submission"
+        android:textColor="#03A9F4"
+        android:id="@+id/submissionBs"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Remove Participant"
+        android:textSize="21sp"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:textColor="#F44336"
+        android:id="@+id/remove"/>
+
+
+
+</LinearLayout>

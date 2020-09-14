@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/leaderboardActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E5E6EB"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:background="@drawable/gradient"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:weightSum="100">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="30"
+            android:gravity="center_horizontal|bottom"
+            android:letterSpacing="0.09"
+            android:paddingBottom="10dp"
+            android:text="Leaderboard"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="70"
+            android:orientation="horizontal"
+            android:weightSum="100">
+
+            <TextView
+                android:id="@+id/rank"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="35"
+                android:text="#"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="28sp" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="30"
+                android:elevation="4dp" />
+
+            <TextView
+                android:id="@+id/ratingProfile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="35"
+                android:text="pts"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="28sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/relLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/linearLayout"
+        android:background="@color/white"
+        android:gravity="center"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
+
+        <LinearLayout
+            android:id="@+id/filter"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/circular_corner_rectangle"
+            android:elevation="2dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <TextView
+                android:id="@+id/sortedByTime"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="Time"
+                android:textColor="@color/black"
+                android:textSize="15.0sp" />
+
+            <TextView
+                android:id="@+id/sortedByLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="Location"
+                android:textColor="@color/black"
+                android:textSize="15.0sp" />
+
+            <TextView
+                android:id="@+id/sortedByType"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="Type"
+                android:textColor="@color/black"
+                android:textSize="15.0sp" />
+
+            <TextView
+                android:id="@+id/sortedByDomain"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="Domain"
+                android:textColor="@color/black"
+                android:textSize="15.0sp" />
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_circular"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_below="@+id/relLayout2"
+        android:layout_centerHorizontal="true"
+        android:visibility="visible"
+        android:indeterminateTint="@android:color/holo_orange_dark"
+        tools:ignore="NotSibling" />
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:background="@color/white"
+            android:visibility="gone"
+            android:layout_marginBottom="50dp"
+            android:layout_below="@id/relLayout2"
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:itemCount="10"
+            tools:listitem="@layout/item_leaderboard"
+           />
+
+    <include layout="@layout/layout_bottom_navigation_view" />
+
+</RelativeLayout>

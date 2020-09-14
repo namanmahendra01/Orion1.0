@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/white"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="10dp"
+    app:contentPadding="3dp"
+    android:padding="10dp"
+    android:background="@drawable/grey_border_bottom"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/relLayout1">
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="70dp"
+        android:id="@+id/poster"
+        android:src="@drawable/rainbow"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/title"
+            android:text="photooo"
+            android:textAlignment="center"
+            android:layout_below="@+id/poster"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            android:layout_marginTop="2dp"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="film"
+            android:id="@+id/domain"
+            android:textAlignment="center"
+            android:layout_below="@+id/title"
+            android:textColor="@color/grey"
+            android:textSize="8sp"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal" />
+    </RelativeLayout>
+
+
+
+
+
+</androidx.cardview.widget.CardView>

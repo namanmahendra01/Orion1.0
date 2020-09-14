@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/circular_corner_rectangle"
+    android:backgroundTint="@color/white"
+    android:paddingTop="15dp"
+    android:paddingBottom="5dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="125dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <TextView
+                android:id="@+id/photography"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="3dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/circular_corner_rectangle"
+                android:backgroundTint="#7ecae1"
+                android:gravity="center|bottom"
+                android:text="Photography"
+                android:paddingBottom="10dp"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/filmMaker"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="3dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/circular_corner_rectangle"
+                android:backgroundTint="#77b9ad"
+                android:gravity="center|bottom"
+                android:text="Film Maker"
+                android:paddingBottom="10dp"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/musician"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="3dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/circular_corner_rectangle"
+                android:backgroundTint="#f8c99d"
+                android:gravity="center|bottom"
+                android:text="Musician"
+                android:paddingBottom="10dp"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="125dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <TextView
+                android:id="@+id/sketchArtist"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="3dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/circular_corner_rectangle"
+                android:backgroundTint="#fcc0d6"
+                android:gravity="center|bottom"
+                android:text="Sketch Artist"
+                android:paddingBottom="10dp"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/writer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="3dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/circular_corner_rectangle"
+                android:backgroundTint="#f0a4a8"
+                android:gravity="center|bottom"
+                android:text="Writer"
+                android:paddingBottom="10dp"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/others"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="3dp"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/circular_corner_rectangle"
+                android:backgroundTint="#9885d4"
+                android:gravity="center|bottom"
+                android:paddingBottom="10dp"
+                android:text="Others"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
