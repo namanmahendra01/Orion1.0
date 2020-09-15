@@ -64,6 +64,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
+/*
+Shared preference keys:
+fl=Following list
+ffl = filtered following list
+cl = contest list
+pl= post list
+addfollowing = list of users we followed
+removefollowing = list of users we unfollowed
+domain= user domain
+
+ */
+
 public class Homefragment extends Fragment {
     private static final String TAG = "HomeFragment";
     private ArrayList<Photo> mPhotos;
@@ -78,7 +90,7 @@ public class Homefragment extends Fragment {
     private ArrayList<String> promotelist;
     private AdapterPromote promote;
     private int c = 0;
-
+    String domain;
 
     LinearLayout promo;
     private ImageView star, starFill;
@@ -90,6 +102,8 @@ public class Homefragment extends Fragment {
     private int mResults;
     TextView username;
     CircleImageView storySeen, story;
+
+//    SP
     Gson gson;
     SharedPreferences sp;
 
@@ -99,7 +113,6 @@ public class Homefragment extends Fragment {
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-//        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ListViewRv = (RecyclerView) view.findViewById(R.id.listview);
         star = (ImageView) view.findViewById(R.id.domainBtn);
@@ -112,8 +125,40 @@ public class Homefragment extends Fragment {
         footer = view.findViewById(R.id.footer);
         scrollView = view.findViewById(R.id.parent_scroll);
 
+//          Initialize SharedPreference variables
         sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
+
+
+//          fetch   domain from SP
+        domain = sp.getString("domain", null);
+        if (domain == null) {           //   if not present
+            DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
+            reference2
+                    .child(getString(R.string.dbname_users))
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .child("domain")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                            domain = dataSnapshot.getValue().toString();
+
+//                 save to SP
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putString("domain", domain);
+                            editor.apply();
+
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+        }
 
         getUserInfo(FirebaseAuth.getInstance().getCurrentUser().getUid(), story, storySeen, username);
         seenStory(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -129,14 +174,11 @@ public class Homefragment extends Fragment {
         });
 
 
-//        scroll=view.findViewById(R.id.scroll1);
-
-
         contestRv = view.findViewById(R.id.recyclerContest);
+
         promoteRv = view.findViewById(R.id.recyclerPromote);
 
         mFollowing1 = new ArrayList<>();
-
 
         contestRv.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -144,8 +186,6 @@ public class Homefragment extends Fragment {
 
 
         contestlist = new ArrayList<>();
-        contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
-        contestRv.setAdapter(contestUpcoming);
 
 //****************************************************************************
 
@@ -167,13 +207,12 @@ public class Homefragment extends Fragment {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                Log.d(TAG, "onScrolled: qrt" + newState);
             }
 
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                Log.d(TAG, "onScrolled: qrt3" + dy);
+
             }
         });
 
@@ -183,7 +222,7 @@ public class Homefragment extends Fragment {
                     public void onScrollChanged() {
                         if (scrollView.getChildAt(0).getBottom()
                                 == (scrollView.getHeight() + scrollView.getScrollY()) && c != 0) {
-                            Log.d(TAG, "onScrollChanged: end");
+
                             //scroll view is at bottom
                             displayMorePhotos();
                         } else {
@@ -195,35 +234,14 @@ public class Homefragment extends Fragment {
                 });
 
 
-        getFollowerListFromSP();
-
-
         star.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 star.setVisibility(View.GONE);
                 starFill.setVisibility(View.VISIBLE);
-                DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
-                reference2
-                        .child(getString(R.string.dbname_users))
-                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .child("domain")
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                domaintv.setText(domain);
 
-                                String domain = dataSnapshot.getValue().toString();
-                                domaintv.setText(domain);
-                                Log.d(TAG, "onDataChange: kk" + domain);
-                                getFollowingFilltered(domain);
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
+                getFilteredFollowerListFromSP(domain);
             }
         });
         starFill.setOnClickListener(new View.OnClickListener() {
@@ -232,15 +250,85 @@ public class Homefragment extends Fragment {
                 starFill.setVisibility(View.GONE);
                 star.setVisibility(View.VISIBLE);
                 domaintv.setText("All");
-                getFollowing();
+                getFollowerListFromSP();
             }
         });
+
+        getFollowerListFromSP();
 
 
         return view;
 
 
     }
+
+    //  fetching FollowerList  from SharedPreferences
+    private void getFollowerListFromSP() {
+        String json = sp.getString("fl", null);
+        Log.d(TAG, "getFollowerListFromSP: 1" + json);
+
+        Type type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        mFollowing = gson.fromJson(json, type);
+        if (mFollowing == null) {    //        if no arrayList is present
+            Log.d(TAG, "getFollowerListFromSP: 3");
+            mFollowing = new ArrayList<>();
+
+            getFollowing();   //            make new Arraylist
+
+        } else {
+            Log.d(TAG, "getFollowerListFromSP: 2" + mFollowing);
+            checkFollowingUpdate();  //         Check if we followed or unfollowed anyone
+
+        }
+
+    }
+
+    private void checkFollowingUpdate() {
+
+        int c = 0;
+
+        String json = sp.getString("addfollowing", null);
+        Type type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        ArrayList<String> list = new ArrayList<>();
+        list = gson.fromJson(json, type);
+        if (list == null) {    //        not followed anyone
+            c++;
+        } else {              //    we followed someone....update everylist
+            addToPhotosList(list);
+            addToContestList(list);
+            addToFilteredFollowingList(list);
+            getPostListFromSP();
+            getContestListFromSP();
+            getStory();
+
+        }
+
+        json = sp.getString("removefollowing", null);
+        type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        ArrayList<String> ulist = new ArrayList<>();
+        ulist = gson.fromJson(json, type);
+        if (ulist == null) {    //         not unfollowed anyone
+            c++;
+        } else {                  //    we unfollowed someone....update everylist
+
+            removeFromPhotosList(ulist);
+            removeFromContestList(ulist);
+            removeFromFilteredFollowingList(ulist);
+            getPostListFromSP();
+            getContestListFromSP();
+            getStory();
+        }
+
+        if (c == 2) {    //  if ther is no update
+            getPostListFromSP();
+            getContestListFromSP();
+            getStory();
+        }
+    }
+
 
     //  fetching Postlist  from SharedPreferences
     private void getPostListFromSP() {
@@ -261,68 +349,225 @@ public class Homefragment extends Fragment {
     }
 
 
-    //  fetching FollowerList  from SharedPreferences
-    private void getFollowerListFromSP() {
-        String json = sp.getString("fl", null);
-        Type type = new TypeToken<ArrayList<String>>() {
+    //  fetching ContestList  from SharedPreferences
+    private void getContestListFromSP() {
+        String json = sp.getString("cl", null);
+        Type type = new TypeToken<ArrayList<ContestDetail>>() {
         }.getType();
-        mFollowing = gson.fromJson(json, type);
-        if (mFollowing == null) {    //        if no arrayList is present
+        contestlist = gson.fromJson(json, type);
+        if (contestlist == null) {    //        if no arrayList is present
 
-            mFollowing = new ArrayList<>();
+            contestlist = new ArrayList<>();
 
-            getFollowing();   //            make new Arraylist
+            getcontest();   //            make new Arraylist
 
         } else {
 
-            checkFollowerUpdate();  //         Check whether any new follower is there or not
+            contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
+            contestRv.setAdapter(contestUpcoming);
+
+            contestUpcoming.notifyDataSetChanged();
 
         }
 
     }
 
-    private void checkFollowerUpdate() {
-
-        int c = 0;
-
-        String json = sp.getString("addfollowing", null);
+    //  fetching filtered followerlist  from SharedPreferences
+    private void getFilteredFollowerListFromSP(String domain) {
+        String json = sp.getString("ffl", null);
         Type type = new TypeToken<ArrayList<String>>() {
         }.getType();
-        ArrayList<String> list = new ArrayList<>();
-        list = gson.fromJson(json, type);
-        if (list == null) {    //        if no update is present
-            c++;
+        mFollowing1 = gson.fromJson(json, type);
+        if (mFollowing1 == null) {    //        if no arrayList is present
+
+            mFollowing1 = new ArrayList<>();
+            Log.d(TAG, "onDataChange: wasd 2");
+            getFollowingFilltered(domain);  //            make new Arraylist
+
         } else {
-            getUpdatedPhotosFollower(list);
-            getPostListFromSP();
-            getcontest();
-            getStory();
+            Log.d(TAG, "onDataChange: wasd 3");
 
+            getfilterPhotos(mFollowing1);
         }
 
-        json = sp.getString("removefollowing", null);
-        type = new TypeToken<ArrayList<String>>() {
-        }.getType();
-        ArrayList<String> ulist = new ArrayList<>();
-        ulist = gson.fromJson(json, type);
-        if (ulist == null) {    //        if no update is present
-            c++;
-        } else {
-
-            removeUpdatePhotos(ulist);
-            getPostListFromSP();
-            getcontest();
-            getStory();
-        }
-
-        if (c == 2) {
-            getPostListFromSP();
-            getcontest();
-            getStory();
-        }
     }
 
-    private void removeUpdatePhotos(ArrayList<String> uid) {
+    private void checkPostUpdate() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+        db.child(getString(R.string.dbname_users))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(getString(R.string.post_updates))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        If snapshot exist,new Posts are there
+                        if (snapshot.exists()) {
+
+//                            create two Arraylist,each containing key and userId respectively and corruspondingly
+
+                            ArrayList<String> a1 = new ArrayList<>();
+                            ArrayList<String> a2 = new ArrayList<>();
+                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                a1.add(snapshot1.getKey());
+                                a2.add(snapshot1.getValue().toString());
+                            }
+//                           get photos using arraylist above arraylist
+                            getUpdatedPhotos(a1, a2);
+
+                        } else {
+//                            No new Post are there,so display photos
+                            displayPhotos();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+
+    private void removeFromFilteredFollowingList(ArrayList<String> list) {
+        String json = sp.getString("ffl", null);
+        Type type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        mFollowing1 = gson.fromJson(json, type);
+        if (mFollowing1 == null) {    //        if no arrayList is present
+
+        } else {
+
+            for (int i = 0; i < list.size(); i++) {
+                mFollowing1.remove(list.get(i));
+
+            }
+            //                        Add updated ArrayList to Shared Preferences
+            SharedPreferences.Editor editor = sp.edit();
+            json = gson.toJson(mFollowing1);
+            editor.putString("ffl", json);
+            editor.apply();
+        }
+
+
+    }
+
+    private void addToFilteredFollowingList(ArrayList<String> list) {
+        Log.d(TAG, "addToFilteredFollowingList: qwer" + domain);
+        String json = sp.getString("ffl", null);
+        Type type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        mFollowing1 = gson.fromJson(json, type);
+        if (mFollowing1 == null) {    //        if no arrayList is present
+            mFollowing1 = new ArrayList<>();
+
+        }
+
+        DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
+
+        reference2
+                .child(getString(R.string.dbname_users))
+
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (int i = 0; i < list.size(); i++) {
+
+
+                            if (dataSnapshot.child(list.get(i))
+                                    .child("domain").getValue().equals(domain)) {
+                                mFollowing1.add(list.get(i));
+                            }
+
+
+                        }
+
+//                        Add newly Created ArrayList to Shared Preferences
+                        SharedPreferences.Editor editor = sp.edit();
+                        String json = gson.toJson(mFollowing1);
+                        editor.putString("ffl", json);
+                        editor.apply();
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+    }
+
+    private void removeFromContestList(ArrayList<String> list) {
+        Log.d(TAG, "removeFromContestList:1 " + list);
+        String json = sp.getString("cl", null);
+        Type type = new TypeToken<ArrayList<ContestDetail>>() {
+        }.getType();
+        ArrayList<ContestDetail> list1 = new ArrayList<>();
+        list1 = gson.fromJson(json, type);
+        if (list1.size() != 0) {
+            for (int i = 0; i < list.size(); i++) {
+                if (list1.get(i).getUserId().equals(list.get(i))) {
+                    list1.remove(list1.get(i));
+                }
+            }
+        }
+
+
+//                        Add newly Created ArrayList to Shared Preferences
+        SharedPreferences.Editor editor = sp.edit();
+        json = gson.toJson(list1);
+        editor.putString("cl", json);
+        editor.apply();
+
+
+    }
+
+    private void addToContestList(ArrayList<String> list) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+        for (int i = 0; i < list.size(); i++) {
+
+            final int count = i;
+
+
+            Query query = reference
+                    .child(getString(R.string.dbname_contestlist))
+                    .orderByChild("userId")
+                    .equalTo(list.get(i));
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
+                        if (!contestDetail.getResult()) {
+                            contestlist.add(contestDetail);
+                        }
+                    }
+
+//                        Add newly Created ArrayList to Shared Preferences
+                    SharedPreferences.Editor editor = sp.edit();
+                    String json = gson.toJson(contestlist);
+                    editor.putString("cl", json);
+                    editor.apply();
+
+
+                }
+
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+
+
+    }
+
+
+    private void removeFromPhotosList(ArrayList<String> uid) {
         for (int x = 0; x < uid.size(); x++) {
             Log.d(TAG, "getUpdatedPhotosFollower: " + uid.get(x));
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -406,7 +651,7 @@ public class Homefragment extends Fragment {
         }
     }
 
-    private void getUpdatedPhotosFollower(ArrayList<String> uid) {
+    private void addToPhotosList(ArrayList<String> uid) {
         for (int x = 0; x < uid.size(); x++) {
 
 
@@ -484,40 +729,6 @@ public class Homefragment extends Fragment {
 
     }
 
-    private void checkPostUpdate() {
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-        db.child(getString(R.string.dbname_users))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child(getString(R.string.post_updates))
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        If snapshot exist,new Posts are there
-                        if (snapshot.exists()) {
-
-//                            create two Arraylist,each containing key and userId respectively and corruspondingly
-
-                            ArrayList<String> a1 = new ArrayList<>();
-                            ArrayList<String> a2 = new ArrayList<>();
-                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                                a1.add(snapshot1.getKey());
-                                a2.add(snapshot1.getValue().toString());
-                            }
-//                           get photos using arraylist above arraylist
-                            getUpdatedPhotos(a1, a2);
-
-                        } else {
-//                            No new Post are there,so display photos
-                            displayPhotos();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-    }
 
     private void getUpdatedPhotos(ArrayList<String> key, ArrayList<String> uid) {
         for (int x = 0; x < key.size(); x++) {
@@ -572,8 +783,10 @@ public class Homefragment extends Fragment {
                         });
 
 
+                    } else {
 
-                    }else{
+//                        if Photo id doesnt exist it means it has been deleted.So remove the Photo from mPhotos List
+
                         ArrayList<Photo> l = new ArrayList<>(mPhotos);
                         for (Photo a : l) {
                             if (a.getPhoto_id().equals(key.get(finalX))) {
@@ -583,8 +796,7 @@ public class Homefragment extends Fragment {
                         }
 
 
-
-                }
+                    }
                     //                add updated list to Shared Preference
                     SharedPreferences.Editor editor = sp.edit();
                     String json = gson.toJson(mPhotos);
@@ -692,7 +904,7 @@ public class Homefragment extends Fragment {
     }
 
     private void getFollowingFilltered(String domain) {
-        mFollowing1.clear();
+
         DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
 
         reference2
@@ -703,8 +915,7 @@ public class Homefragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (int i = 0; i < mFollowing.size(); i++) {
 
-                            Log.d(TAG, "getFollowingFilltered: a  " + dataSnapshot.child(mFollowing.get(i))
-                                    .child("domain").getValue());
+
                             if (dataSnapshot.child(mFollowing.get(i))
                                     .child("domain").getValue().equals(domain)) {
                                 mFollowing1.add(mFollowing.get(i));
@@ -714,6 +925,12 @@ public class Homefragment extends Fragment {
                             }
 
                         }
+
+//                        Add newly Created ArrayList to Shared Preferences
+                        SharedPreferences.Editor editor = sp.edit();
+                        String json = gson.toJson(mFollowing1);
+                        editor.putString("ffl", json);
+                        editor.apply();
 
                     }
 
@@ -728,81 +945,35 @@ public class Homefragment extends Fragment {
 
 
     private void getfilterPhotos(ArrayList<String> mFollowing1) {
-        mPhotos = new ArrayList<>();
-        Log.d(TAG, "getfilterPhotos: " + "yes" + mFollowing1.size());
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        for (int i = 0; i < mFollowing1.size(); i++) {
-            Log.d(TAG, "getfilterPhotos: " + mFollowing1.get(i));
-            final int count = i;
+        ArrayList<Photo> list = new ArrayList<>();
+        for (int x = 0; x < mFollowing1.size(); x++) {
 
-            Query query = reference
-                    .child(getString(R.string.dbname_user_photos))
-                    .child(mFollowing1.get(i))
-                    .orderByChild(getString(R.string.field_user_id))
-                    .equalTo(mFollowing1.get(i));
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                        Log.d(TAG, "onDataChange: SsaD" + mFollowing1.get(count));
-
-                        Photo photo = new Photo();
-                        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-
-                        photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
-
-                        photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
-
-                        photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-
-                        photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
-
-                        photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
-
-                        photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-
-                        ArrayList<Comment> comments = new ArrayList<>();
-
-                        for (DataSnapshot dSnapshot : singleSnapshot
-                                .child(getString(R.string.field_comment)).getChildren()) {
-                            Comment comment = new Comment();
-                            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                            comments.add(comment);
-
-                        }
-                        photo.setComments(comments);
-                        mPhotos.add(photo);
-                    }
-                    if (count >= mFollowing1.size() - 1 && mPhotos.size() != 0) {
-                        displayPhotos();
-
-                    }
-
-
+            for (Photo a : mPhotos) {
+                if (a.getUser_id().equals(mFollowing1.get(x))) {
+                    list.add(a);
                 }
-
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.d(TAG, "Query Cancelled");
-                }
-            });
-
-
+            }
         }
+        mPhotos.clear();
+        mPhotos.addAll(list);
+        list.clear();
+        Collections.sort(mPhotos, new Comparator<Photo>() {
+            @Override
+            public int compare(Photo o1, Photo o2) {
+                return o2.getDate_created().compareTo(o1.getDate_created());
+            }
+        });
+        displayPhotos();
     }
 
     private void getcontest() {
-        contestlist.clear();
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Log.d(TAG, "onDataChange: knnk" + contestlist.size());
 
         for (int i = 0; i < mFollowing.size(); i++) {
 
             final int count = i;
-            Log.d(TAG, "onDataChange: khjhk" + mFollowing.get(i));
+
 
             Query query = reference
                     .child(getString(R.string.dbname_contestlist))
@@ -819,10 +990,17 @@ public class Homefragment extends Fragment {
                         }
                     }
 
-                    Log.d(TAG, "onDataChange: kk" + contestlist.size());
+//                Add newly Created ArrayList to Shared Preferences
+                    SharedPreferences.Editor editor = sp.edit();
+                    String json = gson.toJson(contestlist);
+                    editor.putString("cl", json);
+                    editor.apply();
 
+                    contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
+                    contestRv.setAdapter(contestUpcoming);
 
                     contestUpcoming.notifyDataSetChanged();
+
                 }
 
 

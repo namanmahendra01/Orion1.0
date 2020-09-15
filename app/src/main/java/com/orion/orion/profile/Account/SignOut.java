@@ -1,6 +1,8 @@
 package com.orion.orion.profile.Account;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -33,6 +35,8 @@ public class SignOut extends AppCompatActivity {
         btnConfirmSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                settings.edit().clear().apply();
                 mAuth.signOut();
                 mProgressbar.setVisibility(View.VISIBLE);
                 finish();;
