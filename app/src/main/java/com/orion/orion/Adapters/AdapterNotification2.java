@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -31,6 +32,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.orion.orion.R;
 import com.orion.orion.ViewPostActivity;
 import com.orion.orion.models.Comment;
@@ -39,6 +42,7 @@ import com.orion.orion.models.Photo;
 import com.orion.orion.models.users;
 import com.orion.orion.util.UniversalImageLoader;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -178,6 +182,17 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Log.d(TAG, "DeleteMessage: deleteing message");
+
+                        SharedPreferences sp =context.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                        Gson gson=new Gson();
+
+                       mNotification.remove( mNotification.get(i));
+                        SharedPreferences.Editor editor = sp.edit();
+                        String json = gson.toJson(mNotification);
+                        editor.putString("nl", json);
+                        editor.apply();
+
+
                         DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference("users");
                         ref1.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Notifications").child(timestamp)
                                 .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {

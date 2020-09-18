@@ -123,7 +123,7 @@ public class notificationFragment extends Fragment {
         Type type = new TypeToken<ArrayList<Notification>>() {
         }.getType();
         notifyList = gson.fromJson(json, type);
-        if (notifyList == null) {    //        if no arrayList is present
+        if (notifyList == null||notifyList.size()==0) {    //        if no arrayList is present
 
             notifyList = new ArrayList<>();
             readNotification();  //            make new Arraylist
@@ -146,7 +146,6 @@ public class notificationFragment extends Fragment {
               @Override
               public void onDataChange(@NonNull DataSnapshot snapshot) {
                   for (DataSnapshot snapshot1:snapshot.getChildren()){
-
                       if (notifyList.get(0).getTimeStamp().equals(snapshot1.getKey())){
 
                           displayNotification();
