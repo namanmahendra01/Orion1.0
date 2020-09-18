@@ -69,24 +69,11 @@ public class Message_Request extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 userlist.clear();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    for (DataSnapshot ds1 : ds.getChildren()) {
-                        Log.d(TAG, "onDataChange: ds" + ds1.getChildren().toString());
-
-                        Chat chat = ds1.getValue(Chat.class);
-                        Log.d(TAG, "onDataChange: chat" + chat);
-
-                        if (chat.getReceiver().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                            String user = ds.getKey();
-                            userlist.add(user);
-                            break;
-                        }
-                    }
-
-
-
+                    String user = ds.getKey();
+                    userlist.add(user);
                 }
-                adapterMessageRequest = new AdapterMessageRequest( Message_Request.this,userlist);
 
+                adapterMessageRequest = new AdapterMessageRequest( Message_Request.this,userlist);
                 recyclerView.setAdapter(adapterMessageRequest);
                 for (int i = 0; i < userlist.size(); i++) {
                     lastMessage(userlist.get(i));
@@ -102,27 +89,23 @@ public class Message_Request extends AppCompatActivity {
     }
 
     private void lastMessage(String uid) {
-        DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_request)).child(getString(R.string.dbname_Chats)).child(currentUser.getUid()).child(uid);
-        refer.addValueEventListener(new ValueEventListener() {
+
+        DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_request)).
+                child(getString(R.string.dbname_Chats)).
+                child(currentUser.getUid()).
+                child(uid);
+        refer .orderByKey()
+                .limitToLast(1)
+                .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String lmsg = "default";
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                    Chat chat = ds.getValue(Chat.class);
-                    if (chat == null) {
-                        continue;
-                    }
-                    String sender = chat.getSender();
-                    String reciever = chat.getReceiver();
-                    if (sender == null || reciever == null) {
-                        continue;
-                    }
-                    if (chat.getReceiver().equals(currentUser.getUid()) && chat.getSender().equals(uid)
-                            || chat.getReceiver().equals(uid) && chat.getSender().equals(currentUser.getUid())) {
+                    if (ds.exists()) {
+                        Chat chat = ds.getValue(Chat.class);
                         lmsg = chat.getMessage();
-                    }
 
+                    }
                 }
                 adapterMessageRequest.setLastMessage(uid, lmsg);
                 adapterMessageRequest.notifyDataSetChanged();

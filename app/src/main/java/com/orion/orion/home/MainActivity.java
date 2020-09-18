@@ -207,26 +207,30 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
 
-        DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_Chats));
-        Query query = refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        DatabaseReference refer = FirebaseDatabase.getInstance().getReference();
+        Query query = refer.child(getString(R.string.dbname_Chats))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        Log.d(TAG, "onDataChange: ded 5");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Log.d(TAG, "onDataChange: ded 1");
 
                 final long[] x = {0};
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Log.d(TAG, "onDataChange: ded 2");
 
-
-                    refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .child(dataSnapshot.getKey())
+                    refer.child(getString(R.string.dbname_ChatList))
+                            .child(dataSnapshot.getValue().toString())
                             .orderByKey()
                             .limitToLast(1)
                             .addValueEventListener(new ValueEventListener() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                public void onDataChange(@NonNull DataSnapshot snapshot1) {
 
-
-                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                    Log.d(TAG, "onDataChange: ded 3");
+                                    for (DataSnapshot ds : snapshot1.getChildren()) {
+                                        Log.d(TAG, "onDataChange: ded 4");
                                         if (ds.exists()) {
                                             Log.d(TAG, "onDataChange: dede" + ds.getValue());
                                             Chat chat = ds.getValue(Chat.class);

@@ -19,10 +19,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.orion.orion.Adapters.AdapterChat;
-import com.orion.orion.Adapters.AdapterNotification2;
 import com.orion.orion.Adapters.AdaterChatList;
 import com.orion.orion.R;
 import com.orion.orion.models.Chat;
@@ -47,7 +44,7 @@ public class messagesfragment extends Fragment {
     private DatabaseReference myRef;
     private DatabaseReference myRef2;
     private int mResults;
-    private  int x=0;
+    private int x = 0;
 
     private FirebaseDatabase mFirebaseDatabase;
     FirebaseUser currentUser;
@@ -93,28 +90,12 @@ public class messagesfragment extends Fragment {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int i = 0;
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     if (dataSnapshot.exists()) {
-                        for (DataSnapshot ds1 : ds.getChildren()) {
-                            Log.d(TAG, "onDataChange: ds" + ds1.getChildren().toString());
+                        request.setText("Requests(" + String.valueOf((int)dataSnapshot.getChildrenCount()) + ")");
 
-                            Chat chat = ds1.getValue(Chat.class);
-                            Log.d(TAG, "onDataChange: chat" + chat);
-
-                            if (chat.getReceiver().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                i++;
-                                request.setText("Requests(" + String.valueOf(i) + ")");
-
-                                break;
-                            }
-                        }
                     } else {
-                        request.setText("Requests(" + String.valueOf(i) + ")");
+                        request.setText("Requests(" + String.valueOf(0) + ")");
                     }
-
-
-                }
 
             }
 
@@ -154,7 +135,7 @@ public class messagesfragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 userlist.clear();
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    String user = snapshot1.getKey();
+                    String user = snapshot1.getValue().toString();
                     userlist.add(user);
                 }
                 loadChats(userlist);
@@ -170,12 +151,11 @@ public class messagesfragment extends Fragment {
     }
 
     private void loadChats(List<String> userlist) {
-        Log.d(TAG, "loadChats: chatq"+userlist.size());
         chatList = new ArrayList<>();
         for (int i = 0; i < userlist.size(); i++) {
-            DatabaseReference db = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_Chats));
-            db.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                    .child(userlist.get(i))
+            DatabaseReference db = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_ChatList));
+
+                   db .child(userlist.get(i))
                     .orderByKey()
                     .limitToLast(1)
                     .addValueEventListener(new ValueEventListener() {
@@ -189,7 +169,7 @@ public class messagesfragment extends Fragment {
                             }
                             if (chatList.size() == userlist.size()) {
 
-                                sortChatList(chatList);
+                                sortChatList(chatList,userlist);
 
                                 Log.d(TAG, "onDataChange: chat size1" + chatList.size());
 
@@ -205,8 +185,8 @@ public class messagesfragment extends Fragment {
         }
     }
 
-    private void sortChatList(List<Chat> chatList) {
-        Log.d(TAG, "sortChatList: chatlist" + chatList.size());
+    private void sortChatList(List<Chat> chatList, List<String> userlist) {
+
         userlist2 = new ArrayList<>();
 
         Collections.sort(chatList, new Comparator<Chat>() {
@@ -217,13 +197,13 @@ public class messagesfragment extends Fragment {
         });
 
         for (int i = 0; i < chatList.size(); i++) {
-            Log.d(TAG, "onDataChange: chat size3" + chatList.size());
+
 
             if (chatList.get(i).getSender().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                Log.d(TAG, "onDataChange: chat reciever" + chatList.get(i).getReceiver());
+
                 messagesfragment.this.userlist2.add(chatList.get(i).getReceiver());
             } else {
-                Log.d(TAG, "onDataChange: chat sender" + chatList.get(i).getSender());
+
                 messagesfragment.this.userlist2.add(chatList.get(i).getSender());
 
             }
@@ -231,45 +211,61 @@ public class messagesfragment extends Fragment {
 
         }
         adaterChatList = new AdaterChatList(getContext(), messagesfragment.this.userlist2);
-        for (int i = 0; i < messagesfragment.this.userlist2.size(); i++) {
-            lastMessage(messagesfragment.this.userlist2.get(i));
+        for (int i = 0; i < userlist2.size(); i++) {
+            lastMessage(userlist2.get(i));
         }
 
         displayChatList();
 
-            }
+    }
 
 
     private void lastMessage(String uid) {
-        DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_Chats));
-        Query query = refer.child(currentUser.getUid())
-                .child(uid)
-                .orderByKey()
-                .limitToLast(1);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String lmsg = "default";
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    if (ds.exists()) {
-                        Chat chat = ds.getValue(Chat.class);
-                        lmsg = chat.getMessage();
 
+        DatabaseReference refer1 = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_Chats));
+        refer1.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(uid)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_ChatList));
+                        refer .child(snapshot.getValue().toString())
+                                .orderByKey()
+                                .limitToLast(1)
+                                .addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        String lmsg = "default";
+                                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                            if (ds.exists()) {
+                                                Chat chat = ds.getValue(Chat.class);
+                                                lmsg = chat.getMessage();
+
+                                            }
+
+                                        }
+
+                                        adaterChatList.setLastMessage(uid, lmsg);
+                                        adaterChatList.notifyDataSetChanged();
+                                    }
+
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
                     }
 
-                }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                adaterChatList.setLastMessage(uid, lmsg);
-                adaterChatList.notifyDataSetChanged();
-            }
+                    }
+                });
 
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
+
     private void displayChatList() {
         Log.d(TAG, "display first 10 chatslist");
 
@@ -321,7 +317,7 @@ public class messagesfragment extends Fragment {
 
                 }
                 mResults = mResults + iterations;
-                    recyclerView.post(new Runnable() {
+                recyclerView.post(new Runnable() {
                     @Override
                     public void run() {
                         adaterChatList.notifyDataSetChanged();

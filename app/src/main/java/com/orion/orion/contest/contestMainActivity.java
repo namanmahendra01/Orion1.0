@@ -56,20 +56,13 @@ public class contestMainActivity extends AppCompatActivity {
         setupViewPager();
 
 
-
-
-
-
     }
 
-
-
-
-    //   ************************FIREBASE****************************
 
     //    for adding 3 tabs -media,home,message
     private void setupViewPager() {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
+//
         adapter.addFragment(new fragment_createContest());
         adapter.addFragment(new fragment_upcomingContest());
         adapter.addFragment(new fragment_joinedContest());
@@ -78,6 +71,8 @@ public class contestMainActivity extends AppCompatActivity {
 
         TabLayout tablayout = (TabLayout) findViewById(R.id.tabs);
         tablayout.setupWithViewPager(mViewPager);
+
+
 //        for giving icon to them
         tablayout.getTabAt(0).setText("create");
         tablayout.getTabAt(1).setText("upcoming");

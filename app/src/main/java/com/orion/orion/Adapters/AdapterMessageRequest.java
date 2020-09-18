@@ -86,8 +86,6 @@ public class AdapterMessageRequest extends RecyclerView.Adapter<AdapterMessageRe
                         nameTv.setText(user.getUsername());
                         UniversalImageLoader.setImage(user.getProfile_photo(), profileTv, null, "");
 
-
-
                     }
 
                     @Override

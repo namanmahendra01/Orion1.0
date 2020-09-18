@@ -55,37 +55,58 @@ private HashMap<String,String> LastMessagemap;
     public void onBindViewHolder(@NonNull MyHolder holder, int i) {
 
         String hisUid=usersList2.get(i);
+
+
+        DatabaseReference refer2 = FirebaseDatabase.getInstance().getReference(context.getString(R.string.dbname_Chats));
+         refer2.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                 .child(hisUid)
+                 .addValueEventListener(new ValueEventListener() {
+                     @Override
+                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                         Log.d(TAG, "onDataChange: changeit3");
+                         DatabaseReference refer = FirebaseDatabase.getInstance().getReference(context.getString(R.string.dbname_ChatList));
+                         Query query=   refer
+                                 .child(snapshot.getValue().toString())
+                                 .orderByKey()
+                                 .limitToLast(1);
+                         query.addValueEventListener(new ValueEventListener() {
+                             @Override
+                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                     if (ds.exists()){
+
+                                         Chat chat = ds.getValue(Chat.class);
+                                         if (!chat.isIfseen()
+                                                 && chat.getReceiver().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                                             holder.notSeen.setVisibility(View.VISIBLE);
+                                         }else {
+                                             holder.notSeen.setVisibility(View.INVISIBLE);
+
+                                         }
+
+                                     }
+
+                                 }
+
+                             }
+
+
+                             @Override
+                             public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                             }
+                         });
+                     }
+
+                     @Override
+                     public void onCancelled(@NonNull DatabaseError error) {
+
+                     }
+                 });
+
         String LastMessage=LastMessagemap.get(hisUid);
 
-        DatabaseReference refer = FirebaseDatabase.getInstance().getReference(context.getString(R.string.dbname_Chats));
-        Query query=   refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child(hisUid)
-                .orderByKey()
-                .limitToLast(1);
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    if (ds.exists()){
-                        Chat chat = ds.getValue(Chat.class);
-                        Log.d(TAG, "onDataChange: ok"+chat.toString());
-                        if (!chat.isIfseen()
-                        && chat.getReceiver().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
-                            holder.notSeen.setVisibility(View.VISIBLE);
-                        }
 
-                    }
-
-                }
-
-            }
-
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
         getList(hisUid,holder.nameTv,holder.profileTv);
 

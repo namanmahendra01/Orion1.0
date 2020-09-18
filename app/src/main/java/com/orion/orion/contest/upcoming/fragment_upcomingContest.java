@@ -115,14 +115,11 @@ public class fragment_upcomingContest extends Fragment {
                 colY.setVisibility(View.GONE);
                 colB.setVisibility(View.VISIBLE);
 
-
-
                     linearLayoutManager[0] = new GridLayoutManager(getContext(), 2);
 
                     upcomingContestRv.setLayoutManager(linearLayoutManager[0]);
                     adapterContestUpcomingGrid = new AdapterContestUpcomingGrid(getContext(), paginatedcontestlist);
                     upcomingContestRv.setAdapter(adapterContestUpcomingGrid);
-
 
             }
         });
@@ -204,8 +201,6 @@ public class fragment_upcomingContest extends Fragment {
                 getContestFiltered(domain, entryfee);
 
             }
-
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 

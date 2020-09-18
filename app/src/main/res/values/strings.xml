@@ -117,6 +117,7 @@
     <string name="field_post">post</string>
     <string name="dbname_reports">Reports</string>
     <string name="post_updates">Post_updates</string>
+    <string name="dbname_ChatList">ChatList</string>
 
     field_post
 
