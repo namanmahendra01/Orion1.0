@@ -154,57 +154,26 @@ else{
         Log.d(TAG, "DeleteMessage: deleting message");
         String msgID = chatList.get(position).getMessageid();
         String hisId = chatList.get(position).getReceiver();
-
-        DatabaseReference dbTs= FirebaseDatabase.getInstance().getReference();
-        Query query = dbTs.child(context.getString(R.string.dbname_Chats))
+        DatabaseReference dbTs1= FirebaseDatabase.getInstance().getReference();
+        dbTs1.child(context.getString(R.string.dbname_Chats))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(hisId)
-                .orderByChild("messageid")
-                .equalTo(msgID);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()){
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        dbTs1.child(context.getString(R.string.dbname_Chats))
+                                .child(snapshot.getValue().toString())
+                                .child(msgID)
+                                .removeValue();
 
-                    Log.d(TAG, "onDataChange: qey"+ ds.getRef().toString());
-                        ds.getRef().removeValue();
-                        Toast.makeText(context, "message deleted", Toast.LENGTH_SHORT).show();
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
+                    }
+                });
 
-
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-        DatabaseReference dbTs2= FirebaseDatabase.getInstance().getReference();
-
-        Query query2 = dbTs2.child(context.getString(R.string.dbname_Chats))
-                .child(hisId)
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .orderByChild("messageid")
-                .equalTo(msgID);
-        query2.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()){
-
-                    ds.getRef().removeValue();
-                    Toast.makeText(context, "message deleted", Toast.LENGTH_SHORT).show();
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     @Override

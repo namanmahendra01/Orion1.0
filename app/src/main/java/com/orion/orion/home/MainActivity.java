@@ -187,12 +187,10 @@ public class MainActivity extends AppCompatActivity
                                 if (snapshot1.child("seen").getValue().equals("true")) {
 
                                     tablayout.getTabAt(0).setIcon(R.drawable.ic_notification);
-                                    Log.d(TAG, "onDataChange: break2");
 
                                 }
                                 if (snapshot1.child("seen").getValue().equals("false")) {
                                     tablayout.getTabAt(0).setIcon(R.drawable.ic_noti_active1);
-                                    Log.d(TAG, "onDataChange: break3");
                                     break;
                                 }
 
@@ -210,15 +208,14 @@ public class MainActivity extends AppCompatActivity
         DatabaseReference refer = FirebaseDatabase.getInstance().getReference();
         Query query = refer.child(getString(R.string.dbname_Chats))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        Log.d(TAG, "onDataChange: ded 5");
+
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Log.d(TAG, "onDataChange: ded 1");
 
                 final long[] x = {0};
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    Log.d(TAG, "onDataChange: ded 2");
+
 
                     refer.child(getString(R.string.dbname_ChatList))
                             .child(dataSnapshot.getValue().toString())
@@ -228,15 +225,13 @@ public class MainActivity extends AppCompatActivity
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot1) {
 
-                                    Log.d(TAG, "onDataChange: ded 3");
+
                                     for (DataSnapshot ds : snapshot1.getChildren()) {
-                                        Log.d(TAG, "onDataChange: ded 4");
+
                                         if (ds.exists()) {
-                                            Log.d(TAG, "onDataChange: dede" + ds.getValue());
+
                                             Chat chat = ds.getValue(Chat.class);
-                                            Log.d(TAG, "onDataChange: ok" + chat.toString());
                                             if (!chat.isIfseen()) {
-                                                Log.d(TAG, "onDataChange: hogu");
                                                 tablayout.getTabAt(2).setIcon(R.drawable.ic_msg_activite);
                                                 x[0]++;
                                             }
@@ -256,7 +251,7 @@ public class MainActivity extends AppCompatActivity
                             });
 
                     if (x[0]>0){
-                        Log.d(TAG, "onDataChange: hogu1");
+
                         break;
                     }else{
                         tablayout.getTabAt(2).setIcon(R.drawable.ic_messages);
@@ -278,10 +273,10 @@ public class MainActivity extends AppCompatActivity
             public void onTabSelected(TabLayout.Tab tab) {
 
                 if (tablayout.getSelectedTabPosition() == 0) {
-                    Log.d(TAG, "onTabSelected: ab krle");
-                    Log.d(TAG, "onTabUnselected: xcv1" + tab.getPosition());
+
 
                     tablayout.getTabAt(0).setIcon(R.drawable.ic_notification);
+
 
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                     db.child(getString(R.string.dbname_users))
@@ -295,15 +290,12 @@ public class MainActivity extends AppCompatActivity
                                     if (snapshot.exists()) {
                                         for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                                             if (tablayout.getSelectedTabPosition() == 0) {
-
-
                                                 db.child(getString(R.string.dbname_users))
                                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                                         .child("Notifications")
                                                         .child(snapshot1.getKey())
                                                         .child("seen")
                                                         .setValue("true");
-                                                Log.d(TAG, "onDataChange: kop");
                                             }
                                         }
                                     }

@@ -1,6 +1,8 @@
 package com.orion.orion.home;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +24,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.orion.orion.Adapters.AdapterMainfeed;
 import com.orion.orion.Adapters.AdapterNotification2;
 import com.orion.orion.R;
@@ -31,6 +36,7 @@ import com.orion.orion.contest.create.form;
 import com.orion.orion.models.Notification;
 import com.orion.orion.models.Photo;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -48,6 +54,11 @@ public class notificationFragment extends Fragment {
     private AdapterNotification2 adapterNotification2;
     int x=0;
     private ArrayList<Notification> paginatedNotifications;
+
+    //    SP
+    Gson gson;
+    SharedPreferences sp;
+
     public notificationFragment(){}
 
     @Nullable
@@ -57,6 +68,11 @@ public class notificationFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_notification1,container,false);
         notificationRv=view.findViewById(R.id.recycler_view);
         clearNotification=view.findViewById(R.id.clearNotification);
+
+        //          Initialize SharedPreference variables
+        sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        gson = new Gson();
+
         notificationRv.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getContext());
         notificationRv.setLayoutManager(linearLayoutManager);
@@ -72,7 +88,7 @@ public class notificationFragment extends Fragment {
         });
 
         fAuth=FirebaseAuth.getInstance();
-        readNotification();
+        getNotifcationFromSP();
         clearNotification.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
             builder.setMessage("Uou want to delete all the notification")
@@ -81,6 +97,10 @@ public class notificationFragment extends Fragment {
                     .setPositiveButton("Yes", (dialog, id) -> {
                         notifyList.clear();
                         paginatedNotifications.clear();
+                        SharedPreferences.Editor editor = sp.edit().remove("nl");
+                        editor.apply();
+
+
                         adapterNotification2.notifyDataSetChanged();
                         FirebaseUser user = fAuth.getCurrentUser();
                         DatabaseReference reference =FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("Notifications");
@@ -93,9 +113,91 @@ public class notificationFragment extends Fragment {
                     })
                     .show();
         });
-        Log.d(TAG, "onCreateView: aja krle");
+
 
         return view;
+    }
+    //  fetching filtered notificationList  from SharedPreferences
+    private void getNotifcationFromSP() {
+        String json = sp.getString("nl", null);
+        Type type = new TypeToken<ArrayList<Notification>>() {
+        }.getType();
+        notifyList = gson.fromJson(json, type);
+        if (notifyList == null) {    //        if no arrayList is present
+
+            notifyList = new ArrayList<>();
+            readNotification();  //            make new Arraylist
+
+        } else {
+
+            checkUpdate();
+        }
+
+    }
+
+    private void checkUpdate() {
+        Log.d(TAG, "checkUpdate: asd 1"+notifyList);
+        DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
+  refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("Notifications")
+                .orderByKey()
+                .limitToLast(1)
+          .addListenerForSingleValueEvent(new ValueEventListener() {
+              @Override
+              public void onDataChange(@NonNull DataSnapshot snapshot) {
+                  for (DataSnapshot snapshot1:snapshot.getChildren()){
+
+                      if (notifyList.get(0).getTimeStamp().equals(snapshot1.getKey())){
+
+                          displayNotification();
+                      }else{
+
+                          updateNotificationList();
+                      }
+                  }
+              }
+
+              @Override
+              public void onCancelled(@NonNull DatabaseError error) {
+
+              }
+          });
+    }
+
+    private void updateNotificationList() {
+
+
+        Collections.reverse(notifyList);
+        DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
+        refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+
+                .child("Notifications")
+                .orderByKey()
+                .startAt(notifyList.get(notifyList.size()-1).getTimeStamp())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot snapshot1:snapshot.getChildren()){
+                            Notification notification=snapshot1.getValue(Notification.class);
+                            notifyList.add(notification);
+                        }
+                        Collections.reverse(notifyList);
+                        //                        Add newly Created ArrayList to Shared Preferences
+                        SharedPreferences.Editor editor = sp.edit();
+                        String json = gson.toJson(notifyList);
+                        editor.putString("nl", json);
+                        editor.apply();
+
+                        displayNotification();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
     }
 
     private void readNotification(){
@@ -110,12 +212,16 @@ public class notificationFragment extends Fragment {
                     x++;
                     Notification notification=snapshot.getValue(Notification.class);
                     notifyList.add(notification);
-                    if(x==10){
-                        Log.d(TAG, "onDataChange: display 10 notification");
-                        displayNotification();
-                    }
+
                 }
                 Collections.reverse(notifyList);
+
+//                        Add newly Created ArrayList to Shared Preferences
+                SharedPreferences.Editor editor = sp.edit();
+                String json = gson.toJson(notifyList);
+                editor.putString("nl", json);
+                editor.apply();
+
                 displayNotification();
             }
 
@@ -139,7 +245,6 @@ public class notificationFragment extends Fragment {
                 for (int i = 0; i < iteration; i++) {
                     paginatedNotifications.add(notifyList.get(i));
                 }
-                Log.d(TAG, "displayNotification: sss" + paginatedNotifications.size());
                 adapterNotification2 = new AdapterNotification2(getContext(), paginatedNotifications);
                 notificationRv.setAdapter(adapterNotification2);
                 x++;
