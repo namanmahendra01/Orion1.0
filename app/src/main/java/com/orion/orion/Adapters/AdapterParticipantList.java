@@ -137,6 +137,13 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                         .child(mparticipantLists.getJoiningKey())
                                         .child("status")
                                         .setValue("Rejected");
+
+                                db.child(mContext.getString(R.string.dbname_contests))
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child("Joinedupdates")
+                                        .child(mparticipantLists.getJoiningKey())
+                                        .setValue("Rejected");
+
                                 db.child(mContext.getString(R.string.dbname_contestlist))
                                         .child(mparticipantLists.getContestkey())
                                         .child("participantlist")

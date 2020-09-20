@@ -136,7 +136,6 @@ public class notificationFragment extends Fragment {
     }
 
     private void checkUpdate() {
-        Log.d(TAG, "checkUpdate: asd 1"+notifyList);
         DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
   refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child("Notifications")

@@ -209,8 +209,8 @@ public class ViewPostActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate:kjknjk " + comments.size());
 
+    UniversalImageLoader.setImage(mphoto.getImage_path(), mPostImage, null, "");
 
-        UniversalImageLoader.setImage(mphoto.getImage_path(), mPostImage, null, "");
         activitynumber = 4;
         getCurrentUser();
 

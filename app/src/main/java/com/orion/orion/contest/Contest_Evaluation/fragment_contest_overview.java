@@ -157,55 +157,56 @@ public class fragment_contest_overview extends Fragment {
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                ContestDetail contestDetail = dataSnapshot.getValue(ContestDetail.class);
-                                String WinDec = contestDetail.getWinDec();
-                                boolean result = contestDetail.getResult();
+                                if (dataSnapshot.exists()) {
+                                    ContestDetail contestDetail = dataSnapshot.getValue(ContestDetail.class);
+                                    String WinDec = contestDetail.getWinDec();
+                                    boolean result = contestDetail.getResult();
 
 
-                                java.text.DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-                                Date date = null;
-                                try {
-                                    date = (Date) formatter.parse(WinDec);
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
-                                String winD = String.valueOf(date.getTime());
-                                Thread thread = new Thread() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            synchronized (this) {
-                                                wait(1000);
+                                    java.text.DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+                                    Date date = null;
+                                    try {
+                                        date = (Date) formatter.parse(WinDec);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+                                    String winD = String.valueOf(date.getTime());
+                                    Thread thread = new Thread() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                synchronized (this) {
+                                                    wait(1000);
 
-                                                getActivity().runOnUiThread(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        if (result){
-                                                            pubBtn2.setVisibility(View.VISIBLE);
+                                                    getActivity().runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            if (result) {
+                                                                pubBtn2.setVisibility(View.VISIBLE);
 
-                                                        }else {
-                                                            if (Long.parseLong(winD) <= Long.parseLong(timestamp)) {
-                                                                pubBtn.setVisibility(View.VISIBLE);
-                                                                relWinner.setVisibility(View.VISIBLE);
+                                                            } else {
+                                                                if (Long.parseLong(winD) <= Long.parseLong(timestamp)) {
+                                                                    pubBtn.setVisibility(View.VISIBLE);
+                                                                    relWinner.setVisibility(View.VISIBLE);
 
+                                                                }
                                                             }
+
                                                         }
+                                                    });
 
-                                                    }
-                                                });
-
+                                                }
+                                            } catch (InterruptedException e) {
+                                                e.printStackTrace();
                                             }
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
+
                                         }
 
-                                    }
-
-                                    ;
-                                };
-                                thread.start();
+                                        ;
+                                    };
+                                    thread.start();
+                                }
                             }
-
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
