@@ -1,8 +1,10 @@
 package com.orion.orion.contest.Contest_Evaluation;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +35,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.orion.orion.Adapters.AdapterContestCreated;
 import com.orion.orion.Adapters.AdapterContestUpcoming;
 import com.orion.orion.Adapters.AdapterParticipantList;
@@ -40,11 +44,13 @@ import com.orion.orion.R;
 import com.orion.orion.ViewPostActivity;
 import com.orion.orion.contest.create.form;
 import com.orion.orion.models.CreateForm;
+import com.orion.orion.models.JoinForm;
 import com.orion.orion.models.ParticipantList;
 import com.orion.orion.profile.profile;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.UniversalImageLoader;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -64,7 +70,9 @@ public class fragment_contest_participants extends Fragment {
     String Conteskey;
     boolean notify=false;
     private FirebaseMethods mFirebaseMethods;
-
+    //    SP
+    Gson gson;
+    SharedPreferences sp;
     FloatingActionButton floatbtn;
 
 
@@ -85,6 +93,9 @@ public class fragment_contest_participants extends Fragment {
 
         Bundle b = getActivity().getIntent().getExtras();
         Conteskey = b.getString("contestId");
+//          Initialize SharedPreference variables
+        sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        gson = new Gson();
 
         request = view.findViewById(R.id.request);
         floatbtn = view.findViewById(R.id.float_btn);
@@ -148,12 +159,148 @@ public class fragment_contest_participants extends Fragment {
             }
         });
 
-        getParticipant(Conteskey);
+       getParticipantListFromSP();
 
 
         return view;
     }
+    //  fetching ParticipantList  from SharedPreferences
+    private void getParticipantListFromSP() {
+        String json = sp.getString(Conteskey, null);
 
+        Type type = new TypeToken<ArrayList<ParticipantList>>() {
+        }.getType();
+        participantLists = gson.fromJson(json, type);
+        if (participantLists == null||participantLists.size()==0) {    //        if no arrayList is present
+            participantLists = new ArrayList<>();
+            Log.d(TAG, "ttt 1");
+            fetchParticipants();             //            make new Arraylist
+
+        } else {
+            Log.d(TAG, "ttt 2"+participantLists);
+            checkUpdate();       //         Check if new paricipant is there
+
+        }
+
+    }
+
+    private void checkUpdate() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+
+        reference.child(getString(R.string.dbname_participantList))
+                .child(Conteskey)
+                .orderByKey()
+                .limitToLast(1)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                if (participantLists.get(0).getJoiningKey().equals(snapshot1.getKey())) {
+
+                                    displayParticipant();
+                                } else {
+
+                                    updateList();
+                                }
+                            }
+                        }else{
+                            updateList();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    private void updateList() {
+        Collections.reverse(participantLists);
+        DatabaseReference refer = FirebaseDatabase.getInstance().getReference();
+        refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+
+                .child(getString(R.string.dbname_participantList))
+                .child(Conteskey)
+                .orderByKey()
+                .startAt(participantLists.get(participantLists.size() - 1).getJoiningKey())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                ParticipantList participantList = snapshot1.getValue(ParticipantList.class);
+
+                                participantLists.add(participantList);
+                            }
+                            Collections.reverse(participantLists);
+
+                            //    Add newly Created ArrayList to Shared Preferences
+                            SharedPreferences.Editor editor = sp.edit();
+                            String json = gson.toJson(participantLists);
+                            editor.putString(Conteskey, json);
+                            editor.apply();
+
+
+                            displayParticipant();
+
+
+
+                        } else {
+                            fetchParticipants();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    private void  fetchParticipants() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child(getString(R.string.dbname_participantList))
+                .child(Conteskey)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                ParticipantList participantList = snapshot.getValue(ParticipantList.class);
+
+                                participantLists.add(participantList);
+                            }
+                            Collections.reverse(participantLists);
+
+                            //    Add newly Created ArrayList to Shared Preferences
+                            SharedPreferences.Editor editor = sp.edit();
+                            String json = gson.toJson(participantLists);
+                            editor.putString(Conteskey, json);
+                            editor.apply();
+
+                            displayParticipant();
+
+
+                        }else {
+                            participantLists.clear();
+                            SharedPreferences.Editor editor = sp.edit();
+                            String json = gson.toJson(participantLists);
+                            editor.putString(Conteskey, json);
+                            editor.apply();
+
+                            displayParticipant();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+    }
     private void bottomsheet() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
 
@@ -221,10 +368,6 @@ public class fragment_contest_participants extends Fragment {
         bottomSheetDialog.show();
     }
 
-    private void sendMessage(String msg1) {
-
-
-    }
 
     private void addToHisNotification(String hisUid, String notification) {
 
@@ -257,35 +400,6 @@ public class fragment_contest_participants extends Fragment {
 
     }
 
-    private void getParticipant(String contestkey) {
-
-        FirebaseUser user = fAuth.getCurrentUser();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child(getString(R.string.dbname_participantList))
-                .child(contestkey)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        participantLists.clear();
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            ParticipantList participantList = snapshot.getValue(ParticipantList.class);
-
-                            Log.d(TAG, "onDataChange: " + participantList.toString());
-
-                            participantLists.add(participantList);
-
-                            Collections.reverse(participantLists);
-                            displayParticipant();
-
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-    }
 
     private void displayParticipant() {
         Log.d(TAG, "display first 10 participant");

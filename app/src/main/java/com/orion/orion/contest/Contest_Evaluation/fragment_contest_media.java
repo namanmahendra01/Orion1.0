@@ -1,6 +1,8 @@
 package com.orion.orion.contest.Contest_Evaluation;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,17 +17,23 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.orion.orion.Adapters.AdapterGridImageContest;
 import com.orion.orion.Adapters.AdapterGridImageSub;
 import com.orion.orion.R;
+import com.orion.orion.models.JoinForm;
 import com.orion.orion.models.ParticipantList;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static com.android.volley.VolleyLog.TAG;
 
@@ -35,7 +43,10 @@ public class fragment_contest_media extends Fragment {
     RecyclerView gridRv;
     ArrayList<ParticipantList> imgURLsList;
     private AdapterGridImageSub adapterGridImage;
-
+    //    SP
+    Gson gson;
+    SharedPreferences sp;
+    String Conteskey;
     public fragment_contest_media(){}
 
     @Nullable
@@ -43,7 +54,11 @@ public class fragment_contest_media extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contest_media, container, false);
         Bundle b=getActivity().getIntent().getExtras();
-        String Conteskey=b.getString("contestId");
+         Conteskey=b.getString("contestId");
+
+//          Initialize SharedPreference variables
+        sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        gson = new Gson();
 
 
         gridRv=(RecyclerView) view.findViewById(R.id.gridRv);
@@ -57,41 +72,33 @@ public class fragment_contest_media extends Fragment {
         adapterGridImage = new AdapterGridImageSub(getContext(),imgURLsList);
         gridRv.setAdapter(adapterGridImage);
 
-        setUpgridview(Conteskey);
-
-
+        getParticipantListFromSP();
 
 
         return view;
 
     }
+    //  fetching ParticipantList  from SharedPreferences
+    private void getParticipantListFromSP() {
+        String json = sp.getString(Conteskey, null);
 
-    private void setUpgridview(String contestkey) {
-        ArrayList<ParticipantList> participantLists = new ArrayList<>();
+        Type type = new TypeToken<ArrayList<ParticipantList>>() {
+        }.getType();
+        imgURLsList = gson.fromJson(json, type);
+        if (imgURLsList == null||imgURLsList.size()==0) {    //        if no arrayList is present
+            imgURLsList = new ArrayList<>();
+            Log.d(TAG, "getParticipantListFromSPqwer:1 "+imgURLsList);
+            adapterGridImage = new AdapterGridImageSub(getContext(),imgURLsList);
+            gridRv.setAdapter(adapterGridImage);
 
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        } else {
+            Log.d(TAG, "getParticipantListFromSPqwer: "+imgURLsList);
 
+            adapterGridImage = new AdapterGridImageSub(getContext(),imgURLsList);
+            gridRv.setAdapter(adapterGridImage);
 
-        reference.child(getString(R.string.dbname_participantList))
-                .child(contestkey)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot snapshot:dataSnapshot.getChildren()){
-                            ParticipantList participantList= snapshot.getValue(ParticipantList.class);
-                            Log.d(TAG, "onDataChange: join"+participantList.toString());
-
-                            participantLists.add(participantList);
-                        }
-                        imgURLsList.addAll(participantLists);
-                        gridRv.setAdapter(adapterGridImage);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+        }
     }
+
 }

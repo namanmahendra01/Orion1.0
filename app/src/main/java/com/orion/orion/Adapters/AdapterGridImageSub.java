@@ -2,6 +2,7 @@ package com.orion.orion.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import com.orion.orion.models.ParticipantList;
 import com.orion.orion.util.UniversalImageLoader;
 
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 public class AdapterGridImageSub extends RecyclerView.Adapter<AdapterGridImageSub.ViewHolder> {
 
@@ -43,6 +46,7 @@ public class AdapterGridImageSub extends RecyclerView.Adapter<AdapterGridImageSu
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
 
         ParticipantList participantList= participantLists.get(i);
+        Log.d(TAG, "onBindViewHolder: sdf"+participantList.getMediaLink());
         UniversalImageLoader.setImage(participantList.getMediaLink(),holder.image,null,"");
 //
 

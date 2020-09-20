@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity
                                         if (ds.exists()) {
 
                                             Chat chat = ds.getValue(Chat.class);
-                                            if (!chat.isIfseen()) {
+                                            if (!chat.isIfseen()&&chat.getReceiver().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                                 tablayout.getTabAt(2).setIcon(R.drawable.ic_msg_activite);
                                                 x[0]++;
                                             }

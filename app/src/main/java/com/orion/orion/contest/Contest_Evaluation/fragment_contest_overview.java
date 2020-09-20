@@ -1,8 +1,10 @@
 package com.orion.orion.contest.Contest_Evaluation;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,12 +36,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.orion.orion.Adapters.AdapterContestCreated;
 import com.orion.orion.Adapters.AdapterRankList;
 import com.orion.orion.Adapters.AdapterWinners;
 import com.orion.orion.R;
 import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.CreateForm;
+import com.orion.orion.models.JoinForm;
 import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.juryMarks;
 import com.orion.orion.models.users;
@@ -48,6 +53,7 @@ import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.SNTPClient;
 import com.orion.orion.util.StringManipilation;
 
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,12 +82,14 @@ public class fragment_contest_overview extends Fragment {
     private AdapterRankList rankList;
     private RelativeLayout relWinner;
 
-
+    //    SP
+    Gson gson;
+    SharedPreferences sp;
     users user = new users();
 
     RecyclerView winnerRv;
     private AdapterWinners winnerList;
-    private Button pubBtn,pubBtn2;
+    private Button pubBtn, pubBtn2;
     String timestamp = "";
 
 
@@ -100,7 +108,7 @@ public class fragment_contest_overview extends Fragment {
         juryTable2 = view.findViewById(R.id.jurytable2);
         pubBtn = view.findViewById(R.id.pubBtn);
         pubBtn2 = view.findViewById(R.id.pubBtn2);
-        relWinner= view.findViewById(R.id.relWin);
+        relWinner = view.findViewById(R.id.relWin);
         mFirebaseMethods = new FirebaseMethods(getActivity());
 
 
@@ -109,9 +117,6 @@ public class fragment_contest_overview extends Fragment {
         Bundle b = getActivity().getIntent().getExtras();
         Conteskey = b.getString("contestId");
 
-        juryMarksTable(Conteskey);
-        juryAndPublicMarksTable(Conteskey);
-
 
         rankRv = view.findViewById(R.id.rankList);
         rankRv.setHasFixedSize(true);
@@ -119,20 +124,21 @@ public class fragment_contest_overview extends Fragment {
         rankRv.setLayoutManager(linearLayoutManager);
 
 
-        participantLists = new ArrayList<>();
-        rankList = new AdapterRankList(getContext(), participantLists);
-        rankRv.setAdapter(rankList);
+//          Initialize SharedPreference variables
+        sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        gson = new Gson();
 
-        getRank(Conteskey);
-//        **********************************************************
+        participantLists=new ArrayList<>();
         participantLists2 = new ArrayList<>();
+
+
+//        **********************************************************
+
         winnerRv = view.findViewById(R.id.recyclerWinner);
         winnerRv.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(getContext());
         winnerRv.setLayoutManager(linearLayoutManager1);
 
-        winnerList = new AdapterWinners(getContext(), participantLists2);
-        winnerRv.setAdapter(winnerList);
 
         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
             @Override
@@ -183,11 +189,16 @@ public class fragment_contest_overview extends Fragment {
                                                         public void run() {
                                                             if (result) {
                                                                 pubBtn2.setVisibility(View.VISIBLE);
+                                                                relWinner.setVisibility(View.VISIBLE);
+
 
                                                             } else {
                                                                 if (Long.parseLong(winD) <= Long.parseLong(timestamp)) {
                                                                     pubBtn.setVisibility(View.VISIBLE);
                                                                     relWinner.setVisibility(View.VISIBLE);
+
+                                                                }else{
+                                                                    relWinner.setVisibility(View.INVISIBLE);
 
                                                                 }
                                                             }
@@ -275,10 +286,10 @@ public class fragment_contest_overview extends Fragment {
                         if (participantLists2.size() != 0) {
                             for (int x = 0; x < participantLists2.size(); x++) {
 
-                                        if (notify) {
-                                            mFirebaseMethods.sendNotification(participantLists2.get(x).getUserid(), "", "Result has been declared for a contest.Check your ranking now.", "Result Declared");
-                                        }
-                                        notify = false;
+                                if (notify) {
+                                    mFirebaseMethods.sendNotification(participantLists2.get(x).getUserid(), "", "Result has been declared for a contest.Check your ranking now.", "Result Declared");
+                                }
+                                notify = false;
 
                                 addToHisNotification("" + participantLists2.get(x).getUserid(), "Result has been declared for a contest.Check your ranking now.");
 
@@ -288,30 +299,28 @@ public class fragment_contest_overview extends Fragment {
                 });
 
 
+                builder.setNegativeButton("Not now", new DialogInterface.OnClickListener() {
 
 
-                builder.setNegativeButton("Not now",new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
 
-
-                @Override
-                public void onClick (DialogInterface dialog,int which) {
-                    dialog.dismiss();
-                }
-
-            });
+                });
                 builder.create().show();
 
-        }
-    });
+            }
+        });
 
 
-
-        getRank(Conteskey);
+        getParticipantListFromSP();
 
 
         return view;
 
     }
+
     private void addToHisNotification(String hisUid, String notification) {
 
         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
@@ -336,7 +345,7 @@ public class fragment_contest_overview extends Fragment {
                 hashMap.put("pId", "false");
                 hashMap.put("timeStamp", timestamp);
                 hashMap.put("pUid", hisUid);
-                hashMap.put("seen","false");
+                hashMap.put("seen", "false");
                 hashMap.put("notificaton", notification);
                 hashMap.put("sUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
 
@@ -701,48 +710,60 @@ public class fragment_contest_overview extends Fragment {
 
     }
 
-    private void getRank(String contestkey) {
+    private void getRank() {
+        participantLists2.clear();
+        Collections.sort(participantLists, new Comparator<ParticipantList>() {
+            @Override
+            public int compare(ParticipantList o1, ParticipantList o2) {
+                return Integer.compare(o1.getTotalScore(), o2.getTotalScore());
+            }
+        });
+        Collections.reverse(participantLists);
+        try {
+            for (int x = 0; x < 3; x++) {
+                participantLists2.add(participantLists.get(x));
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child(getString(R.string.dbname_participantList))
-                .child(contestkey)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        participantLists.clear();
-                        participantLists2.clear();
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            ParticipantList participantList = snapshot.getValue(ParticipantList.class);
+            }
+        } catch (IndexOutOfBoundsException e) {
+            Log.e(TAG, "onDataChange: " + e.getMessage());
+        }
 
-                            participantLists.add(participantList);
-                        }
-                        Collections.sort(participantLists, new Comparator<ParticipantList>() {
-                            @Override
-                            public int compare(ParticipantList o1, ParticipantList o2) {
-                                return Integer.compare(o1.getTotalScore(), o2.getTotalScore());
-                            }
-                        });
-                        Collections.reverse(participantLists);
-                        try {
-                            for (int x = 0; x < 3; x++) {
-                                participantLists2.add(participantLists.get(x));
+        Log.d(TAG, "getRank1: "+participantLists);
+        Log.d(TAG, "getRank2: "+participantLists2);
 
-                            }
-                        }catch (IndexOutOfBoundsException e){
-                            Log.e(TAG, "onDataChange: "+e.getMessage() );
-                        }
 
-                        rankList.notifyDataSetChanged();
-                        winnerList.notifyDataSetChanged();
+        rankList = new AdapterRankList(getContext(), participantLists);
+        rankRv.setAdapter(rankList);
 
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+        winnerList = new AdapterWinners(getContext(), participantLists2);
+        winnerRv.setAdapter(winnerList);
     }
+
+    //  fetching ParticipantList  from SharedPreferences
+    private void getParticipantListFromSP() {
+        String json = sp.getString(Conteskey, null);
+
+        Type type = new TypeToken<ArrayList<ParticipantList>>() {
+        }.getType();
+        participantLists = gson.fromJson(json, type);
+        if (participantLists == null) {    //        if no arrayList is present
+            participantLists = new ArrayList<>();
+
+
+            getRank();
+            juryMarksTable(Conteskey);
+            juryAndPublicMarksTable(Conteskey);
+
+        } else {
+
+            getRank();
+            juryMarksTable(Conteskey);
+            juryAndPublicMarksTable(Conteskey);
+
+        }
+
+    }
+
+
 
 }
