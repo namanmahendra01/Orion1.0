@@ -384,7 +384,7 @@ public class FirebaseMethods {
                 .setValue(url);
     }
 
-    private String getTimeStamp() {
+    public String getTimeStamp() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
         return sdf.format(new Date());
@@ -568,94 +568,94 @@ public class FirebaseMethods {
         });
     }
 
-    public void updateTopUsers() {
-        ArrayList<TopUsers> mListOverall = new ArrayList<>();
-        ArrayList<TopUsers> mListFollower = new ArrayList<>();
-        mListOverall.clear();
-        mListFollower.clear();
-
-        Log.d(TAG, "updateTopUsers" + mContext);
-        Query query = myRef.child(mContext.getString(R.string.dbname_leaderboard));
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-
-                    //getting user ids, username and profile photos
-                    String user_id = singleSnapshot.getKey();
-                    String domain = (String) singleSnapshot.child(mContext.getString(R.string.field_domain)).getValue();
-                    int followers = (int) (long) singleSnapshot.child(mContext.getString(R.string.field_followers)).getValue();
-                    int rating = (int) (long) singleSnapshot.child(mContext.getString(R.string.field_all_time)).child(mContext.getString(R.string.field_post)).getValue()
-                            + (int) (long) singleSnapshot.child(mContext.getString(R.string.field_all_time)).child(mContext.getString(R.string.field_followers)).getValue()
-                            + (int) (long) singleSnapshot.child(mContext.getString(R.string.field_all_time)).child(mContext.getString(R.string.field_contest)).getValue();
-
-                    TopUsers emptyItem = new TopUsers("", 0, "");
-                    TopUsers dataItemOverall = new TopUsers(user_id, rating, domain);
-                    TopUsers dataItemFollower = new TopUsers(user_id, followers, domain);
-
-
-                    if (mListOverall.size() == 0 || mListFollower.size() == 0) {
-                        mListOverall.add(dataItemOverall);
-                        mListFollower.add(dataItemFollower);
-                    } else {
-                        int l = mListOverall.size();
-
-                        //loop to push in between and next one further away for overall
-                        for (int i = 0; i < l; i++) {
-                            int r = mListOverall.get(i).getRating();
-                            if (rating >= r) {
-                                mListOverall.add(emptyItem);
-                                for (int j = mListOverall.size() - 1; j > i; j--)
-                                    mListOverall.set(j, mListOverall.get(j - 1));
-                                mListOverall.set(i, dataItemOverall);
-                                break;
-                            }
-                            //pushing at the end
-                            else if (i == l - 1)
-                                mListOverall.add(dataItemOverall);
-                        }
-
-                        //loop to push in between and next one further away for follower
-                        for (int i = 0; i < l; i++) {
-                            int r = mListFollower.get(i).getRating();
-                            if (rating >= r) {
-                                mListFollower.add(emptyItem);
-                                for (int j = mListFollower.size() - 1; j > i; j--)
-                                    mListFollower.set(j, mListFollower.get(j - 1));
-                                mListFollower.set(i, dataItemFollower);
-                                break;
-                            }
-                            //pushing at the end
-                            else if (i == l - 1)
-                                mListFollower.add(dataItemFollower);
-                        }
-                    }
-
-
-                    //removing extra nodes
-                    if (mListOverall.size() == 101 || mListFollower.size() == 101) {
-                        mListOverall.remove(100);
-                        mListFollower.remove(100);
-
-                    }
-                }
-
-                for (int i = 0; i < mListOverall.size(); i++) {
-//                    myRef.child("top_users").child("overall").child(String.valueOf(i + 1)).setValue(mListOverall.get(i));
-//                    myRef.child("top_users").child("follower").child(String.valueOf(i + 1)).setValue(mListFollower.get(i));
-                    myRef.child("top_users").child("overall").child(String.valueOf(i + 1)).child(mContext.getString(R.string.field_user_id)).setValue(mListOverall.get(i).getUser_id());
-                    myRef.child("top_users").child("overall").child(String.valueOf(i + 1)).child(mContext.getString(R.string.field_domain)).setValue(mListOverall.get(i).getDomain());
-                    myRef.child("top_users").child("follower").child(String.valueOf(i + 1)).child(mContext.getString(R.string.field_user_id)).setValue(mListFollower.get(i).getUser_id());
-                    myRef.child("top_users").child("follower").child(String.valueOf(i + 1)).child(mContext.getString(R.string.field_domain)).setValue(mListFollower.get(i).getDomain());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
+//    public void updateTopUsers() {
+//        ArrayList<TopUsers> mListOverall = new ArrayList<>();
+//        ArrayList<TopUsers> mListFollower = new ArrayList<>();
+//        mListOverall.clear();
+//        mListFollower.clear();
+//
+//        Log.d(TAG, "updateTopUsers" + mContext);
+//        Query query = myRef.child(mContext.getString(R.string.dbname_leaderboard));
+//        query.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
+//
+//                    //getting user ids, username and profile photos
+//                    String user_id = singleSnapshot.getKey();
+//                    String domain = (String) singleSnapshot.child(mContext.getString(R.string.field_domain)).getValue();
+//                    int followers = (int) (long) singleSnapshot.child(mContext.getString(R.string.field_followers)).getValue();
+//                    int rating = (int) (long) singleSnapshot.child(mContext.getString(R.string.field_all_time)).child(mContext.getString(R.string.field_post)).getValue()
+//                            + (int) (long) singleSnapshot.child(mContext.getString(R.string.field_all_time)).child(mContext.getString(R.string.field_followers)).getValue()
+//                            + (int) (long) singleSnapshot.child(mContext.getString(R.string.field_all_time)).child(mContext.getString(R.string.field_contest)).getValue();
+//
+//                    TopUsers emptyItem = new TopUsers("", 0, "");
+//                    TopUsers dataItemOverall = new TopUsers(user_id, rating, domain);
+//                    TopUsers dataItemFollower = new TopUsers(user_id, followers, domain);
+//
+//
+//                    if (mListOverall.size() == 0 || mListFollower.size() == 0) {
+//                        mListOverall.add(dataItemOverall);
+//                        mListFollower.add(dataItemFollower);
+//                    } else {
+//                        int l = mListOverall.size();
+//
+//                        //loop to push in between and next one further away for overall
+//                        for (int i = 0; i < l; i++) {
+//                            int r = mListOverall.get(i).getRating();
+//                            if (rating >= r) {
+//                                mListOverall.add(emptyItem);
+//                                for (int j = mListOverall.size() - 1; j > i; j--)
+//                                    mListOverall.set(j, mListOverall.get(j - 1));
+//                                mListOverall.set(i, dataItemOverall);
+//                                break;
+//                            }
+//                            //pushing at the end
+//                            else if (i == l - 1)
+//                                mListOverall.add(dataItemOverall);
+//                        }
+//
+//                        //loop to push in between and next one further away for follower
+//                        for (int i = 0; i < l; i++) {
+//                            int r = mListFollower.get(i).getRating();
+//                            if (rating >= r) {
+//                                mListFollower.add(emptyItem);
+//                                for (int j = mListFollower.size() - 1; j > i; j--)
+//                                    mListFollower.set(j, mListFollower.get(j - 1));
+//                                mListFollower.set(i, dataItemFollower);
+//                                break;
+//                            }
+//                            //pushing at the end
+//                            else if (i == l - 1)
+//                                mListFollower.add(dataItemFollower);
+//                        }
+//                    }
+//
+//
+//                    //removing extra nodes
+//                    if (mListOverall.size() == 101 || mListFollower.size() == 101) {
+//                        mListOverall.remove(100);
+//                        mListFollower.remove(100);
+//
+//                    }
+//                }
+//
+//                for (int i = 0; i < mListOverall.size(); i++) {
+////                    myRef.child("top_users").child("overall").child(String.valueOf(i + 1)).setValue(mListOverall.get(i));
+////                    myRef.child("top_users").child("follower").child(String.valueOf(i + 1)).setValue(mListFollower.get(i));
+//                    myRef.child("top_users").child("overall").child(String.valueOf(i + 1)).child(mContext.getString(R.string.field_user_id)).setValue(mListOverall.get(i).getUser_id());
+//                    myRef.child("top_users").child("overall").child(String.valueOf(i + 1)).child(mContext.getString(R.string.field_domain)).setValue(mListOverall.get(i).getDomain());
+//                    myRef.child("top_users").child("follower").child(String.valueOf(i + 1)).child(mContext.getString(R.string.field_user_id)).setValue(mListFollower.get(i).getUser_id());
+//                    myRef.child("top_users").child("follower").child(String.valueOf(i + 1)).child(mContext.getString(R.string.field_domain)).setValue(mListFollower.get(i).getDomain());
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//    }
 
 }
 

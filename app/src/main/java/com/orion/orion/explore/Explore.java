@@ -1,5 +1,6 @@
 package com.orion.orion.explore;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -23,31 +24,49 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.api.LogDescriptor;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Adapters.AdapterGridImageExplore;
 import com.orion.orion.Adapters.UserListAdapter;
 import com.orion.orion.R;
 import com.orion.orion.dialogs.BottomSheetDomain;
+import com.orion.orion.leaderboard.LeaderboardActivity;
 import com.orion.orion.models.Photo;
+import com.orion.orion.models.TopUsers;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
 import com.orion.orion.util.BottomNaavigationViewHelper;
+import com.orion.orion.util.FirebaseMethods;
+import com.orion.orion.util.SNTPClient;
 import com.orion.orion.util.UniversalImageLoader;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Explore extends AppCompatActivity implements BottomSheetDomain.BottomSheetListener {
     private static final String TAG = "notification";
     private static final int ACTIVITY_NUM = 1;
+    private Context mContext;
     String spin;
     Boolean nearby = true, overall = true, follower = true, load = true, overallR = true, followerR = true;
     users user1 = new users();
@@ -84,6 +103,10 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     private UserListAdapter mAdapter;
 
     private CircleImageView star1, star2, star3, star4, star5, star6, star7, star8;
+
+    private DatabaseReference reference;
+    FirebaseMethods firebaseMethods;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
     @Override
@@ -179,10 +202,352 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
 
         Log.d(TAG, "onCreate: started.");
         setupBottomNavigationView();
+        newStuff();
         hideSoftKeyboard();
         initTextListener();
         getNearbyUsers();
         getTop8();
+    }
+
+    private void newStuff() {
+        reference = FirebaseDatabase.getInstance().getReference();
+        mContext = Explore.this;
+        firebaseMethods = new FirebaseMethods(mContext);
+        SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
+            @Override
+            public void onTimeReceived(String currentTimeStamp) {
+
+                Query query = reference.child("db_topUsersParams");
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.child("last_updated_topUsers").getValue() == null) createDomainDocument();
+                        else {
+                            Log.d(TAG, "createDomainDocument: started");
+                            String previousTimeStamp = (String) snapshot.child("last_updated_topUsers").getValue();
+                            //initializing formatting for current date
+                            int currentYear = Integer.parseInt(currentTimeStamp.substring(0, 4));
+                            int currentMonth = Integer.parseInt(currentTimeStamp.substring(5, 7));
+                            int currentDate = Integer.parseInt(currentTimeStamp.substring(8, 10));
+                            String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
+                            String currentDateFormat = currentDate + "/" + currentMonth + "/" + currentYear;
+                            Date date = new Date(currentDateFormat);
+                            int currentDay = date.getDay();
+
+                            int postedYear = Integer.parseInt(previousTimeStamp.substring(0, 4));
+                            int postedMonth = Integer.parseInt(previousTimeStamp.substring(5, 7));
+                            int postedDate = Integer.parseInt(previousTimeStamp.substring(8, 10));
+                            String postedTime = previousTimeStamp.substring(12, previousTimeStamp.length() - 1);
+                            String postedDateFormat = postedDate + "/" + postedMonth + "/" + postedYear;
+
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
+                            long elapsedDays = 0;
+                            try {
+                                Date date1 = simpleDateFormat.parse(postedDateFormat);
+                                Date date2 = simpleDateFormat.parse(currentDateFormat);
+                                Log.d(TAG, "onTimeReceived: " + date1);
+                                Log.d(TAG, "onTimeReceived: " + date2);
+                                assert date1 != null;
+                                assert date2 != null;
+                                elapsedDays = (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24);
+                                Log.d(TAG, "onDataChange: elapsedDays" + elapsedDays);
+                                Log.d(TAG, "onDataChange: currentDay" + currentDay);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            //the week has changed
+                            if (elapsedDays > currentDay)
+                                createDomainDocument();
+                            else {
+                                ArrayList<String> fields = new ArrayList<>();
+                                fields.add("Photography");
+                                fields.add("Film Maker");
+                                fields.add("Musician");
+                                fields.add("Sketch Artist");
+                                fields.add("Writer");
+                                fields.add("Others");
+                                for (String field : fields) {
+                                    String valuesUpdated= (String) snapshot.child(field).getValue();
+                                    if(valuesUpdated==null){
+                                        completedDomainDocument(field,0);
+                                    }
+                                    else{
+                                        int completedValues= Integer.parseInt(valuesUpdated.substring(0,valuesUpdated.indexOf("/")));
+                                        int totalValues= Integer.parseInt(valuesUpdated.substring(valuesUpdated.indexOf("/")+1));
+                                        if(completedValues<totalValues){
+                                            Log.d(TAG, "onDataChange: completedValues"+completedValues);
+                                            Log.d(TAG, "onDataChange: totalValues"+totalValues);
+                                            completedDomainDocument(field,completedValues);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        reference.child("db_topUsersParams").child("last_updated_topUsers").setValue(currentTimeStamp);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.d(TAG, "onCancelled: " + error.getMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onError(Exception ex) {
+                Log.e(SNTPClient.TAG, Objects.requireNonNull(ex.getMessage()));
+            }
+        });
+        String currentTimeStamp = firebaseMethods.getTimeStamp();
+        Log.d(TAG, "newStuff: " + currentTimeStamp);
+
+    }
+
+    private void createDomainDocument() {
+        Log.d(TAG, "createDomainDocument: started");
+        ArrayList<String> fields = new ArrayList<>();
+        fields.add("Photography");
+        fields.add("Film Maker");
+        fields.add("Musician");
+        fields.add("Sketch Artist");
+        fields.add("Writer");
+        fields.add("Others");
+        for (String field : fields) {
+
+            ArrayList<TopUsers> mListOverall = new ArrayList<>();
+            mListOverall.clear();
+
+            Query query = reference.child(getString(R.string.dbname_leaderboard));
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
+
+                        String domain = (String) singleSnapshot.child(getString(R.string.field_domain)).getValue();
+                        assert domain != null;
+                        assert field != null;
+                        if (domain.equals(field)) {
+                            int rating = (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_post)).getValue()
+                                    + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).getValue()
+                                    + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
+                            //getting user ids, username and profile photos
+                            String user_id = singleSnapshot.getKey();
+                            TopUsers emptyItem = new TopUsers();
+                            TopUsers dataItemOverall = new TopUsers(user_id, rating);
+                            if (mListOverall.size() == 0) {
+                                mListOverall.add(dataItemOverall);
+                            } else {
+                                int l = mListOverall.size();
+
+                                //loop to push in between and next one further away for overall
+                                for (int i = 0; i < l; i++) {
+                                    int r = mListOverall.get(i).getRating();
+                                    if (rating >= r) {
+                                        mListOverall.add(emptyItem);
+                                        for (int j = mListOverall.size() - 1; j > i; j--)
+                                            mListOverall.set(j, mListOverall.get(j - 1));
+                                        mListOverall.set(i, dataItemOverall);
+                                        break;
+                                    }
+                                    //pushing at the end
+                                    else if (i == l - 1)
+                                        mListOverall.add(dataItemOverall);
+                                }
+                                if (mListOverall.size() == 301) {
+                                    mListOverall.remove(300);
+                                }
+                            }
+                        }
+                    }
+                    Log.d(TAG, "onDataChange: stratingupdate");
+                    Map<String, Object> user = new HashMap<>();
+                    user.put("type", field);
+                    db.collection("Domain Collection").document(field + " Document").set(user);
+                    db.collection("Domain Collection").document(field + " Document").collection(field + " Collection").document(field + " Document 1").set(user);
+                    db.collection("Domain Collection").document(field + " Document").collection(field + " Collection").document(field + " Document 2").set(user);
+                    db.collection("Domain Collection").document(field + " Document").collection(field + " Collection").document(field + " Document 3").set(user);
+
+                    final int[] k = {0};
+                    for (int i = 0; i < 300; i++) {
+                        Log.d(TAG, "onDataChange: user"+field+user);
+                        int finalI = i;
+                        db.collection("Domain Collection")
+                                .document(field + " Document")
+                                .collection(field + " Collection")
+                                .document(field + " Document 1")
+                                .update("type",i);
+                        if (i < 100) {
+                            user.clear();
+                            user.put(String.valueOf(i + 1), "11");
+                            db.collection("Domain Collection")
+                                    .document(field + " Document")
+                                    .collection(field + " Collection")
+                                    .document(field + " Document 1")
+                                    .set(user,SetOptions.merge())
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d(TAG, "onDataChange: Success"+(finalI +1)+"/"+"300");
+                                        reference.child("db_topUsersParams").child(field).setValue((finalI +1)+"/"+"300");
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.d(TAG, "onDataChange: error"+e.getMessage());
+                                    });
+                        } else if (i < 200) {
+                            user.clear();
+                            user.put(String.valueOf(i + 1), "22");
+                            db.collection("Domain Collection")
+                                    .document(field + " Document")
+                                    .collection(field + " Collection")
+                                    .document(field + " Document 2")
+                                    .set(user,SetOptions.merge())
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d(TAG, "onDataChange: Success"+(finalI +1)+"/"+"300");
+                                        reference.child("db_topUsersParams").child(field).setValue((finalI +1)+"/"+"300");
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.d(TAG, "onDataChange: "+e.getMessage());
+
+                                    });
+                        } else {
+                            user.clear();
+                            user.put(String.valueOf(i + 1), "33");
+                            db.collection("Domain Collection")
+                                    .document(field + " Document")
+                                    .collection(field + " Collection")
+                                    .document(field + " Document 3")
+                                    .set(user,SetOptions.merge())
+                                    .addOnSuccessListener(aVoid -> {
+                                        Log.d(TAG, "onDataChange: Success"+(finalI +1)+"/"+"300");
+                                        reference.child("db_topUsersParams").child(field).setValue((finalI +1)+"/"+"300");
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.d(TAG, "onDataChange: "+e.getMessage());
+
+                                    });
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    }
+
+    private void completedDomainDocument(String field, int completedValues){
+        Log.d(TAG, "createDomainDocument: " + field);
+        Log.d(TAG, "createDomainDocument: " + completedValues);
+        ArrayList<TopUsers> mListOverall = new ArrayList<>();
+        mListOverall.clear();
+
+        Query query = reference.child(getString(R.string.dbname_leaderboard));
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
+
+                    String domain = (String) singleSnapshot.child(getString(R.string.field_domain)).getValue();
+                    assert domain != null;
+                    assert field != null;
+                    if (domain.equals(field)) {
+                        int rating = (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_post)).getValue()
+                                + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).getValue()
+                                + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
+                        //getting user ids, username and profile photos
+                        String user_id = singleSnapshot.getKey();
+                        TopUsers emptyItem = new TopUsers();
+                        TopUsers dataItemOverall = new TopUsers(user_id, rating);
+                        if (mListOverall.size() == 0) {
+                            mListOverall.add(dataItemOverall);
+                        } else {
+                            int l = mListOverall.size();
+
+                            //loop to push in between and next one further away for overall
+                            for (int i = completedValues; i < l; i++) {
+                                int r = mListOverall.get(i).getRating();
+                                if (rating >= r) {
+                                    mListOverall.add(emptyItem);
+                                    for (int j = mListOverall.size() - 1; j > i; j--)
+                                        mListOverall.set(j, mListOverall.get(j - 1));
+                                    mListOverall.set(i, dataItemOverall);
+                                    break;
+                                }
+                                //pushing at the end
+                                else if (i == l - 1)
+                                    mListOverall.add(dataItemOverall);
+                            }
+                            if (mListOverall.size() == 301) {
+                                mListOverall.remove(300);
+                            }
+                        }
+                    }
+                }
+
+                Map<String, Object> user = new HashMap<>();
+                user.put("type", field);
+                db.collection("Domain Collection").document(field + " Document").set(user);
+                db.collection("Domain Collection").document(field + " Document").collection(field + " Collection").document(field + " Document 1").set(user);
+                db.collection("Domain Collection").document(field + " Document").collection(field + " Collection").document(field + " Document 2").set(user);
+                db.collection("Domain Collection").document(field + " Document").collection(field + " Collection").document(field + " Document 3").set(user);
+
+                for (int i = completedValues; i < 300; i++) {
+                    Log.d(TAG, "createDomainDocument: user"+field+user);
+                    int finalI = i;
+                    if (i < 100) {
+                        user.clear();
+                        user.put(String.valueOf(i + 1), "1");
+                        db.collection("Domain Collection")
+                                .document(field + " Document")
+                                .collection(field + " Collection")
+                                .document(field + " Document 1")
+                                .update(user)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d(TAG, "onDataChange: Success"+(finalI +1)+"/"+"300");
+                                    reference.child("db_topUsersParams").child(field).setValue((finalI +1)+"/"+"300");
+                                })
+                                .addOnFailureListener(e -> Log.d(TAG, "onDataChange: "+e.getMessage()));
+                    } else if (i < 200) {
+                        user.clear();
+                        user.put(String.valueOf(i + 1), "2");
+                        db.collection("Domain Collection")
+                                .document(field + " Document")
+                                .collection(field + " Collection")
+                                .document(field + " Document 2")
+                                .update(user)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d(TAG, "createDomainDocument: Success");
+                                    reference.child("db_topUsersParams").child(field).setValue((finalI +1)+"/"+"300");
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.d(TAG, "createDomainDocument: "+e.getMessage());
+
+                                });
+                    } else {
+                        user.clear();
+                        user.put(String.valueOf(i + 1), "3");
+                        db.collection("Domain Collection")
+                                .document(field + " Document")
+                                .collection(field + " Collection")
+                                .document(field + " Document 3")
+                                .update(user)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d(TAG, "createDomainDocument: Success");
+                                    reference.child("db_topUsersParams").child(field).setValue((finalI +1)+"/"+"300");
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.d(TAG, "createDomainDocument: "+e.getMessage());
+                                });
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override

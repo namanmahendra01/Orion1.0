@@ -160,21 +160,20 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
             @Override
             public void onTimeReceived(String currentTimeStamp) {
 
-//                //initializing formatting for current date
+                //initializing formatting for current date
                 int currentYear = Integer.parseInt(currentTimeStamp.substring(0, 4));
                 int currentMonth = Integer.parseInt(currentTimeStamp.substring(5, 7));
                 int currentDate = Integer.parseInt(currentTimeStamp.substring(8, 10));
-//                            String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
-                String currentDateFormat = currentYear + "/" + currentMonth + "/" + currentDate;
+                String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
+                String currentDateFormat = currentDate + "/" + currentMonth + "/" + currentYear;
                 Date date = new Date(currentDateFormat);
                 int currentDay = date.getDay();
 
-                Query query = reference.child(getString(R.string.dbname_leaderboard));
+                Query query = reference.child(getString(R.string.dbname_users));
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
 
                             //initializing variables for the updation
                             String user_id = singleSnapshot.getKey();
@@ -212,12 +211,6 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                 }
                             }
 
-                            //updating username and domain
-                            reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_username)).setValue(username);
-                            reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_domain)).setValue(domain);
-                            reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.profile_photo)).setValue(profilePhoto);
-                            reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_updated)).setValue(currentTimeStamp);
-
                             //for posts parameters of leaders according the photos
                             Query query1 = reference.child(getString(R.string.dbname_user_photos)).child(user_id);
                             query1.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -247,16 +240,19 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                         String postedTime = postedTimestamp.substring(12, postedTimestamp.length() - 1);
                                         String postedDateFormat = postedDate + "/" + postedMonth + "/" + postedYear;
 
-
                                         //calculating difference of dates in post and current one
                                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
                                         long elapsedDays = 0;
                                         try {
                                             Date date1 = simpleDateFormat.parse(postedDateFormat);
                                             Date date2 = simpleDateFormat.parse(currentDateFormat);
+                                            Log.d(TAG, "onTimeReceived: "+date1);
+                                            Log.d(TAG, "onTimeReceived: "+date2);
                                             assert date1 != null;
                                             assert date2 != null;
-                                            elapsedDays = (date2.getTime() - date1.getTime()) / (ANIMATION_DURATION * 60 * 60 * 24);
+                                            elapsedDays = (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24);
+                                            Log.d(TAG, "onDataChange: "+elapsedDays);
+                                            Log.d(TAG, "onDataChange: "+currentDay);
                                         } catch (ParseException e) {
                                             e.printStackTrace();
                                         }
@@ -344,10 +340,13 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                             try {
                                                 Date date1 = simpleDateFormat.parse(lastUpdatedDateFormat);
                                                 Date date2 = simpleDateFormat.parse(currentDateFormat);
+                                                Log.d(TAG, "onTimeReceived: "+date1);
+                                                Log.d(TAG, "onTimeReceived: "+date2);
                                                 assert date1 != null;
                                                 assert date2 != null;
-                                                elapsedDays = (date2.getTime() - date1.getTime()) / (ANIMATION_DURATION * 60 * 60 * 24);
-
+                                                elapsedDays = (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24);
+                                                Log.d(TAG, "onDataChange: "+elapsedDays);
+                                                Log.d(TAG, "onDataChange: "+currentDay);
                                             } catch (ParseException e) {
                                                 e.printStackTrace();
                                             }
@@ -361,7 +360,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                                 if (finalLastUpdatedMonth == 12 && currentMonth == 1) {
                                                     last_month = this_month;
                                                     //updating for transition days of different month different year of time span of more than 2 weeks
-                                                    if (elapsedDays < currentDay + 7) {
+                                                    if (elapsedDays > currentDay + 7) {
                                                         last_week = 0;
                                                         this_week = 0;
                                                     }
@@ -381,7 +380,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                                     if ((finalLastUpdatedMonth - currentMonth) == 1) {
                                                         last_month = this_month;
                                                         //updating for transition days of different month different year of time span of more than 2 weeks
-                                                        if (elapsedDays < currentDay + 7) {
+                                                        if (elapsedDays > currentDay + 7) {
                                                             last_week = 0;
                                                             this_week = 0;
                                                         }
@@ -491,10 +490,13 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                             try {
                                                 Date date1 = simpleDateFormat.parse(lastUpdatedDateFormat);
                                                 Date date2 = simpleDateFormat.parse(currentDateFormat);
+                                                Log.d(TAG, "onTimeReceived: "+date1);
+                                                Log.d(TAG, "onTimeReceived: "+date2);
                                                 assert date1 != null;
                                                 assert date2 != null;
                                                 elapsedDays = (date2.getTime() - date1.getTime()) / (ANIMATION_DURATION * 60 * 60 * 24);
-
+                                                Log.d(TAG, "onDataChange: "+elapsedDays);
+                                                Log.d(TAG, "onDataChange: "+currentDay);
                                             } catch (ParseException e) {
                                                 e.printStackTrace();
                                             }
@@ -508,7 +510,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                                 if (finalLastUpdatedMonth == 12 && currentMonth == 1) {
                                                     last_month = this_month;
                                                     //updating for transition days of different month different year of time span of more than 2 weeks
-                                                    if (elapsedDays < currentDay + 7) {
+                                                    if (elapsedDays > currentDay + 7) {
                                                         last_week = 0;
                                                         this_week = 0;
                                                     }
@@ -528,7 +530,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                                     if ((finalLastUpdatedMonth - currentMonth) == 1) {
                                                         last_month = this_month;
                                                         //updating for transition days of different month different year of time span of more than 2 weeks
-                                                        if (elapsedDays < currentDay + 7) {
+                                                        if (elapsedDays > currentDay + 7) {
                                                             last_week = 0;
                                                             this_week = 0;
                                                         }
@@ -544,7 +546,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                                     }
                                                 } else {
                                                     //updating for transition days of same month same year of time span of more than 2 weeks
-                                                    if (elapsedDays < currentDay + 7) {
+                                                    if (elapsedDays > currentDay + 7) {
                                                         last_week = 0;
                                                         this_week = 0;
                                                     }
@@ -603,6 +605,12 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                 }
                             });
 
+                            //updating username and domain
+                            reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_username)).setValue(username);
+                            reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_domain)).setValue(domain);
+                            reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.profile_photo)).setValue(profilePhoto);
+                            reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_updated)).setValue(currentTimeStamp);
+
                         }
                     }
 
@@ -630,7 +638,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         setupBottomNavigationView();
         initializeWidgets();
         updateLeaderboard();
-        firebaseMethods.updateTopUsers();
+//        firebaseMethods.updateTopUsers();
         sortedByTime.setOnClickListener(v -> {
             String[] timeList = {"All Time", "This Year", "Last Month", "This Month", "Last Week", "This Week"};
             BottomSheetFilter bottomSheet = new BottomSheetFilter(timeList);
