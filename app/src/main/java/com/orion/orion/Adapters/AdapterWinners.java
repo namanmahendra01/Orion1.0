@@ -63,6 +63,7 @@ public class AdapterWinners extends RecyclerView.Adapter<AdapterWinners.ViewHold
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
 
+        Log.d(TAG, "onBindViewHolder: asd11"+participantLists);
         ParticipantList mparticipantList = participantLists.get(i);
 
                  holder.rankNum.setText(String.valueOf(i+1));

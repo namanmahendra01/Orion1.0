@@ -1,6 +1,8 @@
 package com.orion.orion.contest.create;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,10 +25,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.orion.orion.Adapters.AdapterContestCreated;
 import com.orion.orion.R;
 import com.orion.orion.models.CreateForm;
+import com.orion.orion.models.Notification;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -41,7 +47,9 @@ public class fragment_createContest extends Fragment {
     private int mResults;
     private FirebaseAuth fAuth;
     private AdapterContestCreated contestCreated;
-
+    //    SP
+    Gson gson;
+    SharedPreferences sp;
     public fragment_createContest() {
     }
 
@@ -51,6 +59,13 @@ public class fragment_createContest extends Fragment {
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_fragment_create_contest, container, false);
         floatbtn = view.findViewById(R.id.float_btn);
+
+
+
+//          Initialize SharedPreference variables
+        sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        gson = new Gson();
+
         floatbtn.setOnClickListener(v -> {
             Intent i = new Intent(getActivity(), form.class);
             startActivity(i);
@@ -82,7 +97,7 @@ public class fragment_createContest extends Fragment {
 
 
         fAuth = FirebaseAuth.getInstance();
-        getContest();
+        getCreateListFromSP();
 
 
         return view;
@@ -90,7 +105,7 @@ public class fragment_createContest extends Fragment {
 
     private void getContest() {
 
-        FirebaseUser user = fAuth.getCurrentUser();
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(getString(R.string.dbname_contests))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -100,11 +115,19 @@ public class fragment_createContest extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         contestlist.clear();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
                             CreateForm createForm = snapshot.getValue(CreateForm.class);
 
                             contestlist.add(createForm);
                         }
                         Collections.reverse(contestlist);
+
+//                        Add newly Created ArrayList to Shared Preferences
+                        SharedPreferences.Editor editor = sp.edit();
+                        String json = gson.toJson(contestlist);
+                        editor.putString("createlist", json);
+                        editor.apply();
+
                         displaycontest();
 
                     }
@@ -114,6 +137,143 @@ public class fragment_createContest extends Fragment {
 
                     }
                 });
+    }
+    //  fetching FollowerList  from SharedPreferences
+    private void getCreateListFromSP() {
+        String json = sp.getString("createlist", null);
+
+        Type type = new TypeToken<ArrayList<CreateForm>>() {
+        }.getType();
+        contestlist = gson.fromJson(json, type);
+        if (contestlist == null) {    //        if no arrayList is present
+            contestlist = new ArrayList<>();
+
+            getContest();             //            make new Arraylist
+
+        } else {
+            checkCreateUpdate();       //         Check if new contest is there
+
+        }
+
+    }
+
+    private void checkCreateUpdate() {
+        DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
+
+        refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("Createdupdates")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            for (DataSnapshot snapshot1:snapshot.getChildren()){
+
+                                int x=0;
+                                for (CreateForm a:contestlist){
+
+
+                                    if (a.getContestkey().equals(snapshot1.getKey())){
+
+                                        contestlist.get(x).setStatus(snapshot1.getValue().toString());
+                                    }
+                                    x++;
+                                }
+
+                                //    Add newly Created ArrayList to Shared Preferences
+                                SharedPreferences.Editor editor = sp.edit();
+                                String json = gson.toJson(contestlist);
+                                editor.putString("createlist", json);
+                                editor.apply();
+
+                                refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child("Createdupdates")
+                                        .removeValue();
+
+                                checkNewContesUpdate();
+
+
+                            }
+                        }else {
+                            checkNewContesUpdate();
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
+
+
+
+    }
+
+    private void checkNewContesUpdate() {
+        DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
+
+        refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(getString(R.string.field_created_contest))
+                .orderByKey()
+                .limitToLast(1)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot snapshot1:snapshot.getChildren()){
+                            if (contestlist.get(0).getContestkey().equals(snapshot1.getKey())){
+
+                                displaycontest();
+                            }else{
+
+                                updateCreateList();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    private void updateCreateList() {
+
+        Collections.reverse(contestlist);
+        DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
+        refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+
+                .child(getString(R.string.field_created_contest))
+                .orderByKey()
+                .startAt(contestlist.get(contestlist.size()-1).getContestkey())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot snapshot1:snapshot.getChildren()){
+                            CreateForm createForm = snapshot1.getValue(CreateForm.class);
+
+                            contestlist.add(createForm);
+                        }
+                        Collections.reverse(contestlist);
+
+                        //    Add newly Created ArrayList to Shared Preferences
+                        SharedPreferences.Editor editor = sp.edit();
+                        String json = gson.toJson(contestlist);
+                        editor.putString("createlist", json);
+                        editor.apply();
+
+                        displaycontest();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
     }
 
     private void displaycontest() {

@@ -136,27 +136,29 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    holder.photo = snapshot.getValue(Photo.class);
-                                    ArrayList<Comment> comments = new ArrayList<>();
+                                    if (snapshot.exists()) {
+                                        holder.photo = snapshot.getValue(Photo.class);
+                                        ArrayList<Comment> comments = new ArrayList<>();
 
-                                    for (DataSnapshot dSnapshot : snapshot.child("comment").getChildren()) {
-                                        Comment comment = new Comment();
-                                        comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                        comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                        comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                                        comments.add(comment);
+                                        for (DataSnapshot dSnapshot : snapshot.child("comment").getChildren()) {
+                                            Comment comment = new Comment();
+                                            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                                            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                                            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                            comments.add(comment);
+
+
+                                        }
+
+
+                                        Intent i = new Intent(context, ViewPostActivity.class);
+                                        i.putExtra("photo", holder.photo);
+                                        i.putParcelableArrayListExtra("comments", comments);
+
+                                        context.startActivity(i);
 
 
                                     }
-
-
-                                    Intent i = new Intent(context, ViewPostActivity.class);
-                                    i.putExtra("photo", holder.photo);
-                                    i.putParcelableArrayListExtra("comments", comments);
-
-                                    context.startActivity(i);
-
-
                                 }
 
                                 @Override
@@ -191,7 +193,7 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
                         String json = gson.toJson(mNotification);
                         editor.putString("nl", json);
                         editor.apply();
-
+                        AdapterNotification2.this.notifyDataSetChanged();
 
                         DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference("users");
                         ref1.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Notifications").child(timestamp)
@@ -324,16 +326,19 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                try {
-                    String img = dataSnapshot.getValue().toString();
-                    UniversalImageLoader.setImage(img, imageView, null, "");
+                if(dataSnapshot.exists()) {
+                    try {
+                        String img = dataSnapshot.getValue().toString();
+                        UniversalImageLoader.setImage(img, imageView, null, "");
 
-                } catch (NullPointerException e) {
-                    Log.d(TAG, "onDataChange: " + e.getMessage());
+                    } catch (NullPointerException e) {
+                        Log.d(TAG, "onDataChange: " + e.getMessage());
+
+                    }
+
+                }else{
 
                 }
-
-
             }
 
             @Override

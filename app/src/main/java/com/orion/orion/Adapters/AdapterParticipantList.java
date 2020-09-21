@@ -33,6 +33,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
 import com.orion.orion.R;
 import com.orion.orion.contest.Contest_Evaluation.activity_view_media;
 import com.orion.orion.contest.Contest_Evaluation.contest_evaluation_activity;
@@ -56,10 +57,12 @@ import static com.android.volley.VolleyLog.TAG;
 
 public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticipantList.ViewHolder> {
     private String mAppend = "";
-
+    //    SP
+    Gson gson;
+    SharedPreferences sp;
     private Context mContext;
     private List<ParticipantList> participantLists;
-    String name1="",profilelink="",username1="",idLink="",mediaLink="",comment="",college1="";
+    String name1 = "", profilelink = "", username1 = "", idLink = "", mediaLink = "", comment = "", college1 = "";
 
     public AdapterParticipantList(Context mContext, List<ParticipantList> participantLists) {
         this.mContext = mContext;
@@ -70,7 +73,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view= LayoutInflater.from(mContext).inflate(R.layout.contest_participant_item,parent,false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.contest_participant_item, parent, false);
         return new AdapterParticipantList.ViewHolder(view);
 
     }
@@ -78,10 +81,13 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
 
-        ParticipantList mparticipantLists= participantLists.get(i);
+        ParticipantList mparticipantLists = participantLists.get(i);
+//          Initialize SharedPreference variables
+        sp = mContext.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        gson = new Gson();
 
         String timeStamp = mparticipantLists.getTimestamp();
-        Log.d(TAG, "onBindViewHolder: "+mparticipantLists.getTimestamp());
+        Log.d(TAG, "onBindViewHolder: " + mparticipantLists.getTimestamp());
 
 //        convert time stamp to date and time
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
@@ -91,31 +97,31 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
         holder.time.setText(dateTime);
 
 
-        getparticipantDetails(mparticipantLists.getUserid(),holder.username,holder.displayname,holder.profile,null,null,null);
+        getparticipantDetails(mparticipantLists.getUserid(), holder.username, holder.displayname, holder.profile, null, null, null);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                BottomSheetDialog bottomSheetDialog =new BottomSheetDialog(mContext,R.style.BottomSheetDialogTheme);
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mContext, R.style.BottomSheetDialogTheme);
 
-                View bottomSheetView =((FragmentActivity)mContext).getLayoutInflater()
-                        .inflate(R.layout.layout_bottom_sheet,(LinearLayout)bottomSheetDialog.findViewById(R.id.layout_bottom_sheet_container));
-                TextView name =bottomSheetView.findViewById(R.id.displaynameBs);
-                TextView remove =bottomSheetView.findViewById(R.id.remove);
+                View bottomSheetView = ((FragmentActivity) mContext).getLayoutInflater()
+                        .inflate(R.layout.layout_bottom_sheet, (LinearLayout) bottomSheetDialog.findViewById(R.id.layout_bottom_sheet_container));
+                TextView name = bottomSheetView.findViewById(R.id.displaynameBs);
+                TextView remove = bottomSheetView.findViewById(R.id.remove);
 
-                TextView username =bottomSheetView.findViewById(R.id.usernameBs);
-                TextView college =bottomSheetView.findViewById(R.id.collegeBs);
-                TextView idcard =bottomSheetView.findViewById(R.id.idBs);
-                TextView submission =bottomSheetView.findViewById(R.id.submissionBs);
-                LinearLayout layout =bottomSheetView.findViewById(R.id.collegeLinear);
-                CircleImageView profileview=bottomSheetView.findViewById(R.id.profileBs);
+                TextView username = bottomSheetView.findViewById(R.id.usernameBs);
+                TextView college = bottomSheetView.findViewById(R.id.collegeBs);
+                TextView idcard = bottomSheetView.findViewById(R.id.idBs);
+                TextView submission = bottomSheetView.findViewById(R.id.submissionBs);
+                LinearLayout layout = bottomSheetView.findViewById(R.id.collegeLinear);
+                CircleImageView profileview = bottomSheetView.findViewById(R.id.profileBs);
 
-                getparticipantDetails(mparticipantLists.getUserid(),holder.username,holder.displayname,holder.profile,name,username,profileview);
+                getparticipantDetails(mparticipantLists.getUserid(), holder.username, holder.displayname, holder.profile, name, username, profileview);
                 name.setText(name1);
                 username.setText(username1);
-                UniversalImageLoader.setImage(profilelink,profileview,null,mAppend);
-                getparticipantform(mparticipantLists.getUserid(),mparticipantLists.getJoiningKey(),mparticipantLists.getContestkey(),college,layout);
+                UniversalImageLoader.setImage(profilelink, profileview, null, mAppend);
+                getparticipantform(mparticipantLists.getUserid(), mparticipantLists.getJoiningKey(), mparticipantLists.getContestkey(), college, layout);
 
                 remove.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -137,11 +143,19 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                         .child(mparticipantLists.getJoiningKey())
                                         .child("status")
                                         .setValue("Rejected");
+
+                                db.child(mContext.getString(R.string.dbname_contests))
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child("Joinedupdates")
+                                        .child(mparticipantLists.getJoiningKey())
+                                        .setValue("Rejected");
+
                                 db.child(mContext.getString(R.string.dbname_contestlist))
                                         .child(mparticipantLists.getContestkey())
                                         .child("participantlist")
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .removeValue();
+
 
                                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                                 ref
@@ -167,8 +181,18 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                                                 .child(mparticipantLists.getJoiningKey())
                                                                 .removeValue();
 
-                                                        dialog.dismiss();
 
+                                                        //    Add newly Created ArrayList to Shared Preferences
+                                                        participantLists.remove(participantLists.get(i));
+                                                        SharedPreferences.Editor editor = sp.edit();
+                                                        String json = gson.toJson(participantLists);
+                                                        editor.putString(mparticipantLists.getContestkey(), json);
+                                                        editor.apply();
+
+                                                        AdapterParticipantList.this.notifyDataSetChanged();
+
+
+                                                        dialog.dismiss();
 
 
                                                     }
@@ -182,14 +206,12 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                             }
 
 
-
                                             @Override
                                             public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                             }
 
                                         });
-
 
 
                             }
@@ -244,8 +266,8 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
-                        i.putExtra("imageLink",mparticipantLists.getMediaLink());
-                        i.putExtra("view","No");
+                        i.putExtra("imageLink", mparticipantLists.getMediaLink());
+                        i.putExtra("view", "No");
 
                         mContext.startActivity(i);
 
@@ -255,8 +277,8 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
-                        i.putExtra("imageLink",mparticipantLists.getIdLink());
-                        i.putExtra("view","No");
+                        i.putExtra("imageLink", mparticipantLists.getIdLink());
+                        i.putExtra("view", "No");
 
                         mContext.startActivity(i);
 
@@ -268,7 +290,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
             }
         });
 
-        DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
         Query userquery = ref
                 .child(mContext.getString(R.string.dbname_users))
@@ -294,11 +316,10 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
         });
 
 
-
     }
 
     private void getparticipantform(String userid, String joiningkey, String contestkey, TextView college, LinearLayout layout) {
-        DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child(mContext.getString(R.string.dbname_contests))
                 .child(userid)
                 .child(mContext.getString(R.string.joined_contest))
@@ -307,9 +328,9 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         JoinForm joinForm = dataSnapshot.getValue(JoinForm.class);
-                        college1=joinForm.getCollege();
-                        String hostid=joinForm.getHostId();
-                        DatabaseReference ref1 =FirebaseDatabase.getInstance().getReference();
+                        college1 = joinForm.getCollege();
+                        String hostid = joinForm.getHostId();
+                        DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference();
                         ref1.child(mContext.getString(R.string.dbname_contests))
                                 .child(hostid)
                                 .child(mContext.getString(R.string.created_contest))
@@ -318,9 +339,9 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         String openfor = dataSnapshot.child("openFor").getValue().toString();
-                                        if (openfor.equals("All")){
+                                        if (openfor.equals("All")) {
                                             layout.setVisibility(View.GONE);
-                                        }else{
+                                        } else {
                                             layout.setVisibility(View.VISIBLE);
                                             college.setText(college1);
                                         }
@@ -361,40 +382,40 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
             mReference = FirebaseDatabase.getInstance().getReference();
 
 
-            profile=(CircleImageView)itemView.findViewById(R.id.profilePartCv);
-            username=itemView.findViewById(R.id.username);
-            displayname=itemView.findViewById(R.id.displayname);
-            time=itemView.findViewById(R.id.timeStamp);
+            profile = (CircleImageView) itemView.findViewById(R.id.profilePartCv);
+            username = itemView.findViewById(R.id.username);
+            displayname = itemView.findViewById(R.id.displayname);
+            time = itemView.findViewById(R.id.timeStamp);
 
         }
     }
 
 
-    private void getparticipantDetails(String userid, TextView username, TextView displayname, CircleImageView profile,TextView name,TextView username2,CircleImageView profileview) {
-        DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+    private void getparticipantDetails(String userid, TextView username, TextView displayname, CircleImageView profile, TextView name, TextView username2, CircleImageView profileview) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child(mContext.getString(R.string.dbname_user_account_settings))
                 .child(userid)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        users user =dataSnapshot.getValue(users.class);
-                        Log.d(TAG, "onDataChange: "+ user.getDisplay_name());
-                        name1=user.getDisplay_name();
-                        username1=user.getUsername();
-                        profilelink=user.getProfile_photo();
+                        users user = dataSnapshot.getValue(users.class);
+                        Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                        name1 = user.getDisplay_name();
+                        username1 = user.getUsername();
+                        profilelink = user.getProfile_photo();
                         try {
                             name.setText(name1);
                             username2.setText(username1);
-                            UniversalImageLoader.setImage(profilelink,profileview,null,mAppend);
+                            UniversalImageLoader.setImage(profilelink, profileview, null, mAppend);
 
-                        }catch (NullPointerException e){
-                            Log.e(TAG, "onDataChange: "+e.getMessage() );
+                        } catch (NullPointerException e) {
+                            Log.e(TAG, "onDataChange: " + e.getMessage());
 
                         }
 
                         username.setText(user.getUsername());
                         displayname.setText(user.getDisplay_name());
-                        UniversalImageLoader.setImage(profilelink,profile,null,mAppend);
+                        UniversalImageLoader.setImage(profilelink, profile, null, mAppend);
 
 
                     }
@@ -407,6 +428,6 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
     }
 
 
-    }
+}
 
 

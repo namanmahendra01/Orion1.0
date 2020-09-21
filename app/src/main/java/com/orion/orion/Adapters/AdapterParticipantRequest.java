@@ -197,6 +197,11 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                 DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                                 db.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child("Joinedupdates")
+                                        .child(mparticipantLists.getJoiningKey())
+                                        .setValue("Rejected");
+                                db.child(mContext.getString(R.string.dbname_contests))
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.joined_contest))
                                         .child(mparticipantLists.getJoiningKey())
                                         .child("status")
@@ -259,6 +264,13 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                         .child(mparticipantLists.getJoiningKey())
                                         .child("status")
                                         .setValue("Accepted");
+
+                                db.child(mContext.getString(R.string.dbname_contests))
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child("Joinedupdates")
+                                        .child(mparticipantLists.getJoiningKey())
+                                        .setValue("Accepted");
+
                                 db.child(mContext.getString(R.string.dbname_contestlist))
                                         .child(mparticipantLists.getContestkey())
                                         .child("participantlist")
