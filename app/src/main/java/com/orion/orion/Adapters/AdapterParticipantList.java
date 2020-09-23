@@ -134,6 +134,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                         builder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                Log.d(TAG, "onClick: mnb 1");
 
                                 DatabaseReference db = FirebaseDatabase.getInstance().getReference();
 
@@ -154,67 +155,54 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                         .child(mparticipantLists.getContestkey())
                                         .child("participantlist")
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .removeValue();
-
-
-                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                                ref
-                                        .child(mContext.getString(R.string.dbname_participantList))
-                                        .child(mparticipantLists.getContestkey())
-                                        .child(mparticipantLists.getJoiningKey())
-                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        .removeValue()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                ParticipantList participantList = dataSnapshot.getValue(ParticipantList.class);
-
+                                            public void onSuccess(Void aVoid) {
                                                 StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMediaLink());
-                                                photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                photoRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
-                                                    public void onSuccess(Void aVoid) {
-
-                                                        Log.d(TAG, "onSuccess: deleted file");
+                                                    public void onComplete(@NonNull Task<Void> task) {
 
                                                         DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
                                                         ref2
                                                                 .child(mContext.getString(R.string.dbname_participantList))
                                                                 .child(mparticipantLists.getContestkey())
                                                                 .child(mparticipantLists.getJoiningKey())
-                                                                .removeValue();
+                                                                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+
+                                                                //    Add newly Created ArrayList to Shared Preferences
+                                                                participantLists.remove(participantLists.get(i));
+                                                                SharedPreferences.Editor editor = sp.edit();
+                                                                String json = gson.toJson(participantLists);
+                                                                editor.putString(mparticipantLists.getContestkey(), json);
+                                                                editor.apply();
 
 
-                                                        //    Add newly Created ArrayList to Shared Preferences
-                                                        participantLists.remove(participantLists.get(i));
-                                                        SharedPreferences.Editor editor = sp.edit();
-                                                        String json = gson.toJson(participantLists);
-                                                        editor.putString(mparticipantLists.getContestkey(), json);
-                                                        editor.apply();
-
-                                                        AdapterParticipantList.this.notifyDataSetChanged();
+                                                                AdapterParticipantList.this.notifyDataSetChanged();
 
 
-                                                        dialog.dismiss();
+                                                                dialog.dismiss();
+                                                            }
+                                                        });
 
-
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception exception) {
-                                                        // Uh-oh, an error occurred!
-                                                        Log.d(TAG, "onFailure: did not delete file");
                                                     }
                                                 });
-                                            }
 
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                             }
-
                                         });
 
 
-                            }
+                                            }
+
+
+
+
+
+
                         });
                         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override

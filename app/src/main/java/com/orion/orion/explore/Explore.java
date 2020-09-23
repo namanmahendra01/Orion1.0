@@ -2,6 +2,7 @@ package com.orion.orion.explore;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,9 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.api.LogDescriptor;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,14 +32,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Adapters.AdapterGridImageExplore;
 import com.orion.orion.Adapters.UserListAdapter;
 import com.orion.orion.R;
 import com.orion.orion.dialogs.BottomSheetDomain;
-import com.orion.orion.leaderboard.LeaderboardActivity;
+import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.Photo;
 import com.orion.orion.models.TopUsers;
 import com.orion.orion.models.users;
@@ -51,6 +52,7 @@ import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.SNTPClient;
 import com.orion.orion.util.UniversalImageLoader;
 
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -98,7 +100,9 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     private ArrayList<String> usersList10;
     private ArrayList<Photo> photos;
     private ArrayList<Photo> paginatedphotos;
-
+    //    SP
+    Gson gson;
+    SharedPreferences sp,sp1;
     private List<users> mUserList;
     private UserListAdapter mAdapter;
 
@@ -127,6 +131,11 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         star8 = findViewById(R.id.circleImageView8);
         progressBar = findViewById(R.id.progress_circular);
 
+//          Initialize SharedPreference variables
+        sp = getSharedPreferences("naman", Context.MODE_PRIVATE);
+        sp1 = getSharedPreferences("naman2", Context.MODE_PRIVATE);
+
+        gson = new Gson();
         spinner = findViewById(R.id.spinnerDo);
         usersList10 = new ArrayList<>();
 
@@ -198,15 +207,36 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 }
             }
         });
+        check();
 
 
         Log.d(TAG, "onCreate: started.");
         setupBottomNavigationView();
-        newStuff();
-        hideSoftKeyboard();
-        initTextListener();
-        getNearbyUsers();
-        getTop8();
+//        newStuff();
+//        hideSoftKeyboard();
+//        initTextListener();
+//        getNearbyUsers();
+//        getTop8();
+    }
+
+    private void check() {
+//        //    Add newly Created ArrayList to Shared Preferences
+//        SharedPreferences.Editor editor = sp.edit();
+//        editor.putString("createlist", "2");
+//        editor.apply();
+//        //    Add newly Created ArrayList to Shared Preferences
+//         editor = sp1.edit();
+//        editor.putString("createlist", "3");
+//        editor.apply();
+
+        String json = sp.getString("createlist", "null");
+        String json1 = sp1.getString("createlist", "null");
+
+        Log.d(TAG, "check: wer"+json);
+        Log.d(TAG, "check: wer"+json1);
+
+
+
     }
 
     private void newStuff() {
@@ -362,10 +392,23 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                     Log.d(TAG, "onDataChange: stratingupdate");
                     Map<String, Object> user = new HashMap<>();
                     user.put("type", field);
-                    db.collection("Domain Collection").document(field + " Document").set(user);
-                    db.collection("Domain Collection").document(field + " Document").collection(field + " Collection").document(field + " Document 1").set(user);
-                    db.collection("Domain Collection").document(field + " Document").collection(field + " Collection").document(field + " Document 2").set(user);
-                    db.collection("Domain Collection").document(field + " Document").collection(field + " Collection").document(field + " Document 3").set(user);
+                    db.collection("Domain Collection")
+                            .document(field + " Document")
+                            .set(user);
+                    db.collection("Domain Collection")
+                            .document(field + " Document")
+                            .collection(field + " Collection")
+                            .document(field + " Document 1")
+                            .set(user);
+                    db.collection("Domain Collection")
+                            .document(field + " Document").collection(field + " Collection")
+                            .document(field + " Document 2")
+                            .set(user);
+                    db.collection("Domain Collection")
+                            .document(field + " Document")
+                            .collection(field + " Collection")
+                            .document(field + " Document 3")
+                            .set(user);
 
                     final int[] k = {0};
                     for (int i = 0; i < 300; i++) {
@@ -526,11 +569,11 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                     } else {
                         user.clear();
                         user.put(String.valueOf(i + 1), "3");
-                        db.collection("Domain Collection")
+                       DocumentReference ref= db.collection("Domain Collection")
                                 .document(field + " Document")
                                 .collection(field + " Collection")
-                                .document(field + " Document 3")
-                                .update(user)
+                                .document(field + " Document 3");
+                               ref .update(user)
                                 .addOnSuccessListener(aVoid -> {
                                     Log.d(TAG, "createDomainDocument: Success");
                                     reference.child("db_topUsersParams").child(field).setValue((finalI +1)+"/"+"300");

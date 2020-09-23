@@ -307,22 +307,18 @@ public class fragment_upcomingContest extends Fragment {
                                 contestlist.add(contestDetail);
                             }
 
-                            Log.d(TAG, "onDataChange: mnb" + entryfee);
                             if (!entryfee.equals("All")) {
                                 contestlist3.clear();
                                 for (int x = 0; x < contestlist.size(); x++) {
                                     ContestDetail contestDetail = contestlist.get(x);
-                                    Log.d(TAG, "onDataChange: asd" + contestDetail);
                                     if (entryfee.equals("Free")) {
                                         if (contestDetail.getEntryfee().equals(entryfee)) {
-                                            Log.d(TAG, "onDataChange: qwe" + contestDetail.getEntryfee());
 
                                             contestlist3.add(contestDetail);
                                         }
                                     }
                                     if (!entryfee.equals("Free"))
                                         if (!contestDetail.getEntryfee().equals("Free")) {
-                                            Log.d(TAG, "onDataChange: qwe" + contestDetail.getEntryfee());
                                             contestlist3.add(contestDetail);
                                         }
                                 }
@@ -331,7 +327,6 @@ public class fragment_upcomingContest extends Fragment {
                                 Collections.reverse(contestlist);
                                 displaycontest();
                             } else {
-                                Log.d(TAG, "onDataChange: njh" + contestlist.size());
                                 Collections.reverse(contestlist);
                                 displaycontest();
                             }
