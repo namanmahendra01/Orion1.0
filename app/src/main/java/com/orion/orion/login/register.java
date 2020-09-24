@@ -3,6 +3,7 @@ package com.orion.orion.login;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -26,6 +27,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -34,9 +40,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import com.orion.orion.R;
 import com.orion.orion.dialogs.BottomSheetDomain;
+import com.orion.orion.models.Leaderboard;
+import com.orion.orion.models.users;
 import com.orion.orion.util.FirebaseMethods;
+import com.orion.orion.util.SNTPClient;
+import com.orion.orion.util.StringManipilation;
+
+import java.util.TimeZone;
 
 public class register extends AppCompatActivity implements BottomSheetDomain.BottomSheetListener {
 
@@ -53,6 +66,7 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
     private EditText mPassword;
     private EditText mConfirmPassword;
     private TextView domainSelection;
+    private String userID;
     private TextView mPleasewait;
     private Button btnregister;
     private TextView linkLogin;
@@ -69,6 +83,10 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
     private DatabaseReference myRef;
     private String append = "";
 
+    //    SP
+    Gson gson;
+    SharedPreferences sp;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +94,13 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_signup);
         Log.d(TAG, "onCreate: started.");
+
+
+
+//          Initialize SharedPreference variables
+        sp =getSharedPreferences("Login", Context.MODE_PRIVATE);
+        gson = new Gson();
+        String justRegistered=sp.getString("yes",null);
 
         mContext = register.this;
         firebaseMethods = new FirebaseMethods(mContext);
@@ -209,9 +234,9 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
                 if (checkValidity(password) || checkValidity(confirmPassword))
                     if (password.equals(confirmPassword)) {
                         mProgressBar.setVisibility(View.VISIBLE);
-                        firebaseMethods.RegisterNewEmail(email, password,mProgressBar,mEmail,mUsername,mPassword,mConfirmPassword,domainSelection);
-                    }
-                    else {
+                        checkifuserexist(username);
+//                        RegisterNewEmail(email, password,mProgressBar,mEmail,mUsername,mPassword,mConfirmPassword,domainSelection);
+                    } else {
                         YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mPassword);
                         YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mConfirmPassword);
                         mPassword.setText("");
@@ -250,18 +275,18 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
                 myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        checkifuserexist(username);
-                        Log.d(TAG, "onDataChange: " + "redirecting to login activity");
-                        Intent intent = new Intent(register.this, login.class);
-                        intent.putExtra("CameFromRegister",1);
-                        startActivity(intent);
+//                        checkifuserexist(username);
+//                        Log.d(TAG, "onDataChange: " + "redirecting to login activity");
+//                        Intent intent = new Intent(register.this, login.class);
+//                        intent.putExtra("CameFromRegister", 1);
+//                        startActivity(intent);
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                     }
                 });
-                finish();
+
             } else {
                 Log.d(TAG, "onAuthStateChanged:signed_out");
             }
@@ -274,18 +299,15 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren())
-                    if (singleSnapshot.exists())
-                        append = myRef.push().getKey().substring(3, 10);
+                if (!dataSnapshot.exists()) {
+                    RegisterNewEmail(email, password, mProgressBar, mEmail, mUsername, mPassword, mConfirmPassword, domainSelection);
 
-                String mUsername = "";
-                mUsername = username + append;
-                //setting up leaderboard for user
-                firebaseMethods.addNewUser(email, mUsername, domain);
+                } else {
+                    Toast.makeText(mContext, "please try different username", Toast.LENGTH_SHORT).show();
+                    register.this.mUsername.setError("username already exist");
+                    register.this.mProgressBar.setVisibility(View.GONE);
 
-                Log.d(TAG, "onDataChange: " + "userAdded");
-                Toast.makeText(mContext, "Signup successful.Sending verification email.", Toast.LENGTH_SHORT).show();
-//                mAuth.signOut();
+                }
             }
 
             @Override
@@ -293,6 +315,145 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
 
             }
         });
+    }
+
+    public void RegisterNewEmail(final String email, String password, ProgressBar mProgressBar, EditText mEmail, EditText mUsername, EditText mPassword, EditText mConfirmPassword, TextView domainSelection) {
+        assert password!=null;
+        assert  email!=null;
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            private static final int ANIMATION_DURATION = 1000;
+
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    userID = mAuth.getCurrentUser().getUid();
+                    addNewUser(email, username, domain);
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                    Toast.makeText(mContext, "New account cannot be created. Try using a different email id", Toast.LENGTH_SHORT).show();
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mPassword);
+                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mConfirmPassword);
+                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mEmail);
+                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mUsername);
+                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(domainSelection);
+                    domainSelection.setText("Select Your Domain");
+                    mEmail.setText("");
+                    mPassword.setText("");
+                    mUsername.setText("");
+                    mPassword.setText("");
+                    mConfirmPassword.setText("");
+                }
+                // ...
+            }
+        });
+    }
+
+    public void sendverification() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            user.sendEmailVerification().addOnCompleteListener(task -> {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(mContext, "Could not send Verification Mail", Toast.LENGTH_SHORT).show();
+                }else{
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("yes", "yes");
+                    editor.apply();
+
+                    Intent intent = new Intent(register.this, login.class);
+
+                    startActivity(intent);
+                    Toast.makeText(mContext, " Verification Mail sent.Please Verify!", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
+
+    public void addNewUser(String email, String username, String domain) {
+        users user = new users(userID, email,
+                StringManipilation.condenseUsername(username), "", "",
+                "", domain);
+        myRef.child(mContext.getString(R.string.dbname_users))
+                .child(userID)
+                .setValue(user)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                        Leaderboard leaderboard = new Leaderboard();
+                        leaderboard.setUsername(StringManipilation.condenseUsername(username));
+                        leaderboard.setDomain(domain);
+                        leaderboard.setProfile_photo("");
+                        myRef.child(mContext.getString(R.string.dbname_leaderboard))
+                                .child(userID)
+                                .setValue(leaderboard)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
+                                            @Override
+                                            public void onTimeReceived(String currentTimeStamp) {
+                                                leaderboard.setLast_updated(currentTimeStamp);
+                                                //domain parameter left
+                                                myRef.child(mContext.getString(R.string.dbname_leaderboard))
+                                                        .child(userID)
+                                                        .setValue(leaderboard)
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                sendverification();
+                                                            }
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
+
+                                                    }
+                                                });
+
+                                            }
+
+                                            @Override
+                                            public void onError(Exception ex) {
+                                                myRef.child(mContext.getString(R.string.dbname_leaderboard))
+                                                        .child(userID)
+                                                        .setValue(leaderboard)
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                sendverification();
+                                                            }
+                                                        }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
+
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
 
     @Override

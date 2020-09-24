@@ -3,6 +3,7 @@ package com.orion.orion.login;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -35,6 +36,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 import com.orion.orion.R;
 import com.orion.orion.home.MainActivity;
 
@@ -55,9 +57,13 @@ public class login extends AppCompatActivity {
     private Button btnLogin;
     private TextView linkSignup;
     private TextView forgotPassword;
-    private String cameFromSignup;
+    private String cameFromSignup="2";
     Intent intent;
+    String justRegistered;
 
+    //    SP
+    Gson gson;
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,10 +74,23 @@ public class login extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: started.");
 
-        intent=getIntent();
-        cameFromSignup=intent.getStringExtra("CameFromRegister");
+//          Initialize SharedPreference variables
+        sp =getSharedPreferences("Login", Context.MODE_PRIVATE);
+        gson = new Gson();
+         justRegistered=sp.getString("yes","");
+
+        Log.d(TAG, "onCreate: 333"+justRegistered);
+
         initializeWidgets();
         setupFirebaseAuth();
+        if (!justRegistered.equals("yes")) {
+            if (mAuth.getCurrentUser() != null) {
+                Intent intent = new Intent(login.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }
+
         init();
 
     }
@@ -145,8 +164,9 @@ public class login extends AppCompatActivity {
                             if (user.isEmailVerified()) {
 
                                 Log.d(TAG, "onComplete:email is verified.");
-                                DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-                                myRef.child(getString(R.string.dbname_users)).child(mAuth.getCurrentUser().getUid()).child("onlineStatus").setValue("online");
+                                SharedPreferences.Editor editor = sp.edit();
+                                editor.putString("yes", "no");
+                                editor.apply();
 
                                 Intent intent = new Intent(login.this, MainActivity.class);
                                 startActivity(intent);
@@ -233,13 +253,7 @@ public class login extends AppCompatActivity {
         });
 
         Log.d(TAG, "init: mAuth.getCurrentUser()" + mAuth.getCurrentUser());
-        if (cameFromSignup==null) {
-            if (mAuth.getCurrentUser() != null) {
-                Intent intent = new Intent(login.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        }
+
     }
 
     //    *********************FIREBASE***************************
