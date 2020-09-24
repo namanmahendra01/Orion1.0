@@ -3,7 +3,9 @@ package com.orion.orion.profile;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -28,6 +30,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -43,10 +46,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Adapters.AdapterGridImage;
 import com.orion.orion.R;
 import com.orion.orion.models.Comment;
+import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.Like;
 import com.orion.orion.models.Photo;
 import com.orion.orion.models.users;
@@ -58,6 +64,7 @@ import com.orion.orion.util.Permissions;
 import com.orion.orion.util.UniversalImageLoader;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -73,7 +80,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import static android.app.Activity.RESULT_OK;
 
 
-public class ProfileFragment extends Fragment {
+public class ProfileActivity extends AppCompatActivity {
 
     public static final int VERIFY_PERMISSION_REQUEST = 1;
     private static final String TAG = "ProfileFragment";
@@ -104,6 +111,10 @@ public class ProfileFragment extends Fragment {
     private TextView mDescription;
     private TextView mWebsite;
 
+    //    SP
+    Gson gson;
+    SharedPreferences sp;
+
     private BottomNavigationViewEx bottomNavigationView;
     private LinearLayout share_btn;
     private AdapterGridImage adapterGridImage;
@@ -114,50 +125,53 @@ public class ProfileFragment extends Fragment {
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
     ProgressDialog dialog;
-    public ProfileFragment() {
-    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
+
     @Override
-    public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_profile);
+        mProgressBar = findViewById(R.id.profileprogressbar);
+        dialog=ProgressDialog.show(this,"","Loading Profile...",true);
 
-        mProgressBar = view.findViewById(R.id.profileprogressbar);
-        dialog=ProgressDialog.show(getActivity(),"","Loading Profile...",true);
+        mProfilePhoto = (CircleImageView) findViewById(R.id.profile_photo);
+        mUsername = (TextView) findViewById(R.id.display_name);
+        mFollowers = (TextView) findViewById(R.id.follower);
+        mDomain = (TextView)findViewById(R.id.domain);
 
-        mProfilePhoto = (CircleImageView) view.findViewById(R.id.profile_photo);
-        mUsername = (TextView) view.findViewById(R.id.display_name);
-        mFollowers = (TextView) view.findViewById(R.id.follower);
-        mDomain = (TextView) view.findViewById(R.id.domain);
+        mCreated=(TextView) findViewById(R.id.created_contests);
+        mJoined=(TextView) findViewById(R.id.joined_contests);
+        mWon=(TextView) findViewById(R.id.contests_won);
 
-        mCreated=(TextView) view.findViewById(R.id.created_contests);
-        mJoined=(TextView) view.findViewById(R.id.joined_contests);
-        mWon=(TextView) view.findViewById(R.id.contests_won);
+        editProfile=(Button) findViewById(R.id.texteditprofile);
 
-        editProfile=(Button) view.findViewById(R.id.texteditprofile);
+        mDescription = (TextView) findViewById(R.id.description);
+        mWebsite = (TextView) findViewById(R.id.website);
+        menu=(ImageView) findViewById(R.id.menu);
 
-        mDescription = (TextView) view.findViewById(R.id.description);
-        mWebsite = (TextView) view.findViewById(R.id.website);
-        menu=(ImageView) view.findViewById(R.id.menu);
-
-        share_btn = (LinearLayout) view.findViewById(R.id.share_skill_btn);
-        gridRv = (RecyclerView) view.findViewById(R.id.gridRv);
+//          Initialize SharedPreference variables
+        sp =getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        gson = new Gson();
+        share_btn = (LinearLayout) findViewById(R.id.share_skill_btn);
+        gridRv = (RecyclerView) findViewById(R.id.gridRv);
         gridRv.setHasFixedSize(true);
-        GridLayoutManager linearLayoutManager = new GridLayoutManager(getContext(), 3);
+        GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 3);
         gridRv.setLayoutManager(linearLayoutManager);
         imgURLsList = new ArrayList<>();
-        adapterGridImage = new AdapterGridImage(getContext(), imgURLsList);
-        gridRv.setAdapter(adapterGridImage);
 
-        bottomNavigationView = (BottomNavigationViewEx) view.findViewById(R.id.BottomNavViewBar);
-        mFirebaseMethods = new FirebaseMethods(getActivity());
+
+        bottomNavigationView = (BottomNavigationViewEx) findViewById(R.id.BottomNavViewBar);
+        mFirebaseMethods = new FirebaseMethods(this);
 
 
         Log.d(TAG, "onCreateView:started");
         setupBottomNavigationView();
         setupFirebaseAuth();
-        SetupGridView();
+        fetchPhotosFromSp();
+//        SetupGridView();
         getFollowerCount();
         getCompDetails();
 
@@ -188,25 +202,69 @@ public class ProfileFragment extends Fragment {
         });
 
         menu.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), AccountSettingActivity.class);
+            Intent intent = new Intent(this, AccountSettingActivity.class);
             startActivity(intent);
-            getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         });
 
 
         editProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), AccountSettingActivity.class);
+            Intent intent = new Intent(this, AccountSettingActivity.class);
             intent.putExtra(getString(R.string.calling_activity), getString(R.string.profile_activity));
             startActivity(intent);
-            getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         });
-        return view;
+    }
+
+    private void fetchPhotosFromSp() {
+
+        String json = sp.getString("myMedia", null);
+
+        Type type = new TypeToken<ArrayList<Photo>>() {
+        }.getType();
+        imgURLsList = gson.fromJson(json, type);
+        if (imgURLsList == null) {    //        if no arrayList is present
+            imgURLsList = new ArrayList<>();
+
+            SetupGridView();             //            make new Arraylist
+
+        } else {
+            checkUpdate();       //         Check if new post is there
+
+        }
+    }
+
+    private void checkUpdate() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference
+                .child(getString(R.string.dbname_user_photos))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .limitToLast(1);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                    if (imgURLsList.get(0).getPhoto_id().equals(dataSnapshot.getKey())){
+
+                        adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
+                        gridRv.setAdapter(adapterGridImage);
+                    }else{
+                        SetupGridView();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
 
-
     public void verifyPermission(String[] permissions) {
-        ActivityCompat.requestPermissions(getActivity(), permissions, VERIFY_PERMISSION_REQUEST);
+        ActivityCompat.requestPermissions(this, permissions, VERIFY_PERMISSION_REQUEST);
     }
 
     public boolean checkPermissionArray(String[] permissions) {
@@ -221,7 +279,7 @@ public class ProfileFragment extends Fragment {
 
     public boolean checkPermissions(String permission) {
 
-        int permissionRequest = ActivityCompat.checkSelfPermission(getActivity(), permission);
+        int permissionRequest = ActivityCompat.checkSelfPermission(this, permission);
         return permissionRequest == PackageManager.PERMISSION_GRANTED;
     }
 
@@ -233,7 +291,7 @@ public class ProfileFragment extends Fragment {
             boolean isImageFromGoogleDrive = false;
             Uri uri = data.getData();
 
-            if (isKitKat && DocumentsContract.isDocumentUri(getActivity(), uri)) {
+            if (isKitKat && DocumentsContract.isDocumentUri(this, uri)) {
                 if ("com.android.externalstorage.documents".equals(uri.getAuthority())) {
                     String docId = DocumentsContract.getDocumentId(uri);
                     String[] split = docId.split(":");
@@ -241,7 +299,7 @@ public class ProfileFragment extends Fragment {
 
                     if ("primary".equalsIgnoreCase(type)) {
                         imgPath = Environment.getExternalStorageDirectory() + "/" + split[1];
-                        Intent intent = new Intent(getActivity(), NextActivity.class);
+                        Intent intent = new Intent(this, NextActivity.class);
                         intent.putExtra(getString(R.string.selected_image), imgPath);
                         startActivity(intent);
                     } else {
@@ -287,7 +345,7 @@ public class ProfileFragment extends Fragment {
                             File tempf = new File(s + "/" + split[1]);
                             if (tempf.exists()) {
                                 imgPath = s + "/" + split[1];
-                                Intent intent = new Intent(getActivity(), NextActivity.class);
+                                Intent intent = new Intent(this, NextActivity.class);
                                 intent.putExtra(getString(R.string.selected_image), imgPath);
                                 startActivity(intent);
                             }
@@ -301,7 +359,7 @@ public class ProfileFragment extends Fragment {
                     String column = "_data";
                     String[] projection = {column};
                     try {
-                        cursor = getActivity().getContentResolver().query(contentUri, projection, null, null,
+                        cursor = this.getContentResolver().query(contentUri, projection, null, null,
                                 null);
                         if (cursor != null && cursor.moveToFirst()) {
                             int column_index = cursor.getColumnIndexOrThrow(column);
@@ -333,11 +391,11 @@ public class ProfileFragment extends Fragment {
                     String[] projection = {column};
 
                     try {
-                        cursor = getActivity().getContentResolver().query(contentUri, projection, selection, selectionArgs, null);
+                        cursor =this.getContentResolver().query(contentUri, projection, selection, selectionArgs, null);
                         if (cursor != null && cursor.moveToFirst()) {
                             int column_index = cursor.getColumnIndexOrThrow(column);
                             imgPath = cursor.getString(column_index);
-                            Intent intent = new Intent(getActivity(), NextActivity.class);
+                            Intent intent = new Intent(this, NextActivity.class);
                             intent.putExtra(getString(R.string.selected_image), imgPath);
                             startActivity(intent);
                         }
@@ -347,7 +405,7 @@ public class ProfileFragment extends Fragment {
                     }
                 } else if ("com.google.android.apps.docs.storage".equals(uri.getAuthority())) {
                     isImageFromGoogleDrive = true;
-                    Intent intent = new Intent(getActivity(), NextActivity.class);
+                    Intent intent = new Intent(this, NextActivity.class);
                     intent.putExtra(getString(R.string.selected_image), imgPath);
                     startActivity(intent);
                 }
@@ -357,11 +415,11 @@ public class ProfileFragment extends Fragment {
                 String[] projection = {column};
 
                 try {
-                    cursor = getActivity().getContentResolver().query(uri, projection, null, null, null);
+                    cursor = this.getContentResolver().query(uri, projection, null, null, null);
                     if (cursor != null && cursor.moveToFirst()) {
                         int column_index = cursor.getColumnIndexOrThrow(column);
                         imgPath = cursor.getString(column_index);
-                        Intent intent = new Intent(getActivity(), NextActivity.class);
+                        Intent intent = new Intent(this, NextActivity.class);
                         intent.putExtra(getString(R.string.selected_image), imgPath);
                         startActivity(intent);
                     }
@@ -371,7 +429,7 @@ public class ProfileFragment extends Fragment {
                 }
             } else if ("file".equalsIgnoreCase(uri.getScheme())) {
                 imgPath = uri.getPath();
-                Intent intent = new Intent(getActivity(), NextActivity.class);
+                Intent intent = new Intent(this, NextActivity.class);
                 intent.putExtra(getString(R.string.selected_image), imgPath);
                 startActivity(intent);
             }
@@ -424,7 +482,6 @@ public class ProfileFragment extends Fragment {
 
     private void SetupGridView() {
         final ArrayList<Photo> photos = new ArrayList<>();
-
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference
@@ -479,9 +536,15 @@ public class ProfileFragment extends Fragment {
 
                 imgURLsList.addAll(photos);
                 Collections.reverse(imgURLsList);
-                Log.d(TAG, "onDataChange: size sdf"+imgURLsList.size());
-                gridRv.setAdapter(adapterGridImage);
-//
+
+                //    Add newly Created ArrayList to Shared Preferences
+                SharedPreferences.Editor editor = sp.edit();
+                String json = gson.toJson(imgURLsList);
+                editor.putString("myMedia", json);
+                editor.apply();
+
+                adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
+                gridRv.setAdapter(adapterGridImage);//
 
 
             }
@@ -513,7 +576,7 @@ public class ProfileFragment extends Fragment {
     private void setupBottomNavigationView() {
         Log.d(TAG, " setupBottomNavigationView:setting up BottomNavigationView");
         BottomNaavigationViewHelper.setupBottomNavigationView(bottomNavigationView);
-        BottomNaavigationViewHelper.enableNavigation(getActivity(), getActivity(), bottomNavigationView);
+        BottomNaavigationViewHelper.enableNavigation(this, this, bottomNavigationView);
         Menu menu = bottomNavigationView.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);

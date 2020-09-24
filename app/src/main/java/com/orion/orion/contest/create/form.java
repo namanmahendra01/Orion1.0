@@ -42,7 +42,6 @@ import androidx.core.app.ActivityCompat;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.google.api.LogDescriptor;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -66,7 +65,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import static com.orion.orion.profile.ProfileFragment.VERIFY_PERMISSION_REQUEST;
+import static com.orion.orion.profile.ProfileActivity.VERIFY_PERMISSION_REQUEST;
 
 
 public class form extends AppCompatActivity implements BottomSheetDomain.BottomSheetListener {

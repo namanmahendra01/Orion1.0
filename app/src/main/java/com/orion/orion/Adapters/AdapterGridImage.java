@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.Constraints;
@@ -20,13 +19,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.ViewPostActivity;
-import com.orion.orion.contest.ViewContestDetails;
-import com.orion.orion.contest.joined.joined_contest_overview_activity;
 import com.orion.orion.models.Comment;
-import com.orion.orion.models.CreateForm;
-import com.orion.orion.models.JoinForm;
 import com.orion.orion.models.Photo;
-import com.orion.orion.profile.ProfileFragment;
 import com.orion.orion.util.UniversalImageLoader;
 
 import java.util.ArrayList;

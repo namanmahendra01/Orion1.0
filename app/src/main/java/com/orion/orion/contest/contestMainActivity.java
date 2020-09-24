@@ -26,6 +26,9 @@ import com.orion.orion.login.login;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 import com.orion.orion.Adapters.SectionPagerAdapter;
 
+import java.sql.Time;
+import java.sql.Timestamp;
+
 public class contestMainActivity extends AppCompatActivity {
     private static final String TAG ="contest";
     private static final int ACTIVITY_NUM =2;
@@ -67,16 +70,36 @@ public class contestMainActivity extends AppCompatActivity {
         adapter.addFragment(new fragment_upcomingContest());
         adapter.addFragment(new fragment_joinedContest());
 
-        mViewPager.setAdapter(adapter);
 
-        TabLayout tablayout = (TabLayout) findViewById(R.id.tabs);
-        tablayout.setupWithViewPager(mViewPager);
 
+//        mViewPager.setAdapter(adapter);
+
+//        TabLayout tablayout = (TabLayout) findViewById(R.id.tabs);
+//        tablayout.setupWithViewPager(mViewPager);
+//
+//
+////        for giving icon to them
+//        tablayout.getTabAt(0).setText("create");
+//        tablayout.getTabAt(1).setText("upcoming");
+//        tablayout.getTabAt(2).setText("joined");
+        mViewPager.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mViewPager.setAdapter(adapter);
+
+//        mViewPager.setAdapter(adapter);
+
+                                    TabLayout tablayout = (TabLayout) findViewById(R.id.tabs);
+                                    tablayout.setupWithViewPager(mViewPager);
+                                    mViewPager.setCurrentItem(CREATE_CONTEST);
 
 //        for giving icon to them
-        tablayout.getTabAt(0).setText("create");
-        tablayout.getTabAt(1).setText("upcoming");
-        tablayout.getTabAt(2).setText("joined");
+                                    tablayout.getTabAt(0).setText("create");
+                                    tablayout.getTabAt(1).setText("upcoming");
+                                    tablayout.getTabAt(2).setText("joined");
+                                }
+                            }, 10);
+
 
 
     }

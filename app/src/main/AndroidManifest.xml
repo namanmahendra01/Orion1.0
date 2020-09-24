@@ -28,6 +28,8 @@
             android:name=".home.ViewPromoted"
             android:theme="@style/Theme.Transparent" />
         <activity android:name=".home.Message_Request" />
+        <activity android:name=".profile.ProfileActivity" />
+
         <activity android:name=".contest.Contest_Evaluation.Participant_Request" />
         <activity android:name=".contest.result.ResultDeclaredActivity" />
         <activity android:name=".contest.joined.joined_contest_overview_activity" />
@@ -36,6 +38,8 @@
         <activity android:name=".contest.Contest_Evaluation.activity_view_media" />
         <activity android:name=".contest.joined.JoiningForm" />
         <activity android:name=".contest.ViewContestDetails" />
+        <activity android:name=".profile.ViewProfileActivity" />
+
         <activity android:name=".contest.create.form" />
         <activity android:name=".contest.joined.fragment_joinedContest" />
         <activity android:name=".contest.create.fragment_createContest" />

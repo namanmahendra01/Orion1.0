@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -62,7 +63,7 @@ import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ViewProfileFragment extends Fragment {
+public class ViewProfileActivity extends AppCompatActivity {
 
     //standards
     private static final String TAG = "ProfileViewFragment";
@@ -99,40 +100,41 @@ public class ViewProfileFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
     @Override
-    public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_viewprofile, container, false);
-
-        mProgressBar = view.findViewById(R.id.profileprogressbar);
-        dialog = ProgressDialog.show(getActivity(), "", "Loading Profile...", true);
-        backButton = view.findViewById(R.id.back);
-        mProfilePhoto = view.findViewById(R.id.profile_photo);
-        mUsername = view.findViewById(R.id.display_name);
-        mFollowers = view.findViewById(R.id.follower);
-        mDomain = view.findViewById(R.id.domain);
-        mFollow = view.findViewById(R.id.followButton);
-        mMessage = view.findViewById(R.id.messageButton);
-        mCreated = view.findViewById(R.id.created_contests);
-        mJoined = view.findViewById(R.id.joined_contests);
-        mWon = view.findViewById(R.id.contests_won);
-        mDescription = view.findViewById(R.id.description);
-        mWebsite = view.findViewById(R.id.website);
-        gridRv = view.findViewById(R.id.gridRv);
-        bottomNavigationView = view.findViewById(R.id.BottomNavViewBar);
-        mFirebaseMethods = new FirebaseMethods(getActivity());
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_viewprofile);
+        mProgressBar = findViewById(R.id.profileprogressbar);
+        dialog = ProgressDialog.show(this, "", "Loading Profile...", true);
+        backButton = findViewById(R.id.back);
+        mProfilePhoto = findViewById(R.id.profile_photo);
+        mUsername =findViewById(R.id.display_name);
+        mFollowers =findViewById(R.id.follower);
+        mDomain = findViewById(R.id.domain);
+        mFollow = findViewById(R.id.followButton);
+        mMessage = findViewById(R.id.messageButton);
+        mCreated =findViewById(R.id.created_contests);
+        mJoined = findViewById(R.id.joined_contests);
+        mWon = findViewById(R.id.contests_won);
+        mDescription = findViewById(R.id.description);
+        mWebsite = findViewById(R.id.website);
+        gridRv = findViewById(R.id.gridRv);
+        bottomNavigationView =findViewById(R.id.BottomNavViewBar);
+        mFirebaseMethods = new FirebaseMethods(this);
         gridRv.setHasFixedSize(true);
-        GridLayoutManager linearLayoutManager = new GridLayoutManager(getContext(), 3);
+        GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 3);
         gridRv.setLayoutManager(linearLayoutManager);
         imgURLsList = new ArrayList<>();
-        adapterGridImage = new AdapterGridImage(getContext(), imgURLsList);
+        adapterGridImage = new AdapterGridImage(this, imgURLsList);
         gridRv.setAdapter(adapterGridImage);
-        mContext = getActivity();
+        mContext =this;
         try {
             mUser = getUserFromBundle();
+            Log.d(TAG, "onCreate: qaz"+mUser);
             init();
         } catch (NullPointerException e) {
             Log.d(TAG, "null pointer Exception" + e.getMessage());
             Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
-            getActivity().getSupportFragmentManager().popBackStack();
+            getSupportFragmentManager().popBackStack();
         }
         setupFirebaseAuth();
         isFolllowing();
@@ -140,8 +142,8 @@ public class ViewProfileFragment extends Fragment {
         getCompDetails();
 
         backButton.setOnClickListener(v -> {
-            getActivity().getSupportFragmentManager().popBackStack();
-            getActivity().finish();
+           getSupportFragmentManager().popBackStack();
+           finish();
         });
         mFollow.setOnClickListener(v -> {
             YoYo.with(Techniques.FadeIn).duration(500).playOn(mMessage);
@@ -149,7 +151,7 @@ public class ViewProfileFragment extends Fragment {
             if (isFollowing) {
 
 //               remove from following list
-                SharedPreferences sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                SharedPreferences sp =getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
                 Gson gson=new Gson();
                 String json =sp.getString("fl",null);
                 Type type= new TypeToken<ArrayList<String>>() {}.getType();
@@ -197,7 +199,7 @@ public class ViewProfileFragment extends Fragment {
             } else {
 
 //               addfollowing list
-                SharedPreferences sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                SharedPreferences sp =getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
                 Gson gson=new Gson();
                 String json =sp.getString("fl",null);
                 Type type= new TypeToken<ArrayList<String>>() {}.getType();
@@ -277,12 +279,12 @@ public class ViewProfileFragment extends Fragment {
         });
         mMessage.setOnClickListener(v -> {
             YoYo.with(Techniques.FadeIn).duration(500).playOn(mMessage);
-            Intent intent = new Intent(getActivity(), Chat_Activity.class);
+            Intent intent = new Intent(ViewProfileActivity.this, Chat_Activity.class);
             intent.putExtra(getString(R.string.his_UID), mUser.getUser_id());
             intent.putExtra("request", "no");
             startActivity(intent);
         });
-        return view;
+
     }
 
 
@@ -440,8 +442,11 @@ public class ViewProfileFragment extends Fragment {
     }
 
     private users getUserFromBundle() {
-        Bundle bundle = this.getArguments();
+        Intent i=getIntent();
+
+        Bundle bundle = i.getParcelableExtra(getString(R.string.intent_user));
         if (bundle != null) {
+            Log.d(TAG, "getUserFromBundle: qaz3"+bundle.getParcelable(getString(R.string.intent_user)));
             return bundle.getParcelable(getString(R.string.intent_user));
         } else {
             return null;

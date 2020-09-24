@@ -25,8 +25,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,7 +35,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.orion.orion.R;
 import com.orion.orion.models.CreateForm;
-import com.orion.orion.models.juryMarks;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.Permissions;
 import com.orion.orion.util.SNTPClient;
@@ -54,7 +51,7 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
-import static com.orion.orion.profile.ProfileFragment.VERIFY_PERMISSION_REQUEST;
+import static com.orion.orion.profile.ProfileActivity.VERIFY_PERMISSION_REQUEST;
 
 public class JoiningForm extends AppCompatActivity {
     private static final String TAG = "JoiningForm";

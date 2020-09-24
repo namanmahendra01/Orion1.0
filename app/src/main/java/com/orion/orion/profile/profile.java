@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.local.LruDelegate;
 import com.orion.orion.R;
 import com.orion.orion.models.users;
 
@@ -31,30 +30,27 @@ public class profile extends AppCompatActivity {
             if (intent.hasExtra(getString(R.string.intent_user))) {
                 users user = intent.getParcelableExtra(getString(R.string.intent_user));
                 if (!user.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                    ViewProfileFragment fragment = new ViewProfileFragment();
+                    Log.d(TAG, "init: qaz0"+intent.getParcelableExtra(getString(R.string.intent_user)));
+                    Intent i = new Intent(profile.this,ViewProfileActivity.class);
                     Bundle args = new Bundle();
                     args.putParcelable(getString(R.string.intent_user), intent.getParcelableExtra(getString(R.string.intent_user)));
-                    fragment.setArguments(args);
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.container, fragment);
-                    transaction.commit();
+                    i.putExtra(getString(R.string.intent_user),args);
+                   startActivity(i);
                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 } else {
-                    ProfileFragment fragment = new ProfileFragment();
-                    FragmentTransaction transaction = profile.this.getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.container, fragment);
-                    transaction.commit();
+                   Intent i = new Intent(profile.this,ProfileActivity.class);
+                   startActivity(i);
                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
                 }
             } else {
                 Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         } else {
-            ProfileFragment fragment = new ProfileFragment();
-            FragmentTransaction transaction = profile.this.getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.container, fragment);
-            transaction.commit();
+            Intent i = new Intent(profile.this,ProfileActivity.class);
+            startActivity(i);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
         }
     }
 }

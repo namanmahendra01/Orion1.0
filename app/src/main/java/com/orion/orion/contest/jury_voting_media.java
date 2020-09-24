@@ -56,7 +56,6 @@ public class jury_voting_media extends AppCompatActivity {
     //    SP
     Gson gson;
     SharedPreferences sp;
-    users user = new users();
     String contestkey, jury, comment;
     int x = 1;
 
@@ -146,13 +145,7 @@ public class jury_voting_media extends AppCompatActivity {
     }
 
     private void addUsernameAndMediaLinktoSP(String joiningKey, String text, String tex2t) {
-ArrayList<String> list= new ArrayList<>(4);
-        String json = sp.getString(joiningKey, null);
-
-        Type type = new TypeToken<ArrayList<String>>() {
-        }.getType();
-        list = gson.fromJson(json, type);
-
+ArrayList<String> list= new ArrayList<>(Collections.nCopies(4,"0"));
 
         DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
         ArrayList<String> finalList = list;
@@ -262,7 +255,7 @@ ArrayList<String> list= new ArrayList<>(4);
 //                setting 1st item of row i.e textview
                 TextView t1v = new TextView(jury_voting_media.this);
                 getUsername(joiningKey, t1v);
-                t1v.setTextColor(Color.RED);
+                t1v.setTextColor(getResources().getColor(R.color.yellow));
                 t1v.setGravity(Gravity.CENTER);
                 tbrow.addView(t1v);
 
@@ -379,7 +372,7 @@ ArrayList<String> list= new ArrayList<>(4);
 //                setting 1st item of row i.e textview
                 TextView t1v = new TextView(jury_voting_media.this);
                 t1v.setText(markList.get(0));
-                t1v.setTextColor(Color.RED);
+                t1v.setTextColor(getResources().getColor(R.color.yellow));
                 t1v.setGravity(Gravity.CENTER);
                 tbrow.addView(t1v);
 
@@ -510,5 +503,50 @@ ArrayList<String> list= new ArrayList<>(4);
 
     }
 
+protected   void  onPause() {
+
+    super.onPause();
+
+    Log.d(TAG, "onPause: qwe");
+    for (String joiningKey : participantlist) {
+
+        String json = sp.getString(joiningKey, null);
+
+        Type type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        markList = gson.fromJson(json, type);
+
+        TableRow row = (TableRow) juryTable.getChildAt(x);
+        EditText et = (EditText) row.getChildAt(2);
+        EditText et2 = (EditText) row.getChildAt(3);
+        text = et.getText().toString();
+        tex2t = et2.getText().toString();
+
+        if (text.equals("") || tex2t.equals("")) {
+         continue;
+        } else {
+            markList = new ArrayList<>(Collections.nCopies(4, "0"));
+            addUsernameAndMediaLinktoSP(joiningKey,text,tex2t);
+            x++;
+
+        }
+
+
+    }
+    x = 1;
+    int tableChild = juryTable.getChildCount();
+    for (int x = 1; x < tableChild; x++) {
+        TableRow row = (TableRow) juryTable.getChildAt(x);
+        EditText et = (EditText) row.getChildAt(2);
+        EditText et2 = (EditText) row.getChildAt(3);
+        String text = et.getText().toString();
+        String tex2t = et2.getText().toString();
+        Log.d(TAG, "onClick: " + text + " " + tex2t);
+    }
+
 
 }
+
+}
+
+
