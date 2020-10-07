@@ -67,6 +67,7 @@ public class contest_evaluation_activity extends AppCompatActivity {
         mViewPager.setAdapter(adapter);
 
         TabLayout tablayout = (TabLayout) findViewById(R.id.tabs);
+        tablayout.setTabMode(TabLayout.MODE_AUTO);
         tablayout.setupWithViewPager(mViewPager);
 //        for giving icon to them
         tablayout.getTabAt(0).setText("Edit");

@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -144,7 +145,12 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    @Override
+            @Override
+            public void onDestroy() {
+                super.onDestroy();
+            }
+
+            @Override
     public void onStop() {
         super.onStop();
         if (mAuthListener != null) {
@@ -171,8 +177,10 @@ public class MainActivity extends AppCompatActivity
         tablayout.setupWithViewPager(mViewPager);
 //        for giving icon to them
         tablayout.getTabAt(0).setIcon(R.drawable.ic_notification);
-        tablayout.getTabAt(1).setIcon(R.drawable.ic_home);
+        tablayout.getTabAt(1).setText("ORION");
         tablayout.getTabAt(2).setIcon(R.drawable.ic_messages);
+
+
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(getString(R.string.dbname_users))

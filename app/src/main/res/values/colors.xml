@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#FF9800</color>
+    <color name="colorPrimaryDark">#E3706E</color>
     <color name="colorAccent">#FF9800</color>
     <color name="white">#ffffff</color>
     <color name="grey">#9C9797</color>
@@ -17,7 +17,24 @@
     <color name="bg_screen1">#f64c73</color>
     <color name="bg_screen2">#20d2bb</color>
     <color name="bg_screen3">#3395ff</color>
-    <color name="bg_screen4">#c873f4</color>
+
+    <color name="scheme1">#000000</color>
+    <color name="scheme2">#FD297B</color>
+    <color name="scheme3">#c873f4</color>
+    <color name="scheme4">#ff4b1f</color>
+    <color name="scheme5">#1fddff</color>
+    <color name="scheme6">#ba5370</color>
+    <color name="scheme7">#4ca1af</color>
+    <color name="scheme8">#f29492</color>
+    <color name="scheme9">#4f7fca</color>
+    <color name="scheme10">#c02427</color>
+    <color name="scheme11">#f0cb35</color>
+    <color name="scheme12">#e53935</color>
+
+    <color name="top1">#c02427</color>
+    <color name="top2">#f0cb35</color>
+    <color name="top3">#e53935</color>
+
 
     <!-- dots inactive colors -->
     <color name="dot_dark_screen1">#d1395c</color>

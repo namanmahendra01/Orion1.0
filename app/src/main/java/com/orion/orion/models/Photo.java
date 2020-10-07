@@ -10,13 +10,15 @@ public class Photo implements Parcelable {
     private String date_created;
     private String image_path;
     private  String photo_id;
+    private String type;
     private String user_id;
     private String users;
     private String Tags;
+    private String thumbnail;
     private List<Comment>comment;
 
 
-    public Photo(String caption, String date_created, String image_path, String photo_id, String user_id, String users, String tags, List<Comment> comment) {
+    public Photo(String caption, String date_created, String image_path, String photo_id, String user_id, String users, String tags, List<Comment> comment,String type,String thumbnail) {
         this.caption = caption;
         this.date_created = date_created;
         this.image_path = image_path;
@@ -25,6 +27,8 @@ public class Photo implements Parcelable {
         this.users = users;
         Tags = tags;
         this.comment = comment;
+        this.thumbnail = thumbnail;
+        this.type=type;
     }
 
     public Photo(){
@@ -40,6 +44,8 @@ public class Photo implements Parcelable {
         user_id = in.readString();
         users = in.readString();
         Tags = in.readString();
+        type = in.readString();
+        thumbnail=in.readString();
     }
 
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {
@@ -111,6 +117,22 @@ public class Photo implements Parcelable {
     }
 
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
 
     public List<Comment> getComments() {
         return comment;
@@ -131,6 +153,10 @@ public class Photo implements Parcelable {
                 ", users='" + users + '\'' +
                 ", Tags='" + Tags + '\'' +
                 ", comment=" + comment +
+                ", type=" + type +
+                ", thumbnail=" + thumbnail +
+
+
                 '}';
     }
 
@@ -149,5 +175,7 @@ public class Photo implements Parcelable {
         dest.writeString(user_id);
         dest.writeString(users);
         dest.writeString(Tags);
+        dest.writeString(type);
+        dest.writeString(thumbnail);
     }
 }

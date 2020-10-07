@@ -3,13 +3,14 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:id="@+id/rel"
         android:background="@color/white"
         android:layout_alignParentTop="true">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
+
             android:background="@color/white"
             android:layout_height="wrap_content">
 
@@ -17,10 +18,11 @@
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
-                app:tabSelectedTextColor="#FFC107"
+                android:background="#FFFFFF"
+                app:tabTextColor="#2C2A2A"
+                app:tabSelectedTextColor="#f29492"
 
-                app:tabIndicatorColor="#FFC107">
+                app:tabIndicatorColor="#E3706E">
 
 
             </com.google.android.material.tabs.TabLayout>

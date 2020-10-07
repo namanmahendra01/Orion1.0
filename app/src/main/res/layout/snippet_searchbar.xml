@@ -1,26 +1,31 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:cardCornerRadius="10dp"
-        android:background="@drawable/white_border"
-        >
+
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/rectangular_round_searchbar"
+
             android:id="@+id/profileToolbar">
 
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_search_icon"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/searchicon"/>
 
 
 
 
                 <EditText
+                    android:layout_toRightOf="@id/searchicon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -37,6 +42,5 @@
         </androidx.appcompat.widget.Toolbar>
 
 
-    </androidx.cardview.widget.CardView>
 
 </merge>

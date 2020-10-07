@@ -21,7 +21,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Adapters.SectionStatePagerAdapter;
 import com.orion.orion.R;
-import com.orion.orion.activity_view_video;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 import com.orion.orion.util.FirebaseMethods;
 
@@ -115,7 +114,7 @@ public class AccountSettingActivity extends AppCompatActivity {
                     Intent i = new Intent(AccountSettingActivity.this, Password_Reset.class);
                     startActivity(i);
                 } if (position==2){
-                    Intent i = new Intent(AccountSettingActivity.this, activity_view_video.class);
+                    Intent i = new Intent(AccountSettingActivity.this, Password_Reset.class);
                     startActivity(i);
                 } if (position==3){
                     Intent i = new Intent(AccountSettingActivity.this, Help.class);

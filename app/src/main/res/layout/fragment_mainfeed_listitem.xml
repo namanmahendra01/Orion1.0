@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
     android:orientation="vertical">
 
     <ScrollView
@@ -13,6 +12,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="50dp"
             android:layout_height="wrap_content">
 
             <androidx.cardview.widget.CardView
@@ -20,12 +21,12 @@
 
                 app:cardUseCompatPadding="true"
                 app:cardCornerRadius="5dp"
-                app:cardElevation="5dp"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:background="@drawable/gradient"
+                android:background="@drawable/rectangular_border"
                 android:layout_height="50dp">
 
 
@@ -40,11 +41,12 @@
 
                 <TextView
                     android:id="@+id/username"
-                    android:layout_width="100dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@id/profile_photo"
+                    android:maxLines="1"
                     android:text="username"
                     android:layout_centerHorizontal="true"
                     android:textColor="@color/black"
@@ -53,13 +55,15 @@
 
                 <TextView
                     android:id="@+id/domain12"
-                    android:layout_width="wrap_content"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
+                    android:gravity="right"
                     android:layout_toLeftOf="@+id/ivEllipses"
                     android:text="Photographer"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
+                    android:maxLines="1"
                     android:textSize="15sp"
                     android:layout_marginStart="10dp" />
                 <TextView
@@ -131,7 +135,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_centerVertical="true"
-                        android:src="@drawable/ic_comment"
+                        android:src="@drawable/com"
                         android:visibility="visible" />
                 </RelativeLayout>
 
@@ -226,24 +230,108 @@
                     app:cardBackgroundColor="@color/white"
                     app:cardUseCompatPadding="true"
                     app:cardCornerRadius="5dp"
-                    app:cardElevation="5dp"
+                    android:elevation="5dp"
+
                     android:outlineAmbientShadowColor="@color/white"
                     >
+                    <com.orion.orion.util.SquareImageView
+                        android:id="@+id/frame"
+                        android:visibility="visible"
+                        android:src="@drawable/square"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        />
+
+                    <com.google.android.exoplayer2.ui.PlayerView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/player_view"
+                        app:resize_mode="fit"
+                        app:hide_on_touch="true"
+                        android:visibility="visible"
+                        app:show_timeout="5000"
+                        app:rewind_increment="10000"
+                        app:fastforward_increment="10000"
+                        app:use_controller="false"
+                        app:surface_type="texture_view"
+                        android:background="@drawable/square"
+                        app:player_layout_id="@layout/exo_simple_player_view"
+                        app:controller_layout_id="@layout/custom_controller"/>
+
+                    <com.orion.orion.util.SquareImageView
+                        android:id="@+id/thumbnail"
+                        android:visibility="visible"
+                        android:src="@drawable/square"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        />
+
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/ic_play_btn"
+                        android:layout_gravity="center"
+                        android:id="@+id/play"/>
+
+                    <ProgressBar
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:visibility="gone"
+                        android:id="@+id/progress_bar"
+                        android:layout_gravity="center"
+                    />
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/unmute"
+                        android:layout_gravity="bottom"
+                        android:layout_margin="10dp"
+
+                        android:id="@+id/unmute"
+                        />
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_margin="10dp"
+                        android:layout_gravity="bottom"
+
+                        android:visibility="gone"
+                        android:src="@drawable/mute"
+                        android:id="@+id/mute"
+                        />
+                    <TextView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:text="12"
+                        android:textColor="#686868"
+                        android:layout_gravity="right"
+                        android:layout_margin='10dp'
+                        android:id="@+id/duration"/>
+
                 <com.orion.orion.util.SquareImageView
                     android:id="@+id/post_image"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                   />
+
                     <TextView
                         android:id="@+id/credit"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|right"
+                        android:layout_margin="3dp"
+                        android:layout_marginBottom="1dp"
+
+                        android:background="@color/black"
+
+                        android:padding="2dp"
                         android:text="naman"
-                        android:textSize="14sp"
-                        android:gravity="end|bottom"
                         android:textColor="@color/white"
-                        android:layout_marginBottom="1dp"/>
+                        android:textSize="10sp" />
                 </androidx.cardview.widget.CardView>
 
 

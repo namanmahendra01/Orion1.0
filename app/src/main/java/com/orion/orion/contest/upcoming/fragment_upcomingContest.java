@@ -12,6 +12,7 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
@@ -50,7 +51,8 @@ public class fragment_upcomingContest extends Fragment {
     private EditText searchBox;
     private int mResults;
     private int mResults2;
-    ImageView gridB,gridY,colY,colB;
+    RelativeLayout relativeLayout;
+    ImageView gridB,gridY,colY,colB,filterB,filterY;
     private ArrayList<ContestDetail> contestlist2;
     private ArrayList<ContestDetail> contestlist3;
     private ArrayList<ContestDetail> paginatedcontestlist;
@@ -86,6 +88,10 @@ public class fragment_upcomingContest extends Fragment {
         gridY=view.findViewById(R.id.gridY);
         colB=view.findViewById(R.id.columnB);
         colY=view.findViewById(R.id.columnY);
+        filterB=view.findViewById(R.id.filter);
+        filterY=view.findViewById(R.id.filteryellow);
+        relativeLayout=view.findViewById(R.id.relparent);
+
 
 //**************************************************************************************
         contestSearchRv.setHasFixedSize(true);
@@ -120,6 +126,26 @@ public class fragment_upcomingContest extends Fragment {
                     upcomingContestRv.setLayoutManager(linearLayoutManager[0]);
                     adapterContestUpcomingGrid = new AdapterContestUpcomingGrid(getContext(), paginatedcontestlist);
                     upcomingContestRv.setAdapter(adapterContestUpcomingGrid);
+
+            }
+        });
+        filterB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterY.setVisibility(View.VISIBLE);
+                filterB.setVisibility(View.GONE);
+                relativeLayout.setVisibility(View.VISIBLE);
+
+
+            }
+        });
+        filterY.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterY.setVisibility(View.GONE);
+                filterB.setVisibility(View.VISIBLE);
+                relativeLayout.setVisibility(View.GONE);
+
 
             }
         });

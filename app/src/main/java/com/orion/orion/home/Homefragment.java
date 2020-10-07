@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +30,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -58,6 +60,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -76,7 +79,7 @@ domain= user domain
 
  */
 
-public class Homefragment extends Fragment {
+public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePlayer {
     private static final String TAG = "HomeFragment";
     private ArrayList<Photo> mPhotos;
     private ArrayList<String> mFollowing;
@@ -85,7 +88,6 @@ public class Homefragment extends Fragment {
     private RecyclerView contestRv;
     private ArrayList<ContestDetail> contestlist;
     private AdapterMainFeedContest contestUpcoming;
-
     private RecyclerView promoteRv;
     private ArrayList<String> promotelist;
     private AdapterPromote promote;
@@ -128,6 +130,9 @@ public class Homefragment extends Fragment {
 //          Initialize SharedPreference variables
         sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
+
+
+
 
 
 //          fetch   domain from SP
@@ -203,23 +208,12 @@ public class Homefragment extends Fragment {
         LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(getContext());
         ListViewRv.setLayoutManager(linearLayoutManager1);
 
-        ListViewRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-            }
-        });
 
         scrollView.getViewTreeObserver()
                 .addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
                     @Override
                     public void onScrollChanged() {
+
                         if (scrollView.getChildAt(0).getBottom()
                                 == (scrollView.getHeight() + scrollView.getScrollY()) && c != 0) {
 
@@ -232,7 +226,6 @@ public class Homefragment extends Fragment {
                         c++;
                     }
                 });
-
 
         star.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -597,6 +590,9 @@ public class Homefragment extends Fragment {
 
                         photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
 
+                        photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
+                        photo.setType(objectMap.get(getString(R.string.type)).toString());
+
                         ArrayList<Comment> comments = new ArrayList<>();
 
                         for (DataSnapshot dSnapshot : singleSnapshot
@@ -682,6 +678,9 @@ public class Homefragment extends Fragment {
 
                         photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
 
+                        photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
+                        photo.setType(objectMap.get(getString(R.string.type)).toString());
+
                         ArrayList<Comment> comments = new ArrayList<>();
 
                         for (DataSnapshot dSnapshot : singleSnapshot
@@ -760,6 +759,9 @@ public class Homefragment extends Fragment {
 
                         photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
 
+                        photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
+                        photo.setType(objectMap.get(getString(R.string.type)).toString());
+
                         ArrayList<Comment> comments = new ArrayList<>();
 
                         for (DataSnapshot dSnapshot : singleSnapshot
@@ -820,7 +822,19 @@ public class Homefragment extends Fragment {
 
 
     }
+    private boolean isViewVisible(View view) {
+        Rect scrollBounds = new Rect();
+        scrollView.getDrawingRect(scrollBounds);
 
+        float top = view.getY();
+        float bottom = top + view.getHeight();
+
+        if (scrollBounds.top < top && scrollBounds.bottom > bottom) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     private void removeUpdate() {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(getString(R.string.dbname_users))
@@ -881,11 +895,9 @@ public class Homefragment extends Fragment {
                                 storySeen.setVisibility(View.GONE);
                                 story.setVisibility(View.VISIBLE);
                                 footer.setVisibility(View.GONE);
-                                Log.d(TAG, "onDataChange: ss4" + t);
 
                             }
                         } else {
-                            Log.d(TAG, "onDataChange: ss2ll");
                             storySeen.setVisibility(View.GONE);
                             story.setVisibility(View.GONE);
                             footer.setVisibility(View.VISIBLE);
@@ -1054,13 +1066,11 @@ public class Homefragment extends Fragment {
         long cutoff = new Date().getTime() - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
         promotelist.clear();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Log.d(TAG, "onDataChange: knnk" + promotelist.size());
 
         for (int i = 0; i < mFollowing.size(); i++) {
 
             final int count = i;
             final long delete = 0;
-            Log.d(TAG, "onDataChange: khjhk" + mFollowing.get(i));
 
             Query query = reference
                     .child(getString(R.string.dbname_promote))
@@ -1093,7 +1103,6 @@ public class Homefragment extends Fragment {
                         }
 
 
-                        Log.d(TAG, "onDataChange: kk" + promotelist.size());
                         promote.notifyDataSetChanged();
                     }
 
@@ -1111,7 +1120,6 @@ public class Homefragment extends Fragment {
 
     private void getPhotos() {
         mPhotos = new ArrayList<>();
-        Log.d(TAG, "getPhotos: a67");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         for (int i = 0; i < mFollowing.size(); i++) {
 
@@ -1143,6 +1151,10 @@ public class Homefragment extends Fragment {
                         photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
 
                         photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+
+
+                        photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
+                        photo.setType(objectMap.get(getString(R.string.type)).toString());
 
                         ArrayList<Comment> comments = new ArrayList<>();
 
@@ -1210,7 +1222,7 @@ public class Homefragment extends Fragment {
                     mPaginatedPhotos.add(mPhotos.get(i));
                 }
                 Log.d(TAG, "displayPhotos: sss" + mPaginatedPhotos.size());
-                mAadapter = new AdapterMainfeed(getContext(), mPaginatedPhotos);
+                mAadapter = new AdapterMainfeed(getContext(), mPaginatedPhotos,ListViewRv);
                 ListViewRv.setAdapter(mAadapter);
 
             } catch (NullPointerException e) {
@@ -1261,6 +1273,23 @@ public class Homefragment extends Fragment {
         }
 
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        Homefragment obj= new Homefragment();
+        obj.releasePlayer();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        Homefragment obj= new Homefragment();
+        obj.releasePlayer();
+    }
+
 
 }
 

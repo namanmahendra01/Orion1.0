@@ -13,7 +13,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/gradient"
+            android:background="@color/scheme8"
+            android:visibility="gone"
+
             android:id="@+id/relparent">
         <RelativeLayout
             android:layout_width="match_parent"
@@ -63,6 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
                 android:orientation="vertical">
                 <Spinner
                     android:layout_width="wrap_content"
@@ -84,25 +87,48 @@
             </LinearLayout>
         </RelativeLayout>
 
+        </RelativeLayout>
 
         <EditText
             android:layout_width="match_parent"
             android:id="@+id/search"
-            android:layout_below="@id/filterLayout"
+            android:layout_below="@id/relparent"
             android:layout_margin="10dp"
+
             android:hint="Enter contest Key"
             android:gravity="center"
-            android:background="@drawable/white_border"
+            android:background="@drawable/rectangular_round_searchbar"
             android:layout_height="30dp"/>
-           </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/relparent"
-            android:gravity="center"
+            android:layout_below="@+id/search"
+            android:background="@android:color/transparent"
             android:id="@+id/drag">
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:id="@+id/filter"
+                android:src="@drawable/filter"
+                android:layout_centerHorizontal="true"
+                />
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:visibility="gone"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:id="@+id/filteryellow"
+                android:src="@drawable/filter_yellow"
+                android:layout_centerHorizontal="true"
+                />
 
-        <ImageView
+
+            <ImageView
             android:layout_width="33dp"
             android:layout_height="33dp"
             android:layout_marginRight="10dp"
@@ -119,7 +145,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_centerVertical="true"
                 android:src="@drawable/ic_column_yellow"
-                android:layout_toRightOf="@+id/gridB"
+                android:layout_alignParentRight="true"
                  />
             <ImageView
                 android:layout_width="33dp"
@@ -140,7 +166,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_centerVertical="true"
                 android:src="@drawable/ic_column_black"
-                android:layout_toRightOf="@+id/gridY"
+                android:layout_alignParentRight="true"
                 />
         </RelativeLayout>
 

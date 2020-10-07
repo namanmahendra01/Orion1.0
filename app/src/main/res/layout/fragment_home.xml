@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/white">
 
     <ScrollView
@@ -14,8 +14,23 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <androidx.recyclerview.widget.RecyclerView
+
+                android:id="@+id/recyclerContest"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/scheme8"
+                android:nestedScrollingEnabled="false"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_below="@+id/recyclerContest"
+    android:id="@+id/rel2"
+    android:layout_height="wrap_content">
             <RelativeLayout
                 android:id="@+id/domainRl"
                 android:layout_width="wrap_content"
@@ -47,37 +62,37 @@
                 android:textColor="@color/black"
                 android:textSize="18sp" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerContest"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/gradient"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/recyclerContest"
-
+android:background="@color/white"
                 android:id="@+id/promo">
 
                 <include layout="@layout/promote_item"
+
                     android:id="@+id/item"/>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerPromote"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:nestedScrollingEnabled="false"
+
                 android:layout_toRightOf="@+id/item"
-                android:background="#FFFFFF"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
             </RelativeLayout>
+</RelativeLayout>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/listview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/domainTv"
+                android:layout_below="@+id/rel2"
+
                 android:nestedScrollingEnabled="false">
 
             </androidx.recyclerview.widget.RecyclerView>

@@ -11,6 +11,10 @@
         <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
 
     </style>
+    <style name="customfontstyle" parent="TextAppearance.Design.CollapsingToolbar.Expanded">
+        <item name="android:fontFamily">@font/orion</item>
+
+    </style>
     <style name="BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>
