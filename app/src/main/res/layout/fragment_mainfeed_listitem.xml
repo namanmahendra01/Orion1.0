@@ -26,6 +26,7 @@
                 android:layout_height="wrap_content">
             <RelativeLayout
                 android:layout_width="match_parent"
+                android:id="@+id/header"
                 android:background="@drawable/rectangular_border"
                 android:layout_height="50dp">
 

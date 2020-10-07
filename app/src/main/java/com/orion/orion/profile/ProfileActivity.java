@@ -223,7 +223,8 @@ public class ProfileActivity extends AppCompatActivity {
         Type type = new TypeToken<ArrayList<Photo>>() {
         }.getType();
         imgURLsList = gson.fromJson(json, type);
-        if (imgURLsList == null) {    //        if no arrayList is present
+
+        if (true) {    //        if no arrayList is present
             imgURLsList = new ArrayList<>();
 
             SetupGridView();             //            make new Arraylist
@@ -491,6 +492,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                    Log.d(TAG, "onBindViewHolder: "+dataSnapshot.getChildrenCount());
 
                     Photo photo = new Photo();
                     Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
@@ -508,6 +510,13 @@ public class ProfileActivity extends AppCompatActivity {
                         photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
 
                         photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+
+                        if (objectMap.get(getString(R.string.thumbnail))!=null){
+                            photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
+
+                        }
+
+                        photo.setType(objectMap.get(getString(R.string.type)).toString());
 
                         ArrayList<Comment> comments = new ArrayList<>();
 

@@ -53,56 +53,53 @@ public class AdapterGridImage extends RecyclerView.Adapter<AdapterGridImage.View
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
 
         Photo photo= photos.get(i);
-        Log.d(TAG, "onBindViewHolder: sdf"+photo.getPhoto_id());
-        if (photo!=null) {
-            UniversalImageLoader.setImage(photo.getImage_path(), holder.image, null, "");
-//
+        Log.d(TAG, "onBindViewHolder: "+photo.getType()+photos.size());
+if (photo.getType().equals("photo")){
+    UniversalImageLoader.setImage(photo.getImage_path(), holder.image, null, "");
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
-                    db1.child(mContext.getString(R.string.dbname_user_photos))
-                            .child(photo.getUser_id())
-                            .child(photo.getPhoto_id())
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    ArrayList<Comment> comments = new ArrayList<>();
+}else{
+    UniversalImageLoader.setImage(photo.getThumbnail(), holder.image, null, "");
 
-                                    for (DataSnapshot dSnapshot : snapshot.child("comment").getChildren()) {
-                                        Comment comment = new Comment();
-                                        comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                        comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                        comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                                        comments.add(comment);
+}
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
+                db1.child(mContext.getString(R.string.dbname_user_photos))
+                        .child(photo.getUser_id())
+                        .child(photo.getPhoto_id())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                ArrayList<Comment> comments = new ArrayList<>();
 
-
-                                    }
-
-                                    Log.d(Constraints.TAG, "onDataChange: klj" + comments);
-
-                                    Intent i = new Intent(mContext, ViewPostActivity.class);
-                                    i.putExtra("photo", photo);
-                                    i.putParcelableArrayListExtra("comments", comments);
-
-                                    mContext.startActivity(i);
-
+                                for (DataSnapshot dSnapshot : snapshot.child("comment").getChildren()) {
+                                    Comment comment = new Comment();
+                                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                    comments.add(comment);
 
                                 }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
+                                Intent i = new Intent(mContext, ViewPostActivity.class);
+                                i.putExtra("photo", photo);
+                                i.putParcelableArrayListExtra("comments", comments);
 
-                                }
-                            });
+                                mContext.startActivity(i);
 
 
-                }
-            });
-        }else{
-            holder.itemView.setVisibility(View.GONE);
-        }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+
+            }
+        });
     }
 
     @Override

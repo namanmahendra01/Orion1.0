@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -142,7 +143,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         ifCurrentUserLiked(holder, photo);
         ifCurrentUserPromoted(holder, photo);
         holder.duration.setVisibility(View.GONE);
-        DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
 
         holder.eclipse.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,8 +220,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         });
 
 
-        final Handler[] mHandler = new Handler[1];
-        final Runnable[] updateProgressAction = new Runnable[1];
 
 
         numberofPromote(holder.promoteNum, photo.getPhoto_id(), photo.getUser_id());
@@ -272,6 +270,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 //                   ***********get Video***********
 
 
+        DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
 
 
 //                    get thumbnail
@@ -347,6 +346,10 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
 
 //                     play/pause video
+
+        final Handler[] mHandler = new Handler[1];
+        final Runnable[] updateProgressAction = new Runnable[1];
+
         holder.playerView.getVideoSurfaceView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -591,7 +594,91 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+
+
         holder.image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
+                db1.child(mContext.getString(R.string.dbname_user_photos))
+                        .child(photo.getUser_id())
+                        .child(photo.getPhoto_id())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                holder.photo = snapshot.getValue(Photo.class);
+                                ArrayList<Comment> comments = new ArrayList<>();
+
+                                for (DataSnapshot dSnapshot : snapshot.child("comment").getChildren()) {
+                                    Comment comment = new Comment();
+                                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                    comments.add(comment);
+
+
+                                }
+
+
+                                Intent i = new Intent(mContext, ViewPostActivity.class);
+                                i.putExtra("photo", holder.photo);
+                                i.putParcelableArrayListExtra("comments", comments);
+
+                                mContext.startActivity(i);
+
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+            }
+        });
+
+        holder.headerLatout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
+                db1.child(mContext.getString(R.string.dbname_user_photos))
+                        .child(photo.getUser_id())
+                        .child(photo.getPhoto_id())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                holder.photo = snapshot.getValue(Photo.class);
+                                ArrayList<Comment> comments = new ArrayList<>();
+
+                                for (DataSnapshot dSnapshot : snapshot.child("comment").getChildren()) {
+                                    Comment comment = new Comment();
+                                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                    comments.add(comment);
+
+
+                                }
+
+
+                                Intent i = new Intent(mContext, ViewPostActivity.class);
+                                i.putExtra("photo", holder.photo);
+                                i.putParcelableArrayListExtra("comments", comments);
+
+                                mContext.startActivity(i);
+
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+            }
+        });
+
+        holder.footerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
@@ -938,21 +1025,16 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         Photo photo;
         boolean likeByCurrentsUser2;
         boolean play = true;
-
         long currentPosition = 0;
-
+RelativeLayout postRelLayout,headerLatout,footerLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
 
-            playerView = itemView.findViewById(R.id.player_view);
-            progressBar = itemView.findViewById(R.id.progress_bar);
-            username = (TextView) itemView.findViewById(R.id.username);
-            duration = (TextView) itemView.findViewById(R.id.duration);
-            image = (SquareImageView) itemView.findViewById(R.id.post_image);
-            thumbnail = (SquareImageView) itemView.findViewById(R.id.thumbnail);
 
+            username = (TextView) itemView.findViewById(R.id.username);
+            image = (SquareImageView) itemView.findViewById(R.id.post_image);
             yellowstar = (ImageView) itemView.findViewById(R.id.image_star_yellow);
             whitestar = (ImageView) itemView.findViewById(R.id.image_star);
             comment = (ImageView) itemView.findViewById(R.id.image_shoutout);
@@ -967,10 +1049,17 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             commentnumber = (TextView) itemView.findViewById(R.id.comments_number);
             likenumber = (TextView) itemView.findViewById(R.id.likes_number);
             eclipse = itemView.findViewById(R.id.ivEllipses);
-
+//         exoplayer
             play2 = (ImageView) itemView.findViewById(R.id.play);
             mute = (ImageView) itemView.findViewById(R.id.mute);
             unmute = (ImageView) itemView.findViewById(R.id.unmute);
+            playerView = itemView.findViewById(R.id.player_view);
+            progressBar = itemView.findViewById(R.id.progress_bar);
+            duration = (TextView) itemView.findViewById(R.id.duration);
+            thumbnail = (SquareImageView) itemView.findViewById(R.id.thumbnail);
+            postRelLayout =  itemView.findViewById(R.id.post_imagelayout);
+            footerLayout =  itemView.findViewById(R.id.promotion);
+            headerLatout =  itemView.findViewById(R.id.header);
 
 
             credit = (TextView) itemView.findViewById(R.id.credit);

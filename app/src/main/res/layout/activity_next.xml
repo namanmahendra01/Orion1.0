@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:layout_height="wrap_content"
     tools:context=".share.NextActivity">
 
     <ScrollView
@@ -30,28 +30,24 @@
                 android:background="@drawable/grey_border_bottom">
 
 
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                <com.orion.orion.util.SquareImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:id="@+id/imageshare"
-                    android:scaleType="centerCrop"
+                    android:src="@drawable/rainbow"
+                    android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginBottom="40dp"/>
+                   />
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/imageshare"
+                    android:layout_below="@id/imageshare"
                     android:id="@+id/caption"
                     android:hint="Write a Caption"
-                    android:layout_marginLeft="20dp"
-                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:layout_marginTop="20dp"
                     android:background="@null"/>
 
-
-
-
-z
 
             </RelativeLayout>
 

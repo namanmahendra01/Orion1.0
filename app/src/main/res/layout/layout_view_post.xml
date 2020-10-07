@@ -94,18 +94,89 @@
                 android:layout_marginBottom="50dp"
 
                 >
-
-
-
-
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:outlineAmbientShadowColor="@color/white"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="10dp"
-                    app:cardElevation="5dp"
-                    app:cardUseCompatPadding="true">
+                   >
+                    <com.orion.orion.util.SquareImageView
+                        android:id="@+id/frame"
+                        android:visibility="visible"
+                        android:src="@drawable/square"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        />
+
+                    <com.google.android.exoplayer2.ui.PlayerView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/player_view"
+                        app:resize_mode="fit"
+                        app:hide_on_touch="true"
+                        android:visibility="visible"
+                        app:show_timeout="5000"
+                        app:rewind_increment="10000"
+                        app:fastforward_increment="10000"
+                        app:use_controller="false"
+                        app:surface_type="texture_view"
+                        android:background="@drawable/square"
+                        app:player_layout_id="@layout/exo_simple_player_view"
+                        app:controller_layout_id="@layout/custom_controller"/>
+
+                    <com.orion.orion.util.SquareImageView
+                        android:id="@+id/thumbnail"
+                        android:visibility="visible"
+                        android:src="@drawable/square"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        />
+
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/ic_play_btn"
+                        android:layout_gravity="center"
+                        android:id="@+id/play"/>
+
+                    <ProgressBar
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:visibility="gone"
+                        android:id="@+id/progress_bar"
+                        android:layout_gravity="center"
+                        />
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@drawable/unmute"
+                        android:layout_gravity="bottom"
+                        android:layout_margin="10dp"
+
+                        android:id="@+id/unmute"
+                        />
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_margin="10dp"
+                        android:layout_gravity="bottom"
+
+                        android:visibility="gone"
+                        android:src="@drawable/mute"
+                        android:id="@+id/mute"
+                        />
+                    <TextView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:text="12"
+                        android:textColor="#686868"
+                        android:layout_gravity="right"
+                        android:layout_margin='10dp'
+                        android:id="@+id/duration"/>
+
+
 
                     <com.orion.orion.util.SquareImageView
                         android:id="@+id/post_image"
@@ -114,6 +185,7 @@
                         android:layout_centerHorizontal="true"
                         android:scaleType="centerInside"
                         />
+
                 </androidx.cardview.widget.CardView>
 
             </RelativeLayout>

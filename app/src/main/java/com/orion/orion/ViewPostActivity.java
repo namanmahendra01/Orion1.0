@@ -10,7 +10,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
@@ -19,10 +22,33 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyLog;
+import com.danikula.videocache.HttpProxyCacheServer;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.LoadControl;
+import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -55,6 +81,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+
+import static android.view.View.GONE;
+import static com.orion.orion.util.MyApplication.getProxy;
 
 public class ViewPostActivity extends AppCompatActivity {
     private static final String TAG = "ViewPostFragment";
@@ -64,30 +94,28 @@ public class ViewPostActivity extends AppCompatActivity {
 
     //firebase
     private FirebaseAuth mAuth;
-    private FirebaseMethods mFirebaseMethods;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
     String currentUsername = "";
 
     private Photo mphoto;
-    private int activitynumber = 0;
-    private String photoUsername;
-    private String PhotoUrl;
+    PlayerView playerView;
+    ProgressBar progressBar;
+    boolean play = true;
+    long currentPosition = 0;
+    SimpleExoPlayer simpleExoPlayer;
 
-    private boolean mLikebyCurrentUser;
-    private StringBuilder mUsers;
     private String mLikesString = "";
     private String numberoflike = "0";
     ArrayList<Comment> comments = new ArrayList<>();
 
 
-    private SquareImageView mPostImage;
+    private SquareImageView mPostImage,thumbnail;
     private BottomNavigationViewEx bottomNavigationView;
-    private TextView mBackLabel, mCaption, mUsername, mTimestamp, mLikes, mCommentnumber, mcredit, domain, promoteNum;
-    private ImageView mBackArrow, mEllipses, mStarYellow, mStarWhite, mProfileImage, mComment, promote, promoted;
+    private TextView mBackLabel,duration, mCaption, mUsername, mTimestamp, mLikes, mCommentnumber, mcredit, domain, promoteNum;
+    private ImageView mBackArrow, mEllipses, mStarYellow, mStarWhite, mProfileImage, mComment, promote, promoted,play2, mute, unmute;
 
-    private GestureDetector mgesture;
     private users mCurrentUser;
     private boolean likeByCurrentsUser2;
 
@@ -117,6 +145,17 @@ public class ViewPostActivity extends AppCompatActivity {
         promoteNum = (TextView) findViewById(R.id.promote_number);
 
 
+        play2 = (ImageView) findViewById(R.id.play);
+        mute = (ImageView)findViewById(R.id.mute);
+        unmute = (ImageView)findViewById(R.id.unmute);
+        playerView = findViewById(R.id.player_view);
+        progressBar =findViewById(R.id.progress_bar);
+        duration = (TextView) findViewById(R.id.duration);
+        thumbnail = (SquareImageView) findViewById(R.id.thumbnail);
+
+
+
+
 
 
 
@@ -124,6 +163,9 @@ public class ViewPostActivity extends AppCompatActivity {
         Intent i = getIntent();
         mphoto = i.getParcelableExtra("photo");
         comments = i.getParcelableArrayListExtra("comments");
+
+          duration.setVisibility(View.GONE);
+
 
 
         mEllipses.setOnClickListener(new View.OnClickListener() {
@@ -207,11 +249,235 @@ public class ViewPostActivity extends AppCompatActivity {
         });
 
 
-        Log.d(TAG, "onCreate:kjknjk " + comments.size());
+        if (mphoto.getType().equals("photo")) {
 
-    UniversalImageLoader.setImage(mphoto.getImage_path(), mPostImage, null, "");
+            mPostImage.setVisibility(View.VISIBLE);
+            play2.setVisibility(View.GONE);
+            UniversalImageLoader.setImage(mphoto.getImage_path(), mPostImage, null, "");
 
-        activitynumber = 4;
+        }else{
+           play2.setVisibility(View.VISIBLE);
+          mPostImage.setVisibility(View.GONE);
+        }
+
+//                   ***********get Video***********
+
+
+        DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
+
+
+//                    get thumbnail
+        reference2
+                .child(getString(R.string.dbname_user_photos))
+                .child(mphoto.getUser_id())
+                .child(mphoto.getPhoto_id())
+                .child("thumbnail")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            UniversalImageLoader.setImage(snapshot.getValue().toString(), thumbnail, null, "");
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+//                     play/pause video
+
+        final Handler[] mHandler = new Handler[1];
+        final Runnable[] updateProgressAction = new Runnable[1];
+
+        playerView.getVideoSurfaceView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               progressBar.setVisibility(View.VISIBLE);
+//                if paused
+                if (play) {
+
+                    play = false;
+               play2.setVisibility(View.INVISIBLE);
+
+                    LoadControl loadControl = new DefaultLoadControl();
+                    BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+                    TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
+                    if (simpleExoPlayer != null) {
+
+                        simpleExoPlayer.release();
+                    }
+
+                    simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(ViewPostActivity.this, trackSelector, loadControl);
+
+                    DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
+                            ViewPostActivity.this, Util.getUserAgent(ViewPostActivity.this, "RecyclerView VideoPlayer"));
+                    String mediaUrl = mphoto.getImage_path();
+                    HttpProxyCacheServer proxy = getProxy(ViewPostActivity.this);
+                    String proxyUrl = proxy.getProxyUrl(mediaUrl);
+
+
+                    playerView.setPlayer(simpleExoPlayer);
+
+
+                    playerView.setKeepScreenOn(true);
+                    playerView.setKeepScreenOn(true);
+
+
+                    MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+                            .createMediaSource(Uri.parse(proxyUrl));
+//                    set Volume
+                    if (mute.getVisibility() == View.VISIBLE) {
+                        simpleExoPlayer.setVolume(0f);
+                    } else if (unmute.getVisibility() == View.VISIBLE) {
+                        simpleExoPlayer.setVolume(AudioManager.STREAM_MUSIC);
+                    }
+
+                    simpleExoPlayer.prepare(videoSource);
+                    simpleExoPlayer.seekTo(currentPosition);
+                    simpleExoPlayer.setPlayWhenReady(true);
+                    simpleExoPlayer.getPlaybackState();
+
+
+                    simpleExoPlayer.addListener(new Player.EventListener() {
+                        @Override
+                        public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
+
+                        }
+
+                        @Override
+                        public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+                        }
+
+                        @Override
+                        public void onLoadingChanged(boolean isLoading) {
+
+                        }
+
+                        @Override
+                        public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+
+                            if (playbackState == Player.STATE_BUFFERING) {
+
+                                progressBar.setVisibility(View.VISIBLE);
+
+                            } else if (playbackState == Player.STATE_READY) {
+
+                                duration.setVisibility(View.VISIBLE);
+                               thumbnail.setVisibility(GONE);
+                              progressBar.setVisibility(View.GONE);
+
+//                                display duration
+                                updateProgressAction[0] = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        updateProgress();
+                                    }
+
+                                    private void updateProgress() {
+
+                                        long delayMs = TimeUnit.SECONDS.toMillis(1);
+                                        mHandler[0].postDelayed(updateProgressAction[0], delayMs);
+                                        duration.setText(String.valueOf((int) (simpleExoPlayer.getDuration() - simpleExoPlayer.getCurrentPosition()) / 1000));
+
+                                    }
+
+                                };
+                                mHandler[0] = new Handler();
+                                mHandler[0].post(updateProgressAction[0]);
+
+
+                            } else if (playbackState == Player.STATE_ENDED) {
+
+                                play2.setVisibility(View.VISIBLE);
+                                play = true;
+                              thumbnail.setVisibility(View.VISIBLE);
+                                simpleExoPlayer.seekTo(0);
+                                simpleExoPlayer.setPlayWhenReady(false);
+                                simpleExoPlayer.release();
+
+                            }else if (playbackState==Player.STATE_IDLE){
+                                play2.setVisibility(View.VISIBLE);
+
+                            }
+                        }
+
+                        @Override
+                        public void onRepeatModeChanged(int repeatMode) {
+
+                        }
+
+                        @Override
+                        public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
+                        }
+
+                        @Override
+                        public void onPlayerError(ExoPlaybackException error) {
+                        }
+
+                        @Override
+                        public void onPositionDiscontinuity(int reason) {
+
+                        }
+
+                        @Override
+                        public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+                        }
+
+                        @Override
+                        public void onSeekProcessed() {
+
+                        }
+                    });
+                } else {
+//                    if playing
+                   play = true;
+                    play2.setVisibility(View.VISIBLE);
+                  currentPosition = simpleExoPlayer.getCurrentPosition();
+                    simpleExoPlayer.setPlayWhenReady(false);
+                    simpleExoPlayer.getPlaybackState();
+                    simpleExoPlayer.release();
+
+
+                }
+            }
+        });
+
+//        toggle volume
+        mute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                mute.setVisibility(View.GONE);
+               unmute.setVisibility(View.VISIBLE);
+                if (simpleExoPlayer != null) {
+                    simpleExoPlayer.setVolume(AudioManager.STREAM_MUSIC);
+
+                }
+
+
+            }
+        });
+        unmute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+       mute.setVisibility(View.VISIBLE);
+                unmute.setVisibility(View.GONE);
+                if (simpleExoPlayer != null) {
+                    simpleExoPlayer.setVolume(0f);
+
+                }
+            }
+        });
+
+
+
         getCurrentUser();
 
 
@@ -752,26 +1018,6 @@ public class ViewPostActivity extends AppCompatActivity {
 
     }
 
-    private String getTimestampDifference() {
-
-        String difference = "";
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat(("yyyy-MM-dd'T'HH:mm:ss'Z'"), Locale.ENGLISH);
-        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
-        Date today = c.getTime();
-        sdf.format(today);
-        Date timestamp;
-        final String photoTimestamp = mphoto.getDate_created();
-        try {
-            timestamp = sdf.parse(photoTimestamp);
-            difference = String.valueOf(Math.round(((today.getTime() - timestamp.getTime()) / 1000 / 60 / 60 / 24)));
-        } catch (ParseException e) {
-            Log.e(TAG, "Parse Exception" + e.getMessage());
-            difference = "0";
-        }
-        return difference;
-    }
-
 
 
     private void setupFirebaseAuth() {
@@ -813,4 +1059,19 @@ public class ViewPostActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (simpleExoPlayer!=null){
+            simpleExoPlayer.release();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (simpleExoPlayer!=null){
+            simpleExoPlayer.release();
+        }
+    }
 }
