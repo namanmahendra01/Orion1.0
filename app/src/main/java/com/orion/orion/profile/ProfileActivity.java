@@ -224,10 +224,10 @@ public class ProfileActivity extends AppCompatActivity {
         }.getType();
         imgURLsList = gson.fromJson(json, type);
 
-        if (true) {    //        if no arrayList is present
+        if (imgURLsList==null) {    //        if no arrayList is present
             imgURLsList = new ArrayList<>();
 
-            SetupGridView();             //            make new Arraylist
+            SetupGridView();             //            make new Array List
 
         } else {
             checkUpdate();       //         Check if new post is there
@@ -246,7 +246,6 @@ public class ProfileActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot:snapshot.getChildren()){
                     if (imgURLsList.get(0).getPhoto_id().equals(dataSnapshot.getKey())){
-
                         adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
                         gridRv.setAdapter(adapterGridImage);
                     }else{
@@ -492,7 +491,6 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                    Log.d(TAG, "onBindViewHolder: "+dataSnapshot.getChildrenCount());
 
                     Photo photo = new Photo();
                     Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();

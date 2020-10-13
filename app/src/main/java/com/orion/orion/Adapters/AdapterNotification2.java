@@ -322,14 +322,21 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
     }
 
     private void getpostImage(ImageView imageView, String postId, String postUid) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(context.getString(R.string.dbname_user_photos)).child(postUid).child(postId).child("image_path");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(context.getString(R.string.dbname_user_photos)).child(postUid).child(postId);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) {
                     try {
-                        String img = dataSnapshot.getValue().toString();
-                        UniversalImageLoader.setImage(img, imageView, null, "");
+                        if(dataSnapshot.child("type").equals("photo")){
+                            String img = dataSnapshot.child("image_path").getValue().toString();
+                            UniversalImageLoader.setImage(img, imageView, null, "");
+
+                        }else{
+                            String img = dataSnapshot.child("thumbnail").getValue().toString();
+                            UniversalImageLoader.setImage(img, imageView, null, "");
+
+                        }
 
                     } catch (NullPointerException e) {
                         Log.d(TAG, "onDataChange: " + e.getMessage());

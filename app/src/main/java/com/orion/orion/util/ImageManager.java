@@ -34,6 +34,7 @@ public class ImageManager {
     }
     public static  byte[] getBytesFromBitmap(Bitmap bm, int quality){
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        Log.d(TAG, "getBytesFromBitmap: "+stream.size());
         bm.compress(Bitmap.CompressFormat.JPEG,quality,stream);
         return stream.toByteArray();
     }

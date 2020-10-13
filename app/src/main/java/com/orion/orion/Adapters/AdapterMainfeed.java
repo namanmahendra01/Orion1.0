@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -49,6 +50,7 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -144,6 +146,9 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         ifCurrentUserPromoted(holder, photo);
         holder.duration.setVisibility(View.GONE);
 
+        Log.d(TAG, "onBindViewHolder: "+photo.getType()+photos.size());
+
+
         holder.eclipse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -235,64 +240,26 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
 
 //       ******************* get Image***************
-        DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
 
-        reference1
-                .child(mContext.getString(R.string.dbname_user_photos))
-                .child(photo.getUser_id())
-                .child(photo.getPhoto_id())
-                .child("type")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                        holder.type = snapshot.getValue().toString();
+                        holder.type = photo.getType();
 
                         if (holder.type.equals("photo")) {
-
                             holder.image.setVisibility(View.VISIBLE);
                             holder.play2.setVisibility(View.GONE);
                             ImageLoader imageloader = ImageLoader.getInstance();
                             imageloader.displayImage(photo.getImage_path(), holder.image);
 
                         } else {
+                            UniversalImageLoader.setImage(photo.getThumbnail(), holder.thumbnail, null, "");
+
                             holder.play2.setVisibility(View.VISIBLE);
                             holder.image.setVisibility(View.GONE);
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
 
 //                   ***********get Video***********
 
-
-        DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
-
-
-//                    get thumbnail
-        reference2
-                .child(mContext.getString(R.string.dbname_user_photos))
-                .child(photo.getUser_id())
-                .child(photo.getPhoto_id())
-                .child("thumbnail")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            UniversalImageLoader.setImage(snapshot.getValue().toString(), holder.thumbnail, null, "");
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
 
 
 
@@ -439,7 +406,12 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
                                         long delayMs = TimeUnit.SECONDS.toMillis(1);
                                         mHandler[0].postDelayed(updateProgressAction[0], delayMs);
-                                        holder.duration.setText(String.valueOf((int) (simpleExoPlayer.getDuration() - simpleExoPlayer.getCurrentPosition()) / 1000));
+                                        int sec=(int) (simpleExoPlayer.getDuration() - simpleExoPlayer.getCurrentPosition()) / 1000;
+                                        if (sec>=0){
+                                            String dur=String.valueOf(sec);
+                                            holder.duration.setText(dur);
+
+                                        }
 
                                     }
 
@@ -677,48 +649,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                         });
             }
         });
-
-        holder.footerLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
-                db1.child(mContext.getString(R.string.dbname_user_photos))
-                        .child(photo.getUser_id())
-                        .child(photo.getPhoto_id())
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                holder.photo = snapshot.getValue(Photo.class);
-                                ArrayList<Comment> comments = new ArrayList<>();
-
-                                for (DataSnapshot dSnapshot : snapshot.child("comment").getChildren()) {
-                                    Comment comment = new Comment();
-                                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                                    comments.add(comment);
-
-
-                                }
-
-
-                                Intent i = new Intent(mContext, ViewPostActivity.class);
-                                i.putExtra("photo", holder.photo);
-                                i.putParcelableArrayListExtra("comments", comments);
-
-                                mContext.startActivity(i);
-
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-            }
-        });
-
 
 //        get the object
 
@@ -1016,6 +946,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         SquareImageView image, thumbnail;
         PlayerView playerView;
         ProgressBar progressBar;
+
 
 
         users setting = new users();

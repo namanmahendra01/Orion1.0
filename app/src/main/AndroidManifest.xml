@@ -13,7 +13,6 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
 <!--        <activity android:name=".MainActivity3"></activity>-->
-        <activity android:name=".ViewVideo" />
         <activity android:name=".profile.Account.SignOut" />
         <activity android:name=".profile.Account.Contest" />
         <activity android:name=".profile.Account.Help" />
@@ -42,9 +41,7 @@
         <activity android:name=".contest.ViewContestDetails" />
         <activity android:name=".profile.ViewProfileActivity" />
         <activity android:name=".contest.create.form" />
-        <activity android:name=".contest.joined.fragment_joinedContest" />
-        <activity android:name=".contest.create.fragment_createContest" />
-        <activity android:name=".contest.upcoming.fragment_upcomingContest" />
+
         <activity android:name=".share.NextActivity" />
         <activity android:name=".leaderboard.LeaderboardActivity" />
         <activity
@@ -62,7 +59,7 @@
         <activity
             android:name=".explore.Explore"
             android:windowSoftInputMode="adjustNothing" />
-        <activity android:name=".profile.profile" />
+        <activity android:name=".profile.profile" android:noHistory="true"/>
         <activity android:name=".profile.Account.AccountSettingActivity" />
         <activity
             android:name=".home.MainActivity"

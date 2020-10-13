@@ -318,8 +318,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                   />
-
-                    <TextView
+ <TextView
                         android:id="@+id/credit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -333,6 +332,7 @@
                         android:text="naman"
                         android:textColor="@color/white"
                         android:textSize="10sp" />
+
                 </androidx.cardview.widget.CardView>
 
 

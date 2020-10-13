@@ -25,6 +25,8 @@ import com.orion.orion.R;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.UniversalImageLoader;
 
+import java.io.File;
+
 public class NextActivity extends AppCompatActivity {
 
 
@@ -71,7 +73,9 @@ public class NextActivity extends AppCompatActivity {
 
                 String caption = mCaption.getText().toString();
                 if(intent.hasExtra(getString(R.string.selected_image))){
+
                     imgURL = intent.getStringExtra(getString(R.string.selected_image));
+
                     mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo),caption,imageCount,imgURL,null);
 
 

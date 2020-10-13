@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.graphics.BitmapCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
@@ -54,6 +55,8 @@ import com.orion.orion.profile.Account.AccountSettingActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -101,8 +104,23 @@ public class FirebaseMethods {
             if (bm == null) {
                 bm = ImageManager.getBitmap(imgURL);
             }
+            File file = new File(imgURL);
+            long length = file.length() / 1024; // Size in KB
 
-            byte[] bytes = ImageManager.getBytesFromBitmap(bm, 100);
+//
+            byte[] bytes;
+            if (length<400) {
+                bytes  = ImageManager.getBytesFromBitmap(bm, 100);
+            }else if (length < 600){
+                bytes = ImageManager.getBytesFromBitmap(bm, 75);
+
+            }else if (length < 800){
+              bytes = ImageManager.getBytesFromBitmap(bm, 50);
+
+            }else{
+               bytes = ImageManager.getBytesFromBitmap(bm, 25);
+            }
+
             UploadTask uploadTask = null;
             uploadTask = storageReference.putBytes(bytes);
 

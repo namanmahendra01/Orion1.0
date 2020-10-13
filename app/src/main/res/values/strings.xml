@@ -120,6 +120,10 @@
     <string name="dbname_ChatList">ChatList</string>
     <string name="thumbnail">thumbnail</string>
     <string name="type">type</string>
+    <string name="db_topUsersParams">db_topUsersParams</string>
+    <string name="field_last_updated_topUsers">last_updated_topUsers</string>
+    <string name="field_overall">Overall</string>
+    <string name="field_completed">completed</string>
 
     field_post
 

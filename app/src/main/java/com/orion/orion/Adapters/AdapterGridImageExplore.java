@@ -46,7 +46,7 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.explore_item, parent, false);
-        return new AdapterGridImageExplore.ViewHolder(view);
+        return new ViewHolder(view);
 
     }
 
@@ -54,14 +54,12 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
 
         Photo photo = photos.get(i);
-        YoYo.with(Techniques.Landing).duration(1000).playOn(holder.image);
         UniversalImageLoader.setImage(photo.getImage_path(), holder.image, null, "");
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(mContext.getString(R.string.dbname_users)).child(photo.getUser_id()).child(mContext.getString(R.string.field_username)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 holder.username.setText("@" + snapshot.getValue().toString());
-                YoYo.with(Techniques.Landing).duration(1000).playOn(holder.username);
             }
 
             @Override

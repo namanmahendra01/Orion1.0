@@ -59,6 +59,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
 
+
     //animations
     implementation 'com.daimajia.easing:library:2.0@aar'
     implementation 'com.daimajia.androidanimations:library:2.3@aar'

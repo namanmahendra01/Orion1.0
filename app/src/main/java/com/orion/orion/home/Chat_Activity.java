@@ -464,7 +464,8 @@ Chat_Activity extends AppCompatActivity {
                             queryr1 = DbRef.child(getString(R.string.dbname_ChatList))
                                     .child(snapshot.getValue().toString());
 
-
+                            Long current = System.currentTimeMillis();
+                            long sevenDayEarlier = current-604800000;
                             recievelistener = queryr1.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -473,11 +474,20 @@ Chat_Activity extends AppCompatActivity {
                                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                         x++;
                                         Chat chat = ds.getValue(Chat.class);
-                                        assert chat != null;
-                                        chatlist.add(chat);
-                                        if (x == 10) {
-                                            displayChat();
+                                        if (Long.parseLong(chat.getTimestamp()) < sevenDayEarlier) {
+                                            DatabaseReference DbRef2 = FirebaseDatabase.getInstance().getReference();
+                                            DbRef2.child(getString(R.string.dbname_ChatList))
+                                                    .child(snapshot.getValue().toString())
+                                                    .child(chat.getMessageid())
+                                                    .removeValue();
+                                        } else {
+                                            assert chat != null;
+                                            chatlist.add(chat);
+                                            if (x == 10) {
+                                                displayChat();
+                                            }
                                         }
+                                    }
 
                                         Collections.sort(chatlist);
 
@@ -486,7 +496,7 @@ Chat_Activity extends AppCompatActivity {
                                         displayChat();
 
 
-                                    }
+
                                 }
 //
 
