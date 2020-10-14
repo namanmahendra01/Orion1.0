@@ -763,10 +763,8 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                         photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
 
-                        if (objectMap.get(getString(R.string.thumbnail))!=null){
-                            photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
-
-                        }                        photo.setType(objectMap.get(getString(R.string.type)).toString());
+                        if (objectMap.get(getString(R.string.thumbnail))!=null) photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
+                        photo.setType(objectMap.get(getString(R.string.type)).toString());
 
                         ArrayList<Comment> comments = new ArrayList<>();
 

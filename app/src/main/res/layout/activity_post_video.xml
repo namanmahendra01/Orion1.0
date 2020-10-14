@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/profileToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/white_border">
+
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/backarrow"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/ic_backarrow" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/backarrow"
+                    android:text="Post Video"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/post"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="15dp"
+                    android:text="Post"
+                    android:textColor="@color/dot_dark_screen3"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profileToolbar"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputCaption"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/white"
+            android:hint="Enter and Interesting Title or Caption"
+            android:imeOptions="actionNext"
+            android:inputType="textFilter"
+            android:textColor="@color/white"
+            android:textColorHint="@color/grey"
+            android:textSize="18sp" />
+
+        <View
+            android:id="@+id/captionLine"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@+id/inputCaption"
+            android:background="#E5E6EB" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/captionLine"
+            android:layout_marginTop="10dp"
+            android:paddingVertical="5dp"
+            android:text="Pick a Thumbnail:"
+            android:textColor="@color/brown"
+            android:textSize="24sp" />
+
+        <ImageView
+            android:id="@+id/thumbnailButton"
+            android:layout_width="40sp"
+            android:layout_height="40sp"
+            android:layout_below="@+id/captionLine"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:background="@color/orange"
+            android:paddingVertical="5dp"
+            android:src="@drawable/ic_baseline_add_24"
+            android:layout_alignParentRight="true" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/videoBox"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_below="@+id/thumbnailButton"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:visibility="invisible"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="10dp">
+
+
+            <com.google.android.exoplayer2.ui.PlayerView
+                android:id="@+id/player_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:backgroundTint="@color/black"
+                android:background="@drawable/square"
+                android:visibility="visible"
+                app:controller_layout_id="@layout/custom_controller"
+                app:fastforward_increment="10000"
+                app:hide_on_touch="true"
+                app:player_layout_id="@layout/exo_simple_player_view"
+                app:resize_mode="fit"
+                app:rewind_increment="10000"
+                app:show_timeout="5000"
+                app:surface_type="texture_view"
+                app:use_controller="false" />
+
+            <com.orion.orion.util.SquareImageView
+                android:id="@+id/thumbnail"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:scaleType="fitXY"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/play"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_play_btn" />
+
+            <ImageView
+                android:id="@+id/close"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="5dp"
+                android:layout_gravity="left|top"
+                android:src="@drawable/ic_baseline_close_24" />
+
+            <ImageView
+                android:id="@+id/unmute"
+                android:layout_margin="5dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="bottom"
+                android:src="@drawable/unmute" />
+
+            <ImageView
+                android:id="@+id/mute"
+                android:layout_margin="5dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="bottom"
+                android:src="@drawable/mute"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/duration"
+                android:layout_margin="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_gravity="right"
+                android:text="0s"
+                android:textColor="#686868" />
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/videoBox"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:textColor="@color/colorPrimary"
+            android:textSize="32sp"
+            android:visibility="invisible"
+            tools:text="Progress" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/progress"
+            android:layout_marginTop="10dp"
+            android:max="100"
+            android:progress="0"
+            android:visibility="invisible" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom|end"
+            android:text="Pick Video"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:backgroundTint="@color/brown"
+            app:icon="@drawable/ic_baseline_video_library_24"
+            app:iconTint="@color/white" />
+
+    </RelativeLayout>
+</RelativeLayout>

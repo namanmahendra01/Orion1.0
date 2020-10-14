@@ -7,6 +7,17 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <style name="MyMaterialThemeProfile" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Add attributes here -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="textAppearanceButton">@style/AppTextAppearance.Button</item>
+    </style>
+    <!--To fix rendering in preview -->
+    <style name="AppTextAppearance.Button" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textAllCaps">true</item>
+    </style>
     <style name="BottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
 

@@ -16,11 +16,9 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,7 +30,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,13 +48,12 @@ import com.google.gson.reflect.TypeToken;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Adapters.AdapterGridImage;
 import com.orion.orion.R;
+import com.orion.orion.dialogs.DialogPostSelection;
 import com.orion.orion.models.Comment;
-import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.Like;
 import com.orion.orion.models.Photo;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.Account.AccountSettingActivity;
-import com.orion.orion.share.NextActivity;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.Permissions;
@@ -77,10 +73,8 @@ import java.util.regex.Pattern;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static android.app.Activity.RESULT_OK;
 
-
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity{
 
     public static final int VERIFY_PERMISSION_REQUEST = 1;
     private static final String TAG = "ProfileFragment";
@@ -92,29 +86,23 @@ public class ProfileActivity extends AppCompatActivity {
     ArrayList<Photo> imgURLsList;
     Uri imageUri;
     boolean isKitKat;
-
     //    Profile Widgets
     private ProgressBar mProgressBar;
     private ImageView menu;
-
     private CircleImageView mProfilePhoto;
     private TextView mUsername;
     private TextView mFollowers;
     private TextView mDomain;
-
     private Button editProfile;
-
     private TextView mCreated;
     private TextView mJoined;
     private TextView mWon;
-
     private TextView mDescription;
     private TextView mWebsite;
 
     //    SP
     Gson gson;
     SharedPreferences sp;
-
     private BottomNavigationViewEx bottomNavigationView;
     private LinearLayout share_btn;
     private AdapterGridImage adapterGridImage;
@@ -124,12 +112,11 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
-    ProgressDialog dialog;
+    private ProgressDialog dialog;
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,10 +149,8 @@ public class ProfileActivity extends AppCompatActivity {
         gridRv.setLayoutManager(linearLayoutManager);
         imgURLsList = new ArrayList<>();
 
-
         bottomNavigationView = (BottomNavigationViewEx) findViewById(R.id.BottomNavViewBar);
         mFirebaseMethods = new FirebaseMethods(this);
-
 
         Log.d(TAG, "onCreateView:started");
         setupBottomNavigationView();
@@ -175,39 +160,18 @@ public class ProfileActivity extends AppCompatActivity {
         getFollowerCount();
         getCompDetails();
 
-
         share_btn.setOnClickListener(v -> {
             YoYo.with(Techniques.FadeIn).duration(500).playOn(share_btn);
             if (checkPermissionArray(Permissions.PERMISSIONS)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    isKitKat = true;
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("*/*");
-                    intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[] {"image/*", "video/*"});
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
-                } else {
-                    Intent intent = new Intent();
-                    intent.setType("*/*");
-                    intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[] {"image/*", "video/*"});
-
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
-                }
-            } else {
-                verifyPermission(Permissions.PERMISSIONS);
-
-            }
-
+                DialogPostSelection dialogPostSelection = new DialogPostSelection(ProfileActivity.this);
+                dialogPostSelection.show();
+            } else verifyPermission(Permissions.PERMISSIONS);
         });
-
         menu.setOnClickListener(v -> {
             Intent intent = new Intent(this, AccountSettingActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         });
-
-
         editProfile.setOnClickListener(v -> {
             Intent intent = new Intent(this, AccountSettingActivity.class);
             intent.putExtra(getString(R.string.calling_activity), getString(R.string.profile_activity));
@@ -215,37 +179,29 @@ public class ProfileActivity extends AppCompatActivity {
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         });
     }
-
     private void fetchPhotosFromSp() {
-
         String json = sp.getString("myMedia", null);
-
         Type type = new TypeToken<ArrayList<Photo>>() {
         }.getType();
         imgURLsList = gson.fromJson(json, type);
-
-        if (imgURLsList==null) {    //        if no arrayList is present
+        if (true) {    //        if no arrayList is present
             imgURLsList = new ArrayList<>();
-
-            SetupGridView();             //            make new Array List
+            SetupGridView();             //            make new Arraylist
 
         } else {
             checkUpdate();       //         Check if new post is there
 
         }
     }
-
     private void checkUpdate() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference
-                .child(getString(R.string.dbname_user_photos))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .limitToLast(1);
+        Query query = reference.child(getString(R.string.dbname_user_photos)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).limitToLast(1);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot:snapshot.getChildren()){
                     if (imgURLsList.get(0).getPhoto_id().equals(dataSnapshot.getKey())){
+
                         adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
                         gridRv.setAdapter(adapterGridImage);
                     }else{
@@ -261,12 +217,9 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
     }
-
-
     public void verifyPermission(String[] permissions) {
         ActivityCompat.requestPermissions(this, permissions, VERIFY_PERMISSION_REQUEST);
     }
-
     public boolean checkPermissionArray(String[] permissions) {
 
         for (String check : permissions) {
@@ -276,30 +229,25 @@ public class ProfileActivity extends AppCompatActivity {
         }
         return true;
     }
-
     public boolean checkPermissions(String permission) {
 
         int permissionRequest = ActivityCompat.checkSelfPermission(this, permission);
         return permissionRequest == PackageManager.PERMISSION_GRANTED;
     }
-
     @TargetApi(19)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         String imgPath = "";
         if (data != null && data.getData() != null && resultCode == RESULT_OK) {
-            boolean isImageFromGoogleDrive = false;
             Uri uri = data.getData();
-
             if (isKitKat && DocumentsContract.isDocumentUri(this, uri)) {
                 if ("com.android.externalstorage.documents".equals(uri.getAuthority())) {
                     String docId = DocumentsContract.getDocumentId(uri);
                     String[] split = docId.split(":");
                     String type = split[0];
-
                     if ("primary".equalsIgnoreCase(type)) {
                         imgPath = Environment.getExternalStorageDirectory() + "/" + split[1];
-                        Intent intent = new Intent(this, NextActivity.class);
+                        Intent intent = new Intent(this, PostPhotoActivity.class);
                         intent.putExtra(getString(R.string.selected_image), imgPath);
                         startActivity(intent);
                     } else {
@@ -316,20 +264,16 @@ public class ProfileActivity extends AppCompatActivity {
                             }
                         } else {
                             String rawUserId;
-                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                                rawUserId = "";
-                            } else {
-                                String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-                                String[] folders = DIR_SEPORATOR.split(path);
-                                String lastFolder = folders[folders.length - 1];
-                                boolean isDigit = false;
-                                try {
-                                    Integer.valueOf(lastFolder);
-                                    isDigit = true;
-                                } catch (NumberFormatException ignored) {
-                                }
-                                rawUserId = isDigit ? lastFolder : "";
+                            String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+                            String[] folders = DIR_SEPORATOR.split(path);
+                            String lastFolder = folders[folders.length - 1];
+                            boolean isDigit = false;
+                            try {
+                                Integer.valueOf(lastFolder);
+                                isDigit = true;
+                            } catch (NumberFormatException ignored) {
                             }
+                            rawUserId = isDigit ? lastFolder : "";
                             if (TextUtils.isEmpty(rawUserId)) {
                                 rv.add(rawEmulatedStorageTarget);
                             } else {
@@ -345,7 +289,7 @@ public class ProfileActivity extends AppCompatActivity {
                             File tempf = new File(s + "/" + split[1]);
                             if (tempf.exists()) {
                                 imgPath = s + "/" + split[1];
-                                Intent intent = new Intent(this, NextActivity.class);
+                                Intent intent = new Intent(this, PostPhotoActivity.class);
                                 intent.putExtra(getString(R.string.selected_image), imgPath);
                                 startActivity(intent);
                             }
@@ -354,7 +298,6 @@ public class ProfileActivity extends AppCompatActivity {
                 } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
                     String id = DocumentsContract.getDocumentId(uri);
                     Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
-
                     Cursor cursor = null;
                     String column = "_data";
                     String[] projection = {column};
@@ -395,7 +338,7 @@ public class ProfileActivity extends AppCompatActivity {
                         if (cursor != null && cursor.moveToFirst()) {
                             int column_index = cursor.getColumnIndexOrThrow(column);
                             imgPath = cursor.getString(column_index);
-                            Intent intent = new Intent(this, NextActivity.class);
+                            Intent intent = new Intent(this, PostPhotoActivity.class);
                             intent.putExtra(getString(R.string.selected_image), imgPath);
                             startActivity(intent);
                         }
@@ -404,8 +347,7 @@ public class ProfileActivity extends AppCompatActivity {
                             cursor.close();
                     }
                 } else if ("com.google.android.apps.docs.storage".equals(uri.getAuthority())) {
-                    isImageFromGoogleDrive = true;
-                    Intent intent = new Intent(this, NextActivity.class);
+                    Intent intent = new Intent(this, PostPhotoActivity.class);
                     intent.putExtra(getString(R.string.selected_image), imgPath);
                     startActivity(intent);
                 }
@@ -419,7 +361,7 @@ public class ProfileActivity extends AppCompatActivity {
                     if (cursor != null && cursor.moveToFirst()) {
                         int column_index = cursor.getColumnIndexOrThrow(column);
                         imgPath = cursor.getString(column_index);
-                        Intent intent = new Intent(this, NextActivity.class);
+                        Intent intent = new Intent(this, PostPhotoActivity.class);
                         intent.putExtra(getString(R.string.selected_image), imgPath);
                         startActivity(intent);
                     }
@@ -429,25 +371,19 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             } else if ("file".equalsIgnoreCase(uri.getScheme())) {
                 imgPath = uri.getPath();
-                Intent intent = new Intent(this, NextActivity.class);
+                Intent intent = new Intent(this, PostPhotoActivity.class);
                 intent.putExtra(getString(R.string.selected_image), imgPath);
                 startActivity(intent);
             }
-
-
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
-
     private void getFollowerCount() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(getString(R.string.dbname_follower)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 mFollowers.setText(dataSnapshot.getChildrenCount() +" FANS");
             }
 
@@ -457,18 +393,14 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
-
     private void getCompDetails() {
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(getString(R.string.dbname_contests)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String joinedContests= String.valueOf(snapshot.child(getString(R.string.field_joined_contest)).getChildrenCount());
                 String createdContests= String.valueOf(snapshot.child(getString(R.string.field_created_contest)).getChildrenCount());
-
                 mJoined.setText(joinedContests);
                 mCreated.setText(createdContests);
             }
@@ -479,58 +411,37 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
     }
-
     private void SetupGridView() {
         final ArrayList<Photo> photos = new ArrayList<>();
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference
-                .child(getString(R.string.dbname_user_photos))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        Query query = reference.child(getString(R.string.dbname_user_photos)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
+                    Log.d(TAG, "onBindViewHolder: "+dataSnapshot.getChildrenCount());
                     Photo photo = new Photo();
                     Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
                     try {
-
-
                         photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
-
                         photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
-
                         photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-
                         photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
-
                         photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
-
                         photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-
-                        if (objectMap.get(getString(R.string.thumbnail))!=null){
-                            photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
-
-                        }
-
+                        if (objectMap.get(getString(R.string.thumbnail))!=null) photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
                         photo.setType(objectMap.get(getString(R.string.type)).toString());
-
                         ArrayList<Comment> comments = new ArrayList<>();
-
-                        for (DataSnapshot dSnapshot : singleSnapshot
-                                .child(getString(R.string.field_comment)).getChildren()) {
+                        for (DataSnapshot dSnapshot : singleSnapshot.child(getString(R.string.field_comment)).getChildren()) {
                             Comment comment = new Comment();
                             comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
                             comment.setComment(dSnapshot.getValue(Comment.class).getComment());
                             comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
                             comments.add(comment);
-
                         }
                         photo.setComments(comments);
                         List<Like> likeList = new ArrayList<Like>();
-                        for (DataSnapshot dSnapshot : singleSnapshot
-                                .child(getString(R.string.field_likes)).getChildren()) {
+                        for (DataSnapshot dSnapshot : singleSnapshot.child(getString(R.string.field_likes)).getChildren()) {
                             Like like = new Like();
                             like.setUser_id(dSnapshot.getValue(Like.class).getUser_id());
                             likeList.add(like);
@@ -540,35 +451,23 @@ public class ProfileActivity extends AppCompatActivity {
                         Log.e(TAG, "null pointer exception" + e.getMessage());
                     }
                 }
-
                 imgURLsList.addAll(photos);
                 Collections.reverse(imgURLsList);
-
                 //    Add newly Created ArrayList to Shared Preferences
                 SharedPreferences.Editor editor = sp.edit();
                 String json = gson.toJson(imgURLsList);
                 editor.putString("myMedia", json);
                 editor.apply();
-
                 adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
                 gridRv.setAdapter(adapterGridImage);//
-
-
             }
-
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.d(TAG, "Query Cancelled");
             }
         });
-
-
     }
-
-
     private void setProfileWidgets(users userSetting) {
-
         Log.d(TAG, "onDataChange: 1234" + userSetting.toString());
         UniversalImageLoader.setImage(userSetting.getProfile_photo(), mProfilePhoto, null, "");
         mUsername.setText(userSetting.getUsername());
@@ -578,8 +477,6 @@ public class ProfileActivity extends AppCompatActivity {
         mProgressBar.setVisibility(View.GONE);
         dialog.dismiss();
     }
-
-
     private void setupBottomNavigationView() {
         Log.d(TAG, " setupBottomNavigationView:setting up BottomNavigationView");
         BottomNaavigationViewHelper.setupBottomNavigationView(bottomNavigationView);
@@ -589,33 +486,23 @@ public class ProfileActivity extends AppCompatActivity {
         menuItem.setChecked(true);
 
     }
-
-
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
         mAuth = FirebaseAuth.getInstance();
-
         mAuthListener = firebaseAuth -> {
             FirebaseUser user = firebaseAuth.getCurrentUser();
-
-            if (user != null) {
-                Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
-            } else {
-                Log.d(TAG, "onAuthStateChanged:signed_out");
-            }
+            if (user != null) Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
+            else Log.d(TAG, "onAuthStateChanged:signed_out");
         };
-
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 //retrieve user information from the database
                 setProfileWidgets(Objects.requireNonNull(dataSnapshot.child(getString(R.string.dbname_users)).child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).getValue(users.class)));
                 //retrieve image for the user in question
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -627,8 +514,6 @@ public class ProfileActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-
-
     }
 
     @Override

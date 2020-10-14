@@ -34,7 +34,8 @@ public class UniversalImageLoader {
                 .cacheOnDisk(true).cacheInMemory(true)
                 .cacheOnDisk(true).resetViewBeforeLoading(true)
                 .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
-                .displayer(new FadeInBitmapDisplayer(300)).build();
+//                .displayer(new FadeInBitmapDisplayer(300));
+                .build();
         ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(mcontext)
                 .defaultDisplayImageOptions(defaultOptions)
                 .memoryCache(new WeakMemoryCache())

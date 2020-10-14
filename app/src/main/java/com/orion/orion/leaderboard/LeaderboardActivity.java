@@ -159,7 +159,6 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
             @Override
             public void onTimeReceived(String currentTimeStamp) {
-
                 //initializing formatting for current date
                 int currentYear = Integer.parseInt(currentTimeStamp.substring(0, 4));
                 int currentMonth = Integer.parseInt(currentTimeStamp.substring(5, 7));
@@ -638,7 +637,6 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         setupBottomNavigationView();
         initializeWidgets();
         updateLeaderboard();
-//        firebaseMethods.updateTopUsers();
         sortedByTime.setOnClickListener(v -> {
             String[] timeList = {"All Time", "This Year", "Last Month", "This Month", "Last Week", "This Week"};
             BottomSheetFilter bottomSheet = new BottomSheetFilter(timeList);

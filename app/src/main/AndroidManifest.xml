@@ -4,15 +4,16 @@
     package="com.orion.orion">
 
     <application
+        android:name=".util.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".util.MyApplication"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-<!--        <activity android:name=".MainActivity3"></activity>-->
+
+        <!--        <activity android:name=".MainActivity3"></activity>-->
         <activity android:name=".profile.Account.SignOut" />
         <activity android:name=".profile.Account.Contest" />
         <activity android:name=".profile.Account.Help" />
@@ -31,6 +32,12 @@
             android:theme="@style/Theme.Transparent" />
         <activity android:name=".home.Message_Request" />
         <activity android:name=".profile.ProfileActivity" />
+        <activity
+            android:name=".profile.PostVideoActivity"
+            android:theme="@style/MyMaterialThemeProfile" />
+        <activity
+            android:name=".profile.PostPhotoActivity"
+            android:theme="@style/MyMaterialThemeProfile" />
         <activity android:name=".contest.Contest_Evaluation.Participant_Request" />
         <activity android:name=".contest.result.ResultDeclaredActivity" />
         <activity android:name=".contest.joined.joined_contest_overview_activity" />
@@ -41,8 +48,6 @@
         <activity android:name=".contest.ViewContestDetails" />
         <activity android:name=".profile.ViewProfileActivity" />
         <activity android:name=".contest.create.form" />
-
-        <activity android:name=".share.NextActivity" />
         <activity android:name=".leaderboard.LeaderboardActivity" />
         <activity
             android:name=".login.login"
@@ -59,7 +64,9 @@
         <activity
             android:name=".explore.Explore"
             android:windowSoftInputMode="adjustNothing" />
-        <activity android:name=".profile.profile" android:noHistory="true"/>
+        <activity
+            android:name=".profile.profile"
+            android:noHistory="true" />
         <activity android:name=".profile.Account.AccountSettingActivity" />
         <activity
             android:name=".home.MainActivity"
@@ -82,6 +89,7 @@
     <meta-data
         android:name="com.google.firebase.messaging.some_id"
         android:value="some_id" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />

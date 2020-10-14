@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="500dp"
+    android:layout_height="250dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txt_dia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="25dp"
+        android:text="Plz select the post type to u want to upload?"
+        android:textColor="@android:color/black"
+        android:textSize="16dp"
+        android:paddingBottom="10dp"
+        android:textStyle="bold" />
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/colorAccent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/btnPhoto"
+            android:layout_width="150dp"
+            android:layout_margin="5dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="10">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_gravity="center_horizontal"
+                android:elevation="5dp"
+                android:src="@drawable/ic_photo" />
+
+
+            <Button
+                android:layout_width="150dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@android:color/white"
+                android:text="Photo"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/btnVideo"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="10">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center_horizontal"
+                    android:elevation="5dp"
+                    android:src="@drawable/ic_video" />
+
+
+                <Button
+                    android:layout_width="150dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@android:color/white"
+                    android:text="Video"
+                    android:textColor="@color/colorAccent"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>
