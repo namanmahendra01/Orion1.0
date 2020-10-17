@@ -1246,6 +1246,9 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                         promote.notifyDataSetChanged();
                         flag2 = true;
+                    }else {
+                        promote.notifyDataSetChanged();
+                        flag2 = true;
                     }
 
                 }

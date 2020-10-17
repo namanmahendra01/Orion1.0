@@ -228,7 +228,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         });
 
 
-        numberofPromote(holder.promoteNum, photo.getPhoto_id(), photo.getUser_id());
+        numberofPromote(holder.promoteNum, photo.getPhoto_id(), photo.getUser_id(), holder);
 //            set the comment
         List<Comment> comments = photo.getComments();
         holder.commentnumber.setText(String.valueOf(comments.size()));
@@ -733,8 +733,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             public void onClick(DialogInterface dialog, int which) {
                 Log.d(VolleyLog.TAG, "Rejecting: rejected ");
 
-                holder.promote.setVisibility(View.VISIBLE);
-                holder.promoted.setVisibility(View.GONE);
+                togglePromoteBtn(holder);
 
                 DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                 db.child(mContext.getString(R.string.dbname_promote))
@@ -792,9 +791,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             @Override
             public void onClick(View v) {
 
-                holder.promote.setVisibility(View.GONE);
-                holder.promoted.setVisibility(View.VISIBLE);
-
+                togglePromoteBtn(holder);
 
                 SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
                     @Override
@@ -892,7 +889,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                 .child(photo.getPhoto_id())
                 .child("Promote")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -915,7 +912,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
     }
 
-    private void numberofPromote(TextView promoteNum, String photo_id, String user_id) {
+    private void numberofPromote(TextView promoteNum, String photo_id, String user_id, ViewHolder holder) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(mContext.getString(R.string.dbname_user_photos))
                 .child(user_id)
@@ -927,6 +924,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                 String num = String.valueOf(dataSnapshot.getChildrenCount());
                 promoteNum.setText(num);
 
+
             }
 
             @Override
@@ -937,6 +935,17 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
 
     }
+
+    private void togglePromoteBtn(ViewHolder holder) {
+        if (holder.promote.getVisibility() == View.VISIBLE){
+            holder.promote.setVisibility(View.GONE);
+            holder.promoted.setVisibility(View.VISIBLE);
+    }else{
+            holder.promote.setVisibility(View.VISIBLE);
+            holder.promoted.setVisibility(GONE);
+        }
+}
+
 
 
     @Override
