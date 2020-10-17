@@ -124,6 +124,7 @@
     <string name="field_last_updated_topUsers">last_updated_topUsers</string>
     <string name="field_overall">Overall</string>
     <string name="field_completed">completed</string>
+    <string name="contest_update">contest_update</string>
 
     field_post
 

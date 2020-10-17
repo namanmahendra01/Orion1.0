@@ -4,18 +4,19 @@
     android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primaryBackground">
+    android:layout_marginBottom="20dp"
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/appIcon"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="80dp"
+        android:layout_centerHorizontal="true"
         android:contentDescription="@null"
-        android:src="@drawable/ic_home"
+        android:src="@drawable/o"
         android:tint="@color/primaryTop"
-        android:layout_marginLeft="20dp" />
+        />
 
     <ProgressBar
         android:id="@+id/loginrequestloadingprogressbar"
@@ -34,35 +35,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="130dp"
+        android:layout_below="@+id/appIcon"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         android:orientation="vertical"
         android:visibility="visible">
 
-        <TextView
-            android:id="@+id/WelcomeTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Hello There, Welcome Back"
-            android:textColor="@color/primaryTop"
-            android:textSize="27sp"
-            android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/readItTogetherTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/WelcomeTextView"
-            android:layout_marginTop="10dp"
-            android:text="Come Express With Us"
-            android:textColor="@color/primaryTop"
-            android:textSize="16sp" />
 
         <LinearLayout
             android:id="@+id/inputFields"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/readItTogetherTextView"
             android:orientation="vertical">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -71,7 +55,8 @@
                 android:layout_height="60dp"
                 android:layout_marginTop="15dp"
                 android:inputType="textFilter"
-                android:hint="E-mail / Mobile no."
+                android:hint="E-mail"
+                android:background="@drawable/white_round_button"
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.@"
                 android:textColorHint="@color/grey"
                 android:textColor="@color/white"
@@ -111,51 +96,90 @@
                         android:src="@drawable/ic_visibility_off"/>
 
             </LinearLayout>
-
-            <LinearLayout
+            <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/input_password"
+                android:text="Login"
+                android:id="@+id/btn_login"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+
+                android:textColor="@color/primaryBackground"
+                android:textSize="16sp"
+                android:background="@drawable/white_round_button"/>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:layout_marginTop="20dp"
+    android:orientation="horizontal"
+    >
+            <TextView
+                android:id="@+id/forgotPassword1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                android:padding="5dp"
-                android:layout_weight="100">
-
-                <TextView
-                    android:id="@+id/link_signup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="No account yet?\n Create one"
-                    android:minLines="2"
-                    android:maxLines="2"
-                    android:gravity="start"
-                    android:textColor="@color/primaryTop"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/forgotPassword"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:layout_weight="40"
-                    android:maxLines="2"
-                    android:text="Forgot Password"
-                    android:textColor="@color/primaryTop"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                android:gravity="center_horizontal"
+                android:layout_below="@+id/btn_login"
+                android:maxLines="2"
+                android:text="Forgot your password?"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+               />
+    <TextView
+        android:id="@+id/forgotPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/btn_login"
+        android:maxLines="2"
+        android:text=" Click here"
+        android:textColor="@color/primaryTop"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+</LinearLayout>
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="bottom|center_horizontal"
+>
+
+        <TextView
+                android:id="@+id/link_signup1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="bottom|center_horizontal"
             android:layout_alignParentBottom="true"
-            android:text="Login"
-            android:id="@+id/btn_login"
-            android:textColor="@color/primaryBackground"
+                android:layout_marginBottom="20dp"
+
+                android:maxLines="2"
+                android:minLines="2"
+                android:text="Don't have an account yet?"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+             />
+        <TextView
+            android:id="@+id/link_signup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+android:layout_alignParentBottom="true"
+            android:maxLines="2"
+            android:minLines="2"
+            android:text= " Sign up here"
+            android:textColor="@color/primaryTop"
+            android:layout_toRightOf="@+id/link_signup1"
             android:textSize="16sp"
-            android:background="@drawable/white_round_button"/>
+            android:gravity="bottom|center_horizontal"
+
+            android:textStyle="bold" />
+
+</RelativeLayout>
+
     </RelativeLayout>
 </RelativeLayout>

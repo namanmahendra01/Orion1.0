@@ -83,7 +83,8 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.getValue().toString().equals("true")){
+                                if (snapshot.exists()){
+                                if (snapshot.getValue().toString().equals("true")) {
                                     contestDetails.remove(contestDetail);
 
 //                Add newly Created ArrayList to Shared Preferences
@@ -91,11 +92,11 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
                                     String json = gson.toJson(contestDetails);
                                     editor.putString("cl", json);
                                     editor.apply();
-                                    Log.d(TAG, "dddd: 2"+contestDetails.size());
+                                    Log.d(TAG, "dddd: 2" + contestDetails.size());
 
                                     AdapterMainFeedContest.this.notifyDataSetChanged();
 
-
+                                }
                                 }
                             }
 

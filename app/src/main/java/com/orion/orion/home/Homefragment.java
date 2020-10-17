@@ -105,7 +105,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     TextView username;
     CircleImageView storySeen, story;
 
-//    SP
+    //    SP
     Gson gson;
     SharedPreferences sp;
 
@@ -130,9 +130,6 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 //          Initialize SharedPreference variables
         sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
-
-
-
 
 
 //          fetch   domain from SP
@@ -348,21 +345,106 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         Type type = new TypeToken<ArrayList<ContestDetail>>() {
         }.getType();
         contestlist = gson.fromJson(json, type);
-        if (contestlist == null||contestlist.size()==0) {    //        if no arrayList is present
+        if (contestlist == null || contestlist.size() == 0) {    //        if no arrayList is present
 
             contestlist = new ArrayList<>();
-
+            Log.d(TAG, "checkContestUpdate: 00");
             getcontest();   //            make new Arraylist
 
         } else {
 
-            contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
-            contestRv.setAdapter(contestUpcoming);
+//contestlist.clear();
+//            SharedPreferences.Editor editor = sp.edit();
+//             json = gson.toJson(contestlist);
+//            editor.putString("cl", json);
+//            editor.apply();
 
-            contestUpcoming.notifyDataSetChanged();
+
+            checkContestUpdate();
+
 
         }
 
+    }
+
+    private void checkContestUpdate() {
+        Log.d(TAG, "checkContestUpdate: 1");
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+        db.child(getString(R.string.dbname_users))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(getString(R.string.contest_update))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot1) {
+//                        If snapshot exist,new contest are there
+                        Log.d(TAG, "checkContestUpdate: 2");
+                        if (snapshot1.exists()) {
+                            Log.d(TAG, "checkContestUpdate: 3");
+                            Collections.reverse(contestlist);
+                            for (DataSnapshot snapshot : snapshot1.getChildren()) {
+
+                                final int[] flag = {0};
+                                DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
+                                db1.child(getString(R.string.dbname_contestlist))
+                                        .child(snapshot.getKey())
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                flag[0]++;
+                                                ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
+                                                if (!contestDetail.getResult()) {
+                                                    Log.d(TAG, "checkContestUpdate: 4");
+                                                    contestlist.add(contestDetail);
+
+                                                }
+                                            if (flag[0]==snapshot1.getChildrenCount()) {          //when all update added
+
+                                                Collections.reverse(contestlist);
+                                                //                Add newly Created ArrayList to Shared Preferences
+                                                SharedPreferences.Editor editor = sp.edit();
+                                                String json = gson.toJson(contestlist);
+                                                editor.putString("cl", json);
+                                                editor.apply();
+
+                                                contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
+                                                contestRv.setAdapter(contestUpcoming);
+
+                                                contestUpcoming.notifyDataSetChanged();
+                                                Log.d(TAG, "checkContestUpdate: 6");
+
+
+//                                                    delete update
+                                                DatabaseReference db3= FirebaseDatabase.getInstance().getReference();
+                                                db3.child(getString(R.string.dbname_users))
+                                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                        .child(getString(R.string.contest_update))
+                                                        .removeValue();
+                                            }
+                                            }
+
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
+
+
+                            }
+                        } else {
+                            Log.d(TAG, "checkContestUpdate: 5");
+                            contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
+                            contestRv.setAdapter(contestUpcoming);
+
+                            contestUpcoming.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
 
     //  fetching filtered followerlist  from SharedPreferences
@@ -386,6 +468,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     }
 
     private void checkPostUpdate() {
+
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(getString(R.string.dbname_users))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -531,22 +614,31 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
-                        if (!contestDetail.getResult()) {
-                            contestlist.add(contestDetail);
-                        }
-                    }
+                    if (dataSnapshot.exists()) {
+                        Collections.reverse(contestlist);
+                        int x=0;
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            x++;
+                            ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
+                            if (!contestDetail.getResult()) {
+                                contestlist.add(contestDetail);
+                            }
+                            if (x==dataSnapshot.getChildrenCount()){
+
+                                Collections.reverse(contestlist);
 
 //                        Add newly Created ArrayList to Shared Preferences
-                    SharedPreferences.Editor editor = sp.edit();
-                    String json = gson.toJson(contestlist);
-                    editor.putString("cl", json);
-                    editor.apply();
+                                SharedPreferences.Editor editor = sp.edit();
+                                String json = gson.toJson(contestlist);
+                                editor.putString("cl", json);
+                                editor.apply();
+                            }
+                        }
 
 
+
+                    }
                 }
-
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -590,10 +682,11 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                         photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
 
-                        if (objectMap.get(getString(R.string.thumbnail))!=null){
+                        if (objectMap.get(getString(R.string.thumbnail)) != null) {
                             photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
 
-                        }                        photo.setType(objectMap.get(getString(R.string.type)).toString());
+                        }
+                        photo.setType(objectMap.get(getString(R.string.type)).toString());
 
                         ArrayList<Comment> comments = new ArrayList<>();
 
@@ -680,10 +773,11 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                         photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
 
-                        if (objectMap.get(getString(R.string.thumbnail))!=null){
+                        if (objectMap.get(getString(R.string.thumbnail)) != null) {
                             photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
 
-                        }                        photo.setType(objectMap.get(getString(R.string.type)).toString());
+                        }
+                        photo.setType(objectMap.get(getString(R.string.type)).toString());
 
                         ArrayList<Comment> comments = new ArrayList<>();
 
@@ -763,7 +857,8 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                         photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
 
-                        if (objectMap.get(getString(R.string.thumbnail))!=null) photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
+                        if (objectMap.get(getString(R.string.thumbnail)) != null)
+                            photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
                         photo.setType(objectMap.get(getString(R.string.type)).toString());
 
                         ArrayList<Comment> comments = new ArrayList<>();
@@ -994,6 +1089,12 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                         }
                     }
 
+                    Collections.sort(contestlist, new Comparator<ContestDetail>() {
+                        @Override
+                        public int compare(ContestDetail o1, ContestDetail o2) {
+                            return o2.getTimestamp().compareTo(o1.getTimestamp());
+                        }
+                    });
 //                Add newly Created ArrayList to Shared Preferences
                     SharedPreferences.Editor editor = sp.edit();
                     String json = gson.toJson(contestlist);
@@ -1145,10 +1246,11 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                         photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
 
 
-                        if (objectMap.get(getString(R.string.thumbnail))!=null){
+                        if (objectMap.get(getString(R.string.thumbnail)) != null) {
                             photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
 
-                        }                        photo.setType(objectMap.get(getString(R.string.type)).toString());
+                        }
+                        photo.setType(objectMap.get(getString(R.string.type)).toString());
 
                         ArrayList<Comment> comments = new ArrayList<>();
 
@@ -1216,7 +1318,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     mPaginatedPhotos.add(mPhotos.get(i));
                 }
                 Log.d(TAG, "displayPhotos: sss" + mPaginatedPhotos.size());
-                mAadapter = new AdapterMainfeed(getContext(), mPaginatedPhotos,ListViewRv);
+                mAadapter = new AdapterMainfeed(getContext(), mPaginatedPhotos, ListViewRv);
                 ListViewRv.setAdapter(mAadapter);
 
             } catch (NullPointerException e) {
@@ -1272,7 +1374,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     public void onPause() {
         super.onPause();
 
-        Homefragment obj= new Homefragment();
+        Homefragment obj = new Homefragment();
         obj.releasePlayer();
     }
 
@@ -1280,7 +1382,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     public void onDestroy() {
         super.onDestroy();
 
-        Homefragment obj= new Homefragment();
+        Homefragment obj = new Homefragment();
         obj.releasePlayer();
     }
 
