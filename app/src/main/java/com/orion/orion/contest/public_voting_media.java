@@ -59,6 +59,8 @@ public class public_voting_media extends AppCompatActivity {
         setUpgridview(Conteskey);
 
 
+
+
     }
 
     private void setUpgridview(String contestkey) {
@@ -79,7 +81,11 @@ public class public_voting_media extends AppCompatActivity {
                             participantLists.add(participantList);
                         }
                        imgURLsList.addAll(participantLists);
-                       boolean isImage= imgURLsList.get(0).getMediaLink().substring(8,23).equals("firebasestorage");
+                        boolean isImage=false;
+                        if (imgURLsList.size()!=0){
+                            isImage= imgURLsList.get(0).getMediaLink().substring(8,23).equals("firebasestorage");
+
+                        }
                         adapterGridImage = new AdapterGridImageContest(public_voting_media.this,imgURLsList,isImage);
                         gridRv.setAdapter(adapterGridImage);
                         gridRv.setAdapter(adapterGridImage);

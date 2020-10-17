@@ -96,8 +96,8 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     private AdapterPromote promote;
     private int c = 0;
     String domain;
-    boolean flag1=false,flag2=false,flag3=false,flag4=false;
-    private static int RETRY_DURATION = 3000;
+    boolean flag1 = false, flag2 = false, flag3 = false, flag4 = false;
+    private static int RETRY_DURATION = 1000;
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
     LinearLayout promo;
@@ -138,32 +138,43 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
 
-postReferesh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-    @Override
-    public void onRefresh() {
-        flag1=false;flag2=false;flag3=false;flag4=false;
+        postReferesh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                flag1 = false;
+                flag2 = false;
+                flag3 = false;
+                flag4 = false;
 
-        getFollowerListFromSP();
-        Log.d(TAG, "onRefresh: 11");
+                getFollowerListFromSP();
+                Log.d(TAG, "onRefresh: 11");
 
-        checkReferesh();
+                checkRefresh();
 
 
-    }
+            }
 
-    private void checkReferesh() {
-        if (postReferesh.isRefreshing()&&flag1&&flag2&&(flag3||flag4) ){
-            Log.d(TAG, "onRefresh: 22");
-            postReferesh.setRefreshing(false);
-            flag1=false;flag2=false;flag3=false;flag4=false;
-        }else{
-            Log.d(TAG, "onRefresh: 33");
-            handler.postDelayed(this::checkReferesh, RETRY_DURATION);
+            private void checkRefresh() {
+                Log.d(TAG, "onRefresh: " + flag1 + flag2 + flag3 + flag4);
+                if (postReferesh.isRefreshing() && flag1 && flag2 && (flag3 || flag4)) {
+                    Log.d(TAG, "onRefresh: 22");
+                    postReferesh.setRefreshing(false);
+                    handler.removeCallbacks(this::checkRefresh);
 
-        }
-    }
-});
+                    flag1 = false;
+                    flag2 = false;
+                    flag3 = false;
+                    flag4 = false;
+                } else {
+                    Log.d(TAG, "onRefresh: 33");
+                    handler.postDelayed(this::checkRefresh, RETRY_DURATION);
+
+                }
+            }
+        });
+
 //          fetch   domain from SP
+
         domain = sp.getString("domain", null);
         if (domain == null) {           //   if not present
             DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
@@ -178,6 +189,7 @@ postReferesh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                             domain = dataSnapshot.getValue().toString();
 
 //                 save to SP
+
                             SharedPreferences.Editor editor = sp.edit();
                             editor.putString("domain", domain);
                             editor.apply();
@@ -357,7 +369,7 @@ postReferesh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
         Type type = new TypeToken<ArrayList<Photo>>() {
         }.getType();
         mPhotos = gson.fromJson(json, type);
-        if (mPhotos == null) {                 //    if no arrayList is present
+        if (mPhotos == null||mPhotos.size()==0) {                 //    if no arrayList is present
 
             getPhotos();                    //  make new Arraylist
 
@@ -428,30 +440,30 @@ postReferesh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                                                     contestlist.add(contestDetail);
 
                                                 }
-                                            if (flag[0]==snapshot1.getChildrenCount()) {          //when all update added
+                                                if (flag[0] == snapshot1.getChildrenCount()) {          //when all update added
 
-                                                Collections.reverse(contestlist);
-                                                //                Add newly Created ArrayList to Shared Preferences
-                                                SharedPreferences.Editor editor = sp.edit();
-                                                String json = gson.toJson(contestlist);
-                                                editor.putString("cl", json);
-                                                editor.apply();
+                                                    Collections.reverse(contestlist);
+                                                    //                Add newly Created ArrayList to Shared Preferences
+                                                    SharedPreferences.Editor editor = sp.edit();
+                                                    String json = gson.toJson(contestlist);
+                                                    editor.putString("cl", json);
+                                                    editor.apply();
 
-                                                contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
-                                                contestRv.setAdapter(contestUpcoming);
+                                                    contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
+                                                    contestRv.setAdapter(contestUpcoming);
 
-                                                contestUpcoming.notifyDataSetChanged();
-                                                flag4=true;
-                                                Log.d(TAG, "checkContestUpdate: 6");
+                                                    contestUpcoming.notifyDataSetChanged();
+                                                    flag4 = true;
+                                                    Log.d(TAG, "checkContestUpdate: 6");
 
 
 //                                                    delete update
-                                                DatabaseReference db3= FirebaseDatabase.getInstance().getReference();
-                                                db3.child(getString(R.string.dbname_users))
-                                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                        .child(getString(R.string.contest_update))
-                                                        .removeValue();
-                                            }
+                                                    DatabaseReference db3 = FirebaseDatabase.getInstance().getReference();
+                                                    db3.child(getString(R.string.dbname_users))
+                                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                            .child(getString(R.string.contest_update))
+                                                            .removeValue();
+                                                }
                                             }
 
 
@@ -469,6 +481,7 @@ postReferesh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                             contestRv.setAdapter(contestUpcoming);
 
                             contestUpcoming.notifyDataSetChanged();
+                            flag4 = true;
                         }
                     }
 
@@ -648,14 +661,14 @@ postReferesh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
                     if (dataSnapshot.exists()) {
                         Collections.reverse(contestlist);
-                        int x=0;
+                        int x = 0;
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             x++;
                             ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
                             if (!contestDetail.getResult()) {
                                 contestlist.add(contestDetail);
                             }
-                            if (x==dataSnapshot.getChildrenCount()){
+                            if (x == dataSnapshot.getChildrenCount()) {
 
                                 Collections.reverse(contestlist);
 
@@ -666,7 +679,6 @@ postReferesh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                                 editor.apply();
                             }
                         }
-
 
 
                     }
@@ -1098,56 +1110,60 @@ postReferesh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
     }
 
     private void getcontest() {
+        if (contestlist==null) {
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
-        for (int i = 0; i < mFollowing.size(); i++) {
+            for (int i = 0; i < mFollowing.size(); i++) {
 
-            final int count = i;
+                final int count = i;
 
 
-            Query query = reference
-                    .child(getString(R.string.dbname_contestlist))
-                    .orderByChild("userId")
-                    .equalTo(mFollowing.get(i));
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Query query = reference
+                        .child(getString(R.string.dbname_contestlist))
+                        .orderByChild("userId")
+                        .equalTo(mFollowing.get(i));
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
-                        if (!contestDetail.getResult()) {
-                            contestlist.add(contestDetail);
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
+                            if (!contestDetail.getResult()) {
+                                contestlist.add(contestDetail);
+                            }
                         }
+
+                        Collections.sort(contestlist, new Comparator<ContestDetail>() {
+                            @Override
+                            public int compare(ContestDetail o1, ContestDetail o2) {
+                                return o2.getTimestamp().compareTo(o1.getTimestamp());
+                            }
+                        });
+//                Add newly Created ArrayList to Shared Preferences
+                        SharedPreferences.Editor editor = sp.edit();
+                        String json = gson.toJson(contestlist);
+                        editor.putString("cl", json);
+                        editor.apply();
+
+                        contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
+                        contestRv.setAdapter(contestUpcoming);
+
+                        contestUpcoming.notifyDataSetChanged();
+                        flag3 = true;
+
                     }
 
-                    Collections.sort(contestlist, new Comparator<ContestDetail>() {
-                        @Override
-                        public int compare(ContestDetail o1, ContestDetail o2) {
-                            return o2.getTimestamp().compareTo(o1.getTimestamp());
-                        }
-                    });
-//                Add newly Created ArrayList to Shared Preferences
-                    SharedPreferences.Editor editor = sp.edit();
-                    String json = gson.toJson(contestlist);
-                    editor.putString("cl", json);
-                    editor.apply();
 
-                    contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
-                    contestRv.setAdapter(contestUpcoming);
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    contestUpcoming.notifyDataSetChanged();
-                    flag3=true;
+                    }
+                });
 
-                }
-
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
+            }
+        }else{
+            checkContestUpdate();
         }
 
     }
@@ -1229,7 +1245,7 @@ postReferesh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
 
                         promote.notifyDataSetChanged();
-                        flag2=true;
+                        flag2 = true;
                     }
 
                 }
@@ -1245,98 +1261,102 @@ postReferesh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
 
     private void getPhotos() {
-        mPhotos = new ArrayList<>();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        for (int i = 0; i < mFollowing.size(); i++) {
+        if (mPhotos==null) {
+            mPhotos = new ArrayList<>();
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            for (int i = 0; i < mFollowing.size(); i++) {
 
-            final int count = i;
+                final int count = i;
 
-            Query query = reference
-                    .child(getString(R.string.dbname_user_photos))
-                    .child(mFollowing.get(i))
-                    .orderByChild(getString(R.string.field_user_id))
-                    .equalTo(mFollowing.get(i));
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    long x = 0;
-                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                        x++;
+                Query query = reference
+                        .child(getString(R.string.dbname_user_photos))
+                        .child(mFollowing.get(i))
+                        .orderByChild(getString(R.string.field_user_id))
+                        .equalTo(mFollowing.get(i));
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        long x = 0;
+                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                            x++;
 
-                        Photo photo = new Photo();
-                        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                            Photo photo = new Photo();
+                            Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
-                        photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
+                            photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
 
-                        photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
+                            photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
 
-                        photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+                            photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
 
-                        photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
+                            photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
 
-                        photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
+                            photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
 
-                        photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+                            photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
 
 
-                        if (objectMap.get(getString(R.string.thumbnail)) != null) {
-                            photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
+                            if (objectMap.get(getString(R.string.thumbnail)) != null) {
+                                photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
 
-                        }
-                        photo.setType(objectMap.get(getString(R.string.type)).toString());
-
-                        ArrayList<Comment> comments = new ArrayList<>();
-
-                        for (DataSnapshot dSnapshot : singleSnapshot
-                                .child(getString(R.string.field_comment)).getChildren()) {
-                            Comment comment = new Comment();
-                            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                            comments.add(comment);
-
-                        }
-                        photo.setComments(comments);
-                        mPhotos.add(photo);
-//                        sort array List
-                        Collections.sort(mPhotos, new Comparator<Photo>() {
-                            @Override
-                            public int compare(Photo o1, Photo o2) {
-                                return o2.getDate_created().compareTo(o1.getDate_created());
                             }
-                        });
+                            photo.setType(objectMap.get(getString(R.string.type)).toString());
+
+                            ArrayList<Comment> comments = new ArrayList<>();
+
+                            for (DataSnapshot dSnapshot : singleSnapshot
+                                    .child(getString(R.string.field_comment)).getChildren()) {
+                                Comment comment = new Comment();
+                                comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                                comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                                comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                comments.add(comment);
+
+                            }
+                            photo.setComments(comments);
+                            mPhotos.add(photo);
+//                        sort array List
+                            Collections.sort(mPhotos, new Comparator<Photo>() {
+                                @Override
+                                public int compare(Photo o1, Photo o2) {
+                                    return o2.getDate_created().compareTo(o1.getDate_created());
+                                }
+                            });
 
 //                        Add newly Created ArrayList to Shared Preferences
-                        SharedPreferences.Editor editor = sp.edit();
-                        String json = gson.toJson(mPhotos);
-                        editor.putString("pl", json);
-                        editor.apply();
+                            SharedPreferences.Editor editor = sp.edit();
+                            String json = gson.toJson(mPhotos);
+                            editor.putString("pl", json);
+                            editor.apply();
 
-                    }
-                    if (count >= mFollowing.size() - 1) {
+                        }
+                        if (count >= mFollowing.size() - 1) {
 //                        call display photos
-                        displayPhotos();
+                            displayPhotos();
+
+                        }
+
 
                     }
 
 
-                }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.d(TAG, "Query Cancelled");
+                    }
+                });
 
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.d(TAG, "Query Cancelled");
-                }
-            });
-
-
+            }
+        }else {
+            checkPostUpdate();
         }
 
     }
 
     private void displayPhotos() {
         Log.d(TAG, "display first 10 photo");
-        flag1=true;
+        flag1 = true;
         mPaginatedPhotos = new ArrayList<>();
         if (mPhotos != null) {
 
