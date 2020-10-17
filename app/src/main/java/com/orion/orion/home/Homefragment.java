@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -29,6 +31,7 @@ import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -93,11 +96,14 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     private AdapterPromote promote;
     private int c = 0;
     String domain;
+    boolean flag1=false,flag2=false,flag3=false,flag4=false;
+    private static int RETRY_DURATION = 3000;
+    private static final Handler handler = new Handler(Looper.getMainLooper());
 
     LinearLayout promo;
     private ImageView star, starFill;
     TextView domaintv, footer;
-
+    SwipeRefreshLayout postReferesh;
     ScrollView scrollView;
     private RecyclerView ListViewRv;
     private AdapterMainfeed mAadapter;
@@ -126,12 +132,37 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         promo = view.findViewById(R.id.promo2);
         footer = view.findViewById(R.id.footer);
         scrollView = view.findViewById(R.id.parent_scroll);
+        postReferesh = view.findViewById(R.id.post_refresh);
 
 //          Initialize SharedPreference variables
         sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
 
+postReferesh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+    @Override
+    public void onRefresh() {
+        flag1=false;flag2=false;flag3=false;flag4=false;
 
+        getFollowerListFromSP();
+        Log.d(TAG, "onRefresh: 11");
+
+        checkReferesh();
+
+
+    }
+
+    private void checkReferesh() {
+        if (postReferesh.isRefreshing()&&flag1&&flag2&&(flag3||flag4) ){
+            Log.d(TAG, "onRefresh: 22");
+            postReferesh.setRefreshing(false);
+            flag1=false;flag2=false;flag3=false;flag4=false;
+        }else{
+            Log.d(TAG, "onRefresh: 33");
+            handler.postDelayed(this::checkReferesh, RETRY_DURATION);
+
+        }
+    }
+});
 //          fetch   domain from SP
         domain = sp.getString("domain", null);
         if (domain == null) {           //   if not present
@@ -410,6 +441,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                                                 contestRv.setAdapter(contestUpcoming);
 
                                                 contestUpcoming.notifyDataSetChanged();
+                                                flag4=true;
                                                 Log.d(TAG, "checkContestUpdate: 6");
 
 
@@ -574,7 +606,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     }
 
     private void removeFromContestList(ArrayList<String> list) {
-        Log.d(TAG, "removeFromContestList:1 " + list);
+
         String json = sp.getString("cl", null);
         Type type = new TypeToken<ArrayList<ContestDetail>>() {
         }.getType();
@@ -1105,6 +1137,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     contestRv.setAdapter(contestUpcoming);
 
                     contestUpcoming.notifyDataSetChanged();
+                    flag3=true;
 
                 }
 
@@ -1156,7 +1189,6 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
 
     private void getStory() {
-        long cutoff = new Date().getTime() - TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
         promotelist.clear();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
@@ -1197,6 +1229,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
 
                         promote.notifyDataSetChanged();
+                        flag2=true;
                     }
 
                 }
@@ -1303,7 +1336,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
     private void displayPhotos() {
         Log.d(TAG, "display first 10 photo");
-
+        flag1=true;
         mPaginatedPhotos = new ArrayList<>();
         if (mPhotos != null) {
 
