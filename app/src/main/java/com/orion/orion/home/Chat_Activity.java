@@ -80,7 +80,7 @@ Chat_Activity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ImageView mprofileImage;
-    TextView mUsername, mUserStatus, accept, decline;
+    TextView mUsername, accept, decline;
     EditText mMessages;
     int x = 0;
     private int mResults;
@@ -133,7 +133,6 @@ Chat_Activity extends AppCompatActivity {
         chatLayout = (LinearLayout) findViewById(R.id.chatLayout);
 
 
-        mUserStatus = (TextView) findViewById(R.id.onlineStatus);
         mSendBtn = (ImageButton) findViewById(R.id.sendBtn);
         mMessages = (EditText) findViewById(R.id.messageEt);
         mprofileImage = (ImageView) findViewById(R.id.profile_image);
@@ -729,7 +728,7 @@ Chat_Activity extends AppCompatActivity {
 
                     imageLoader.displayImage(singleSnapshot.getValue(users.class).getProfile_photo(), mprofileImage);
 
-                    mUsername.setText(singleSnapshot.getValue(users.class).getDisplay_name());
+                    mUsername.setText(singleSnapshot.getValue(users.class).getUsername());
 
                 }
             }

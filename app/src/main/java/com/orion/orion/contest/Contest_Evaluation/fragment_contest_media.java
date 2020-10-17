@@ -87,13 +87,10 @@ public class fragment_contest_media extends Fragment {
         imgURLsList = gson.fromJson(json, type);
         if (imgURLsList == null||imgURLsList.size()==0) {    //        if no arrayList is present
             imgURLsList = new ArrayList<>();
-            Log.d(TAG, "getParticipantListFromSPqwer:1 "+imgURLsList);
             adapterGridImage = new AdapterGridImageSub(getContext(),imgURLsList);
             gridRv.setAdapter(adapterGridImage);
 
-
         } else {
-            Log.d(TAG, "getParticipantListFromSPqwer: "+imgURLsList);
 
             adapterGridImage = new AdapterGridImageSub(getContext(),imgURLsList);
             gridRv.setAdapter(adapterGridImage);

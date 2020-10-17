@@ -124,12 +124,12 @@ public class notificationFragment extends Fragment {
         }.getType();
         notifyList = gson.fromJson(json, type);
         if (notifyList == null||notifyList.size()==0) {    //        if no arrayList is present
-
+            Log.d(TAG, "getNotifcationFromSP: 1");
             notifyList = new ArrayList<>();
             readNotification();  //            make new Arraylist
 
         } else {
-
+            Log.d(TAG, "getNotifcationFromSP: 2");
             checkUpdate();
         }
 
@@ -141,15 +141,16 @@ public class notificationFragment extends Fragment {
                 .child("Notifications")
                 .orderByKey()
                 .limitToLast(1)
-          .addListenerForSingleValueEvent(new ValueEventListener() {
+          .addValueEventListener(new ValueEventListener() {
               @Override
               public void onDataChange(@NonNull DataSnapshot snapshot) {
                   for (DataSnapshot snapshot1:snapshot.getChildren()){
+                      Log.d(TAG, "getNotifcationFromSP: 3");
                       if (notifyList.get(0).getTimeStamp().equals(snapshot1.getKey())){
-
+                          Log.d(TAG, "getNotifcationFromSP: 4");
                           displayNotification();
                       }else{
-
+                          Log.d(TAG, "getNotifcationFromSP: 5");
                           updateNotificationList();
                       }
                   }
@@ -175,8 +176,15 @@ public class notificationFragment extends Fragment {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        int x=0;
                         for (DataSnapshot snapshot1:snapshot.getChildren()){
+                            x++;
+                            if (x==1){
+                               continue;
+                            }
+
                             Notification notification=snapshot1.getValue(Notification.class);
+                            Log.d(TAG, "getNotifcationFromSP: 6"+notification);
                             notifyList.add(notification);
                         }
                         Collections.reverse(notifyList);

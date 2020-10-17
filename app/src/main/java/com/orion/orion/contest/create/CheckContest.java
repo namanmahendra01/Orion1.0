@@ -344,9 +344,9 @@ public class CheckContest extends AppCompatActivity {
         hashMap.put("place_2", p2Tv.getText().toString());
         hashMap.put("place_3", p3Tv.getText().toString());
         hashMap.put("total_prize", totalprize.getText().toString());
-        hashMap.put("jname_1", juryname1.getText().toString());
-        hashMap.put("jname_2", juryname2.getText().toString());
-        hashMap.put("jname_3", juryname3.getText().toString());
+        hashMap.put("jname_1", jurypl1.getText().toString());
+        hashMap.put("jname_2", jurypl2.getText().toString());
+        hashMap.put("jname_3", jurypl3.getText().toString());
         hashMap.put("host", hostedby.getText().toString());
         hashMap.put("openFor", openfor.getText().toString());
         hashMap.put("timestamp", timeStamp);

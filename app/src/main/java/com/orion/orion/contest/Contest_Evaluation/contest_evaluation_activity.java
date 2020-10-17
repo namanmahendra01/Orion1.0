@@ -61,19 +61,17 @@ public class contest_evaluation_activity extends AppCompatActivity {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new fragment_edit_contest());
         adapter.addFragment(new fragment_contest_participants());
-        adapter.addFragment(new fragment_contest_media());
         adapter.addFragment(new fragment_contest_overview());
 
         mViewPager.setAdapter(adapter);
 
         TabLayout tablayout = (TabLayout) findViewById(R.id.tabs);
-        tablayout.setTabMode(TabLayout.MODE_AUTO);
+
         tablayout.setupWithViewPager(mViewPager);
 //        for giving icon to them
         tablayout.getTabAt(0).setText("Edit");
         tablayout.getTabAt(1).setText("Participants");
-        tablayout.getTabAt(2).setText("Submissions");
-        tablayout.getTabAt(3).setText("Overview");
+        tablayout.getTabAt(2).setText("Overview");
 
 
     }

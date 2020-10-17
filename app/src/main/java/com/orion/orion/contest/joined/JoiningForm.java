@@ -17,6 +17,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,6 +50,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.orion.orion.profile.ProfileActivity.VERIFY_PERMISSION_REQUEST;
@@ -56,7 +58,7 @@ import static com.orion.orion.profile.ProfileActivity.VERIFY_PERMISSION_REQUEST;
 public class JoiningForm extends AppCompatActivity {
     private static final String TAG = "JoiningForm";
 
-    private EditText nameEt, collegeEt;
+    private EditText nameEt, collegeEt, urlEt;
     private ImageView idIv, submissionIv;
     TextView warn;
     private Button submitBtn, idBtn, mediaBtn;
@@ -69,6 +71,8 @@ public class JoiningForm extends AppCompatActivity {
     private LinearLayout a1, a2, a3;
     int imageCount = 0;
     String openfor = "";
+    LinearLayout mediaLinear, imageLinear;
+    String type = "";
     String p5 = "p5", p6 = "p6";
 
     //firebase
@@ -95,6 +99,7 @@ public class JoiningForm extends AppCompatActivity {
 
         nameEt = findViewById(R.id.nameEt);
         collegeEt = findViewById(R.id.collegeEt);
+        urlEt = findViewById(R.id.url_submission);
 
         submitBtn = findViewById(R.id.submitBtn);
         idBtn = findViewById(R.id.selectid);
@@ -105,10 +110,12 @@ public class JoiningForm extends AppCompatActivity {
         a1 = findViewById(R.id.college);
         a2 = findViewById(R.id.collegeid);
         warn = findViewById(R.id.warn);
+        imageLinear = findViewById(R.id.ImageLinearLayout);
+        mediaLinear = findViewById(R.id.mediaLinearLayout);
 
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-
+        Log.d(TAG, "onCreate: llll"+userId+"  "+contestId);
         db.child(getString(R.string.dbname_contests))
                 .child(userId)
                 .child(getString(R.string.created_contest))
@@ -116,8 +123,32 @@ public class JoiningForm extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        CreateForm createForm = new CreateForm();
+                        CreateForm createForm = dataSnapshot.getValue(CreateForm.class);
                         openfor = createForm.getOpenFor();
+                        type = createForm.getFiletype();
+
+                        Log.d(TAG, "onDataChange: "+type+"  "+createForm);
+                        if (type.equals("Image")) {
+                            imageLinear.setVisibility(View.VISIBLE);
+                            submissionIv.setVisibility(View.VISIBLE);
+                            mediaLinear.setVisibility(View.GONE);
+
+                        } else {
+                            mediaLinear.setVisibility(View.VISIBLE);
+                            imageLinear.setVisibility(View.GONE);
+                            submissionIv.setVisibility(View.GONE);
+
+                        }
+                        if (openfor.equals("Students")) {
+                            a1.setVisibility(View.VISIBLE);
+                            a2.setVisibility(View.VISIBLE);
+                            idIv.setVisibility(View.VISIBLE);
+                        } else if (openfor.equals("All")) {
+                            a1.setVisibility(View.GONE);
+                            a2.setVisibility(View.GONE);
+                            idIv.setVisibility(View.GONE);
+
+                        }
 
                     }
 
@@ -126,16 +157,7 @@ public class JoiningForm extends AppCompatActivity {
 
                     }
                 });
-        if (openfor.equals("Students")) {
-            a1.setVisibility(View.VISIBLE);
-            a2.setVisibility(View.VISIBLE);
-            idIv.setVisibility(View.VISIBLE);
-        } else if (openfor.equals("All")) {
-            a1.setVisibility(View.GONE);
-            a2.setVisibility(View.GONE);
-            idIv.setVisibility(View.GONE);
 
-        }
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contestlist));
         ref.child(contestId)
                 .child("participantlist")
@@ -213,8 +235,8 @@ public class JoiningForm extends AppCompatActivity {
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                boolean ok =checkValidity();
-                if (true) {
+                boolean ok = checkValidity();
+                if (ok) {
 
                     SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
                         @Override
@@ -241,6 +263,9 @@ public class JoiningForm extends AppCompatActivity {
                                     .push().getKey();
 
 
+                            if (!type.equals("Image")) {
+                                mediaLink=urlEt.getText().toString();
+                            }
                             HashMap<String, Object> hashMap = new HashMap<>();
                             hashMap.put("name", nameEt.getText().toString());
                             hashMap.put("college", collegeEt.getText().toString());
@@ -266,6 +291,7 @@ public class JoiningForm extends AppCompatActivity {
                             hashMap2.put("joiningKey", JoiningKey);
                             hashMap2.put("totalScore", 0);
                             hashMap2.put("contestkey", contestId);
+                            hashMap2.put("mediaLink", mediaLink);
                             hashMap2.put("userid", FirebaseAuth.getInstance().getCurrentUser().getUid());
                             db2.child(getString(R.string.dbname_request))
                                     .child(getString(R.string.dbname_participantList))
@@ -275,7 +301,9 @@ public class JoiningForm extends AppCompatActivity {
 
 
                             mFirebaseMethods.uploadContest(imageCount, idLink, null, contestId, p5, JoiningKey);
-                            mFirebaseMethods.uploadContest(imageCount, mediaLink, null, contestId, p6, JoiningKey);
+                            if (!type.equals("Image")) {
+                                mFirebaseMethods.uploadContest(imageCount, mediaLink, null, contestId, p6, JoiningKey);
+                            }
 
                             Log.e(SNTPClient.TAG, rawDate);
 
@@ -300,11 +328,7 @@ public class JoiningForm extends AppCompatActivity {
     }
 
     public boolean checkValidity() {
-        boolean fieldsOk = EditTextifFilled(new EditText[]{nameEt});
 
-        if (fieldsOk) {
-            return false;
-        }
 
         if (openfor.equals("Students")) {
             if (collegeEt.getText().equals("") || idIv.getDrawable() == null) {
@@ -312,25 +336,26 @@ public class JoiningForm extends AppCompatActivity {
             }
 
         }
-        if (submissionIv.getDrawable() == null) {
-            return false;
+        if (type.equals("Image")) {
+            if (submissionIv.getDrawable() == null) {
+                return false;
+
+            } else {
+                return isValidUrl(urlEt.getText().toString());
+            }
+
         }
 
         return true;
 
     }
 
-    private boolean EditTextifFilled(EditText[] fields) {
-        for (int i = 0; i < fields.length; i++) {
-            EditText currentfield = fields[i];
-            if (currentfield.getText().toString().length() <= 0) {
-                return true;
-            }
-        }
-        return false;
-
-
+    private boolean isValidUrl(String url) {
+        Pattern p = Patterns.WEB_URL;
+        Matcher m = p.matcher(url.toLowerCase());
+        return m.matches();
     }
+
 
     public void verifyPermission(String[] permissions) {
         ActivityCompat.requestPermissions(

@@ -136,16 +136,18 @@ public class fragment_joinedContest extends Fragment {
     //  fetching JoinList  from SharedPreferences
     private void getJoinListFromSP() {
         String json = sp.getString("joinlist", null);
-
+        Log.d(TAG, "getJoinListFromSP: 3");
         Type type = new TypeToken<ArrayList<JoinForm>>() {
         }.getType();
         contestlist = gson.fromJson(json, type);
         if (contestlist == null) {    //        if no arrayList is present
             contestlist = new ArrayList<>();
-
+            Log.d(TAG, "getJoinListFromSP: 1");
             getContest();             //            make new Arraylist
 
         } else {
+            Log.d(TAG, "getJoinListFromSP: 2");
+
             checkJoinUpdate();       //         Check if new contest is there
 
         }
@@ -170,7 +172,7 @@ public class fragment_joinedContest extends Fragment {
 
                                     if (a.getJoiningKey().equals(snapshot1.getKey())){
 
-                                        contestlist.get(x).setStatus(snapshot1.getValue().toString());
+                                        a.setStatus(snapshot1.getValue().toString());
                                     }
                                     x++;
                                 }
@@ -217,14 +219,27 @@ public class fragment_joinedContest extends Fragment {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot snapshot1:snapshot.getChildren()){
-                            if (contestlist.get(0).getJoiningKey().equals(snapshot1.getKey())){
+                        if (snapshot.exists()) {
+                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                if (contestlist.size() != 0) {
+                                    if (contestlist.get(0).getJoiningKey().equals(snapshot1.getKey())) {
+                                        Log.d(TAG, "getJoinListFromSP :5 ");
 
-                                displaycontest();
-                            }else{
+                                        displaycontest();
+                                    } else {
+                                        Log.d(TAG, "getJoinListFromSP :6");
 
-                                updateCreateList();
+                                        updateCreateList();
+                                    }
+                                } else {
+                                    Log.d(TAG, "getJoinListFromSP : 7 ");
+
+                                    updateCreateList();
+                                }
                             }
+                        }else{
+                            Log.d(TAG, "getJoinListFromSP :4 ");
+                            updateCreateList();
                         }
                     }
 
@@ -237,37 +252,35 @@ public class fragment_joinedContest extends Fragment {
 
     private void updateCreateList() {
 
-        Collections.reverse(contestlist);
-        DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
-        refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+        contestlist.clear();
+            DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
+            refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .child(getString(R.string.field_joined_contest))
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                JoinForm joinForm = snapshot1.getValue(JoinForm.class);
 
-                .child(getString(R.string.field_joined_contest))
-                .orderByKey()
-                .startAt(contestlist.get(contestlist.size()-1).getJoiningKey())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot snapshot1:snapshot.getChildren()){
-                            JoinForm joinForm = snapshot1.getValue(JoinForm.class);
+                                contestlist.add(joinForm);
+                            }
+                            Collections.reverse(contestlist);
 
-                            contestlist.add(joinForm);
+                            //    Add newly Created ArrayList to Shared Preferences
+                            SharedPreferences.Editor editor = sp.edit();
+                            String json = gson.toJson(contestlist);
+                            editor.putString("joinlist", json);
+                            editor.apply();
+
+                            displaycontest();
                         }
-                        Collections.reverse(contestlist);
 
-                        //    Add newly Created ArrayList to Shared Preferences
-                        SharedPreferences.Editor editor = sp.edit();
-                        String json = gson.toJson(contestlist);
-                        editor.putString("joinlist", json);
-                        editor.apply();
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                        displaycontest();
-                    }
+                        }
+                    });
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
 
 
     }

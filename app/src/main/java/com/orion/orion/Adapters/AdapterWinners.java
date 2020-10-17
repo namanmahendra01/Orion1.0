@@ -3,6 +3,7 @@ package com.orion.orion.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,8 +69,24 @@ public class AdapterWinners extends RecyclerView.Adapter<AdapterWinners.ViewHold
 
                  holder.rankNum.setText(String.valueOf(i+1));
                  getParticipantDetails(mparticipantList.getUserid(), holder.username, holder.profile,holder.displayname);
-                 UniversalImageLoader.setImage(mparticipantList.getMediaLink(), holder.media, null, mAppend);
                  DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
+                 holder.media.setOnClickListener(new View.OnClickListener() {
+                     @Override
+                     public void onClick(View view) {
+                         if (mparticipantList.getMediaLink().substring(8,23).equals("firebasestorage")) {
+                             Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
+                             i.putExtra("imageLink", mparticipantList.getMediaLink());
+                             i.putExtra("view", "No");
+
+                             mContext.startActivity(i);
+                         }else{
+                             Uri uri = Uri.parse(mparticipantList.getMediaLink());
+                             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                             mContext.startActivity(intent);
+                         }
+                     }
+                 });
 
 
 
@@ -141,20 +158,7 @@ public class AdapterWinners extends RecyclerView.Adapter<AdapterWinners.ViewHold
                 mContext.startActivity(i);
             }
         });
-        holder.media.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-
-                Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
-                i.putExtra("imageLink",mparticipantList.getMediaLink());
-                i.putExtra("contestkey", mparticipantList.getContestkey());
-                i.putExtra("joiningkey",mparticipantList.getJoiningKey());
-                i.putExtra("view","No");
-
-                mContext.startActivity(i);
-            }
-        });
 
 
 
@@ -192,7 +196,7 @@ public class AdapterWinners extends RecyclerView.Adapter<AdapterWinners.ViewHold
 
         private TextView username,displayname,rankNum;
         private CircleImageView profile;
-        private ImageView media;
+        private TextView media;
         users user = new users();
 
 

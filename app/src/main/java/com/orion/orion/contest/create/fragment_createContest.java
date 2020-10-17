@@ -147,7 +147,6 @@ public class fragment_createContest extends Fragment {
         contestlist = gson.fromJson(json, type);
         if (contestlist == null) {    //        if no arrayList is present
             contestlist = new ArrayList<>();
-
             getContest();             //            make new Arraylist
 
         } else {
@@ -174,7 +173,7 @@ public class fragment_createContest extends Fragment {
 
                                     if (a.getContestkey().equals(snapshot1.getKey())){
 
-                                        contestlist.get(x).setStatus(snapshot1.getValue().toString());
+                                        a.setStatus(snapshot1.getValue().toString());
                                     }
                                     x++;
                                 }
@@ -242,12 +241,12 @@ public class fragment_createContest extends Fragment {
     private void updateCreateList() {
 
         Collections.reverse(contestlist);
+        contestlist.clear();
         DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
         refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
 
                 .child(getString(R.string.field_created_contest))
-                .orderByKey()
-                .startAt(contestlist.get(contestlist.size()-1).getContestkey())
+
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {

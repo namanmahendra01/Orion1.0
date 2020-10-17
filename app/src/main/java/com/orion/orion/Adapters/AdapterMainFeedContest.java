@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import com.orion.orion.R;
 import com.orion.orion.contest.ViewContestDetails;
 import com.orion.orion.contest.joined.JoiningForm;
@@ -41,7 +42,9 @@ import static com.android.volley.VolleyLog.TAG;
 
 public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeedContest.ViewHolder> {
     private String mAppend = "";
-
+    //    SP
+    Gson gson;
+    SharedPreferences sp;
 
     String timestamp = "";
 
@@ -67,6 +70,42 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
 
         ContestDetail contestDetail = contestDetails.get(i);
+
+
+//          Initialize SharedPreference variables
+        sp = mContext.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        gson = new Gson();
+
+        Log.d(TAG, "dddd: 1"+contestDetails.size()+contestDetail.getResult());
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist));
+                ref.child(contestDetail.getContestId())
+                .child("result")
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.getValue().toString().equals("true")){
+                                    contestDetails.remove(contestDetail);
+
+//                Add newly Created ArrayList to Shared Preferences
+                                    SharedPreferences.Editor editor = sp.edit();
+                                    String json = gson.toJson(contestDetails);
+                                    editor.putString("cl", json);
+                                    editor.apply();
+                                    Log.d(TAG, "dddd: 2"+contestDetails.size());
+
+                                    AdapterMainFeedContest.this.notifyDataSetChanged();
+
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+        Log.d(TAG, "dddd: kkl"+contestDetails.size());
 
 
         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
@@ -281,12 +320,13 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                CreateForm createForm = dataSnapshot.getValue(CreateForm.class);
-                title.setText(createForm.getTitle());
-                domain.setText(createForm.getDomain().toString());
+                if (dataSnapshot.exists()) {
+                    CreateForm createForm = dataSnapshot.getValue(CreateForm.class);
+                    title.setText(createForm.getTitle());
+                    domain.setText(createForm.getDomain().toString());
 
-                UniversalImageLoader.setImage(createForm.getPoster(), poster, null, mAppend);
-
+                    UniversalImageLoader.setImage(createForm.getPoster(), poster, null, mAppend);
+                }
             }
 
             @Override

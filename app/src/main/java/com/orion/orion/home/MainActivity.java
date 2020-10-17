@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity
         tablayout.setupWithViewPager(mViewPager);
 //        for giving icon to them
         tablayout.getTabAt(0).setIcon(R.drawable.ic_notification);
-        tablayout.getTabAt(1).setText("ORION");
+        tablayout.getTabAt(1).setIcon(R.drawable.o);;
         tablayout.getTabAt(2).setIcon(R.drawable.ic_messages);
 
 

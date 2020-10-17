@@ -82,11 +82,40 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
 //        get data
 
         Promote promote= promoteList.get(i);
+
         Log.d(TAG, "onBindViewHolder: pos"+i);
 
         if (promote.getPromoterId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
             myHolder.delete.setVisibility(View.VISIBLE);
+        }else{
+            myHolder.delete.setVisibility(View.GONE);
+
         }
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child(context.getString(R.string.dbname_user_photos))
+                .child(promote.getUserid())
+                .child(promote.getPhotoid())
+                .child("thumbnail")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (!snapshot.getValue().toString().equals("")){
+                            myHolder.image=snapshot.getValue().toString();
+                        }else{
+                            myHolder.image=promote.getPhotoLink();
+
+                        }
+                        setWidgets(promote.getUserid(),myHolder.image,myHolder.username,myHolder.post);
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
 
         myHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,7 +165,7 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
                 .setValue("true");
 
 
-        setWidgets(promote.getUserid(),promote.getPhotoLink(),myHolder.username,myHolder.post);
+
 
 
 
@@ -231,7 +260,7 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
         TextView username;
         ImageView post,delete;
         Photo photo;
-        Comment comment;
+        String image="";
 
         public MyHolder(@NonNull View itemView) {
 

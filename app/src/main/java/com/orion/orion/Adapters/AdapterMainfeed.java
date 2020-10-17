@@ -28,6 +28,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyLog;
+import com.google.android.exoplayer2.DefaultLoadControl.Builder;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -47,6 +48,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultAllocator;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
@@ -98,7 +100,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
     public interface ReleasePlayer {
         default void releasePlayer() {
-            if (simpleExoPlayer!=null) {
+            if (simpleExoPlayer != null) {
                 simpleExoPlayer.release();
             }
 
@@ -114,6 +116,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
     private String currentUsername = "";
     private String numberoflike = "0";
 
+
     private FirebaseMethods mFirebaseMethods;
     private boolean notify = false;
 
@@ -122,7 +125,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
     public AdapterMainfeed(Context mContext, List<Photo> photos, RecyclerView recyclerView) {
         this.mContext = mContext;
         this.photos = photos;
-        this.recyclerView=recyclerView;
+        this.recyclerView = recyclerView;
     }
 
 
@@ -146,7 +149,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         ifCurrentUserPromoted(holder, photo);
         holder.duration.setVisibility(View.GONE);
 
-        Log.d(TAG, "onBindViewHolder: "+photo.getType()+photos.size());
+        Log.d(TAG, "onBindViewHolder: " + photo.getType() + photos.size());
 
 
         holder.eclipse.setOnClickListener(new View.OnClickListener() {
@@ -225,8 +228,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         });
 
 
-
-
         numberofPromote(holder.promoteNum, photo.getPhoto_id(), photo.getUser_id());
 //            set the comment
         List<Comment> comments = photo.getComments();
@@ -242,25 +243,23 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 //       ******************* get Image***************
 
 
-                        holder.type = photo.getType();
+        holder.type = photo.getType();
 
-                        if (holder.type.equals("photo")) {
-                            holder.image.setVisibility(View.VISIBLE);
-                            holder.play2.setVisibility(View.GONE);
-                            ImageLoader imageloader = ImageLoader.getInstance();
-                            imageloader.displayImage(photo.getImage_path(), holder.image);
+        if (holder.type.equals("photo")) {
+            holder.image.setVisibility(View.VISIBLE);
+            holder.play2.setVisibility(View.GONE);
+            ImageLoader imageloader = ImageLoader.getInstance();
+            imageloader.displayImage(photo.getImage_path(), holder.image);
 
-                        } else {
-                            UniversalImageLoader.setImage(photo.getThumbnail(), holder.thumbnail, null, "");
+        } else {
+            UniversalImageLoader.setImage(photo.getThumbnail(), holder.thumbnail, null, "");
 
-                            holder.play2.setVisibility(View.VISIBLE);
-                            holder.image.setVisibility(View.GONE);
-                        }
+            holder.play2.setVisibility(View.VISIBLE);
+            holder.image.setVisibility(View.GONE);
+        }
 
 
 //                   ***********get Video***********
-
-
 
 
 //        check if playerView if visible on scrolling
@@ -278,7 +277,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                                     || scrollBounds.height() < holder.playerView.getHeight()) {
 //                                partially visible
 
-                                if (holder.playerView.getVisibility()==GONE){
+                                if (holder.playerView.getVisibility() == GONE) {
                                     releasePlayer();
                                     holder.playerView.setVisibility(View.VISIBLE);
 
@@ -298,7 +297,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                     }
 
                     private void releasePlayer() {
-                        if (simpleExoPlayer!=null) {
+                        if (simpleExoPlayer != null) {
                             holder.play2.setVisibility(View.VISIBLE);
                             holder.play = true;
                             holder.thumbnail.setVisibility(View.VISIBLE);
@@ -328,6 +327,8 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                     holder.play2.setVisibility(View.INVISIBLE);
 
                     LoadControl loadControl = new DefaultLoadControl();
+
+
                     BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
                     TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
                     if (simpleExoPlayer != null) {
@@ -389,10 +390,10 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
                                 holder.progressBar.setVisibility(View.VISIBLE);
 
-                            } else if (playbackState == Player.STATE_READY) {
 
-                                holder.duration.setVisibility(View.VISIBLE);
+                            } else if (playbackState == Player.STATE_READY) {
                                 holder.thumbnail.setVisibility(GONE);
+                                holder.duration.setVisibility(View.VISIBLE);
                                 holder.progressBar.setVisibility(View.GONE);
 
 //                                display duration
@@ -406,9 +407,9 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
                                         long delayMs = TimeUnit.SECONDS.toMillis(1);
                                         mHandler[0].postDelayed(updateProgressAction[0], delayMs);
-                                        int sec=(int) (simpleExoPlayer.getDuration() - simpleExoPlayer.getCurrentPosition()) / 1000;
-                                        if (sec>=0){
-                                            String dur=String.valueOf(sec);
+                                        int sec = (int) (simpleExoPlayer.getDuration() - simpleExoPlayer.getCurrentPosition()) / 1000;
+                                        if (sec >= 0) {
+                                            String dur = String.valueOf(sec);
                                             holder.duration.setText(dur);
 
                                         }
@@ -429,7 +430,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                                 simpleExoPlayer.setPlayWhenReady(false);
                                 simpleExoPlayer.release();
 
-                            }else if (playbackState==Player.STATE_IDLE){
+                            } else if (playbackState == Player.STATE_IDLE) {
                                 holder.play2.setVisibility(View.VISIBLE);
 
                             }
@@ -721,7 +722,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
     }
 
 
-
     private void unPromotePost(Photo photo, ViewHolder holder) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle("Remove Promotion");
@@ -772,7 +772,13 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         TextView cancel = bottomSheetView.findViewById(R.id.cancel);
         TextView promote = bottomSheetView.findViewById(R.id.promote);
         ImageView post = bottomSheetView.findViewById(R.id.postBs);
-        UniversalImageLoader.setImage(photo.getImage_path(), post, null, "");
+        if (photo.getType().equals("photo")) {
+            UniversalImageLoader.setImage(photo.getImage_path(), post, null, "");
+        } else {
+            UniversalImageLoader.setImage(photo.getThumbnail(), post, null, "");
+
+        }
+
         username.setText(currentUsername);
 
 
@@ -948,7 +954,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         ProgressBar progressBar;
 
 
-
         users setting = new users();
         com.orion.orion.models.users user = new users();
         StringBuilder users;
@@ -957,11 +962,10 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         boolean likeByCurrentsUser2;
         boolean play = true;
         long currentPosition = 0;
-RelativeLayout postRelLayout,headerLatout,footerLayout;
+        RelativeLayout postRelLayout, headerLatout, footerLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
 
 
             username = (TextView) itemView.findViewById(R.id.username);
@@ -988,9 +992,9 @@ RelativeLayout postRelLayout,headerLatout,footerLayout;
             progressBar = itemView.findViewById(R.id.progress_bar);
             duration = (TextView) itemView.findViewById(R.id.duration);
             thumbnail = (SquareImageView) itemView.findViewById(R.id.thumbnail);
-            postRelLayout =  itemView.findViewById(R.id.post_imagelayout);
-            footerLayout =  itemView.findViewById(R.id.promotion);
-            headerLatout =  itemView.findViewById(R.id.header);
+            postRelLayout = itemView.findViewById(R.id.post_imagelayout);
+            footerLayout = itemView.findViewById(R.id.promotion);
+            headerLatout = itemView.findViewById(R.id.header);
 
 
             credit = (TextView) itemView.findViewById(R.id.credit);

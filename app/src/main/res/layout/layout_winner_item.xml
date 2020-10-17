@@ -73,10 +73,13 @@
                         android:textColor="@color/grey"/>
                 </LinearLayout>
 
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:id="@+id/mediaW1"
+                    android:text="View Submission"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
                     android:layout_marginLeft="50dp"/>
 
 

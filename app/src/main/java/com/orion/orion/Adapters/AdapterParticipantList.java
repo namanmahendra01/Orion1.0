@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -159,38 +160,56 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMediaLink());
-                                                photoRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                if (mparticipantLists.getMediaLink() == null || mparticipantLists.getMediaLink().equals("")
+                                                        ||mparticipantLists.getMediaLink().substring(8,23).equals("firebasestorage")) {
 
-                                                        DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
-                                                        ref2
-                                                                .child(mContext.getString(R.string.dbname_participantList))
-                                                                .child(mparticipantLists.getContestkey())
-                                                                .child(mparticipantLists.getJoiningKey())
-                                                                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void aVoid) {
-
-                                                                //    Add newly Created ArrayList to Shared Preferences
-                                                                participantLists.remove(participantLists.get(i));
-                                                                SharedPreferences.Editor editor = sp.edit();
-                                                                String json = gson.toJson(participantLists);
-                                                                editor.putString(mparticipantLists.getContestkey(), json);
-                                                                editor.apply();
+                                                    //    Add newly Created ArrayList to Shared Preferences
+                                                    participantLists.remove(participantLists.get(i));
+                                                    SharedPreferences.Editor editor = sp.edit();
+                                                    String json = gson.toJson(participantLists);
+                                                    editor.putString(mparticipantLists.getContestkey(), json);
+                                                    editor.apply();
 
 
-                                                                AdapterParticipantList.this.notifyDataSetChanged();
+                                                    AdapterParticipantList.this.notifyDataSetChanged();
 
 
-                                                                dialog.dismiss();
-                                                            }
-                                                        });
+                                                    dialog.dismiss();
 
-                                                    }
-                                                });
+                                                }else {
 
+                                                    StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMediaLink());
+                                                    photoRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+
+                                                            DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
+                                                            ref2
+                                                                    .child(mContext.getString(R.string.dbname_participantList))
+                                                                    .child(mparticipantLists.getContestkey())
+                                                                    .child(mparticipantLists.getJoiningKey())
+                                                                    .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void aVoid) {
+
+                                                                    //    Add newly Created ArrayList to Shared Preferences
+                                                                    participantLists.remove(participantLists.get(i));
+                                                                    SharedPreferences.Editor editor = sp.edit();
+                                                                    String json = gson.toJson(participantLists);
+                                                                    editor.putString(mparticipantLists.getContestkey(), json);
+                                                                    editor.apply();
+
+
+                                                                    AdapterParticipantList.this.notifyDataSetChanged();
+
+
+                                                                    dialog.dismiss();
+                                                                }
+                                                            });
+
+                                                        }
+                                                    });
+                                                }
 
                                             }
                                         });
@@ -253,11 +272,19 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                 submission.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
-                        i.putExtra("imageLink", mparticipantLists.getMediaLink());
-                        i.putExtra("view", "No");
+                        if (mparticipantLists.getMediaLink().substring(8,23).equals("firebasestorage")) {
+                            Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
+                            i.putExtra("imageLink", mparticipantLists.getMediaLink());
+                            i.putExtra("view", "No");
 
-                        mContext.startActivity(i);
+                            mContext.startActivity(i);
+                        }else{
+                            Uri uri = Uri.parse(mparticipantLists.getMediaLink());
+                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                            mContext.startActivity(intent);
+                        }
+
+
 
                     }
                 });

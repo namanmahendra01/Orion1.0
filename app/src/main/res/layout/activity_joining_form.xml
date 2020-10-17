@@ -108,6 +108,32 @@
 
 
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:visibility="gone"
+                android:id="@+id/mediaLinearLayout"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Submit Link to media"
+                    android:textColor="@color/black"
+                    android:layout_marginLeft="20dp"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center_vertical"
+                    android:textSize="20sp"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/url_submission"
+                    android:background="@color/white"
+                    android:layout_margin="10dp"/>
+
+
+
+            </LinearLayout>
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -119,11 +145,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:id="@+id/ImageLinearLayout"
                 android:orientation="horizontal">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Submit your media: "
+                    android:text="Submit Image: "
                     android:textColor="@color/black"
                     android:layout_marginLeft="20dp"
                     android:layout_gravity="center_horizontal"

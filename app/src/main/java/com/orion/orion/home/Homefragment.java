@@ -348,7 +348,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         Type type = new TypeToken<ArrayList<ContestDetail>>() {
         }.getType();
         contestlist = gson.fromJson(json, type);
-        if (contestlist == null) {    //        if no arrayList is present
+        if (contestlist == null||contestlist.size()==0) {    //        if no arrayList is present
 
             contestlist = new ArrayList<>();
 
@@ -826,19 +826,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
 
     }
-    private boolean isViewVisible(View view) {
-        Rect scrollBounds = new Rect();
-        scrollView.getDrawingRect(scrollBounds);
 
-        float top = view.getY();
-        float bottom = top + view.getHeight();
-
-        if (scrollBounds.top < top && scrollBounds.bottom > bottom) {
-            return true;
-        } else {
-            return false;
-        }
-    }
     private void removeUpdate() {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(getString(R.string.dbname_users))

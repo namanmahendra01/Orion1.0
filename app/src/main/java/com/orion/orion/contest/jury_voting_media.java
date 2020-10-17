@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -341,6 +342,19 @@ ArrayList<String> list= new ArrayList<>(Collections.nCopies(4,"0"));
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                                         link[0] = dataSnapshot.getValue().toString();
+                                        if (link[0].substring(8,23).equals("firebasestorage")) {
+                                            Intent i = new Intent(jury_voting_media.this, activity_view_media.class);
+                                            i.putExtra("imageLink", link[0]);
+                                            i.putExtra("contestkey", contestkey);
+                                            i.putExtra("joiningkey", joiningKey);
+                                            i.putExtra("view", "No");
+
+                                            startActivity(i);
+                                        }else{
+                                            Uri uri = Uri.parse(link[0]);
+                                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                            startActivity(intent);
+                                        }
                                     }
 
                                     @Override
@@ -349,13 +363,7 @@ ArrayList<String> list= new ArrayList<>(Collections.nCopies(4,"0"));
                                     }
                                 });
 
-                        Intent i = new Intent(jury_voting_media.this, activity_view_media.class);
-                        i.putExtra("imageLink", link[0]);
-                        i.putExtra("contestkey", contestkey);
-                        i.putExtra("joiningkey", joiningKey);
-                        i.putExtra("view", "No");
 
-                        startActivity(i);
 
                     }
                 });
@@ -448,14 +456,20 @@ ArrayList<String> list= new ArrayList<>(Collections.nCopies(4,"0"));
                 t2v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        if (markList.get(1).substring(8,23).equals("firebasestorage")) {
+                            Intent i = new Intent(jury_voting_media.this, activity_view_media.class);
+                            i.putExtra("imageLink", markList.get(1));
+                            i.putExtra("contestkey", contestkey);
+                            i.putExtra("joiningkey", joiningKey);
+                            i.putExtra("view", "No");
 
-                        Intent i = new Intent(jury_voting_media.this, activity_view_media.class);
-                        i.putExtra("imageLink", markList.get(1));
-                        i.putExtra("contestkey", contestkey);
-                        i.putExtra("joiningkey", joiningKey);
-                        i.putExtra("view", "No");
+                            startActivity(i);
+                        }else{
+                            Uri uri = Uri.parse(markList.get(1));
+                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                            startActivity(intent);
+                        }
 
-                        startActivity(i);
 
                     }
                 });

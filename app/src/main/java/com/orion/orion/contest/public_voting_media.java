@@ -3,6 +3,7 @@ package com.orion.orion.contest;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,12 +48,11 @@ public class public_voting_media extends AppCompatActivity {
 
 
         gridRv.setHasFixedSize(true);
-        GridLayoutManager linearLayoutManager=new GridLayoutManager(this,3);
+        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
         gridRv.setLayoutManager(linearLayoutManager);
 
         imgURLsList=new ArrayList<>();
-        adapterGridImage = new AdapterGridImageContest(this,imgURLsList);
-        gridRv.setAdapter(adapterGridImage);
+
 
         Intent i = getIntent();
         String Conteskey = i.getStringExtra("contestId");
@@ -78,6 +79,9 @@ public class public_voting_media extends AppCompatActivity {
                             participantLists.add(participantList);
                         }
                        imgURLsList.addAll(participantLists);
+                       boolean isImage= imgURLsList.get(0).getMediaLink().substring(8,23).equals("firebasestorage");
+                        adapterGridImage = new AdapterGridImageContest(public_voting_media.this,imgURLsList,isImage);
+                        gridRv.setAdapter(adapterGridImage);
                         gridRv.setAdapter(adapterGridImage);
 
                     }

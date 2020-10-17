@@ -224,36 +224,6 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
             }
         });
 
-//        DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
-//
-//        Query userquery = ref
-//                .child(context.getString(R.string.dbname_users))
-//                .orderByChild(context.getString(R.string.field_user_id))
-//                .equalTo(mparticipantLists.getUserid());
-//        userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-//
-//                    holder.user = singleSnapshot.getValue(users.class);
-//
-//                }
-//
-//
-//            }
-//
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//                Log.d(VolleyLog.TAG, "Query Cancelled");
-//            }
-//        });
-//
-//
-//
-//    }
-//
-//    }
     }
 
     private void bottomSheet(String msg2, String host) {
@@ -327,8 +297,7 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) {
-                    try {
-                        if(dataSnapshot.child("type").equals("photo")){
+                        if(dataSnapshot.child("type").getValue().toString().equals("photo")){
                             String img = dataSnapshot.child("image_path").getValue().toString();
                             UniversalImageLoader.setImage(img, imageView, null, "");
 
@@ -337,14 +306,6 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
                             UniversalImageLoader.setImage(img, imageView, null, "");
 
                         }
-
-                    } catch (NullPointerException e) {
-                        Log.d(TAG, "onDataChange: " + e.getMessage());
-
-                    }
-
-                }else{
-
                 }
             }
 

@@ -224,7 +224,8 @@ public class PostVideoActivity extends AppCompatActivity {
     private void postVideo() {
         Log.d(TAG, "postVideo: started");
         caption = inputCaption.getText().toString();
-        if (videoUri != null && progress.getText().equals("100% completed") && imageUri != null && caption.length()<150) {
+        boolean flag= progress.getText().equals("100% completed")||progress.getVisibility()!=View.VISIBLE;
+        if (videoUri != null && flag && imageUri != null && caption.length()<150) {
             Log.d(TAG, "postVideo: preparing to upload");
             File f = new File(Objects.requireNonNull(videoUri.getPath()));
             long size = f.length();

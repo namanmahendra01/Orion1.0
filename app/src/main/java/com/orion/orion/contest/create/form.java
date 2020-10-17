@@ -98,8 +98,8 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
     private RadioButton students;
     private RadioGroup PictureVideoDocument;
     private RadioButton picture;
-    private RadioButton video;
-    private RadioButton document;
+    private RadioButton mediaLink;
+
     private TextView selectDomain;
 
 
@@ -296,12 +296,10 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                 if (picture.getId() == checkedId) {
                     fileType = picture.getText().toString();
                 }
-                if (video.getId() == checkedId) {
-                    fileType = video.getText().toString();
+                if (mediaLink.getId() == checkedId) {
+                    fileType = mediaLink.getText().toString();
                 }
-                if (document.getId() == checkedId) {
-                    fileType = document.getText().toString();
-                }
+
             }
         });
         selectDomain.setOnClickListener(v -> {
@@ -1250,8 +1248,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
         students = findViewById(R.id.student);
         PictureVideoDocument = findViewById(R.id.PictureVideoDocument);
         picture = findViewById(R.id.picture);
-        video = findViewById(R.id.video);
-        document = findViewById(R.id.Document);
+        mediaLink = findViewById(R.id.Media_Link);
         selectDomain = findViewById(R.id.selectDomain);
 
         //layout 2 widgets

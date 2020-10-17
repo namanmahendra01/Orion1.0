@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.renderscript.Sampler;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -161,12 +162,21 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                 submission.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
-                        i.putExtra("imageLink", mparticipantLists.getMediaLink());
-                        i.putExtra("view", "No");
+                        if (mparticipantLists.getMediaLink() != null && !mparticipantLists.getMediaLink().equals("")) {
 
-                        mContext.startActivity(i);
+                            if (mparticipantLists.getMediaLink().substring(8, 23).equals("firebasestorage")) {
+                                Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
+                                i.putExtra("imageLink", mparticipantLists.getMediaLink());
+                                i.putExtra("view", "No");
 
+                                mContext.startActivity(i);
+                            } else {
+                                Uri uri = Uri.parse(mparticipantLists.getMediaLink());
+                                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                mContext.startActivity(intent);
+                            }
+
+                        }
                     }
                 });
                 idcard.setOnClickListener(new View.OnClickListener() {
@@ -212,20 +222,24 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                 ((FragmentActivity) mContext).overridePendingTransition(0,0);
                                 mContext.startActivity(((FragmentActivity) mContext).getIntent());
                                 ((FragmentActivity) mContext).overridePendingTransition(0,0);
-                                StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMediaLink());
-                                photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        // File deleted successfully
-                                        Log.d(TAG, "onSuccess: deleted file");
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception exception) {
-                                        // Uh-oh, an error occurred!
-                                        Log.d(TAG, "onFailure: did not delete file");
-                                    }
-                                });
+                                if (mparticipantLists.getMediaLink() == null || mparticipantLists.getMediaLink().equals("")||mparticipantLists.getMediaLink().substring(8,23).equals("firebasestorage")) {
+
+                                }else{
+                                    StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMediaLink());
+                                    photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            // File deleted successfully
+                                            Log.d(TAG, "onSuccess: deleted file");
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception exception) {
+                                            // Uh-oh, an error occurred!
+                                            Log.d(TAG, "onFailure: did not delete file");
+                                        }
+                                    });
+                                }
 
                                 bottomSheetDialog.dismiss();
 
