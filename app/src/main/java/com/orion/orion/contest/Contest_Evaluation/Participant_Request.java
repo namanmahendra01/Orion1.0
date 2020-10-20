@@ -33,7 +33,7 @@ public class Participant_Request extends AppCompatActivity {
 
     private int mResults;
     private FirebaseAuth fAuth;
-    private TextView request;
+
     String Conteskey;
 
     private AdapterParticipantRequest adapterParticipantRequest;
@@ -53,8 +53,7 @@ public class Participant_Request extends AppCompatActivity {
         participantRv.setLayoutManager(linearLayoutManager);
 
         participantLists = new ArrayList<>();
-        adapterParticipantRequest = new AdapterParticipantRequest(this, participantLists);
-        participantRv.setAdapter(adapterParticipantRequest);
+
         participantRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -124,6 +123,7 @@ public class Participant_Request extends AppCompatActivity {
                 }
                 Log.d(TAG, "participant: sss" + paginatedparticipantList.size());
                 adapterParticipantRequest = new AdapterParticipantRequest(Participant_Request.this, paginatedparticipantList);
+                adapterParticipantRequest.setHasStableIds(true);
                 participantRv.setAdapter(adapterParticipantRequest);
 
             } catch (NullPointerException e) {
@@ -155,13 +155,14 @@ public class Participant_Request extends AppCompatActivity {
                     paginatedparticipantList.add(participantLists.get(i));
 
                 }
-                mResults = mResults + iterations;
                 participantRv.post(new Runnable() {
                     @Override
                     public void run() {
-                        adapterParticipantRequest.notifyDataSetChanged();
+                        adapterParticipantRequest.notifyItemRangeInserted(mResults,iterations);
                     }
                 });
+                mResults = mResults + iterations;
+
 
             }
 

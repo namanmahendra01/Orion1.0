@@ -284,6 +284,7 @@ public class messagesfragment extends Fragment {
                 }
                 Log.d(TAG, "chatslist: sss" + paginateduserList.size());
                 adaterChatList = new AdaterChatList(getContext(), paginateduserList);
+                adaterChatList.setHasStableIds(true);
                 recyclerView.setAdapter(adaterChatList);
                 x++;
 
@@ -316,13 +317,14 @@ public class messagesfragment extends Fragment {
                     paginateduserList.add(userlist2.get(i));
 
                 }
-                mResults = mResults + iterations;
                 recyclerView.post(new Runnable() {
                     @Override
                     public void run() {
-                        adaterChatList.notifyDataSetChanged();
+                        adaterChatList.notifyItemRangeInserted(mResults,iterations);
                     }
                 });
+                mResults = mResults + iterations;
+
 
             }
 

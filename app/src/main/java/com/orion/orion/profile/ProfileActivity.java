@@ -146,6 +146,10 @@ public class ProfileActivity extends AppCompatActivity{
         gridRv = (RecyclerView) findViewById(R.id.gridRv);
         gridRv.setHasFixedSize(true);
         GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 3);
+        gridRv.setDrawingCacheEnabled(true);
+        gridRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+        linearLayoutManager.setItemPrefetchEnabled(true);
+        linearLayoutManager.setInitialPrefetchItemCount(20);
         gridRv.setLayoutManager(linearLayoutManager);
         imgURLsList = new ArrayList<>();
 
@@ -203,6 +207,7 @@ public class ProfileActivity extends AppCompatActivity{
                     if (imgURLsList.get(0).getPhoto_id().equals(dataSnapshot.getKey())){
 
                         adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
+                        adapterGridImage.setHasStableIds(true);
                         gridRv.setAdapter(adapterGridImage);
                     }else{
                         SetupGridView();
@@ -459,6 +464,8 @@ public class ProfileActivity extends AppCompatActivity{
                 editor.putString("myMedia", json);
                 editor.apply();
                 adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
+                adapterGridImage.setHasStableIds(true);
+
                 gridRv.setAdapter(adapterGridImage);//
             }
             @Override

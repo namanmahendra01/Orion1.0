@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -68,8 +71,14 @@ public class fragment_contest_participants extends Fragment {
     private TextView request;
     private int mResults;
     String Conteskey;
-    boolean notify=false;
+    boolean notify = false;
     private FirebaseMethods mFirebaseMethods;
+
+    SwipeRefreshLayout participantRefresh;
+    boolean flag1 = false;
+    private static int RETRY_DURATION = 1000;
+    private static final Handler handler = new Handler(Looper.getMainLooper());
+
     //    SP
     Gson gson;
     SharedPreferences sp;
@@ -90,6 +99,7 @@ public class fragment_contest_participants extends Fragment {
         View view = inflater.inflate(R.layout.fragment_participant, container, false);
 
         mFirebaseMethods = new FirebaseMethods(getActivity());
+        participantRefresh = view.findViewById(R.id.participant_refresh);
 
         Bundle b = getActivity().getIntent().getExtras();
         Conteskey = b.getString("contestId");
@@ -141,8 +151,7 @@ public class fragment_contest_participants extends Fragment {
         participantRv.setLayoutManager(linearLayoutManager);
 
         participantLists = new ArrayList<>();
-        adapterParticipantList = new AdapterParticipantList(getContext(), participantLists);
-        participantRv.setAdapter(adapterParticipantList);
+
 
         fAuth = FirebaseAuth.getInstance();
 
@@ -159,11 +168,34 @@ public class fragment_contest_participants extends Fragment {
             }
         });
 
-       getParticipantListFromSP();
+
+        participantRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                flag1 = false;
+
+                getParticipantListFromSP();
+                checkRefresh();
 
 
+            }
+
+            private void checkRefresh() {
+                if (participantRefresh.isRefreshing() && flag1) {
+                    participantRefresh.setRefreshing(false);
+                    handler.removeCallbacks(this::checkRefresh);
+
+                    flag1 = false;
+
+                } else {
+                    handler.postDelayed(this::checkRefresh, RETRY_DURATION);
+
+                }
+            }
+        });
         return view;
     }
+
     //  fetching ParticipantList  from SharedPreferences
     private void getParticipantListFromSP() {
         String json = sp.getString(Conteskey, null);
@@ -171,13 +203,13 @@ public class fragment_contest_participants extends Fragment {
         Type type = new TypeToken<ArrayList<ParticipantList>>() {
         }.getType();
         participantLists = gson.fromJson(json, type);
-        if (participantLists == null||participantLists.size()==0) {    //        if no arrayList is present
+        if (participantLists == null || participantLists.size() == 0) {    //        if no arrayList is present
             participantLists = new ArrayList<>();
             Log.d(TAG, "ttt 1");
             fetchParticipants();             //            make new Arraylist
 
         } else {
-            Log.d(TAG, "ttt 2"+participantLists);
+            Log.d(TAG, "ttt 2" + participantLists);
             checkUpdate();       //         Check if new paricipant is there
 
         }
@@ -205,7 +237,7 @@ public class fragment_contest_participants extends Fragment {
                                     updateList();
                                 }
                             }
-                        }else{
+                        } else {
                             updateList();
                         }
                     }
@@ -247,7 +279,6 @@ public class fragment_contest_participants extends Fragment {
                             displayParticipant();
 
 
-
                         } else {
                             fetchParticipants();
                         }
@@ -260,7 +291,7 @@ public class fragment_contest_participants extends Fragment {
                 });
     }
 
-    private void  fetchParticipants() {
+    private void fetchParticipants() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(getString(R.string.dbname_participantList))
                 .child(Conteskey)
@@ -284,7 +315,7 @@ public class fragment_contest_participants extends Fragment {
                             displayParticipant();
 
 
-                        }else {
+                        } else {
                             participantLists.clear();
                             SharedPreferences.Editor editor = sp.edit();
                             String json = gson.toJson(participantLists);
@@ -301,6 +332,7 @@ public class fragment_contest_participants extends Fragment {
                     }
                 });
     }
+
     private void bottomsheet() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
 
@@ -326,13 +358,13 @@ public class fragment_contest_participants extends Fragment {
                     builder.setPositiveButton("Send", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            notify=true;
+                            notify = true;
 
                             String noti = "Contest Host send you Message.Click here to see.///" + msg1;
                             for (int x = 0; x < participantLists.size(); x++) {
 
                                 if (notify) {
-                                    mFirebaseMethods.sendNotification(participantLists.get(x).getUserid(), "", "Contest Host send you a Message.Its important.","Contest");
+                                    mFirebaseMethods.sendNotification(participantLists.get(x).getUserid(), "", "Contest Host send you a Message.Its important.", "Contest");
                                 }
 
                                 addToHisNotification(participantLists.get(x).getUserid(), noti);
@@ -403,7 +435,7 @@ public class fragment_contest_participants extends Fragment {
 
     private void displayParticipant() {
         Log.d(TAG, "display first 10 participant");
-
+        flag1 = true;
         paginatedparticipantList = new ArrayList<>();
         if (participantLists != null) {
 
@@ -420,6 +452,7 @@ public class fragment_contest_participants extends Fragment {
                 }
                 Log.d(TAG, "participant: sss" + paginatedparticipantList.size());
                 adapterParticipantList = new AdapterParticipantList(getContext(), paginatedparticipantList);
+                adapterParticipantList.setHasStableIds(true);
                 participantRv.setAdapter(adapterParticipantList);
 
             } catch (NullPointerException e) {
@@ -451,13 +484,14 @@ public class fragment_contest_participants extends Fragment {
                     paginatedparticipantList.add(participantLists.get(i));
 
                 }
-                mResults = mResults + iterations;
                 participantRv.post(new Runnable() {
                     @Override
                     public void run() {
-                        adapterParticipantList.notifyDataSetChanged();
+                        adapterParticipantList.notifyItemRangeInserted(mResults,iterations);
                     }
                 });
+                mResults = mResults + iterations;
+
 
             }
 

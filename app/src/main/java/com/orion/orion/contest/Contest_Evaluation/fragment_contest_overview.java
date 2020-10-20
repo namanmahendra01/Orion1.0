@@ -733,9 +733,12 @@ public class fragment_contest_overview extends Fragment {
 
 
         rankList = new AdapterRankList(getContext(), participantLists);
+        rankList.setHasStableIds(true);
         rankRv.setAdapter(rankList);
 
         winnerList = new AdapterWinners(getContext(), participantLists2);
+        winnerList.setHasStableIds(true);
+
         winnerRv.setAdapter(winnerList);
     }
 

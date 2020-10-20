@@ -171,7 +171,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                                     editor.apply();
 
 
-                                                    AdapterParticipantList.this.notifyDataSetChanged();
+                                                    AdapterParticipantList.this.notifyItemRemoved(i);
 
 
                                                     dialog.dismiss();
@@ -200,7 +200,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                                                     editor.apply();
 
 
-                                                                    AdapterParticipantList.this.notifyDataSetChanged();
+                                                                    AdapterParticipantList.this.notifyItemRemoved(i);
 
 
                                                                     dialog.dismiss();
@@ -378,7 +378,10 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                 });
     }
 
-
+    public long getItemId(int position) {
+        ParticipantList form = participantLists.get(position);
+        return form.getJoiningKey().hashCode();
+    }
     @Override
     public int getItemCount() {
         return participantLists.size();

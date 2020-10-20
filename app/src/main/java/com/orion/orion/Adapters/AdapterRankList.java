@@ -128,7 +128,10 @@ public class AdapterRankList extends RecyclerView.Adapter<AdapterRankList.ViewHo
                     }
                 });
     }
-
+    public long getItemId(int position) {
+        ParticipantList form = participantLists.get(position);
+        return form.getJoiningKey().hashCode();
+    }
     @Override
     public int getItemCount() {
         return participantLists.size();

@@ -38,6 +38,7 @@ import com.orion.orion.R;
 import com.orion.orion.ViewPostActivity;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.Notification;
+import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.Photo;
 import com.orion.orion.models.users;
 import com.orion.orion.util.UniversalImageLoader;
@@ -193,7 +194,8 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
                         String json = gson.toJson(mNotification);
                         editor.putString("nl", json);
                         editor.apply();
-                        AdapterNotification2.this.notifyDataSetChanged();
+
+                        AdapterNotification2.this.notifyItemRemoved(i);
 
                         DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference("users");
                         ref1.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Notifications").child(timestamp)
@@ -244,7 +246,10 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
 
 
     }
-
+    public long getItemId(int position) {
+        Notification form = mNotification.get(position);
+        return form.getTimeStamp().hashCode();
+    }
     @Override
     public int getItemCount() {
         return mNotification.size();

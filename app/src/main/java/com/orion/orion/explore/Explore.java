@@ -1,6 +1,8 @@
 package com.orion.orion.explore;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -21,11 +23,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,13 +39,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.Constraints;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.common.reflect.TypeToken;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -54,7 +66,9 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Adapters.AdapterGridImageExplore;
 import com.orion.orion.Adapters.UserListAdapter;
 import com.orion.orion.R;
+import com.orion.orion.ViewPostActivity;
 import com.orion.orion.dialogs.BottomSheetDomain;
+import com.orion.orion.models.Comment;
 import com.orion.orion.models.Photo;
 import com.orion.orion.models.TopUsers;
 import com.orion.orion.models.users;
@@ -79,17 +93,16 @@ import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class Explore extends AppCompatActivity implements BottomSheetDomain.BottomSheetListener {
+public class Explore extends AppCompatActivity implements BottomSheetDomain.BottomSheetListener, AdapterGridImageExplore.OnPostItemClickListner {
     private static final String TAG = "Explore";
     private static final int ACTIVITY_NUM = 1;
-    private static int RETRY_DURATION = 10000;
+    private static int RETRY_DURATION = 1000;
     private static final Handler handler = new Handler(Looper.getMainLooper());
-
     private Context mContext;
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
     private DatabaseReference reference;
-
+    int x = 0;
     private CircleImageView star1, star2, star3, star4, star5, star6, star7, star8;
     private users user1 = new users();
     private users user2 = new users();
@@ -99,7 +112,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     private users user6 = new users();
     private users user7 = new users();
     private users user8 = new users();
-
+    private int c = 0;
     private TextView spinner;
     private EditText mSearchParam;
     private ListView mListView;
@@ -112,8 +125,11 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     private UserListAdapter mAdapter;
     private ArrayList<Photo> fieldPhotos;
     private ArrayList<Photo> paginatedPhotos;
-    private boolean shuffled=false;
+    private boolean shuffled = false;
 
+    RelativeLayout collapse;
+    int prevHeight;
+    int height, dummyHeight;
 
     private FusedLocationProviderClient fusedLocationClient;
 
@@ -138,9 +154,44 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         exploreRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     displayMorePhotos();
+                } else if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    Log.d(TAG, "onScrollStateChanged: top");
+                    exploreRv.post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            expand(collapse, 2500);
+
+                        }
+                    });                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+                if (dy < 0) {
+                    // Recycle view scrolling up...
+                    Log.d(TAG, "onScrolled: up");
+
+
+                } else if (dy > 0) {
+                    Log.d(TAG, "onScrolled: down");
+                    if (collapse.getVisibility()==View.VISIBLE){
+                        exploreRv.post(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                expand(collapse, 2500);
+
+                            }
+                        });
+
+                    }
+                    // Recycle view scrolling down...
                 }
             }
         });
@@ -184,14 +235,30 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         star8 = findViewById(R.id.circleImageView8);
         progressBar = findViewById(R.id.progress_circular);
         spinner = findViewById(R.id.spinnerDo);
+        collapse = findViewById(R.id.collapse);
 
+        View v = collapse;
+        prevHeight = v.getHeight();
+
+        Log.d(TAG, "initWidgets: " + prevHeight + "  " + dummyHeight);
+        height = 0;
         progressBar.setVisibility(View.VISIBLE);
 
-        exploreRv.setHasFixedSize(false);
-        GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 3);
+
+
+
+        GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 2);
+        linearLayoutManager.setItemPrefetchEnabled(true);
+        linearLayoutManager.setInitialPrefetchItemCount(20);
+
+        exploreRv.setItemViewCacheSize(9);
+        exploreRv.setDrawingCacheEnabled(true);
+        exploreRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
         exploreRv.setLayoutManager(linearLayoutManager);
-        Log.d(TAG, "initWidgets: completed");
+
+
     }
+
     private void initOnClickListeners() {
         Log.d(TAG, "initOnClickListeners: started");
         spinner.setOnClickListener(v -> {
@@ -248,6 +315,70 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         });
         Log.d(TAG, "initOnClickListeners: completed");
     }
+
+    public void expand(final View v, int duration) {
+        final boolean expand = v.getVisibility() != View.VISIBLE;
+
+        prevHeight = v.getHeight();
+        if (x == 0) {
+            x++;
+            dummyHeight = v.getHeight();
+        }
+        Log.d(TAG, "expand: 1" + expand);
+        if (prevHeight == 0) {
+            int measureSpecParams = View.MeasureSpec.getSize(View.MeasureSpec.UNSPECIFIED);
+            v.measure(measureSpecParams, measureSpecParams);
+            Log.d(TAG, "expand: " + height + "  " + dummyHeight);
+            height = dummyHeight;
+            Log.d(TAG, "expand: 2");
+        } else {
+            Log.d(TAG, "expand: 6");
+            height = 0;
+        }
+        Log.d(TAG, "expand: 5  " + prevHeight + "  " + height);
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(prevHeight, height);
+        int finalHeight = height;
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                v.getLayoutParams().height = (int) animation.getAnimatedValue();
+                v.requestLayout();
+
+            }
+        });
+
+        valueAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                if (expand) {
+                    v.setVisibility(View.VISIBLE);
+                    Log.d(TAG, "expand: 3");
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (!expand) {
+                    v.setVisibility(View.INVISIBLE);
+                    Log.d(TAG, "expand: 4");
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        valueAnimator.setInterpolator(new DecelerateInterpolator());
+        valueAnimator.setDuration(duration);
+        valueAnimator.start();
+    }
+
     private void checkOrGetLocation() {
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 10);
@@ -286,6 +417,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             });
         }
     }
+
     private void checkTopDatabase() {
         Log.d(TAG, "checkTopDatabase: started");
         ArrayList<String> fields = new ArrayList<>();
@@ -407,6 +539,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         });
         Log.d(TAG, "checkTopDatabase: completed");
     }
+
     private void checkLastFetched() {
         Log.d(TAG, "checkLastFetched: started");
         ArrayList<String> fields = new ArrayList<>();
@@ -422,7 +555,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             String previousTimeStamp = mPreferences.getString(field + "_fieldLastFetched", null);
             Log.d(TAG, "checkLastFetched: field " + field);
             if (previousTimeStamp == null || previousTimeStamp.equals("")) {
-                Log.d(TAG, "checkLastFetched: starting fetching users as previousTimeStamp is null or not found"+field);
+                Log.d(TAG, "checkLastFetched: starting fetching users as previousTimeStamp is null or not found" + field);
                 String firstField = getString(R.string.field_overall);
                 if (field.equals("Overall")) fetchTopUsers(field, "");
                 else fetchTopUsers(field, firstField);
@@ -487,6 +620,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         checkPostsFetched();
         Log.d(TAG, "checkLastFetched: completed");
     }
+
     private void createTopDatabase(String field, int completed) {
         Log.d(TAG, "createTopDatabase: started");
         Log.d(TAG, "createTopDatabase: field " + field);
@@ -568,6 +702,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             }
         });
     }
+
     private void fetchTopUsers(String firstField, String secondField) {
         Log.d(TAG, "fetchTopUsers: started");
         Log.d(TAG, "fetchTopUsers: field " + firstField + "," + secondField);
@@ -584,7 +719,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                         if (!key.equals(getString(R.string.field_completed))) {
                             if (!userID.equals("") && !mTopUsersList.contains(userID)) {
                                 mTopUsersList.add(userID);
-                                Log.d(TAG, "onDataChange: adding first"+firstField+" : "+mTopUsersList.size());
+                                Log.d(TAG, "onDataChange: adding first" + firstField + " : " + mTopUsersList.size());
                             }
                         } else {
                             Log.d(TAG, "fetchTopUsers: no.of users added from primary db mTopUsersList.size() - " + mTopUsersList.size());
@@ -598,7 +733,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (snapshot.exists()) {
                                         String currentUserCity = String.valueOf(snapshot.child(getString(R.string.field_last_known_location)).child(getString(R.string.field_city)).getValue());
-                                        if(currentUserCity.equals("")) checkOrGetLocation();
+                                        if (currentUserCity.equals("")) checkOrGetLocation();
                                         int currentUserRating = (int) (long) snapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_post)).getValue()
                                                 + (int) (long) snapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).getValue()
                                                 + (int) (long) snapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
@@ -619,7 +754,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                                                     + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
 //                                                            Log.d(TAG, "fetchTopUsers: userID : userCity : - " + userID + " : " + userCity + " : " + userRating);
                                                             mTopUsersList.add(userID);
-                                                            Log.d(TAG, "onDataChange: adding location"+firstField+" : "+mTopUsersList.size());
+                                                            Log.d(TAG, "onDataChange: adding location" + firstField + " : " + mTopUsersList.size());
                                                         }
                                                     }
                                                     Log.d(TAG, "fetchTopUsers: no.of users added from location db mTopUsersList.size() - " + mTopUsersList.size());
@@ -645,11 +780,11 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                                                                         String key = singleSnapshot.getKey();
                                                                                         String userID = String.valueOf(singleSnapshot.getValue());
                                                                                         assert key != null;
-                                                                                        Log.d(TAG, "onDataChange: adding left"+firstField+" : "+mTopUsersList);
+                                                                                        Log.d(TAG, "onDataChange: adding left" + firstField + " : " + mTopUsersList);
 
                                                                                         if (!key.equals(getString(R.string.field_completed))) {
                                                                                             if (!userID.equals("") && !mTopUsersList.contains(userID)) {
-                                                                                                Log.d(TAG, "onDataChange: adding left"+firstField+" : "+mTopUsersList);
+                                                                                                Log.d(TAG, "onDataChange: adding left" + firstField + " : " + mTopUsersList);
                                                                                                 mTopUsersList.add(userID);
                                                                                             }
                                                                                         }
@@ -694,8 +829,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
 
                                                             }
                                                         });
-                                                    }
-                                                    else {
+                                                    } else {
                                                         Log.d(TAG, "fetchTopUsers: mTopUsersList.size() - " + mTopUsersList.size());
                                                         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
                                                             @Override
@@ -748,6 +882,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         });
         Log.d(TAG, "fetchTopUsers: completed");
     }
+
     private void checkPostsFetched() {
         Log.d(TAG, "checkPostsFetched: started");
         ArrayList<String> fields = new ArrayList<>();
@@ -772,8 +907,8 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             if (set == null) {
 //                if (field.equals("Overall")) fetchTopUsers(field, "");
 //                else fetchTopUsers(field, "Overall");
-                handler.postDelayed(this::checkPostsFetched,RETRY_DURATION);
-                RETRY_DURATION*=2;
+                handler.postDelayed(this::checkPostsFetched, RETRY_DURATION);
+                RETRY_DURATION *= 2;
             } else {
                 if (json == null || previousTimeStamp == null || previousTimeStamp.equals("")) {
                     getPosts(field, completed);
@@ -836,6 +971,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         displayPhotos();
         Log.d(TAG, "checkPostsFetched: completed");
     }
+
     private void getPosts(String field, int startingIndex) {
         Log.d(TAG, "getPosts: started");
         Log.d(TAG, "getPosts: field " + field);
@@ -843,8 +979,8 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         if (set == null) {
 //            if (field.equals("Overall")) fetchTopUsers(field, "");
 //            else fetchTopUsers(field, "Overall");
-            handler.postDelayed(() -> getPosts(field,startingIndex),RETRY_DURATION);
-            RETRY_DURATION*=2;
+            handler.postDelayed(() -> getPosts(field, startingIndex), RETRY_DURATION);
+            RETRY_DURATION *= 2;
         } else {
             ArrayList<String> mTopUsersList = new ArrayList<>(set);
             Gson gson = new Gson();
@@ -873,7 +1009,8 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                     for (DataSnapshot singleSnapshot : snapshot.getChildren())
                                         if (singleSnapshot.exists()) {
                                             Photo photo = singleSnapshot.getValue(Photo.class);
-                                            if(!fieldPhotos.contains(photo)) fieldPhotos.add(photo);
+                                            if (!fieldPhotos.contains(photo))
+                                                fieldPhotos.add(photo);
                                         }
 //                                Log.d(TAG, "getPosts: currentTimeSTamp" + currentTimeSTamp);
                                 Gson gson = new Gson();
@@ -887,6 +1024,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                 mEditor.apply();
                                 Log.d(TAG, "getPosts: uploading " + fieldPhotos.size() + " photos for " + field);
                             }
+
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -905,9 +1043,12 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     @Override
     public void onButtonClicked(String text) {
         spinner.setText(text);
+
         Log.d(TAG, "onItemSelected: qwer" + text);
+        progressBar.setVisibility(View.VISIBLE);
         displayPhotos();
     }
+
     private void getTop8() {
         Query query = reference.child(getString(R.string.db_topUsersParams)).child(getString(R.string.field_overall)).limitToFirst(8);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -925,6 +1066,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             }
         });
     }
+
     private void getStarImage(ArrayList<String> user_id) {
         Log.d(TAG, "getStarImage: " + user_id);
         reference.child(getString(R.string.dbname_users)).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -971,60 +1113,85 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             }
         });
     }
+
     private void displayPhotos() {
-        Log.d(TAG, "displayPhotos: started");
-        String field = spinner.getText().toString();
-        if (field.equals("All")) field = "Overall";
-        paginatedPhotos.clear();
-        fieldPhotos.clear();
-        adapterGridImage = new AdapterGridImageExplore(mContext, paginatedPhotos);
-        exploreRv.setAdapter(adapterGridImage);
-        Gson gson = new Gson();
-        String json = mPreferences.getString(field + "_TopPosts", null);
-        if (json == null || json.equals("")) {
-            handler.postDelayed(this::displayPhotos, RETRY_DURATION);
-            RETRY_DURATION*=2;
-        }
-        else {
-            handler.removeCallbacks(this::displayPhotos);
-            Type type = new TypeToken<List<Photo>>() {}.getType();
-            fieldPhotos = gson.fromJson(json, type);
-            Log.d(TAG, "displayPhotos: photos retrieved " + fieldPhotos.size());
-            try {
-                if(!shuffled) {
-                    Collections.shuffle(fieldPhotos);
-                    shuffled=true;
-                }
-                paginatedPhotos = new ArrayList<>();
-                for (int i = 0; i < fieldPhotos.size(); i++) {
-                    if (i == fieldPhotos.size() - 1 || i == 9) {
-                        Log.d(TAG, "displayPhotos: paginatedPhotos" + paginatedPhotos.size());
-                        progressBar.setVisibility(View.INVISIBLE);
-                        adapterGridImage = new AdapterGridImageExplore(mContext, paginatedPhotos);
-                        exploreRv.setAdapter(adapterGridImage);
-                        break;
-                    } else paginatedPhotos.add(fieldPhotos.get(i));
-                }
+        if (progressBar.getVisibility() == View.VISIBLE) {
+            Log.d(TAG, "displayPhotos: started");
+            String field = spinner.getText().toString();
+            if (field.equals("All")) field = "Overall";
+            paginatedPhotos.clear();
+            fieldPhotos.clear();
 
-            } catch (NullPointerException e) {
-                Log.e(TAG, "Null pointer exception" + e.getMessage());
+            Gson gson = new Gson();
+            String json = mPreferences.getString(field + "_TopPosts", null);
+            if (json == null || json.equals("")) {
+                Log.d(TAG, "displayPhotos: handler1");
+                handler.postDelayed(this::displayPhotos, RETRY_DURATION);
 
-            } catch (IndexOutOfBoundsException e) {
-                Log.e(TAG, "index out of bound" + e.getMessage());
+            } else {
+                Log.d(TAG, "displayPhotos: handler2");
+
+                handler.removeCallbacks(this::displayPhotos);
+                Type type = new TypeToken<List<Photo>>() {
+                }.getType();
+                fieldPhotos = gson.fromJson(json, type);
+
+
+                Log.d(TAG, "displayPhotos: photos retrieved " + fieldPhotos.size());
+
+                try {
+                    if (!shuffled) {
+                        Collections.shuffle(fieldPhotos);
+                        shuffled = true;
+                    }
+
+                    paginatedPhotos = new ArrayList<>();
+                    for (int i = 0; i < fieldPhotos.size(); i++) {
+                        if (i == fieldPhotos.size() - 1 || i == 8) {
+
+                            Log.d(TAG, "displayPhotos: paginatedPhotos" + paginatedPhotos.size());
+                            progressBar.setVisibility(View.INVISIBLE);
+                            adapterGridImage = new AdapterGridImageExplore(mContext, paginatedPhotos, this);
+                            ((SimpleItemAnimator) exploreRv.getItemAnimator()).setSupportsChangeAnimations(false);
+
+                            adapterGridImage.setHasStableIds(true);
+                            exploreRv.setAdapter(adapterGridImage);
+
+                            break;
+
+                        } else paginatedPhotos.add(fieldPhotos.get(i));
+                    }
+
+                } catch (NullPointerException e) {
+                    Log.e(TAG, "Null pointer exception" + e.getMessage());
+
+                } catch (IndexOutOfBoundsException e) {
+                    Log.e(TAG, "index out of bound" + e.getMessage());
+                }
             }
         }
     }
+
     public void displayMorePhotos() {
         Log.d(TAG, "displayMorePhotos: started");
-        String field = spinner.getText().toString();
+
         int l = paginatedPhotos.size();
         Log.d(TAG, "displayMorePhotos: photos retrieved " + fieldPhotos.size());
         try {
-            if(paginatedPhotos.size()<fieldPhotos.size()) {
+            if (paginatedPhotos.size() <= fieldPhotos.size()) {
                 for (int i = l - 1; i < fieldPhotos.size(); i++) {
-                    if (i == fieldPhotos.size() - 1 || i == l + 3) {
+                    if (i == fieldPhotos.size() - 1 || i == l + 11) {
                         Log.d(TAG, "displayMorePhotos: paginatedPhotos" + paginatedPhotos.size());
-                        adapterGridImage.notifyDataSetChanged();
+                        int itemCount = (i == fieldPhotos.size() - 1) ? (fieldPhotos.size() - l) : 12;
+                        Log.d(TAG, "displayMorePhotos: itemcount" + itemCount);
+                        exploreRv.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                // Notify adapter with appropriate notify methods
+                                adapterGridImage.notifyItemRangeInserted(l - 1, itemCount);
+
+                            }
+                        });
                         break;
                     } else paginatedPhotos.add(fieldPhotos.get(i));
                 }
@@ -1035,6 +1202,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         } catch (IndexOutOfBoundsException e) {
             Log.e(TAG, "index out of bound" + e.getMessage());
         }
+
     }
 
     private void initTextListener() {
@@ -1112,5 +1280,34 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);
         Log.d(TAG, "setupBottomNavigationView: completed");
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        Photo photo = paginatedPhotos.get(position);
+        DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
+        db1.child(mContext.getString(R.string.dbname_user_photos)).child(photo.getUser_id()).child(photo.getPhoto_id()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<Comment> comments = new ArrayList<>();
+                for (DataSnapshot dSnapshot : snapshot.child("comment").getChildren()) {
+                    Comment comment = new Comment();
+                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                    comments.add(comment);
+                }
+                Log.d(Constraints.TAG, "onDataChange: klj" + comments);
+                Intent i1 = new Intent(mContext, ViewPostActivity.class);
+                i1.putExtra("photo", photo);
+                i1.putParcelableArrayListExtra("comments", comments);
+                mContext.startActivity(i1);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

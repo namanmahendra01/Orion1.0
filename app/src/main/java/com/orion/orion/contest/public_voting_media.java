@@ -49,6 +49,10 @@ public class public_voting_media extends AppCompatActivity {
 
         gridRv.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
+        gridRv.setDrawingCacheEnabled(true);
+        gridRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+        linearLayoutManager.setItemPrefetchEnabled(true);
+        linearLayoutManager.setInitialPrefetchItemCount(20);
         gridRv.setLayoutManager(linearLayoutManager);
 
         imgURLsList=new ArrayList<>();
@@ -87,7 +91,7 @@ public class public_voting_media extends AppCompatActivity {
 
                         }
                         adapterGridImage = new AdapterGridImageContest(public_voting_media.this,imgURLsList,isImage);
-                        gridRv.setAdapter(adapterGridImage);
+                        adapterGridImage.setHasStableIds(true);
                         gridRv.setAdapter(adapterGridImage);
 
                     }

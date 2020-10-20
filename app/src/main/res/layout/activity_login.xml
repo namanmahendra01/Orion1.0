@@ -59,7 +59,7 @@
                 android:background="@drawable/white_round_button"
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.@"
                 android:textColorHint="@color/grey"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:backgroundTint="@color/white"
                 android:textSize="18sp"
                 android:imeOptions="actionNext"/>
@@ -81,7 +81,7 @@
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890{}()[];:#^,.?!_`@$%\/=+-*'"
                     android:maxLength="16"
                     android:textColorHint="@color/grey"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:backgroundTint="@color/white"
                     android:textSize="18sp"
                     android:imeOptions="actionDone"/>

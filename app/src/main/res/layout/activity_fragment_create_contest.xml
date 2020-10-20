@@ -3,7 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/contest_refresh">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -17,6 +20,7 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     </RelativeLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"

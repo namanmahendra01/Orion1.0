@@ -118,7 +118,9 @@
                     android:visibility="visible"
                     android:layout_below="@+id/domain"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="10dp"
+                  android:nestedScrollingEnabled="false"
+
+                android:layout_marginTop="10dp"
                     android:layout_marginBottom="50dp"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:spanCount="3" />

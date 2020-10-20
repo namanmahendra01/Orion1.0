@@ -102,7 +102,10 @@ public class AdapterVoterList extends RecyclerView.Adapter<AdapterVoterList.View
 
     }
 
+    public long getItemId(int position) {
 
+        return votingLists.get(position).hashCode();
+    }
 
     @Override
     public int getItemCount() {

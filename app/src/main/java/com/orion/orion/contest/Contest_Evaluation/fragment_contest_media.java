@@ -70,6 +70,7 @@ public class fragment_contest_media extends Fragment {
 
         imgURLsList=new ArrayList<>();
         adapterGridImage = new AdapterGridImageSub(getContext(),imgURLsList);
+        adapterGridImage.setHasStableIds(true);
         gridRv.setAdapter(adapterGridImage);
 
         getParticipantListFromSP();
@@ -88,11 +89,13 @@ public class fragment_contest_media extends Fragment {
         if (imgURLsList == null||imgURLsList.size()==0) {    //        if no arrayList is present
             imgURLsList = new ArrayList<>();
             adapterGridImage = new AdapterGridImageSub(getContext(),imgURLsList);
+            adapterGridImage.setHasStableIds(true);
             gridRv.setAdapter(adapterGridImage);
 
         } else {
 
             adapterGridImage = new AdapterGridImageSub(getContext(),imgURLsList);
+            adapterGridImage.setHasStableIds(true);
             gridRv.setAdapter(adapterGridImage);
 
         }

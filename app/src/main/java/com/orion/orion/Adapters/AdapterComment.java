@@ -31,6 +31,7 @@ import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.JoinForm;
 
+import com.orion.orion.models.Photo;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
 import com.orion.orion.util.UniversalImageLoader;
@@ -150,6 +151,11 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.ViewHold
         });
 
 
+    }
+    @Override
+    public long getItemId(int position) {
+        Comment photo = comments.get(position);
+        return photo.getDate_created().hashCode();
     }
 
     @Override

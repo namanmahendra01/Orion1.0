@@ -20,6 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.ViewPostActivity;
 import com.orion.orion.models.Comment;
+import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.Photo;
 import com.orion.orion.util.UniversalImageLoader;
 
@@ -101,7 +102,10 @@ if (photo.getType().equals("photo")){
             }
         });
     }
-
+    public long getItemId(int position) {
+        Photo photo = photos.get(position);
+        return photo.getPhoto_id().hashCode();
+    }
     @Override
     public int getItemCount() {
         return photos.size();

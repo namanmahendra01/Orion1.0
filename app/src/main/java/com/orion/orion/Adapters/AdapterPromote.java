@@ -28,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.home.ViewPromoted;
 import com.orion.orion.models.Chat;
+import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.Promote;
 import com.orion.orion.models.users;
 import com.orion.orion.util.UniversalImageLoader;
@@ -162,7 +163,10 @@ db.child(context.getString(R.string.dbname_promote))
 
 
     }
+    public long getItemId(int position) {
 
+        return promoteList.get(position).hashCode();
+    }
     @Override
     public int getItemCount() {
         return promoteList.size();

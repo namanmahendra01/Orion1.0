@@ -988,6 +988,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 
         mList = new ArrayList<>();
         mAdapter = new AdapterItemLeaderboard(mList,mContext);
+        mAdapter.setHasStableIds(true);
         mRecyclerView.setAdapter(mAdapter);
         reference = FirebaseDatabase.getInstance().getReference();
 

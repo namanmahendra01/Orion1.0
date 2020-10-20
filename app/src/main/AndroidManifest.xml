@@ -63,6 +63,8 @@
             android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".explore.Explore"
+            android:hardwareAccelerated="true"
+
             android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".profile.profile"

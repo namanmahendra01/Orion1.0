@@ -74,6 +74,7 @@ public class Message_Request extends AppCompatActivity {
                 }
 
                 adapterMessageRequest = new AdapterMessageRequest( Message_Request.this,userlist);
+                adapterMessageRequest.setHasStableIds(true);
                 recyclerView.setAdapter(adapterMessageRequest);
                 for (int i = 0; i < userlist.size(); i++) {
                     lastMessage(userlist.get(i));

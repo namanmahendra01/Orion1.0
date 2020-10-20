@@ -41,6 +41,7 @@ import com.orion.orion.home.ViewPromoted;
 import com.orion.orion.models.Chat;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.Like;
+import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.Photo;
 import com.orion.orion.models.Promote;
 import com.orion.orion.models.users;
@@ -248,7 +249,10 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
 
 
 
-
+    public long getItemId(int position) {
+        Promote form = promoteList.get(position);
+        return form.getStoryid().hashCode();
+    }
     @Override
     public int getItemCount() {
         return promoteList.size();

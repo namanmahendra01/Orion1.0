@@ -649,7 +649,11 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
                 });
     }
 
-
+    @Override
+    public long getItemId(int position) {
+        ContestDetail form = mContestDetail.get(position);
+        return form.getContestId().hashCode();
+    }
     @Override
     public int getItemCount() {
         return mContestDetail.size();

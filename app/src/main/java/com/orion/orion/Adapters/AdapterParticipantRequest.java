@@ -218,11 +218,11 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                         .setValue("Rejected");
 
                                 deleteRequest(mparticipantLists.getContestkey(), mparticipantLists.getJoiningKey(), mparticipantLists.getUserid());
-                                ((FragmentActivity) mContext).finish();
-                                ((FragmentActivity) mContext).overridePendingTransition(0,0);
-                                mContext.startActivity(((FragmentActivity) mContext).getIntent());
-                                ((FragmentActivity) mContext).overridePendingTransition(0,0);
-                                if (mparticipantLists.getMediaLink() == null || mparticipantLists.getMediaLink().equals("")||mparticipantLists.getMediaLink().substring(8,23).equals("firebasestorage")) {
+                                participantLists.remove(i);
+
+                                AdapterParticipantRequest.this.notifyItemRemoved(i);
+
+                                if (mparticipantLists.getMediaLink() == null || mparticipantLists.getMediaLink().equals("")||!mparticipantLists.getMediaLink().substring(8,23).equals("firebasestorage")) {
 
                                 }else{
                                     StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMediaLink());
@@ -329,10 +329,9 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                                                             .setValue(hashMap3);
                                                                     deleteRequest(mparticipantLists.getContestkey(), mparticipantLists.getJoiningKey(), mparticipantLists.getUserid());
                                                                     bottomSheetDialog.dismiss();
-                                                                    ((FragmentActivity) mContext).finish();
-                                                                    ((FragmentActivity) mContext).overridePendingTransition(0,0);
-                                                                    mContext.startActivity(((FragmentActivity) mContext).getIntent());
-                                                                    ((FragmentActivity) mContext).overridePendingTransition(0,0);
+
+                                                                    participantLists.remove(i);
+                                                                    AdapterParticipantRequest.this.notifyItemRemoved(i);
 
 
                                                                 }
@@ -519,7 +518,10 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                 });
     }
 
-
+    public long getItemId(int position) {
+        ParticipantList form = participantLists.get(position);
+        return form.getJoiningKey().hashCode();
+    }
     @Override
     public int getItemCount() {
         return participantLists.size();

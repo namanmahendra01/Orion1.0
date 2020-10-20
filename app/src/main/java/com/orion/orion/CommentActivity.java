@@ -72,10 +72,16 @@ public class CommentActivity extends AppCompatActivity {
         commentRv=findViewById(R.id.recyclerComment);
         commentRv.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
+        commentRv.setItemViewCacheSize(9);
+        commentRv.setDrawingCacheEnabled(true);
+        commentRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+        linearLayoutManager.setItemPrefetchEnabled(true);
+        linearLayoutManager.setInitialPrefetchItemCount(20);
         commentRv.setLayoutManager(linearLayoutManager);
 
         comments=new ArrayList<>();
         adapterComment = new AdapterComment(this,comments);
+        adapterComment.setHasStableIds(true);
         commentRv.setAdapter(adapterComment);
 
         getComments(phhotoId,userId);

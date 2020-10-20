@@ -125,6 +125,13 @@ public class ViewProfileActivity extends AppCompatActivity {
         gridRv.setLayoutManager(linearLayoutManager);
         imgURLsList = new ArrayList<>();
         adapterGridImage = new AdapterGridImage(this, imgURLsList);
+        linearLayoutManager.setItemPrefetchEnabled(true);
+        linearLayoutManager.setInitialPrefetchItemCount(20);
+        gridRv.setItemViewCacheSize(9);
+        gridRv.setDrawingCacheEnabled(true);
+        gridRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+
+        adapterGridImage.setHasStableIds(true);
         gridRv.setAdapter(adapterGridImage);
         mContext =this;
         try {

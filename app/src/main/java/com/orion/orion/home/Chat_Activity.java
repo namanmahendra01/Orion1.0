@@ -144,6 +144,11 @@ Chat_Activity extends AppCompatActivity {
 
 //        Linear layout for recycler view
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setItemPrefetchEnabled(true);
+        linearLayoutManager.setInitialPrefetchItemCount(20);
+        recyclerView.setItemViewCacheSize(9);
+        recyclerView.setDrawingCacheEnabled(true);
+        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
         linearLayoutManager.setStackFromEnd(true);
         linearLayoutManager.setReverseLayout(true);
 
@@ -643,6 +648,7 @@ Chat_Activity extends AppCompatActivity {
                 }
                 Log.d(TAG, "displaychat: sss" + paginatedchatlist.size());
                 adapterchat1 = new AdapterChat(Chat_Activity.this, paginatedchatlist);
+                adapterchat1.setHasStableIds(true);
 //                    set adapter to recycler view
                 recyclerView.setAdapter(adapterchat1);
                 recyclerView.smoothScrollToPosition(0);
@@ -677,13 +683,14 @@ Chat_Activity extends AppCompatActivity {
                     paginatedchatlist.add(chatlist.get(i));
 
                 }
-                mResults = mResults + iterations;
                 recyclerView.post(new Runnable() {
                     @Override
                     public void run() {
-                        adapterchat1.notifyDataSetChanged();
+                        adapterchat1.notifyItemRangeInserted(mResults,iterations);
                     }
                 });
+                mResults = mResults + iterations;
+
 
             }
 

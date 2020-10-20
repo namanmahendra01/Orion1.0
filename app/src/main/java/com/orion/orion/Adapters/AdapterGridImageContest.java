@@ -25,6 +25,7 @@ import com.orion.orion.ViewPostActivity;
 import com.orion.orion.contest.Contest_Evaluation.activity_view_media;
 import com.orion.orion.contest.public_voting_media;
 import com.orion.orion.models.Comment;
+import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.Photo;
 import com.orion.orion.util.UniversalImageLoader;
@@ -130,7 +131,10 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
 
 
     }
-
+    public long getItemId(int position) {
+        ParticipantList form = participantLists.get(position);
+        return form.getJoiningKey().hashCode();
+    }
     @Override
     public int getItemCount() {
         return participantLists.size();

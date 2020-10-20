@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -47,6 +50,12 @@ public class fragment_createContest extends Fragment {
     private int mResults;
     private FirebaseAuth fAuth;
     private AdapterContestCreated contestCreated;
+
+    SwipeRefreshLayout contestRefresh;
+    boolean flag1 = false;
+    private static int RETRY_DURATION = 1000;
+    private static final Handler handler = new Handler(Looper.getMainLooper());
+
     //    SP
     Gson gson;
     SharedPreferences sp;
@@ -60,6 +69,7 @@ public class fragment_createContest extends Fragment {
         View view = inflater.inflate(R.layout.activity_fragment_create_contest, container, false);
         floatbtn = view.findViewById(R.id.float_btn);
 
+        contestRefresh=view.findViewById(R.id.contest_refresh);
 
 
 //          Initialize SharedPreference variables
@@ -75,11 +85,15 @@ public class fragment_createContest extends Fragment {
         createdContestRv = view.findViewById(R.id.recycler_view3);
         createdContestRv.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        createdContestRv.setItemViewCacheSize(10);
+        createdContestRv.setDrawingCacheEnabled(true);
+        createdContestRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+        linearLayoutManager.setItemPrefetchEnabled(true);
+        linearLayoutManager.setInitialPrefetchItemCount(20);
         createdContestRv.setLayoutManager(linearLayoutManager);
 
         contestlist = new ArrayList<>();
-        contestCreated = new AdapterContestCreated(getContext(), contestlist);
-        createdContestRv.setAdapter(contestCreated);
+
 
 
         createdContestRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -98,7 +112,30 @@ public class fragment_createContest extends Fragment {
 
         fAuth = FirebaseAuth.getInstance();
         getCreateListFromSP();
+        contestRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                flag1 = false;
 
+                getCreateListFromSP();
+                checkRefresh();
+
+
+            }
+
+            private void checkRefresh() {
+                if (contestRefresh.isRefreshing() && flag1 ) {
+                    contestRefresh.setRefreshing(false);
+                    handler.removeCallbacks(this::checkRefresh);
+
+                    flag1 = false;
+
+                } else {
+                    handler.postDelayed(this::checkRefresh, RETRY_DURATION);
+
+                }
+            }
+        });
 
         return view;
     }
@@ -278,6 +315,7 @@ public class fragment_createContest extends Fragment {
     private void displaycontest() {
         Log.d(TAG, "display first 10 contest");
 
+        flag1=true;
         paginatedContestlist = new ArrayList<>();
         if (contestlist != null) {
 
@@ -294,6 +332,7 @@ public class fragment_createContest extends Fragment {
                 }
                 Log.d(TAG, "contest: sss" + paginatedContestlist.size());
                 contestCreated = new AdapterContestCreated(getContext(), paginatedContestlist);
+                contestCreated.setHasStableIds(true);
                 createdContestRv.setAdapter(contestCreated);
 
             } catch (NullPointerException e) {
@@ -325,13 +364,14 @@ public class fragment_createContest extends Fragment {
                     paginatedContestlist.add(contestlist.get(i));
 
                 }
-                mResults = mResults + iterations;
                 createdContestRv.post(new Runnable() {
                     @Override
                     public void run() {
-                        contestCreated.notifyDataSetChanged();
+                        contestCreated.notifyItemRangeInserted(mResults,iterations);
                     }
                 });
+                mResults = mResults + iterations;
+
 
             }
 

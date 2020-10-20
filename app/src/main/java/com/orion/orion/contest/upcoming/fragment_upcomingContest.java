@@ -2,6 +2,8 @@ package com.orion.orion.contest.upcoming;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -22,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -57,7 +60,10 @@ public class fragment_upcomingContest extends Fragment {
     private ArrayList<ContestDetail> contestlist3;
     private ArrayList<ContestDetail> paginatedcontestlist;
     private ArrayList<ContestDetail> paginatedcontestSearch;
-
+    SwipeRefreshLayout contesRefresh;
+    boolean flag1 = false;
+    private static int RETRY_DURATION = 1000;
+    private static final Handler handler = new Handler(Looper.getMainLooper());
 
     private Spinner domainspinner, entryfeeSpinner;
     String domain = "All", entryfee = "All";
@@ -91,11 +97,13 @@ public class fragment_upcomingContest extends Fragment {
         filterB=view.findViewById(R.id.filter);
         filterY=view.findViewById(R.id.filteryellow);
         relativeLayout=view.findViewById(R.id.relparent);
+        contesRefresh=view.findViewById(R.id.contest_refresh);
 
 
 //**************************************************************************************
         contestSearchRv.setHasFixedSize(true);
         final GridLayoutManager[] linearLayoutManager1 = {new GridLayoutManager(getContext(), 1)};
+
         contestSearchRv.setLayoutManager(linearLayoutManager1[0]);
 
         contestlist2 = new ArrayList<>();
@@ -111,6 +119,8 @@ public class fragment_upcomingContest extends Fragment {
 
         contestlist = new ArrayList<>();
         contestUpcoming = new AdapterContestUpcoming(getContext(), contestlist);
+        contestUpcoming.setHasStableIds(true);
+
         upcomingContestRv.setAdapter(contestUpcoming);
 
         gridB.setOnClickListener(new View.OnClickListener() {
@@ -125,6 +135,7 @@ public class fragment_upcomingContest extends Fragment {
 
                     upcomingContestRv.setLayoutManager(linearLayoutManager[0]);
                     adapterContestUpcomingGrid = new AdapterContestUpcomingGrid(getContext(), paginatedcontestlist);
+                    adapterContestUpcomingGrid.setHasStableIds(true);
                     upcomingContestRv.setAdapter(adapterContestUpcomingGrid);
 
             }
@@ -159,6 +170,7 @@ public class fragment_upcomingContest extends Fragment {
                 linearLayoutManager[0] = new GridLayoutManager(getContext(),1);
                 upcomingContestRv.setLayoutManager(linearLayoutManager[0]);
                 contestUpcoming = new AdapterContestUpcoming(getContext(), paginatedcontestlist);
+                contestUpcoming.setHasStableIds(true);
                 upcomingContestRv.setAdapter(contestUpcoming);
 
 
@@ -259,6 +271,36 @@ public class fragment_upcomingContest extends Fragment {
                 }
                 searchContest(key);
 
+            }
+        });
+
+        contesRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                flag1 = false;
+
+
+                getContestFiltered(domain, entryfee);
+                Log.d(TAG, "onRefresh: 11");
+
+                checkRefresh();
+
+
+            }
+
+            private void checkRefresh() {
+                if (contesRefresh.isRefreshing() && flag1 ) {
+                    Log.d(TAG, "onRefresh: 22");
+                    contesRefresh.setRefreshing(false);
+                    handler.removeCallbacks(this::checkRefresh);
+
+                    flag1 = false;
+
+                } else {
+                    Log.d(TAG, "onRefresh: 33");
+                    handler.postDelayed(this::checkRefresh, RETRY_DURATION);
+
+                }
             }
         });
 
@@ -406,6 +448,7 @@ public class fragment_upcomingContest extends Fragment {
     private void displaycontest() {
         Log.d(TAG, "display first 10 contest");
 
+        flag1=true;
         paginatedcontestlist = new ArrayList<>();
         if (contestlist != null) {
 
@@ -425,10 +468,14 @@ public class fragment_upcomingContest extends Fragment {
                 Log.d(TAG, "contest: sss" + paginatedcontestlist.size());
                 if ( upcomingContestRv.getAdapter().getClass().equals( contestUpcoming.getClass())) {
                     contestUpcoming = new AdapterContestUpcoming(getContext(), paginatedcontestlist);
+                    contestUpcoming.setHasStableIds(true);
+
                     upcomingContestRv.setAdapter(contestUpcoming);
 
                 }else{
                     adapterContestUpcomingGrid = new AdapterContestUpcomingGrid(getContext(), paginatedcontestlist);
+                    adapterContestUpcomingGrid.setHasStableIds(true);
+
                     upcomingContestRv.setAdapter(adapterContestUpcomingGrid);                }
 
 
@@ -461,19 +508,20 @@ public class fragment_upcomingContest extends Fragment {
                     paginatedcontestlist.add(contestlist.get(i));
 
                 }
-                mResults = mResults + iterations;
                 upcomingContestRv.post(new Runnable() {
                     @Override
                     public void run() {
                         if ( upcomingContestRv.getAdapter().getClass().equals( contestUpcoming.getClass())) {
-                            contestUpcoming.notifyDataSetChanged();
+                            contestUpcoming.notifyItemRangeInserted(mResults,iterations);
 
 
                         }else{
-                            adapterContestUpcomingGrid.notifyDataSetChanged();
+                            adapterContestUpcomingGrid.notifyItemRangeInserted(mResults,iterations);
                         }
                     }
                 });
+                mResults = mResults + iterations;
+
 
             }
 

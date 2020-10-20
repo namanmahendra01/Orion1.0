@@ -88,6 +88,7 @@ public class fragment_marks_and_votes extends Fragment {
 
         votingLists=new ArrayList<>();
         voterList = new AdapterVoterList(getContext(),votingLists);
+        voterList.setHasStableIds(true);
         votesRv.setAdapter(voterList);
 
         getRank(Conteskey,joiningKey);

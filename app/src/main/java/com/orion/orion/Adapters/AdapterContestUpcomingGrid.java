@@ -441,7 +441,10 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
                     }
                 });
     }
-
+    public long getItemId(int position) {
+        ContestDetail form = mContestDetail.get(position);
+        return form.getContestId().hashCode();
+    }
     @Override
     public int getItemCount() {
         return mContestDetail.size();

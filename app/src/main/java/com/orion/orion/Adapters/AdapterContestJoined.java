@@ -208,7 +208,11 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
 
 
     }
-
+    @Override
+    public long getItemId(int position) {
+        JoinForm form = joiningForms.get(position);
+        return form.getJoiningKey().hashCode();
+    }
     @Override
     public int getItemCount() {
         return joiningForms.size();

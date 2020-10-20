@@ -106,6 +106,7 @@ public class fragment_result_overview extends Fragment {
 
         participantLists = new ArrayList<>();
         rankList = new AdapterRankList(getContext(), participantLists);
+        rankList.setHasStableIds(true);
         rankRv.setAdapter(rankList);
 
         getRank(Conteskey);
@@ -117,6 +118,7 @@ public class fragment_result_overview extends Fragment {
         winnerRv.setLayoutManager(linearLayoutManager1);
 
         winnerList = new AdapterWinners(getContext(), participantLists2);
+        winnerList.setHasStableIds(true);
         winnerRv.setAdapter(winnerList);
 
         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {

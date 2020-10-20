@@ -595,7 +595,11 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                 });
     }
 
-
+    @Override
+    public long getItemId(int position) {
+        ContestDetail form = mContestDetail.get(position);
+        return form.getContestId().hashCode();
+    }
     @Override
     public int getItemCount() {
         return mContestDetail.size();

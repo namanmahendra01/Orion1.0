@@ -27,6 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.contest.Contest_Evaluation.contest_evaluation_activity;
 import com.orion.orion.models.CreateForm;
+import com.orion.orion.models.Photo;
+import com.orion.orion.profile.Account.Contest;
 import com.orion.orion.util.UniversalImageLoader;
 
 import java.util.List;
@@ -148,7 +150,11 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
             mContext.startActivity(i1);
         });
     }
-
+    @Override
+    public long getItemId(int position) {
+        CreateForm form = createForms.get(position);
+        return form.getContestkey().hashCode();
+    }
     @Override
     public int getItemCount() {
         return createForms.size();

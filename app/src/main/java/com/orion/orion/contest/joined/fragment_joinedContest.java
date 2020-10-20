@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,6 +51,12 @@ public class fragment_joinedContest extends Fragment {
     RecyclerView joinedContestRv;
     private ArrayList<JoinForm> contestlist;
     private ArrayList<JoinForm> paginatedContestlist;
+
+    SwipeRefreshLayout contestRefresh;
+    boolean flag1 = false;
+    private static int RETRY_DURATION = 1000;
+    private static final Handler handler = new Handler(Looper.getMainLooper());
+
     //    SP
     Gson gson;
     SharedPreferences sp;
@@ -71,14 +80,20 @@ public class fragment_joinedContest extends Fragment {
         sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
 
+        contestRefresh=view.findViewById(R.id.contest_refresh);
+
         joinedContestRv=view.findViewById(R.id.recycler_view2);
         joinedContestRv.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getContext());
+        joinedContestRv.setItemViewCacheSize(10);
+        joinedContestRv.setDrawingCacheEnabled(true);
+        joinedContestRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+        linearLayoutManager.setItemPrefetchEnabled(true);
+        linearLayoutManager.setInitialPrefetchItemCount(20);
         joinedContestRv.setLayoutManager(linearLayoutManager);
 
         contestlist=new ArrayList<>();
-        contestJoined = new AdapterContestJoined(getContext(),contestlist);
-        joinedContestRv.setAdapter(contestJoined);
+
 
         fAuth=FirebaseAuth.getInstance();
         getJoinListFromSP();
@@ -95,6 +110,31 @@ public class fragment_joinedContest extends Fragment {
             }
         });
 
+        contestRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                flag1 = false;
+
+                getJoinListFromSP();
+
+                checkRefresh();
+
+
+            }
+
+            private void checkRefresh() {
+                if (contestRefresh.isRefreshing() && flag1 ) {
+                    contestRefresh.setRefreshing(false);
+                    handler.removeCallbacks(this::checkRefresh);
+
+                    flag1 = false;
+
+                } else {
+                    handler.postDelayed(this::checkRefresh, RETRY_DURATION);
+
+                }
+            }
+        });
 
 
         return view;
@@ -287,7 +327,7 @@ public class fragment_joinedContest extends Fragment {
 
     private void displaycontest() {
         Log.d(TAG, "display first 10 contest");
-
+        flag1=true;
         paginatedContestlist = new ArrayList<>();
         if (contestlist != null) {
 
@@ -306,6 +346,7 @@ public class fragment_joinedContest extends Fragment {
                 }
                 Log.d(TAG, "contest: sss" + paginatedContestlist.size());
                 contestJoined = new AdapterContestJoined(getContext(), paginatedContestlist);
+                contestJoined.setHasStableIds(true);
                 joinedContestRv.setAdapter(contestJoined);
 
             } catch (NullPointerException e) {
@@ -337,13 +378,14 @@ public class fragment_joinedContest extends Fragment {
                     paginatedContestlist.add(contestlist.get(i));
 
                 }
-                mResults = mResults + iterations;
                 joinedContestRv.post(new Runnable() {
                     @Override
                     public void run() {
                         contestJoined.notifyDataSetChanged();
                     }
                 });
+                mResults = mResults + iterations;
+
 
             }
 

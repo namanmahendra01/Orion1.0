@@ -229,6 +229,11 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         contestRv.setLayoutManager(linearLayoutManager);
 
+        linearLayoutManager.setItemPrefetchEnabled(true);
+        linearLayoutManager.setInitialPrefetchItemCount(20);
+        contestRv.setItemViewCacheSize(9);
+        contestRv.setDrawingCacheEnabled(true);
+        contestRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
 
         contestlist = new ArrayList<>();
 
@@ -238,8 +243,16 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         LinearLayoutManager linearLayoutManager3 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         promoteRv.setLayoutManager(linearLayoutManager3);
 
+        linearLayoutManager3.setItemPrefetchEnabled(true);
+        linearLayoutManager3.setInitialPrefetchItemCount(20);
+        promoteRv.setItemViewCacheSize(9);
+        promoteRv.setDrawingCacheEnabled(true);
+        promoteRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+
         promotelist = new ArrayList<>();
         promote = new AdapterPromote(getContext(), promotelist);
+        promote.setHasStableIds(true);
+
         promoteRv.setAdapter(promote);
 
 
@@ -247,7 +260,11 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         ListViewRv.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(getContext());
         ListViewRv.setLayoutManager(linearLayoutManager1);
-
+        linearLayoutManager1.setItemPrefetchEnabled(true);
+        linearLayoutManager1.setInitialPrefetchItemCount(20);
+        ListViewRv.setItemViewCacheSize(9);
+        ListViewRv.setDrawingCacheEnabled(true);
+        ListViewRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
 
         scrollView.getViewTreeObserver()
                 .addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
@@ -450,6 +467,8 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                                                     editor.apply();
 
                                                     contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
+                                                    contestUpcoming.setHasStableIds(true);
+
                                                     contestRv.setAdapter(contestUpcoming);
 
                                                     contestUpcoming.notifyDataSetChanged();
@@ -478,6 +497,8 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                         } else {
                             Log.d(TAG, "checkContestUpdate: 5");
                             contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
+                            contestUpcoming.setHasStableIds(true);
+
                             contestRv.setAdapter(contestUpcoming);
 
                             contestUpcoming.notifyDataSetChanged();
@@ -1147,6 +1168,8 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                         editor.apply();
 
                         contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
+                        contestUpcoming.setHasStableIds(true);
+
                         contestRv.setAdapter(contestUpcoming);
 
                         contestUpcoming.notifyDataSetChanged();
@@ -1375,6 +1398,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                 }
                 Log.d(TAG, "displayPhotos: sss" + mPaginatedPhotos.size());
                 mAadapter = new AdapterMainfeed(getContext(), mPaginatedPhotos, ListViewRv);
+                mAadapter.setHasStableIds(true);
                 ListViewRv.setAdapter(mAadapter);
 
             } catch (NullPointerException e) {
@@ -1406,13 +1430,14 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     mPaginatedPhotos.add(mPhotos.get(i));
 
                 }
-                mResults = mResults + iterations;
                 ListViewRv.post(new Runnable() {
                     @Override
                     public void run() {
-                        mAadapter.notifyDataSetChanged();
+                        mAadapter.notifyItemRangeInserted(mResults,iterations);
                     }
                 });
+                mResults = mResults + iterations;
+
 
             }
 

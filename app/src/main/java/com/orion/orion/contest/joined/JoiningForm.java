@@ -301,7 +301,7 @@ public class JoiningForm extends AppCompatActivity {
 
 
                             mFirebaseMethods.uploadContest(imageCount, idLink, null, contestId, p5, JoiningKey);
-                            if (!type.equals("Image")) {
+                            if (type.equals("Image")) {
                                 mFirebaseMethods.uploadContest(imageCount, mediaLink, null, contestId, p6, JoiningKey);
                             }
 

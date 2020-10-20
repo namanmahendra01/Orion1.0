@@ -26,6 +26,7 @@ import com.orion.orion.R;
 import com.orion.orion.explore.Explore;
 import com.orion.orion.models.ItemLeaderboard;
 import com.orion.orion.models.Leaderboard;
+import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
 import com.orion.orion.util.UniversalImageLoader;
@@ -86,7 +87,10 @@ public class AdapterItemLeaderboard extends RecyclerView.Adapter<AdapterItemLead
         });
     }
 
-
+    public long getItemId(int position) {
+        ItemLeaderboard board = mList.get(position);
+        return board.getUserID().hashCode();
+    }
     @Override
     public int getItemCount() {
         return mList.size();

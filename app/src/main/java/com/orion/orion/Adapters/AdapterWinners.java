@@ -186,7 +186,10 @@ public class AdapterWinners extends RecyclerView.Adapter<AdapterWinners.ViewHold
                     }
                 });
     }
-
+    public long getItemId(int position) {
+        ParticipantList form = participantLists.get(position);
+        return form.getJoiningKey().hashCode();
+    }
     @Override
     public int getItemCount() {
         return participantLists.size();

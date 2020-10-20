@@ -252,6 +252,7 @@ public class notificationFragment extends Fragment {
                     paginatedNotifications.add(notifyList.get(i));
                 }
                 adapterNotification2 = new AdapterNotification2(getContext(), paginatedNotifications);
+                adapterNotification2.setHasStableIds(true);
                 notificationRv.setAdapter(adapterNotification2);
                 x++;
             } catch (NullPointerException e) {
@@ -277,8 +278,9 @@ public class notificationFragment extends Fragment {
                 for (int i = mResults; i < mResults + iterations; i++) {
                     paginatedNotifications.add(notifyList.get(i));
                 }
+                notificationRv.post(() -> adapterNotification2.notifyItemRangeInserted(mResults,iterations));
+
                 mResults = mResults + iterations;
-                notificationRv.post(() -> adapterNotification2.notifyDataSetChanged());
             }
         } catch (NullPointerException e) {
             Log.e(TAG, "Null pointer exception" + e.getMessage());

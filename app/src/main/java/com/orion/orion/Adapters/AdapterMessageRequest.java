@@ -19,6 +19,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.home.Chat_Activity;
 import com.orion.orion.home.Message_Request;
+import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.users;
 import com.orion.orion.util.UniversalImageLoader;
 
@@ -100,7 +101,9 @@ public class AdapterMessageRequest extends RecyclerView.Adapter<AdapterMessageRe
     public void setLastMessage(String userId,String lastMessage){
         LastMessagemap.put(userId,lastMessage);
     }
-
+    public long getItemId(int position) {
+        return usersList.get(position).hashCode();
+    }
     @Override
     public int getItemCount() {
         return usersList2.size();

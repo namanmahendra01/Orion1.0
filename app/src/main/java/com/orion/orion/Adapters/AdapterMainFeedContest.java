@@ -28,6 +28,7 @@ import com.orion.orion.contest.joined.joined_contest_overview_activity;
 import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.JoinForm;
+import com.orion.orion.models.ParticipantList;
 import com.orion.orion.util.SNTPClient;
 import com.orion.orion.util.StringManipilation;
 import com.orion.orion.util.UniversalImageLoader;
@@ -287,7 +288,10 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
 
 
     }
-
+    public long getItemId(int position) {
+        ContestDetail form = contestDetails.get(position);
+        return form.getContestId().hashCode();
+    }
     @Override
     public int getItemCount() {
         return contestDetails.size();

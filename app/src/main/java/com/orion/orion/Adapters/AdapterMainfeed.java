@@ -946,7 +946,11 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         }
 }
 
-
+    @Override
+    public long getItemId(int position) {
+        Photo photo = photos.get(position);
+        return photo.getPhoto_id().hashCode();
+    }
 
     @Override
     public int getItemCount() {

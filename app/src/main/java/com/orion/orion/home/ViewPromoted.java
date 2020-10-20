@@ -55,6 +55,7 @@ public class ViewPromoted extends AppCompatActivity {
 
         promoteList=new ArrayList<>();
         adapterViewPromote = new AdapterViewPromote(this,promoteList);
+        adapterViewPromote.setHasStableIds(true);
         promoteRv.setAdapter(adapterViewPromote);
 
         getPromoted(userid);
