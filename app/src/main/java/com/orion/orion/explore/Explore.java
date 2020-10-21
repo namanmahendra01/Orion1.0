@@ -104,14 +104,14 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     private DatabaseReference reference;
     int x = 0;
     private CircleImageView star1, star2, star3, star4, star5, star6, star7, star8;
-    private users user1 = new users();
-    private users user2 = new users();
-    private users user3 = new users();
-    private users user4 = new users();
-    private users user5 = new users();
-    private users user6 = new users();
-    private users user7 = new users();
-    private users user8 = new users();
+    private String user1;
+    private String user2 ;
+    private String user3 ;
+    private String user4;
+    private String user5 ;
+    private String user6 ;
+    private String user7;
+    private String user8 ;
     private int c = 0;
     private TextView spinner;
     private EditText mSearchParam;
@@ -1074,35 +1074,35 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (int x = 0; x < user_id.size(); x++) {
                     if (x == 0) {
-                        user1 = snapshot.child(user_id.get(x)).getValue(users.class);
+                        user1 = user_id.get(x);
                         UniversalImageLoader.setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star1, null, "");
                     }
                     if (x == 1) {
-                        user2 = snapshot.child(user_id.get(x)).getValue(users.class);
+                        user2 = user_id.get(x);
                         UniversalImageLoader.setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star2, null, "");
                     }
                     if (x == 2) {
-                        user3 = snapshot.child(user_id.get(x)).getValue(users.class);
+                        user3 = user_id.get(x);
                         UniversalImageLoader.setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star3, null, "");
                     }
                     if (x == 3) {
-                        user4 = snapshot.child(user_id.get(x)).getValue(users.class);
+                        user4 = user_id.get(x);
                         UniversalImageLoader.setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star4, null, "");
                     }
                     if (x == 4) {
-                        user5 = snapshot.child(user_id.get(x)).getValue(users.class);
+                        user5 = user_id.get(x);
                         UniversalImageLoader.setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star5, null, "");
                     }
                     if (x == 5) {
-                        user6 = snapshot.child(user_id.get(x)).getValue(users.class);
+                        user6 = user_id.get(x);
                         UniversalImageLoader.setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star6, null, "");
                     }
                     if (x == 6) {
-                        user7 = snapshot.child(user_id.get(x)).getValue(users.class);
+                        user7 = user_id.get(x);
                         UniversalImageLoader.setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star7, null, "");
                     }
                     if (x == 7) {
-                        user8 = snapshot.child(user_id.get(x)).getValue(users.class);
+                        user8 = user_id.get(x);
                         UniversalImageLoader.setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star8, null, "");
                     }
                 }

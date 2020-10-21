@@ -63,26 +63,16 @@ public class AdapterItemLeaderboard extends RecyclerView.Adapter<AdapterItemLead
         UniversalImageLoader.setImage(currentItem.getPostionProfile(),holder.PositionProfile,null,"");
         if(position==0 || position==1 || position==2)
             holder.PositionCard.setBackgroundColor(Color.parseColor("#E5E6EB"));
+
+
         holder.itemView.setOnClickListener(v -> {
             Log.d(TAG, "onBindViewHolder: "+currentItem.getUserID());
 
-            DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-            Query query=db.child(mContext.getString(R.string.dbname_users)).child(currentItem.getUserID());
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    users user=snapshot.getValue(users.class);
                     Intent i = new Intent(mContext, profile.class);
                     i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
-                    i.putExtra(mContext.getString(R.string.intent_user), user);
+                    i.putExtra(mContext.getString(R.string.intent_user), currentItem.getUserID());
                     mContext.startActivity(i);
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
 
         });
     }

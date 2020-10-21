@@ -1,5 +1,7 @@
 package com.orion.orion.contest.upcoming;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -52,6 +55,9 @@ public class fragment_upcomingContest extends Fragment {
     private ArrayList<ContestDetail> contestlist;
     private FirebaseAuth fAuth;
     private EditText searchBox;
+    int prevHeight;
+    int height, dummyHeight;
+    int x=0;
     private int mResults;
     private int mResults2;
     RelativeLayout relativeLayout;
@@ -115,6 +121,7 @@ public class fragment_upcomingContest extends Fragment {
         final GridLayoutManager[] linearLayoutManager = {new GridLayoutManager(getContext(), 1)};
 
 
+
         upcomingContestRv.setLayoutManager(linearLayoutManager[0]);
 
         contestlist = new ArrayList<>();
@@ -145,8 +152,8 @@ public class fragment_upcomingContest extends Fragment {
             public void onClick(View v) {
                 filterY.setVisibility(View.VISIBLE);
                 filterB.setVisibility(View.GONE);
-                relativeLayout.setVisibility(View.VISIBLE);
 
+                expand(relativeLayout,2000);
 
             }
         });
@@ -155,7 +162,7 @@ public class fragment_upcomingContest extends Fragment {
             public void onClick(View v) {
                 filterY.setVisibility(View.GONE);
                 filterB.setVisibility(View.VISIBLE);
-                relativeLayout.setVisibility(View.GONE);
+                expand(relativeLayout,2000);
 
 
             }
@@ -306,6 +313,69 @@ public class fragment_upcomingContest extends Fragment {
 
 
         return view;
+    }
+    public void expand(final View v, int duration) {
+        final boolean expand = v.getVisibility() != View.VISIBLE;
+
+        Log.d(TAG, "expand: aa"+v.getHeight()+"  "+v.getMeasuredHeight()+" "+v.getMeasuredHeightAndState());
+        prevHeight = v.getHeight();
+        if (x == 0) {
+            x++;
+            dummyHeight = v.getHeight();
+        }
+        Log.d(TAG, "expand: 1" + expand);
+        if (prevHeight == 0) {
+            int measureSpecParams = View.MeasureSpec.getSize(View.MeasureSpec.UNSPECIFIED);
+            v.measure(measureSpecParams, measureSpecParams);
+            Log.d(TAG, "expand: " + height + "  " + dummyHeight);
+            height = dummyHeight;
+            Log.d(TAG, "expand: 2");
+        } else {
+            Log.d(TAG, "expand: 6");
+            height = 0;
+        }
+        Log.d(TAG, "expand: 5  " + prevHeight + "  " + height);
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(prevHeight, height);
+        int finalHeight = height;
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                v.getLayoutParams().height = (int) animation.getAnimatedValue();
+                v.requestLayout();
+
+            }
+        });
+
+        valueAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                if (expand) {
+                    v.setVisibility(View.VISIBLE);
+                    Log.d(TAG, "expand: 3");
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (!expand) {
+                    v.setVisibility(View.INVISIBLE);
+                    Log.d(TAG, "expand: 4");
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        valueAnimator.setInterpolator(new DecelerateInterpolator());
+        valueAnimator.setDuration(duration);
+        valueAnimator.start();
     }
 
     private void getContestFiltered(String domain, String entryfee) {

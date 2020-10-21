@@ -68,8 +68,7 @@ public class UserListAdapter extends ArrayAdapter<users> {
 
         DatabaseReference reference= FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(mContext.getString(R.string.dbname_user_account_settings))
-                .orderByChild(mContext.getString(R.string.field_user_id))
-                .equalTo(getItem(position).getUser_id());
+                .child(getItem(position).getUser_id());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

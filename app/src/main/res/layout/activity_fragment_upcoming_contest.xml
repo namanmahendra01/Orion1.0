@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/scheme8"
-            android:visibility="gone"
+            android:visibility="visible"
 
             android:id="@+id/relparent">
         <RelativeLayout
@@ -115,13 +115,14 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginEnd="10dp"
                 android:id="@+id/filter"
+                android:visibility="gone"
                 android:src="@drawable/filter"
                 android:layout_centerHorizontal="true"
                 />
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
                 android:layout_marginEnd="10dp"

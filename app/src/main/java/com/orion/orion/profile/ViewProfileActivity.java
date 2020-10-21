@@ -85,7 +85,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     private TextView mWon;
     private TextView mDescription;
     private TextView mWebsite;
-    private users mUser;
+    private String mUser;
     private AdapterGridImage adapterGridImage;
     private RecyclerView gridRv;
     private boolean notify = false;
@@ -135,8 +135,9 @@ public class ViewProfileActivity extends AppCompatActivity {
         gridRv.setAdapter(adapterGridImage);
         mContext =this;
         try {
-            mUser = getUserFromBundle();
-            Log.d(TAG, "onCreate: qaz"+mUser);
+            Intent i=getIntent();
+
+            mUser = i.getStringExtra(getString(R.string.intent_user));
             init();
         } catch (NullPointerException e) {
             Log.d(TAG, "null pointer Exception" + e.getMessage());
@@ -167,7 +168,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                 if (list==null){
 
                 }else{
-                    list.remove(mUser.getUser_id());
+                    list.remove(mUser);
 
                 }
 //                 save following list
@@ -186,9 +187,9 @@ public class ViewProfileActivity extends AppCompatActivity {
                 ulist=gson.fromJson(json,type);
                 if (ulist==null){
                     ulist= new ArrayList<String>();
-                    ulist.add(mUser.getUser_id());
+                    ulist.add(mUser);
                 }else{
-                    ulist.add(mUser.getUser_id());
+                    ulist.add(mUser);
 
                 }
 //                save update list
@@ -199,8 +200,8 @@ public class ViewProfileActivity extends AppCompatActivity {
 
 
 
-                FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mUser.getUser_id()).removeValue();
-                FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_follower)).child(mUser.getUser_id()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
+                FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mUser).removeValue();
+                FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_follower)).child(mUser).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
                 mFollow.setText("Follow");
 
             } else {
@@ -214,9 +215,9 @@ public class ViewProfileActivity extends AppCompatActivity {
                 list=gson.fromJson(json,type);
                 if (list==null){
                     list= new ArrayList<String>();
-                    list.add(mUser.getUser_id());
+                    list.add(mUser);
                 }else{
-                    list.add(mUser.getUser_id());
+                    list.add(mUser);
 
                 }
 //                 save following list
@@ -235,9 +236,9 @@ public class ViewProfileActivity extends AppCompatActivity {
                 ulist=gson.fromJson(json,type);
                 if (ulist==null){
                     ulist= new ArrayList<String>();
-                    ulist.add(mUser.getUser_id());
+                    ulist.add(mUser);
                 }else{
-                    ulist.add(mUser.getUser_id());
+                    ulist.add(mUser);
 
                 }
 //                save update list
@@ -250,8 +251,8 @@ public class ViewProfileActivity extends AppCompatActivity {
 
 
                 notify = true;
-                FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mUser.getUser_id()).child(getString(R.string.field_user_id)).setValue(mUser.getUser_id());
-                FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_follower)).child(mUser.getUser_id()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(getString(R.string.field_user_id)).setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mUser).child(getString(R.string.field_user_id)).setValue(mUser);
+                FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_follower)).child(mUser).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(getString(R.string.field_user_id)).setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 mFollow.setText("Unfollow");
                 final DatabaseReference data = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 data.addValueEventListener(new ValueEventListener() {
@@ -259,7 +260,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user = dataSnapshot.getValue(users.class);
                         if (notify) {
-                            mFirebaseMethods.sendNotification(mUser.getUser_id(), user.getUsername(), "becomes your FAN!", "Fan");
+                            mFirebaseMethods.sendNotification(mUser, user.getUsername(), "becomes your FAN!", "Fan");
                         }
                         notify = false;
                     }
@@ -268,10 +269,10 @@ public class ViewProfileActivity extends AppCompatActivity {
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                     }
                 });
-                addToHisNotification(mUser.getUser_id(), "becomes your FAN!");
+                addToHisNotification(mUser, "becomes your FAN!");
             }
             DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
-            Query query1 = reference1.child(getString(R.string.dbname_user_account_settings)).child(mUser.getUser_id());
+            Query query1 = reference1.child(getString(R.string.dbname_user_account_settings)).child(mUser);
             query1.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -287,7 +288,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         mMessage.setOnClickListener(v -> {
             YoYo.with(Techniques.FadeIn).duration(500).playOn(mMessage);
             Intent intent = new Intent(ViewProfileActivity.this, Chat_Activity.class);
-            intent.putExtra(getString(R.string.his_UID), mUser.getUser_id());
+            intent.putExtra(getString(R.string.his_UID), mUser);
             intent.putExtra("request", "no");
             startActivity(intent);
         });
@@ -297,7 +298,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     private void init() {
         DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
-        Query query1 = reference1.child(getString(R.string.dbname_user_account_settings)).child(mUser.getUser_id());
+        Query query1 = reference1.child(getString(R.string.dbname_user_account_settings)).child(mUser);
         query1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -310,7 +311,7 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         });
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbname_user_photos)).child(mUser.getUser_id());
+        Query query = reference.child(getString(R.string.dbname_user_photos)).child(mUser);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -394,7 +395,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     private void isFolllowing() {
         mFollow.setText("Follow");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).orderByChild(getString(R.string.field_user_id)).equalTo(mUser.getUser_id());
+        Query query = reference.child(getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).orderByChild(getString(R.string.field_user_id)).equalTo(mUser);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -410,7 +411,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     private void getFollowerCount() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbname_follower)).child(mUser.getUser_id());
+        Query query = reference.child(getString(R.string.dbname_follower)).child(mUser);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -433,7 +434,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     private void getCompDetails() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbname_contests)).child(mUser.getUser_id());
+        Query query = reference.child(getString(R.string.dbname_contests)).child(mUser);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -448,17 +449,6 @@ public class ViewProfileActivity extends AppCompatActivity {
         });
     }
 
-    private users getUserFromBundle() {
-        Intent i=getIntent();
-
-        Bundle bundle = i.getParcelableExtra(getString(R.string.intent_user));
-        if (bundle != null) {
-            Log.d(TAG, "getUserFromBundle: qaz3"+bundle.getParcelable(getString(R.string.intent_user)));
-            return bundle.getParcelable(getString(R.string.intent_user));
-        } else {
-            return null;
-        }
-    }
 
     private void setProfileWidgets(users userSetting) {
         Log.d(TAG, "onDataChange: 1234" + userSetting.toString());

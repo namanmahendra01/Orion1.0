@@ -75,35 +75,11 @@ public class AdapterRankList extends RecyclerView.Adapter<AdapterRankList.ViewHo
                 Intent i = new Intent(mContext, profile.class);
                 i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                i.putExtra(mContext.getString(R.string.intent_user), holder.user);
+                i.putExtra(mContext.getString(R.string.intent_user),mparticipantList.getUserid());
                 mContext.startActivity(i);
             }
         });
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-
-        Query userquery = ref
-                .child(mContext.getString(R.string.dbname_users))
-                .orderByChild(mContext.getString(R.string.field_user_id))
-                .equalTo(mparticipantList.getUserid());
-        userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                    holder.user = singleSnapshot.getValue(users.class);
-
-                }
-
-
-            }
-
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d(TAG, "Query Cancelled");
-            }
-        });
 
 
     }
@@ -141,7 +117,6 @@ public class AdapterRankList extends RecyclerView.Adapter<AdapterRankList.ViewHo
 
         private TextView username, totalScore, rankNum;
         private CircleImageView profile;
-        users user = new users();
 
 
         public ViewHolder(@NonNull View itemView) {

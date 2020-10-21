@@ -28,13 +28,10 @@ public class profile extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent.hasExtra(getString(R.string.calling_activity))) {
             if (intent.hasExtra(getString(R.string.intent_user))) {
-                users user = intent.getParcelableExtra(getString(R.string.intent_user));
-                if (!user.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                    Log.d(TAG, "init: qaz0"+intent.getParcelableExtra(getString(R.string.intent_user)));
+                String user = intent.getStringExtra(getString(R.string.intent_user));
+                if (!user.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                     Intent i = new Intent(profile.this,ViewProfileActivity.class);
-                    Bundle args = new Bundle();
-                    args.putParcelable(getString(R.string.intent_user), intent.getParcelableExtra(getString(R.string.intent_user)));
-                    i.putExtra(getString(R.string.intent_user),args);
+                    i.putExtra(getString(R.string.intent_user),user);
                    startActivity(i);
                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 } else {

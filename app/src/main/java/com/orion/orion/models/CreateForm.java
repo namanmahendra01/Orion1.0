@@ -157,13 +157,7 @@ public class CreateForm {
         this.winDeclare = winDeclare;
     }
 
-    public String getNumParticipants() {
-        return numParticipants;
-    }
 
-    public void setNumParticipants(String numParticipants) {
-        this.numParticipants = numParticipants;
-    }
 
     public String getMaxLimit() {
         return maxLimit;
@@ -173,13 +167,6 @@ public class CreateForm {
         this.maxLimit = maxLimit;
     }
 
-    public String getPmoney() {
-        return pmoney;
-    }
-
-    public void setPmoney(String pmoney) {
-        this.pmoney = pmoney;
-    }
 
     public String getPlace_1() {
         return place_1;
@@ -213,13 +200,6 @@ public class CreateForm {
         this.total_prize = total_prize;
     }
 
-    public String getNumJury() {
-        return numJury;
-    }
-
-    public void setNumJury(String numJury) {
-        this.numJury = numJury;
-    }
 
     public String getJname_1() {
         return jname_1;
@@ -279,13 +259,6 @@ public class CreateForm {
         this.timestamp = timestamp;
     }
 
-    public String getInstitute() {
-        return institute;
-    }
-
-    public void setInstitute(String institute) {
-        this.institute = institute;
-    }
 
     public String getContestkey() {
         return contestkey;

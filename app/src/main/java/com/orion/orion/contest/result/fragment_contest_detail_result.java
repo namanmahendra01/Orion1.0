@@ -51,7 +51,6 @@ public class fragment_contest_detail_result extends Fragment {
     private String mAppend = "";
     private String jpic1="",jpic2="",jpic3="",posterlink="";
     private CardView cardView;
-    users user = new users();
 
     String descrip2="",rule2="";
 
@@ -410,12 +409,12 @@ public class fragment_contest_detail_result extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                           users user = singleSnapshot.getValue(users.class);
 
                             Intent i = new Intent(getActivity(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
                             startActivity(i);
 
                         }
@@ -448,12 +447,12 @@ public class fragment_contest_detail_result extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                           users user = singleSnapshot.getValue(users.class);
 
                             Intent i = new Intent(getActivity(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
                             startActivity(i);
 
                         }
@@ -486,12 +485,12 @@ public class fragment_contest_detail_result extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                            users user = singleSnapshot.getValue(users.class);
 
                             Intent i = new Intent(getActivity(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
                             startActivity(i);
 
                         }
@@ -525,12 +524,12 @@ public class fragment_contest_detail_result extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                            users user = singleSnapshot.getValue(users.class);
 
                             Intent i = new Intent(getActivity(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
                             startActivity(i);
 
                         }
@@ -563,12 +562,12 @@ public class fragment_contest_detail_result extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                            users user = singleSnapshot.getValue(users.class);
 
                             Intent i = new Intent(getActivity(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
                             startActivity(i);
 
                         }
@@ -600,13 +599,12 @@ public class fragment_contest_detail_result extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                            user = singleSnapshot.getValue(users.class);
+                            users user = singleSnapshot.getValue(users.class);
 
                             Intent i = new Intent(getActivity(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
                             startActivity(i);
 
                         }
@@ -640,12 +638,12 @@ public class fragment_contest_detail_result extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                            users user = singleSnapshot.getValue(users.class);
 
                             Intent i = new Intent(getActivity(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
                             startActivity(i);
 
                         }
@@ -678,14 +676,13 @@ public class fragment_contest_detail_result extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                            users user = singleSnapshot.getValue(users.class);
 
                             Intent i = new Intent(getActivity(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
                             startActivity(i);
-
                         }
 
 
@@ -716,12 +713,12 @@ public class fragment_contest_detail_result extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                            users user = singleSnapshot.getValue(users.class);
 
                             Intent i = new Intent(getActivity(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
                             startActivity(i);
 
                         }

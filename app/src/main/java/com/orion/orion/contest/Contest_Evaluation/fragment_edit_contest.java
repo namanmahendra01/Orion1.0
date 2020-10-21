@@ -14,12 +14,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -798,13 +800,24 @@ public class fragment_edit_contest extends Fragment {
                         .child(getString(R.string.created_contest))
                         .child(Contestkey)
                         .child("descrip")
-                       .setValue(descrip2);
-                DatabaseReference ref2= FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
-                ref2.child(userid)
-                        .child(getString(R.string.created_contest))
-                        .child(Contestkey)
-                        .child("rule")
-                        .setValue(rule2);
+                       .setValue(descrip2).addOnSuccessListener(new OnSuccessListener<Void>() {
+                           @Override
+                           public void onSuccess(Void aVoid) {
+                               DatabaseReference ref2= FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
+                               ref2.child(userid)
+                                       .child(getString(R.string.created_contest))
+                                       .child(Contestkey)
+                                       .child("rule")
+                                       .setValue(rule2).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                   @Override
+                                   public void onSuccess(Void aVoid) {
+
+                                       Toast.makeText(context, "Your changes are saved!", Toast.LENGTH_SHORT).show();
+                                   }
+                               }) ;
+                           }
+                       });
+
 
 
 

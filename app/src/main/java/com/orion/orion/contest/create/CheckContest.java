@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,6 +47,7 @@ public class CheckContest extends AppCompatActivity {
     private String jpic1 = "", jpic2 = "", jpic3 = "", posterlink = "";
     private CardView cardView;
     private Button postContest;
+   public LinearLayout progress;
 
     private String newContestKey;
     private CreateForm mCreateForm;
@@ -70,6 +72,7 @@ public class CheckContest extends AppCompatActivity {
         Log.d(TAG, "onCreate: started.");
         mFirebaseMethods = new FirebaseMethods(CheckContest.this);
         setupFirebaseAuth();
+        progress = findViewById(R.id.pro);
 
         entryfee = findViewById(R.id.entryfeeTv);
         title = findViewById(R.id.titleTv);
@@ -309,12 +312,16 @@ public class CheckContest extends AppCompatActivity {
         UniversalImageLoader.setImage(posterlink, poster, null, mAppend);
         postContest.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Your Contest has been created")
+            builder.setMessage("Are you sure you want to create this contest? ")
                     .setCancelable(false)
-                    .setPositiveButton("OK", (dialog, id) -> {
+                    .setPositiveButton("Yes", (dialog, id) -> {
+                        progress.setVisibility(View.VISIBLE);
+
                         postcontest();
-                        Intent intent1=new Intent(CheckContest.this, contestMainActivity.class);
-                        startActivity(intent1);
+                        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                        Intent intent1=new Intent(CheckContest.this, contestMainActivity.class);
+//                        startActivity(intent1);
                     })
                     .show();
         });

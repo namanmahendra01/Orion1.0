@@ -19,6 +19,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -74,6 +76,7 @@ public class JoiningForm extends AppCompatActivity {
     LinearLayout mediaLinear, imageLinear;
     String type = "";
     String p5 = "p5", p6 = "p6";
+   public LinearLayout linearLayout;
 
     //firebase
     private FirebaseFirestore db;
@@ -112,6 +115,7 @@ public class JoiningForm extends AppCompatActivity {
         warn = findViewById(R.id.warn);
         imageLinear = findViewById(R.id.ImageLinearLayout);
         mediaLinear = findViewById(R.id.mediaLinearLayout);
+        linearLayout = findViewById(R.id.pro);
 
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
@@ -237,6 +241,9 @@ public class JoiningForm extends AppCompatActivity {
             public void onClick(View v) {
                 boolean ok = checkValidity();
                 if (ok) {
+                    getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    linearLayout.setVisibility(View.VISIBLE);
 
                     SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
                         @Override
@@ -282,28 +289,42 @@ public class JoiningForm extends AppCompatActivity {
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                     .child(getString(R.string.joined_contest))
                                     .child(JoiningKey)
-                                    .setValue(hashMap);
+                                    .setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    DatabaseReference db2 = FirebaseDatabase.getInstance().getReference();
 
-                            DatabaseReference db2 = FirebaseDatabase.getInstance().getReference();
+                                    HashMap<String, Object> hashMap2 = new HashMap<>();
+                                    hashMap2.put("timestamp", timeStamp);
+                                    hashMap2.put("joiningKey", JoiningKey);
+                                    hashMap2.put("totalScore", 0);
+                                    hashMap2.put("contestkey", contestId);
+                                    hashMap2.put("mediaLink", mediaLink);
+                                    hashMap2.put("userid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    db2.child(getString(R.string.dbname_request))
+                                            .child(getString(R.string.dbname_participantList))
+                                            .child(contestId)
+                                            .child(JoiningKey)
+                                            .setValue(hashMap2).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            mFirebaseMethods.uploadContest(imageCount, idLink, null, contestId, p5, JoiningKey);
+                                            if (type.equals("Image")) {
+                                                mFirebaseMethods.uploadContest(imageCount, mediaLink, null, contestId, p6, JoiningKey);
+//                                                linearLayout.setVisibility(View.GONE);
+                                            }else {
+//                                                linearLayout.setVisibility(View.GONE);
 
-                            HashMap<String, Object> hashMap2 = new HashMap<>();
-                            hashMap2.put("timestamp", timeStamp);
-                            hashMap2.put("joiningKey", JoiningKey);
-                            hashMap2.put("totalScore", 0);
-                            hashMap2.put("contestkey", contestId);
-                            hashMap2.put("mediaLink", mediaLink);
-                            hashMap2.put("userid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                            db2.child(getString(R.string.dbname_request))
-                                    .child(getString(R.string.dbname_participantList))
-                                    .child(contestId)
-                                    .child(JoiningKey)
-                                    .setValue(hashMap2);
+                                            }
+                                        }
+                                    });
+                                }
+                            });
 
 
-                            mFirebaseMethods.uploadContest(imageCount, idLink, null, contestId, p5, JoiningKey);
-                            if (type.equals("Image")) {
-                                mFirebaseMethods.uploadContest(imageCount, mediaLink, null, contestId, p6, JoiningKey);
-                            }
+
+
+
 
                             Log.e(SNTPClient.TAG, rawDate);
 

@@ -14,12 +14,15 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -54,6 +57,7 @@ public class jury_voting_media extends AppCompatActivity {
     ArrayList<String> participantlist;
     ArrayList<String> markList;
     Button btn;
+    LinearLayout progress;
     //    SP
     Gson gson;
     SharedPreferences sp;
@@ -67,6 +71,7 @@ public class jury_voting_media extends AppCompatActivity {
         juryTable = findViewById(R.id.jurytablevote);
         juryTable.setStretchAllColumns(true);
         btn = findViewById(R.id.submitMarksBtn);
+        progress = findViewById(R.id.pro);
 
 
         Intent i = getIntent();
@@ -86,7 +91,10 @@ public class jury_voting_media extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
+                progress.setVisibility(View.VISIBLE);
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                final int[] i = {0};
                 for (String joiningKey : participantlist) {
 
                     String json = sp.getString(joiningKey, null);
@@ -104,6 +112,8 @@ public class jury_voting_media extends AppCompatActivity {
                     DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
 
                     if (text.equals("") || tex2t.equals("")) {
+                        progress.setVisibility(View.GONE);
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         et.setError("please fill");
                         et2.setError("please fill");
                     } else {
@@ -115,13 +125,28 @@ public class jury_voting_media extends AppCompatActivity {
                                 .child(joiningKey)
                                 .child(getString(R.string.juryMarks))
                                 .child(jury)
-                                .setValue(text);
-                        ref2.child(getString(R.string.dbname_participantList))
-                                .child(contestkey)
-                                .child(joiningKey)
-                                .child(getString(R.string.juryMarks))
-                                .child(comment)
-                                .setValue(tex2t);
+                                .setValue(text).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                ref2.child(getString(R.string.dbname_participantList))
+                                        .child(contestkey)
+                                        .child(joiningKey)
+                                        .child(getString(R.string.juryMarks))
+                                        .child(comment)
+                                        .setValue(tex2t).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        i[0]++;
+                                        if (i[0]==participantlist.size()){
+                                            progress.setVisibility(View.GONE);
+                                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+                                        }
+                                    }
+                                });
+                            }
+                        });
+
 
                         x++;
 

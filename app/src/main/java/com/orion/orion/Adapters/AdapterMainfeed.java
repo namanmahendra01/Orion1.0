@@ -512,23 +512,23 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference
                 .child(mContext.getString(R.string.dbname_user_account_settings))
-                .orderByChild(mContext.getString(R.string.field_user_id))
-                .equalTo(photo.getUser_id());
+                .child(photo.getUser_id());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+            public void onDataChange(@NonNull DataSnapshot singleSnapshot) {
                     currentUsername = singleSnapshot.getValue(users.class).getUsername();
 
                     holder.username.setText(singleSnapshot.getValue(users.class).getUsername());
                     holder.credit.setText("© " + singleSnapshot.getValue(users.class).getUsername());
+
+
                     holder.username.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent i = new Intent(mContext, profile.class);
                             i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                            i.putExtra(mContext.getString(R.string.intent_user), holder.user);
+                            i.putExtra(mContext.getString(R.string.intent_user),photo.getUser_id());
                             mContext.startActivity(i);
                         }
                     });
@@ -541,7 +541,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                             Intent i = new Intent(mContext, profile.class);
                             i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                            i.putExtra(mContext.getString(R.string.intent_user), holder.user);
+                            i.putExtra(mContext.getString(R.string.intent_user), photo.getUser_id());
                             mContext.startActivity(i);
                         }
                     });
@@ -560,7 +560,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                 }
 
 
-            }
+
 
 
             @Override
@@ -653,27 +653,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
 //        get the object
 
-        Query userquery = FirebaseDatabase.getInstance().getReference()
-                .child(mContext.getString(R.string.dbname_users))
-                .orderByChild(mContext.getString(R.string.field_user_id))
-                .equalTo(photo.getUser_id());
-        userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                    holder.user = singleSnapshot.getValue(users.class);
-
-                }
-
-
-            }
-
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
 
 //        toggle star
         holder.whitestar.setOnClickListener(new View.OnClickListener() {
@@ -968,7 +947,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
 
         users setting = new users();
-        com.orion.orion.models.users user = new users();
         StringBuilder users;
         String type = "";
         Photo photo;

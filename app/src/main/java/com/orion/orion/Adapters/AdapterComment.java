@@ -78,7 +78,7 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.ViewHold
                 Intent i = new Intent(mContext, profile.class);
                 i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                i.putExtra(mContext.getString(R.string.intent_user), holder.user);
+                i.putExtra(mContext.getString(R.string.intent_user), comment.getUser_id());
                 mContext.startActivity(i);
             }
         });
@@ -89,46 +89,18 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.ViewHold
                 Intent i = new Intent(mContext, profile.class);
                 i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                i.putExtra(mContext.getString(R.string.intent_user), holder.user);
+                i.putExtra(mContext.getString(R.string.intent_user), comment.getUser_id());
                 mContext.startActivity(i);
             }
         });
 
-        DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
-
-        Query userquery = ref
-                .child(mContext.getString(R.string.dbname_users))
-                .orderByChild(mContext.getString(R.string.field_user_id))
-                .equalTo(comment.getUser_id());
-        userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                    holder.user = singleSnapshot.getValue(users.class);
-
-                }
-
-
-            }
-
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d(TAG, "Query Cancelled");
-            }
-        });
-
-
-
-    }
+       }
 
     private void getUserdetail(String user_id, TextView username, CircleImageView profileimage) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference
                 .child(mContext.getString(R.string.dbname_user_account_settings))
-                .orderByChild(mContext.getString(R.string.field_user_id))
-                .equalTo(user_id);
+                .child(user_id);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -167,7 +139,6 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.ViewHold
 
         TextView comment,username,timestamp;
         CircleImageView profileimage;
-        users user = new users();
 
         public ViewHolder(@NonNull View convertView) {
             super(convertView);

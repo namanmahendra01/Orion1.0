@@ -133,7 +133,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                         Intent i = new Intent(mContext, profile.class);
                         i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                        i.putExtra(mContext.getString(R.string.intent_user), holder.user);
+                        i.putExtra(mContext.getString(R.string.intent_user), mparticipantLists.getUserid());
                         mContext.startActivity(i);
                     }
                 });
@@ -144,7 +144,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                         Intent i = new Intent(mContext, profile.class);
                         i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                        i.putExtra(mContext.getString(R.string.intent_user), holder.user);
+                        i.putExtra(mContext.getString(R.string.intent_user),mparticipantLists.getUserid());
                         mContext.startActivity(i);
                     }
                 });
@@ -155,7 +155,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                         Intent i = new Intent(mContext, profile.class);
                         i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                        i.putExtra(mContext.getString(R.string.intent_user), holder.user);
+                        i.putExtra(mContext.getString(R.string.intent_user),mparticipantLists.getUserid());
                         mContext.startActivity(i);
                     }
                 });
@@ -387,30 +387,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
         });
 
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
-        Query userquery = ref
-                .child(mContext.getString(R.string.dbname_users))
-                .orderByChild(mContext.getString(R.string.field_user_id))
-                .equalTo(mparticipantLists.getUserid());
-        userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                    holder.user = singleSnapshot.getValue(users.class);
-
-                }
-
-
-            }
-
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d(TAG, "Query Cancelled");
-            }
-        });
 
 
     }
@@ -530,7 +507,6 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView username, displayname, time;
-        users user = new users();
         private DatabaseReference mReference;
 
         private CircleImageView profile;

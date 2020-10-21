@@ -5,9 +5,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.icu.lang.UCharacter;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -46,6 +48,8 @@ import com.orion.orion.Notifications.Data;
 import com.orion.orion.Notifications.Sender;
 import com.orion.orion.Notifications.Token;
 import com.orion.orion.R;
+import com.orion.orion.contest.create.CheckContest;
+import com.orion.orion.contest.joined.JoiningForm;
 import com.orion.orion.home.MainActivity;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.Leaderboard;
@@ -82,6 +86,7 @@ public class FirebaseMethods {
     private String userID;
     private double mPhotoUploadProgress = 0;
     private RequestQueue requestQueue;
+    boolean flag1=true,flag2=true,flag3=true,flag4=true,flag5=true,flag6=true;
 
 
     public FirebaseMethods(Context context) {
@@ -199,39 +204,89 @@ public class FirebaseMethods {
 //                           Toast.makeText(mContext, "Photo Upload success" , Toast.LENGTH_SHORT).show();
                             DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                             if (p.equals("p1")) {
-
+                                flag1=false;
                                 ref.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.created_contest))
                                         .child(contestKey)
-                                        .child("jpic1").setValue(firebaseurl.toString());
+                                        .child("jpic1").setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        flag1=true;
+                                        if (flag1&&flag2&&flag3&&flag4){
+                                            ((CheckContest)mContext).progress.setVisibility(View.GONE);
+                                            ((CheckContest)mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+
+                                        }
+                                    }
+                                });
                             }
                             if (p.equals("p2")) {
 
+                                flag2=false;
                                 ref.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.created_contest))
                                         .child(contestKey)
-                                        .child("jpic2").setValue(firebaseurl.toString());
+                                        .child("jpic2").setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        flag2=true;
+                                        if (flag1&&flag2&&flag3&&flag4){
+                                            ((CheckContest)mContext).progress.setVisibility(View.GONE);
+                                            ((CheckContest)mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+
+                                        }
+                                    }
+                                });
                             }
                             if (p.equals("p3")) {
+                                flag3=false;
 
                                 ref.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.created_contest))
                                         .child(contestKey)
-                                        .child("jpic3").setValue(firebaseurl.toString());
+                                        .child("jpic3").setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        flag3=true;
+                                        if (flag1&&flag2&&flag3&&flag4){
+                                            ((CheckContest)mContext).progress.setVisibility(View.GONE);
+                                            ((CheckContest)mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+
+                                        }
+                                    }
+                                });
                             }
                             if (p.equals("p4")) {
+                                flag4=false;
 
                                 ref.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.created_contest))
                                         .child(contestKey)
-                                        .child("poster").setValue(firebaseurl.toString());
+                                        .child("poster").setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        flag4=true;
+                                        if (flag1&&flag2&&flag3&&flag4){
+                                            ((CheckContest)mContext).progress.setVisibility(View.GONE);
+                                            ((CheckContest)mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+
+
+                                        }
+                                    }
+                                });
+
                             }
                             if (p.equals("p5")) {
 
+                                flag5=false;
                                 ref.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.joined_contest))
@@ -241,10 +296,22 @@ public class FirebaseMethods {
                                         .child(mContext.getString(R.string.dbname_participantList))
                                         .child(contestKey)
                                         .child(joiningkey)
-                                        .child("idLink").setValue(firebaseurl.toString());
+                                        .child("idLink").setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        flag5=true;
+                                        if (flag5&&flag6) {
+                                            ((JoiningForm) mContext).linearLayout.setVisibility(View.GONE);
+                                            ((JoiningForm) mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+                                        }
+
+                                    }
+                                });
                             }
                             if (p.equals("p6")) {
 
+                                flag6=false;
                                 ref.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.joined_contest))
@@ -254,7 +321,18 @@ public class FirebaseMethods {
                                         .child(mContext.getString(R.string.dbname_participantList))
                                         .child(contestKey)
                                         .child(joiningkey)
-                                        .child("mediaLink").setValue(firebaseurl.toString());
+                                        .child("mediaLink").setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        flag6=true;
+                                        if (flag5&&flag6) {
+                                            ((JoiningForm) mContext).linearLayout.setVisibility(View.GONE);
+                                            ((JoiningForm) mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+                                        }
+                                    }
+                                });
+
                             }
                         }
 

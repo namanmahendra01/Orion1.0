@@ -72,34 +72,6 @@ public class AdapterVoterList extends RecyclerView.Adapter<AdapterVoterList.View
 
         getparticipantDetails(votingList,holder.username,holder.displayname,holder.profile);
 
-
-        DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
-
-        Query userquery = ref
-                .child(mContext.getString(R.string.dbname_users))
-                .orderByChild(mContext.getString(R.string.field_user_id))
-                .equalTo(votingList);
-        userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                    holder.user = singleSnapshot.getValue(users.class);
-
-                }
-
-
-            }
-
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d(TAG, "Query Cancelled");
-            }
-        });
-
-
-
     }
 
     public long getItemId(int position) {
@@ -115,14 +87,11 @@ public class AdapterVoterList extends RecyclerView.Adapter<AdapterVoterList.View
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView username, displayname, time;
-        users user = new users();
-        private DatabaseReference mReference;
 
         private CircleImageView profile;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            mReference = FirebaseDatabase.getInstance().getReference();
 
 
             profile=(CircleImageView)itemView.findViewById(R.id.profilePartCv);
