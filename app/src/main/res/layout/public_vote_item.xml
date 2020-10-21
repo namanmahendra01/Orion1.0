@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/r1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/winner"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="2dp"
+    app:cardUseCompatPadding="true"
+    app:contentPadding="3dp">
+
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1">
+            <TextView
+                android:id="@+id/num"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:layout_weight=".05"
+
+                android:gravity="center|center_vertical"
+                android:text="1"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:layout_weight=".65"
+                android:gravity="start|center_vertical"
+                android:maxLines="1"
+                android:text="Naman Mahendra"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+
+            <TextView
+                android:id="@+id/view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight=".15"
+                android:gravity="start|center_vertical"
+                android:text="View"
+                android:textColor="@color/dot_dark_screen3"
+                android:textSize="15sp" />
+            <RelativeLayout
+                android:id="@+id/relLayout2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight=".15"
+                android:gravity="center|center_vertical">
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center|bottom"
+
+                    android:src="@drawable/circle_vote" />
+
+                <ImageView
+                    android:id="@+id/noVote"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center|bottom"
+
+                    android:src="@drawable/ic_vote_no" />
+
+                <ImageView
+                    android:id="@+id/yesVote"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center|bottom"
+                    android:src="@drawable/ic_vote_yes"
+
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+
+
+
+
+        </TableRow>
+
+    </TableLayout>
+
+</androidx.cardview.widget.CardView>
+
+
+

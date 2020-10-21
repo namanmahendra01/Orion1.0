@@ -3,6 +3,8 @@ package com.orion.orion.contest.joined;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.annotation.TargetApi;
 import android.content.ContentUris;
@@ -37,6 +39,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.orion.orion.R;
+import com.orion.orion.contest.contestMainActivity;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.Permissions;
@@ -76,7 +79,7 @@ public class JoiningForm extends AppCompatActivity {
     LinearLayout mediaLinear, imageLinear;
     String type = "";
     String p5 = "p5", p6 = "p6";
-   public LinearLayout linearLayout;
+    public LinearLayout linearLayout;
 
     //firebase
     private FirebaseFirestore db;
@@ -119,7 +122,7 @@ public class JoiningForm extends AppCompatActivity {
 
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-        Log.d(TAG, "onCreate: llll"+userId+"  "+contestId);
+        Log.d(TAG, "onCreate: llll" + userId + "  " + contestId);
         db.child(getString(R.string.dbname_contests))
                 .child(userId)
                 .child(getString(R.string.created_contest))
@@ -131,7 +134,7 @@ public class JoiningForm extends AppCompatActivity {
                         openfor = createForm.getOpenFor();
                         type = createForm.getFiletype();
 
-                        Log.d(TAG, "onDataChange: "+type+"  "+createForm);
+                        Log.d(TAG, "onDataChange: " + type + "  " + createForm);
                         if (type.equals("Image")) {
                             imageLinear.setVisibility(View.VISIBLE);
                             submissionIv.setVisibility(View.VISIBLE);
@@ -271,7 +274,7 @@ public class JoiningForm extends AppCompatActivity {
 
 
                             if (!type.equals("Image")) {
-                                mediaLink=urlEt.getText().toString();
+                                mediaLink = urlEt.getText().toString();
                             }
                             HashMap<String, Object> hashMap = new HashMap<>();
                             hashMap.put("name", nameEt.getText().toString());
@@ -308,22 +311,32 @@ public class JoiningForm extends AppCompatActivity {
                                             .setValue(hashMap2).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            mFirebaseMethods.uploadContest(imageCount, idLink, null, contestId, p5, JoiningKey);
+                                            int c = 0;
+                                            if (!idLink.equals("")) {
+                                                mFirebaseMethods.uploadContest(imageCount, idLink, null, contestId, p5, JoiningKey);
+
+                                            } else {
+                                                c++;
+                                            }
                                             if (type.equals("Image")) {
                                                 mFirebaseMethods.uploadContest(imageCount, mediaLink, null, contestId, p6, JoiningKey);
-//                                                linearLayout.setVisibility(View.GONE);
-                                            }else {
-//                                                linearLayout.setVisibility(View.GONE);
+                                            } else {
+                                                c++;
+                                            }
+
+                                            if (c == 2) {
+                                                linearLayout.setVisibility(View.GONE);
+                                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                                Intent i = new Intent(JoiningForm.this, contestMainActivity.class);
+                                                startActivity(i);
+                                                Toast.makeText(JoiningForm.this, "Your submission has been submitted.", Toast.LENGTH_SHORT).show();
+
 
                                             }
                                         }
                                     });
                                 }
                             });
-
-
-
-
 
 
                             Log.e(SNTPClient.TAG, rawDate);

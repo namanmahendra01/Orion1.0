@@ -431,53 +431,61 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
         holder.voteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                ref.child(mContext.getString(R.string.dbname_user_account_settings))
-                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                users user = new users();
-                                user = dataSnapshot.getValue(users.class);
-                                String username = user.getUsername();
-                                if (username.equals(juryusername1)) {
-                                    Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
-                                    i.putExtra("userId", mcontest.getUserId());
-                                    i.putExtra("contestId", mcontest.getContestId());
-                                    i.putExtra("jury", "jury1");
-                                    i.putExtra("comment", "comment1");
-                                    mContext.startActivity(i);
+                if (mcontest.getVoteType().equals("Public")) {
+                    Intent i = new Intent(mContext.getApplicationContext(), public_voting_media.class);
+                    i.putExtra("userId", mcontest.getUserId());
+                    i.putExtra("contestId", mcontest.getContestId());
+                    mContext.startActivity(i);
 
-                                } else if (username.equals(juryusername2)) {
-                                    Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
-                                    i.putExtra("userId", mcontest.getUserId());
-                                    i.putExtra("contestId", mcontest.getContestId());
-                                    i.putExtra("jury", "jury2");
-                                    i.putExtra("comment", "comment2");
+                }else{
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                    ref.child(mContext.getString(R.string.dbname_user_account_settings))
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .child(mContext.getString(R.string.field_username))
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    String username = dataSnapshot.getValue().toString();
+                                    if (username.equals(juryusername1)) {
+                                        Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
+                                        i.putExtra("userId", mcontest.getUserId());
+                                        i.putExtra("contestId", mcontest.getContestId());
+                                        i.putExtra("jury", "jury1");
+                                        i.putExtra("comment", "comment1");
+                                        mContext.startActivity(i);
 
-                                    mContext.startActivity(i);
+                                    } else if (username.equals(juryusername2)) {
+                                        Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
+                                        i.putExtra("userId", mcontest.getUserId());
+                                        i.putExtra("contestId", mcontest.getContestId());
+                                        i.putExtra("jury", "jury2");
+                                        i.putExtra("comment", "comment2");
 
-                                } else if (username.equals(juryusername3)) {
-                                    Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
-                                    i.putExtra("userId", mcontest.getUserId());
-                                    i.putExtra("contestId", mcontest.getContestId());
-                                    i.putExtra("jury", "jury3");
-                                    i.putExtra("comment", "comment3");
-                                    mContext.startActivity(i);
+                                        mContext.startActivity(i);
 
-                                } else {
-                                    Intent i = new Intent(mContext.getApplicationContext(), public_voting_media.class);
-                                    i.putExtra("userId", mcontest.getUserId());
-                                    i.putExtra("contestId", mcontest.getContestId());
-                                    mContext.startActivity(i);
+                                    } else if (username.equals(juryusername3)) {
+                                        Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
+                                        i.putExtra("userId", mcontest.getUserId());
+                                        i.putExtra("contestId", mcontest.getContestId());
+                                        i.putExtra("jury", "jury3");
+                                        i.putExtra("comment", "comment3");
+                                        mContext.startActivity(i);
+
+                                    } else {
+                                        Intent i = new Intent(mContext.getApplicationContext(), public_voting_media.class);
+                                        i.putExtra("userId", mcontest.getUserId());
+                                        i.putExtra("contestId", mcontest.getContestId());
+                                        mContext.startActivity(i);
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                            }
-                        });
+                                }
+                            });
+                }
+
 
 
             }

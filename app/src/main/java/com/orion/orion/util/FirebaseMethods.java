@@ -48,6 +48,7 @@ import com.orion.orion.Notifications.Data;
 import com.orion.orion.Notifications.Sender;
 import com.orion.orion.Notifications.Token;
 import com.orion.orion.R;
+import com.orion.orion.contest.contestMainActivity;
 import com.orion.orion.contest.create.CheckContest;
 import com.orion.orion.contest.joined.JoiningForm;
 import com.orion.orion.home.MainActivity;
@@ -216,6 +217,11 @@ public class FirebaseMethods {
                                         if (flag1&&flag2&&flag3&&flag4){
                                             ((CheckContest)mContext).progress.setVisibility(View.GONE);
                                             ((CheckContest)mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            Intent i = new Intent(mContext, contestMainActivity.class);
+                                            mContext. startActivity(i);
+                                            Toast.makeText(mContext ,"Your Contest request has been submitted.", Toast.LENGTH_SHORT).show();
+
+
 
 
                                         }
@@ -236,6 +242,9 @@ public class FirebaseMethods {
                                         if (flag1&&flag2&&flag3&&flag4){
                                             ((CheckContest)mContext).progress.setVisibility(View.GONE);
                                             ((CheckContest)mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            Intent i = new Intent(mContext, contestMainActivity.class);
+                                            mContext. startActivity(i);
+                                            Toast.makeText(mContext ,"Your Contest request has been submitted.", Toast.LENGTH_SHORT).show();
 
 
                                         }
@@ -256,6 +265,9 @@ public class FirebaseMethods {
                                         if (flag1&&flag2&&flag3&&flag4){
                                             ((CheckContest)mContext).progress.setVisibility(View.GONE);
                                             ((CheckContest)mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            Intent i = new Intent(mContext, contestMainActivity.class);
+                                            mContext. startActivity(i);
+                                            Toast.makeText(mContext ,"Your Contest request has been submitted.", Toast.LENGTH_SHORT).show();
 
 
                                         }
@@ -276,6 +288,9 @@ public class FirebaseMethods {
                                         if (flag1&&flag2&&flag3&&flag4){
                                             ((CheckContest)mContext).progress.setVisibility(View.GONE);
                                             ((CheckContest)mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            Intent i = new Intent(mContext, contestMainActivity.class);
+                                            mContext. startActivity(i);
+                                            Toast.makeText(mContext ,"Your Contest request has been submitted.", Toast.LENGTH_SHORT).show();
 
 
 
@@ -303,7 +318,9 @@ public class FirebaseMethods {
                                         if (flag5&&flag6) {
                                             ((JoiningForm) mContext).linearLayout.setVisibility(View.GONE);
                                             ((JoiningForm) mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-
+                                            Intent i = new Intent(mContext, contestMainActivity.class);
+                                            mContext. startActivity(i);
+                                            Toast.makeText(mContext ,"Your participation request has been submitted.", Toast.LENGTH_SHORT).show();
                                         }
 
                                     }
@@ -328,6 +345,10 @@ public class FirebaseMethods {
                                         if (flag5&&flag6) {
                                             ((JoiningForm) mContext).linearLayout.setVisibility(View.GONE);
                                             ((JoiningForm) mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            Intent i = new Intent(mContext, contestMainActivity.class);
+                                            mContext. startActivity(i);
+                                            Toast.makeText(mContext ,"Your participation request has been submitted.", Toast.LENGTH_SHORT).show();
+
 
                                         }
                                     }

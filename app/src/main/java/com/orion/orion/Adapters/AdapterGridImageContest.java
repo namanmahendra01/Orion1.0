@@ -9,11 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.Constraints;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,17 +22,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
-import com.orion.orion.ViewPostActivity;
 import com.orion.orion.contest.Contest_Evaluation.activity_view_media;
-import com.orion.orion.contest.public_voting_media;
-import com.orion.orion.models.Comment;
-import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.ParticipantList;
-import com.orion.orion.models.Photo;
 import com.orion.orion.util.UniversalImageLoader;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import static com.orion.orion.util.SNTPClient.TAG;
 
 public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridImageContest.ViewHolder> {
 
@@ -89,6 +86,8 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
                 }
             });
         }else{
+            ifCurrentUserVote(holder,participantList.getJoiningKey(),participantList.getContestkey());
+
             holder.viewSub.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -128,9 +127,89 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
 //
 
 
+       holder.voteNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference reference=FirebaseDatabase.getInstance().getReference();
+                reference.child(mContext.getString(R.string.dbname_contestlist))
+                        .child(participantList.getContestkey())
+                        .child("voterlist")
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    Toast.makeText(mContext, "You have already voted for this contest.", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    holder. voteNo.setVisibility(View.GONE);
+                                    holder.voteYes.setVisibility(View.VISIBLE);
+                                    addVote(holder,participantList.getJoiningKey(),participantList.getContestkey());
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+
+
+            }
+        });
+        holder.voteYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                holder.voteNo.setVisibility(View.VISIBLE);
+                holder.voteYes.setVisibility(View.GONE);
+                removeVote(holder,participantList.getJoiningKey(),participantList.getContestkey());
+
+
+            }
+        });
 
 
     }
+
+
+
+    private void removeVote(ViewHolder holder, String joiningKey, String contestkey) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child(mContext.getString(R.string.dbname_participantList))
+                .child(contestkey)
+                .child(joiningKey)
+                .child(mContext.getString(R.string.voting_list))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .removeValue();
+
+        reference.child(mContext.getString(R.string.dbname_contestlist))
+                .child(contestkey)
+                .child("voterlist")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .removeValue();
+
+
+    }
+
+    private void addVote(ViewHolder holder, String joiningKey, String contestkey) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child(mContext.getString(R.string.dbname_participantList))
+                .child(contestkey)
+                .child(joiningKey)
+                .child(mContext.getString(R.string.voting_list))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .setValue(true);
+
+        reference.child(mContext.getString(R.string.dbname_contestlist))
+                .child(contestkey)
+                .child("voterlist")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .setValue(true);
+    }
+
+
+
     public long getItemId(int position) {
         ParticipantList form = participantLists.get(position);
         return form.getJoiningKey().hashCode();
@@ -144,11 +223,15 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
 
         private ImageView image;
         TextView viewSub,num,name;
+        private ImageView voteNo, voteYes;
+        private TextView votingNumber;
+        private String mVotingnumber = "";
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-
+            voteNo =  itemView.findViewById(R.id.noVote);
+            voteYes =  itemView.findViewById(R.id.yesVote);
             image = itemView.findViewById(R.id.image);
             viewSub = itemView.findViewById(R.id.view);
             num = itemView.findViewById(R.id.num);
@@ -158,6 +241,41 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
 
         }
     }
+
+    private void ifCurrentUserVote(ViewHolder holder, String joiningKey, String contestKey) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+        reference.child(mContext.getString(R.string.dbname_participantList))
+                .child(contestKey)
+                .child(joiningKey)
+                .child(mContext.getString(R.string.voting_list))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
+                        Log.d(TAG, "onDataChange: dddd"+contestKey+joiningKey+dataSnapshot2);
+                        if (dataSnapshot2.exists()) {
+                            holder.voteNo.setVisibility(View.GONE);
+                            holder.voteYes.setVisibility(View.VISIBLE);
+
+                        } else {
+                            holder.voteNo.setVisibility(View.VISIBLE);
+                            holder.voteYes.setVisibility(View.GONE);
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+    }
+
+
 
 
 }

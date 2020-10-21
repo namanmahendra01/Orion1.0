@@ -112,6 +112,7 @@ public class activity_view_media extends AppCompatActivity {
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .removeValue();
         NumberofVotes();
+        voted=false;
 
 
     }
