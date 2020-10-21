@@ -16,7 +16,7 @@
         android:color="@color/grey"/>
 
     <gradient
-        android:angle="45"
-        android:startColor="@color/orange"
-        android:endColor="@color/pink_orange" />
+        android:angle="-0"
+        android:startColor="@color/scheme8"
+        android:endColor="@color/white" />
 </shape>

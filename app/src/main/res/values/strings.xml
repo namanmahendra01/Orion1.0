@@ -125,6 +125,9 @@
     <string name="field_overall">Overall</string>
     <string name="field_completed">completed</string>
     <string name="contest_update">contest_update</string>
+    <string name="changedFollowers">changedFollowers</string>
+    <string name="changedJoinedContest">changedJoinedContest</string>
+    <string name="changedCreatedContest">changedCreatedContest</string>
 
     field_post
 

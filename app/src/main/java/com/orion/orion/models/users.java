@@ -5,34 +5,58 @@ import android.os.Parcelable;
 
 public class users implements Parcelable {
 
-        private String user_id;
-
-
-        private String email,domain;
-        private String username;
+    private String user_id;
+    private String email, domain;
+    private String username;
     private String profile_photo;
     private String description;
     private String display_name;
+    private String changedFollowers;
+    private String changedCreateContest;
+    private String changedJoinedContest;
 
-
-
-    public users(String user_id, String email,
-                 String username, String profile_photo,
-                 String description, String display_name,
-                 String domain) {
+    public users(String user_id, String email, String domain, String username, String profile_photo, String description, String display_name, String changedFollowers, String changedCreateContest, String changedJoinedContest) {
         this.user_id = user_id;
         this.email = email;
+        this.domain = domain;
         this.username = username;
         this.profile_photo = profile_photo;
-        this.domain=domain;
         this.description = description;
         this.display_name = display_name;
-
+        this.changedFollowers = changedFollowers;
+        this.changedCreateContest = changedCreateContest;
+        this.changedJoinedContest = changedJoinedContest;
     }
 
-    public users(){
+    public String getChangedFollowers() {
+        return changedFollowers;
+    }
 
-}
+    public void setChangedFollowers(String changedFollowers) {
+        this.changedFollowers = changedFollowers;
+    }
+
+    public String getChangedCreateContest() {
+        return changedCreateContest;
+    }
+
+    public void setChangedCreateContest(String changedCreateContest) {
+        this.changedCreateContest = changedCreateContest;
+    }
+
+    public String getChangedJoinedContest() {
+        return changedJoinedContest;
+    }
+
+    public void setChangedJoinedContest(String changedJoinedContest) {
+        this.changedJoinedContest = changedJoinedContest;
+    }
+
+    public users() {
+        this.changedJoinedContest="false";
+        this.changedCreateContest = "false";
+        this.changedFollowers = "false";
+    }
 
     protected users(Parcel in) {
         user_id = in.readString();
@@ -42,7 +66,9 @@ public class users implements Parcelable {
         profile_photo = in.readString();
         description = in.readString();
         display_name = in.readString();
-
+        changedFollowers =in.readString();
+        changedCreateContest =in.readString();
+        changedJoinedContest=in.readString();
     }
 
     public static final Creator<users> CREATOR = new Creator<users>() {
@@ -91,7 +117,6 @@ public class users implements Parcelable {
     }
 
 
-
     public String getProfile_photo() {
         return profile_photo;
     }
@@ -115,7 +140,6 @@ public class users implements Parcelable {
     public void setDisplay_name(String display_name) {
         this.display_name = display_name;
     }
-
 
 
     @Override

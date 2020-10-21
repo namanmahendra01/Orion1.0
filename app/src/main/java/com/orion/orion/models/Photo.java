@@ -9,7 +9,7 @@ public class Photo implements Parcelable {
     private String caption;
     private String date_created;
     private String image_path;
-    private  String photo_id;
+    private String photo_id;
     private String type;
     private String user_id;
     private String users;
@@ -32,7 +32,7 @@ public class Photo implements Parcelable {
     }
 
     public Photo(){
-
+        this.type="";
     }
 
 

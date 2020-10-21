@@ -1,39 +1,30 @@
 package com.orion.orion.home;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.cardview.widget.CardView;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,7 +34,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.orion.orion.Adapters.AdapterContestUpcoming;
 import com.orion.orion.Adapters.AdapterMainFeedContest;
 import com.orion.orion.Adapters.AdapterMainfeed;
 import com.orion.orion.Adapters.AdapterPromote;
@@ -51,7 +41,6 @@ import com.orion.orion.R;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.Photo;
-
 import com.orion.orion.models.Promote;
 import com.orion.orion.models.users;
 import com.orion.orion.util.UniversalImageLoader;
@@ -60,15 +49,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
-import static androidx.constraintlayout.widget.Constraints.TAG;
 
 /*
 Shared preference keys:
@@ -386,7 +370,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         Type type = new TypeToken<ArrayList<Photo>>() {
         }.getType();
         mPhotos = gson.fromJson(json, type);
-        if (mPhotos == null||mPhotos.size()==0) {                 //    if no arrayList is present
+        if (mPhotos == null || mPhotos.size() == 0) {                 //    if no arrayList is present
 
             getPhotos();                    //  make new Arraylist
 
@@ -452,7 +436,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                 flag[0]++;
                                                 ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
-                                                if (!contestDetail.getResult()) {
+                                                if (contestDetail != null && !contestDetail.getResult()) {
                                                     Log.d(TAG, "checkContestUpdate: 4");
                                                     contestlist.add(contestDetail);
 
@@ -838,12 +822,10 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                         photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
 
-                        if (objectMap.get(getString(R.string.thumbnail)) != null) {
+                        if (objectMap.get(getString(R.string.thumbnail)) != null)
                             photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
-
-                        }
-                        photo.setType(objectMap.get(getString(R.string.type)).toString());
-
+                        if (objectMap.get(getString(R.string.type)) != null)
+                            photo.setType(objectMap.get(getString(R.string.type)).toString());
                         ArrayList<Comment> comments = new ArrayList<>();
 
                         for (DataSnapshot dSnapshot : singleSnapshot
@@ -1131,7 +1113,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     }
 
     private void getcontest() {
-        if (contestlist==null) {
+        if (contestlist == null) {
 
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
@@ -1185,7 +1167,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                 });
 
             }
-        }else{
+        } else {
             checkContestUpdate();
         }
 
@@ -1269,7 +1251,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                         promote.notifyDataSetChanged();
                         flag2 = true;
-                    }else {
+                    } else {
                         promote.notifyDataSetChanged();
                         flag2 = true;
                     }
@@ -1287,7 +1269,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
 
     private void getPhotos() {
-        if (mPhotos==null) {
+        if (mPhotos == null) {
             mPhotos = new ArrayList<>();
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
             for (int i = 0; i < mFollowing.size(); i++) {
@@ -1374,7 +1356,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
 
             }
-        }else {
+        } else {
             checkPostUpdate();
         }
 
@@ -1433,7 +1415,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                 ListViewRv.post(new Runnable() {
                     @Override
                     public void run() {
-                        mAadapter.notifyItemRangeInserted(mResults,iterations);
+                        mAadapter.notifyItemRangeInserted(mResults, iterations);
                     }
                 });
                 mResults = mResults + iterations;
@@ -1469,4 +1451,3 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
 
 }
-

@@ -373,79 +373,73 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
 
 
     public void addNewUser(String email, String username, String domain) {
-        users user = new users(userID, email,
-                StringManipilation.condenseUsername(username), "", "",
-                "", domain);
+        users user = new users(userID, email, StringManipilation.condenseUsername(username), "", "", "", domain,"false","false","false");
         myRef.child(mContext.getString(R.string.dbname_users))
                 .child(userID)
                 .setValue(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
+                .addOnSuccessListener(aVoid -> {
+                    Leaderboard leaderboard = new Leaderboard();
+                    leaderboard.setUsername(StringManipilation.condenseUsername(username));
+                    leaderboard.setDomain(domain);
+                    leaderboard.setProfile_photo("");
+                    myRef.child(mContext.getString(R.string.dbname_leaderboard))
+                            .child(userID)
+                            .setValue(leaderboard)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
+                                        @Override
+                                        public void onTimeReceived(String currentTimeStamp) {
+                                            leaderboard.setLast_updated(currentTimeStamp);
+                                            //domain parameter left
+                                            myRef.child(mContext.getString(R.string.dbname_leaderboard))
+                                                    .child(userID)
+                                                    .setValue(leaderboard)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            sendverification();
+                                                        }
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
 
-                        Leaderboard leaderboard = new Leaderboard();
-                        leaderboard.setUsername(StringManipilation.condenseUsername(username));
-                        leaderboard.setDomain(domain);
-                        leaderboard.setProfile_photo("");
-                        myRef.child(mContext.getString(R.string.dbname_leaderboard))
-                                .child(userID)
-                                .setValue(leaderboard)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
-                                            @Override
-                                            public void onTimeReceived(String currentTimeStamp) {
-                                                leaderboard.setLast_updated(currentTimeStamp);
-                                                //domain parameter left
-                                                myRef.child(mContext.getString(R.string.dbname_leaderboard))
-                                                        .child(userID)
-                                                        .setValue(leaderboard)
-                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void aVoid) {
-                                                                sendverification();
-                                                            }
-                                                        }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
 
-                                                    }
-                                                });
+                                        }
 
-                                            }
+                                        @Override
+                                        public void onError(Exception ex) {
+                                            myRef.child(mContext.getString(R.string.dbname_leaderboard))
+                                                    .child(userID)
+                                                    .setValue(leaderboard)
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            sendverification();
+                                                        }
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
 
-                                            @Override
-                                            public void onError(Exception ex) {
-                                                myRef.child(mContext.getString(R.string.dbname_leaderboard))
-                                                        .child(userID)
-                                                        .setValue(leaderboard)
-                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void aVoid) {
-                                                                sendverification();
-                                                            }
-                                                        }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
 
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
-
-                            }
-                        });
+                        }
+                    });
 
 
-                    }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {

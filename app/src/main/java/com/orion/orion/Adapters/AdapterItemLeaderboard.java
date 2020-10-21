@@ -62,7 +62,7 @@ public class AdapterItemLeaderboard extends RecyclerView.Adapter<AdapterItemLead
         Log.i("sakdada", "onBindViewHolder: "+currentItem.getPostionProfile());
         UniversalImageLoader.setImage(currentItem.getPostionProfile(),holder.PositionProfile,null,"");
         if(position==0 || position==1 || position==2)
-            holder.PositionCard.setBackgroundColor(Color.parseColor("#E5E6EB"));
+            holder.PositionCard.setBackgroundResource(R.drawable.vertical_gradient);
 
 
         holder.itemView.setOnClickListener(v -> {

@@ -23,10 +23,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -40,18 +38,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Constraints;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.common.reflect.TypeToken;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -156,44 +150,23 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 
                 super.onScrollStateChanged(recyclerView, newState);
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE)
                     displayMorePhotos();
-                } else if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                else if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     Log.d(TAG, "onScrollStateChanged: top");
-                    exploreRv.post(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            expand(collapse, 2500);
-
-                        }
-                    });                }
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-
-                if (dy < 0) {
-                    // Recycle view scrolling up...
-                    Log.d(TAG, "onScrolled: up");
-
-
-                } else if (dy > 0) {
-                    Log.d(TAG, "onScrolled: down");
-                    if (collapse.getVisibility()==View.VISIBLE){
-                        exploreRv.post(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                expand(collapse, 2500);
-
-                            }
-                        });
-
-                    }
-                    // Recycle view scrolling down...
+                    exploreRv.post(() -> expand(collapse, 500));
                 }
             }
+
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                if (dy > 0) {
+//                    // Recycle view scrolling down...
+//                    Log.d(TAG, "onScrolled: down");
+//                    if (collapse.getVisibility() == View.VISIBLE)
+//                        exploreRv.post(() -> expand(collapse, 2500));
+//                }
+//            }
         });
 
 
@@ -243,8 +216,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         Log.d(TAG, "initWidgets: " + prevHeight + "  " + dummyHeight);
         height = 0;
         progressBar.setVisibility(View.VISIBLE);
-
-
 
 
         GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 2);
@@ -318,7 +289,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
 
     public void expand(final View v, int duration) {
         final boolean expand = v.getVisibility() != View.VISIBLE;
-
         prevHeight = v.getHeight();
         if (x == 0) {
             x++;
@@ -337,14 +307,9 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         }
         Log.d(TAG, "expand: 5  " + prevHeight + "  " + height);
         ValueAnimator valueAnimator = ValueAnimator.ofInt(prevHeight, height);
-        int finalHeight = height;
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                v.getLayoutParams().height = (int) animation.getAnimatedValue();
-                v.requestLayout();
-
-            }
+        valueAnimator.addUpdateListener(animation -> {
+            v.getLayoutParams().height = (int) animation.getAnimatedValue();
+            v.requestLayout();
         });
 
         valueAnimator.addListener(new Animator.AnimatorListener() {

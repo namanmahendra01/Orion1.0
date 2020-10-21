@@ -291,6 +291,11 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .setValue(true);
 
+                                db.child(mContext.getString(R.string.dbname_users))
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(mContext.getString(R.string.changedJoinedContest))
+                                        .setValue("true");
+
                                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                                 ref.child(mContext.getString(R.string.dbname_request))
                                         .child(mContext.getString(R.string.dbname_participantList))

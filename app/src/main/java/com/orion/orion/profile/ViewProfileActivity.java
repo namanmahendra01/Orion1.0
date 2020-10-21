@@ -136,7 +136,6 @@ public class ViewProfileActivity extends AppCompatActivity {
         mContext =this;
         try {
             Intent i=getIntent();
-
             mUser = i.getStringExtra(getString(R.string.intent_user));
             init();
         } catch (NullPointerException e) {
@@ -190,7 +189,6 @@ public class ViewProfileActivity extends AppCompatActivity {
                     ulist.add(mUser);
                 }else{
                     ulist.add(mUser);
-
                 }
 //                save update list
                 editor=sp.edit();
@@ -202,6 +200,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mUser).removeValue();
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_follower)).child(mUser).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
+                FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_users)).child(mUser).child(getString(R.string.changedFollowers)).setValue("true");
                 mFollow.setText("Follow");
 
             } else {
@@ -218,7 +217,6 @@ public class ViewProfileActivity extends AppCompatActivity {
                     list.add(mUser);
                 }else{
                     list.add(mUser);
-
                 }
 //                 save following list
                 SharedPreferences.Editor editor=sp.edit();
@@ -253,6 +251,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                 notify = true;
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mUser).child(getString(R.string.field_user_id)).setValue(mUser);
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_follower)).child(mUser).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(getString(R.string.field_user_id)).setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_users)).child(mUser).child(getString(R.string.changedFollowers)).setValue("true");
                 mFollow.setText("Unfollow");
                 final DatabaseReference data = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                 data.addValueEventListener(new ValueEventListener() {
