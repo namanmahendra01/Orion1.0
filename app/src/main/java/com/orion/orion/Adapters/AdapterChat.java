@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
+import com.orion.orion.home.Chat_Activity;
 import com.orion.orion.models.Chat;
 import com.orion.orion.models.Photo;
 
@@ -102,54 +103,11 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
                 builder.create().show();
 
 
-
                 return true;
             }
 
         });
-//        myHolder.messageLayout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                AlertDialog.Builder builder= new AlertDialog.Builder(context);
-//                builder.setTitle("Delete");
-//                builder.setMessage("Are you sure, you want to delete this message?");
-//
-//
-//
-////                set buttons
-//                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        Log.d(TAG, "DeleteMessage: deleteing message");
-//                        DeleteMessage(i);
-//
-//                    }
-//                });
-//                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//
-//
-//                        dialog.dismiss();
-//                    }
-//                });
-//                builder.create().show();
-//            }
-//        });
-
-//        set seen/delieverd status of message
-        if (i==chatList.size()-1){
-            if (chatList.get(i).isIfseen()){
-                myHolder.isSeenTv.setText("seen");
-            }else{
-                myHolder.isSeenTv.setText("Delivered");
-            }
-        }
-else{
-    myHolder.isSeenTv.setVisibility(View.GONE);
-        }
     }
-
     private void DeleteMessage(int position) {
 
         Log.d(TAG, "DeleteMessage: deleting message");
@@ -162,11 +120,15 @@ else{
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        dbTs1.child(context.getString(R.string.dbname_Chats))
-                                .child(snapshot.getValue().toString())
-                                .child(msgID)
-                                .removeValue();
+                        if (snapshot.exists()) {
+                            dbTs1.child(context.getString(R.string.dbname_ChatList))
+                                    .child(snapshot.getValue().toString())
+                                    .child(msgID)
+                                    .removeValue();
+                            chatList.remove(chatList.get(position));
+                            AdapterChat.this.notifyItemRemoved(position);
 
+                        }
                     }
 
                     @Override
@@ -209,7 +171,6 @@ else{
 
             messageTv = itemView.findViewById(R.id.messagetv);
             timeTv = itemView.findViewById(R.id.TimeTv);
-            isSeenTv = itemView.findViewById(R.id.isSeenTv);
             messageLayout = itemView.findViewById(R.id.messageLayout);
 
 

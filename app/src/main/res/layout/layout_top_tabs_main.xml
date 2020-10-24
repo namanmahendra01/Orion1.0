@@ -20,6 +20,7 @@
                 android:background="#FFFFFF"
                 app:tabTextColor="#2C2A2A"
 
+                app:tabTextAppearance="@style/customfontstyle"
                 app:tabSelectedTextColor="#f29492"
 
                 app:tabIndicatorColor="#E3706E">

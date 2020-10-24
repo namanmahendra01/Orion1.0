@@ -2,6 +2,7 @@ package com.orion.orion.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ import com.orion.orion.util.UniversalImageLoader;
 
 import java.util.HashMap;
 import java.util.List;
+
+import static com.orion.orion.util.SNTPClient.TAG;
 
 public class AdapterMessageRequest extends RecyclerView.Adapter<AdapterMessageRequest.MyHolder> {
     Context context;
@@ -102,7 +105,13 @@ public class AdapterMessageRequest extends RecyclerView.Adapter<AdapterMessageRe
         LastMessagemap.put(userId,lastMessage);
     }
     public long getItemId(int position) {
-        return usersList.get(position).hashCode();
+        Log.d(TAG, "getItemId: lol"+usersList);
+        if (usersList==null||usersList.size()==0){
+            return position;
+        }else{
+            return usersList.get(position).hashCode();
+
+        }
     }
     @Override
     public int getItemCount() {

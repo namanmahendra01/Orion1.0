@@ -223,7 +223,12 @@ Chat_Activity extends AppCompatActivity {
                                 .child(context.getString(R.string.dbname_Chats))
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                 .child(hisUID)
-                                .removeValue();
+                                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                finish();
+                            }
+                        });
 
 
                     }
@@ -274,20 +279,26 @@ Chat_Activity extends AppCompatActivity {
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         ArrayList<Chat> chat1 = new ArrayList<>((int) dataSnapshot.getChildrenCount());
 
+                                        int x=0;
                                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
+                                            x++;
                                             Chat chat = ds.getValue(Chat.class);
                                             chat1.add(chat);
+                                            if (x==dataSnapshot.getChildrenCount()){
+                                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
+                                                for (Chat c : chat1) {
+                                                    ref.child(context.getString(R.string.dbname_ChatList))
+                                                            .child(key)
+                                                            .child(c.getMessageid())
+                                                            .setValue(c);
+                                                }
+                                            }
+
 
                                         }
-                                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
-                                        for (Chat c : chat1) {
-                                            ref.child(context.getString(R.string.dbname_ChatList))
-                                                    .child(key)
-                                                    .child(c.getMessageid())
-                                                    .setValue(c);
-                                        }
 
                                         ref.child(getString(R.string.dbname_Chats))
                                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -357,16 +368,23 @@ Chat_Activity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 chatlist.clear();
+                int x=0;
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    x++;
                     Chat chat = ds.getValue(Chat.class);
 
 
                     assert chat != null;
                     chatlist.add(chat);
+                    if(x==dataSnapshot.getChildrenCount()){
+                        Collections.sort(chatlist);
+                        Collections.reverse(chatlist);
+                        displayChat();
+                    }
+
+
                 }
-                Collections.sort(chatlist);
-                Collections.reverse(chatlist);
-                displayChat();
+
 
 
             }
@@ -408,9 +426,10 @@ Chat_Activity extends AppCompatActivity {
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                                             if (dataSnapshot.exists()) {
-
+int p=0;
 
                                                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                                    p++;
                                                     if (ds.child("receiver").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                                         if (activity) {
                                                             DatabaseReference db = FirebaseDatabase.getInstance().getReference();
@@ -427,6 +446,9 @@ Chat_Activity extends AppCompatActivity {
                                                                         }
                                                                     });
                                                         }
+                                                    }
+                                                    if (p==dataSnapshot.getChildrenCount()){
+
                                                     }
                                                 }
                                             }
@@ -467,49 +489,81 @@ Chat_Activity extends AppCompatActivity {
                             DatabaseReference DbRef = FirebaseDatabase.getInstance().getReference();
                             queryr1 = DbRef.child(getString(R.string.dbname_ChatList))
                                     .child(snapshot.getValue().toString());
-
-                            Long current = System.currentTimeMillis();
-                            long sevenDayEarlier = current-604800000;
-                            recievelistener = queryr1.addValueEventListener(new ValueEventListener() {
+                            SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    chatlist.clear();
-                                    long x = 0;
-                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                        x++;
-                                        Chat chat = ds.getValue(Chat.class);
-                                        if (Long.parseLong(chat.getTimestamp()) < sevenDayEarlier) {
-                                            DatabaseReference DbRef2 = FirebaseDatabase.getInstance().getReference();
-                                            DbRef2.child(getString(R.string.dbname_ChatList))
-                                                    .child(snapshot.getValue().toString())
-                                                    .child(chat.getMessageid())
-                                                    .removeValue();
-                                        } else {
-                                            assert chat != null;
-                                            chatlist.add(chat);
-                                            if (x == 10) {
-                                                displayChat();
-                                            }
-                                        }
+                                public void onTimeReceived(String rawDate) {
+                                    // rawDate -> 2019-11-05T17:51:01+0530
+
+
+                                    String str_date = rawDate;
+                                    java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+                                    Date date = null;
+                                    try {
+                                        date = (Date) formatter.parse(str_date);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
                                     }
 
-                                        Collections.sort(chatlist);
+                                    long current = date.getTime();
+                                    Log.d(TAG, "onDataChange: timestamp"+timeStamp+"  "+current);
 
-                                        Collections.reverse(chatlist);
+                                    long sevenDayEarlier = current-604800000;
+                                    recievelistener = queryr1.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            chatlist.clear();
+                                            long x = 0;
+                                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                                x++;
+                                                Chat chat = ds.getValue(Chat.class);
+                                                if (Long.parseLong(chat.getTimestamp()) < sevenDayEarlier) {
+                                                    DatabaseReference DbRef2 = FirebaseDatabase.getInstance().getReference();
+                                                    DbRef2.child(getString(R.string.dbname_ChatList))
+                                                            .child(snapshot.getValue().toString())
+                                                            .child(chat.getMessageid())
+                                                            .removeValue();
+                                                } else {
+                                                    assert chat != null;
+                                                    chatlist.add(chat);
+                                                    if (x == 10) {
+                                                        Collections.sort(chatlist);
 
-                                        displayChat();
+                                                        Collections.reverse(chatlist);
+
+                                                        displayChat();
+                                                    }else if(x==dataSnapshot.getChildrenCount()){
+                                                        Collections.sort(chatlist);
+
+                                                        Collections.reverse(chatlist);
+
+                                                        displayChat();
+                                                    }
+                                                }
+                                            }
 
 
 
-                                }
+
+
+                                        }
 //
 
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                    Log.e(SNTPClient.TAG, rawDate);
 
                                 }
+
+                                @Override
+                                public void onError(Exception ex) {
+                                    Log.e(SNTPClient.TAG, ex.getMessage());
+                                }
                             });
+
 
                         }
                     }
@@ -576,14 +630,15 @@ Chat_Activity extends AppCompatActivity {
 
 
                                     final DatabaseReference data = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users))
-                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                            .child(getString(R.string.field_username));
                                     data.addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            users user = dataSnapshot.getValue(users.class);
+                                            String user = dataSnapshot.getValue().toString();
 
                                             if (notify) {
-                                                mFirebaseMethods.sendNotification(hisUID, user.getUsername(), "sent you a message.", "Message");
+                                                mFirebaseMethods.sendNotification(hisUID, user, "sent you a message.", "Message");
                                             }
                                             notify = false;
 

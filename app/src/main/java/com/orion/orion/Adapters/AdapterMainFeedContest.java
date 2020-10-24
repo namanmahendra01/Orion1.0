@@ -77,7 +77,6 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
         sp = mContext.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
 
-        Log.d(TAG, "dddd: 1"+contestDetails.size()+contestDetail.getResult());
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist));
                 ref.child(contestDetail.getContestId())
                 .child("result")
@@ -86,16 +85,15 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()){
                                 if (snapshot.getValue().toString().equals("true")) {
-                                    contestDetails.remove(contestDetail);
 
+                                    contestDetails.remove(contestDetail);
 //                Add newly Created ArrayList to Shared Preferences
                                     SharedPreferences.Editor editor = sp.edit();
                                     String json = gson.toJson(contestDetails);
                                     editor.putString("cl", json);
                                     editor.apply();
-                                    Log.d(TAG, "dddd: 2" + contestDetails.size());
 
-                                    AdapterMainFeedContest.this.notifyDataSetChanged();
+                                    AdapterMainFeedContest.this.notifyItemRemoved(i);
 
                                 }
                                 }
@@ -107,7 +105,6 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
                             }
                         });
 
-        Log.d(TAG, "dddd: kkl"+contestDetails.size());
 
 
         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {

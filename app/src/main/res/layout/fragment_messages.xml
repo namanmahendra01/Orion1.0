@@ -12,6 +12,8 @@
         android:textSize="18sp"
         android:textColor="@color/black"
         android:gravity="end"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"
         android:text="Request(0)"/>
 
 

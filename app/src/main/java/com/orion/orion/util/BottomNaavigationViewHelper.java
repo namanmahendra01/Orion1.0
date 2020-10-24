@@ -36,10 +36,10 @@ public class BottomNaavigationViewHelper {
     public static void enableNavigation(final Context context, final Activity callingActivity ,BottomNavigationViewEx view) {
         view.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             public boolean onNavigationItemSelected(MenuItem item) {
+
                 switch (item.getItemId()) {
 
                     case R.id.ic_house:
-
                         Intent intent1 = new Intent(context, MainActivity.class);
                         context.startActivity(intent1);
                         break;
@@ -72,6 +72,8 @@ public class BottomNaavigationViewHelper {
                 }
                 return false;
             }
+
+
         });
     }
 }

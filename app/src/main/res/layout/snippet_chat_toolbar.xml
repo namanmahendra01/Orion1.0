@@ -7,8 +7,8 @@
         android:layout_height="wrap_content">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:id="@+id/profile_image"
             app:civ_border_color="@color/black"
             android:layout_centerHorizontal="true"
@@ -27,10 +27,21 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/username"
                 android:text="naman"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_horizontal"
                 android:textColor="@color/black"
-                android:textSize="22sp"
+                android:textSize="20sp"
                 />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="Message will be deleted automatically after 7 days.Sorry :)"
+                android:textColor="@color/grey"
+                android:textSize="12sp"
+                android:layout_below="@+id/username"
+                />
 
         </RelativeLayout>
     </RelativeLayout>

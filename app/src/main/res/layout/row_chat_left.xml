@@ -29,14 +29,6 @@
             android:textColor="@color/black"
             android:textSize="12sp"/>
     </LinearLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
 
-        android:id="@+id/isSeenTv"
-        android:textAlignment="textEnd"
-        android:text="Delivered"
-        android:visibility="gone"
-        android:gravity="end" />
 
 </LinearLayout>

@@ -32,14 +32,18 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.orion.orion.R;
 import com.orion.orion.contest.Contest_Evaluation.activity_view_media;
 import com.orion.orion.models.JoinForm;
+import com.orion.orion.models.Notification;
 import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
 import com.orion.orion.util.UniversalImageLoader;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -154,12 +158,28 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                                     || mparticipantLists.getMediaLink().substring(8, 23).equals("firebasestorage")) {
 
                                                 //    Add newly Created ArrayList to Shared Preferences
-                                                participantLists.remove(participantLists.get(i));
-                                                SharedPreferences.Editor editor = sp.edit();
-                                                String json = gson.toJson(participantLists);
-                                                editor.putString(mparticipantLists.getContestkey(), json);
-                                                editor.apply();
+                                                String json = sp.getString(mparticipantLists.getContestkey(), null);
 
+                                                Type type = new TypeToken<ArrayList<ParticipantList>>() {
+                                                }.getType();
+                                                ArrayList<ParticipantList> participantList=new ArrayList<>();
+
+                                                participantList = gson.fromJson(json, type);
+
+                                                if (participantList==null){
+
+                                                }else{
+                                                    participantList.remove(participantLists.get(i));
+
+                                                    SharedPreferences.Editor editor = sp.edit();
+                                                    json = gson.toJson(participantList);
+                                                    editor.putString(mparticipantLists.getContestkey(), json);
+                                                    editor.apply();
+
+                                                }
+
+
+                                                participantLists.remove(participantLists.get(i));
 
                                                 AdapterParticipantList.this.notifyItemRemoved(i);
 
@@ -183,16 +203,37 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                                                 .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
                                                             public void onSuccess(Void aVoid) {
-
                                                                 //    Add newly Created ArrayList to Shared Preferences
-                                                                participantLists.remove(participantLists.get(i));
-                                                                SharedPreferences.Editor editor = sp.edit();
-                                                                String json = gson.toJson(participantLists);
-                                                                editor.putString(mparticipantLists.getContestkey(), json);
-                                                                editor.apply();
+                                                                String json = sp.getString(mparticipantLists.getContestkey(), null);
 
+                                                                Type type = new TypeToken<ArrayList<ParticipantList>>() {
+                                                                }.getType();
+                                                                ArrayList<ParticipantList> participantList=new ArrayList<>();
+
+                                                                participantList = gson.fromJson(json, type);
+
+                                                                if (participantList==null){
+
+                                                                }else{
+                                                                    participantList.remove(participantLists.get(i));
+
+                                                                    SharedPreferences.Editor editor = sp.edit();
+                                                                    json = gson.toJson(participantList);
+                                                                    editor.putString(mparticipantLists.getContestkey(), json);
+                                                                    editor.apply();
+
+                                                                }
+
+
+                                                                participantLists.remove(participantLists.get(i));
 
                                                                 AdapterParticipantList.this.notifyItemRemoved(i);
+
+
+                                                                db.child(mContext.getString(R.string.dbname_users))
+                                                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                                        .child(mContext.getString(R.string.changedJoinedContest))
+                                                                        .setValue("true");
 
 
                                                                 dialog.dismiss();

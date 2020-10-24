@@ -2,7 +2,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#0e1111"
+        android:background="@color/colorPrimaryDark"
         >
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
@@ -10,7 +10,7 @@
         android:id="@+id/profileToolbar">
         
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent">
             
             
@@ -19,14 +19,14 @@
                 android:layout_height="25dp"
                 android:layout_centerVertical="true"
                 android:id="@+id/backarrow"
-                android:src="@drawable/ic_white_backarrow"/>
+                android:src="@drawable/ic_back_black_arrow"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:textSize="20sp"
-                android:layout_toRightOf="@+id/backarrow"
                 android:text="Post"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
                 android:textColor="@color/white"
                 android:id="@+id/tvbacklabel1"/>
 

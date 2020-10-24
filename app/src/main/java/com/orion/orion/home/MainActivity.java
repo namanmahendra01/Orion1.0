@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
     private static final int HOME_FRAGMENT = 1;
-
+            public TabLayout tablayout;
     private static final int ACTIVITY_NUM = 0;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity
     private FrameLayout mFramelayoutl;
     private RelativeLayout mRelativeLayout;
     LinearLayout prom;
+    Context context=MainActivity.this;
     String mUid;
 
     @Override
@@ -173,12 +174,12 @@ public class MainActivity extends AppCompatActivity
 
         mViewPager.setAdapter(adapter);
 
-        TabLayout tablayout = (TabLayout) findViewById(R.id.tabs);
+        tablayout = (TabLayout) findViewById(R.id.tabs);
         tablayout.setupWithViewPager(mViewPager);
 //        for giving icon to them
-        tablayout.getTabAt(0).setIcon(R.drawable.ic_notification);
-        tablayout.getTabAt(1).setIcon(R.drawable.o);;
-        tablayout.getTabAt(2).setIcon(R.drawable.ic_messages);
+        tablayout.getTabAt(0).setIcon(R.drawable.ic_bell_black);
+        tablayout.getTabAt(1).setText("ORION");
+        tablayout.getTabAt(2).setIcon(R.drawable.ic_chat_black);
 
 
 
@@ -194,11 +195,11 @@ public class MainActivity extends AppCompatActivity
 
                                 if (snapshot1.child("seen").getValue().equals("true")) {
 
-                                    tablayout.getTabAt(0).setIcon(R.drawable.ic_notification);
+                                    tablayout.getTabAt(0).setIcon(R.drawable.ic_bell_black);
 
                                 }
                                 if (snapshot1.child("seen").getValue().equals("false")) {
-                                    tablayout.getTabAt(0).setIcon(R.drawable.ic_noti_active1);
+                                    tablayout.getTabAt(0).setIcon(R.drawable.ic_bell_red);
                                     break;
                                 }
 
@@ -213,67 +214,7 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
 
-        DatabaseReference refer = FirebaseDatabase.getInstance().getReference();
-        Query query = refer.child(getString(R.string.dbname_Chats))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                final long[] x = {0};
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-
-
-                    refer.child(getString(R.string.dbname_ChatList))
-                            .child(dataSnapshot.getValue().toString())
-                            .orderByKey()
-                            .limitToLast(1)
-                            .addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot1) {
-
-
-                                    for (DataSnapshot ds : snapshot1.getChildren()) {
-
-                                        if (ds.exists()) {
-
-                                            Chat chat = ds.getValue(Chat.class);
-                                            if (!chat.isIfseen()&&chat.getReceiver().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                                tablayout.getTabAt(2).setIcon(R.drawable.ic_msg_activite);
-                                                x[0]++;
-                                            }
-
-                                        }
-
-
-                                    }
-
-                                }
-
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-
-                    if (x[0]>0){
-
-                        break;
-                    }else{
-                        tablayout.getTabAt(2).setIcon(R.drawable.ic_messages);
-
-                    }
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        checkMessageSeen(context);
 
 
         tablayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -283,7 +224,7 @@ public class MainActivity extends AppCompatActivity
                 if (tablayout.getSelectedTabPosition() == 0) {
 
 
-                    tablayout.getTabAt(0).setIcon(R.drawable.ic_notification);
+                    tablayout.getTabAt(0).setIcon(R.drawable.ic_bell_black);
 
 
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
@@ -315,6 +256,9 @@ public class MainActivity extends AppCompatActivity
                                 }
                             });
                 }
+                if (tablayout.getSelectedTabPosition()==2){
+                    checkMessageSeen(context);
+                }
             }
 
 
@@ -334,7 +278,73 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void hideLayout() {
+            public void checkMessageSeen(Context context) {
+
+                DatabaseReference refer = FirebaseDatabase.getInstance().getReference();
+                Query query = refer.child(context.getString(R.string.dbname_Chats))
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                query.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        final long[] x = {0};
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+
+
+                            refer.child(context.getString(R.string.dbname_ChatList))
+                                    .child(dataSnapshot.getValue().toString())
+                                    .orderByKey()
+                                    .limitToLast(1)
+                                    .addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot1) {
+
+
+                                            for (DataSnapshot ds : snapshot1.getChildren()) {
+
+                                                if (ds.exists()) {
+
+                                                    Chat chat = ds.getValue(Chat.class);
+                                                    if (!chat.isIfseen()&&chat.getReceiver().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                                        tablayout.getTabAt(2).setIcon(R.drawable.ic_chat_red);
+                                                        x[0]++;
+                                                    }
+
+                                                }
+
+
+                                            }
+
+                                        }
+
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                            if (x[0]>0){
+
+                                break;
+                            }else{
+                                tablayout.getTabAt(2).setIcon(R.drawable.ic_chat_black);
+
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+            }
+
+            public void hideLayout() {
         mRelativeLayout.setVisibility(View.GONE);
         mFramelayoutl.setVisibility(View.VISIBLE);
 

@@ -74,13 +74,15 @@ public class AdapterPromote extends RecyclerView.Adapter<AdapterPromote.MyHolder
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot dataSnapshot1:dataSnapshot.getChildren()){
-                            myHolder.promote=dataSnapshot1.getValue(Promote.class);
+                        if (dataSnapshot.exists()){
+                        for (DataSnapshot dataSnapshot1:dataSnapshot.getChildren()) {
+                            myHolder.promote = dataSnapshot1.getValue(Promote.class);
 
-                            Long timeEnd=Long.parseLong(myHolder.promote.getTimeEnd());
-                            seenStory(myHolder,myHolder.promote.getPromoterId(),myHolder.promote.getStoryid(),timeEnd);
-                            getUserInfo(myHolder.promote.getPromoterId(),myHolder.story,myHolder.storySeen,myHolder.username);
+                            Long timeEnd = Long.parseLong(myHolder.promote.getTimeEnd());
+                            seenStory(myHolder, myHolder.promote.getPromoterId(), myHolder.promote.getStoryid(), timeEnd);
+                            getUserInfo(myHolder.promote.getPromoterId(), myHolder.story, myHolder.storySeen, myHolder.username);
 
+                        }
                         }
 
                     }

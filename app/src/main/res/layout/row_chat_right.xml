@@ -23,20 +23,12 @@
             android:id="@+id/messagetv"
             android:layout_weight="1"
             android:textSize="16sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:background="@drawable/bg_sender"
             android:padding="15dp"
             android:text="hi,naman"/>
 
     </LinearLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
 
-        android:id="@+id/isSeenTv"
-        android:textAlignment="textEnd"
-        android:text="Delivered"
-        android:gravity="end"
-        />
 
 </LinearLayout>

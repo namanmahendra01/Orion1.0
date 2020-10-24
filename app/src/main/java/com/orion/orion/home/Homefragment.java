@@ -1,5 +1,6 @@
 package com.orion.orion.home;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,10 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +41,8 @@ import com.orion.orion.Adapters.AdapterMainFeedContest;
 import com.orion.orion.Adapters.AdapterMainfeed;
 import com.orion.orion.Adapters.AdapterPromote;
 import com.orion.orion.R;
+import com.orion.orion.contest.contestMainActivity;
+import com.orion.orion.contest.joined.JoiningForm;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.Photo;
@@ -92,6 +97,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     private RecyclerView ListViewRv;
     private AdapterMainfeed mAadapter;
     private int mResults;
+    public LinearLayout progress;
     TextView username;
     CircleImageView storySeen, story;
 
@@ -117,7 +123,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         footer = view.findViewById(R.id.footer);
         scrollView = view.findViewById(R.id.parent_scroll);
         postReferesh = view.findViewById(R.id.post_refresh);
-
+        progress = view.findViewById(R.id.pro);
 //          Initialize SharedPreference variables
         sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
@@ -284,7 +290,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                 starFill.setVisibility(View.GONE);
                 star.setVisibility(View.VISIBLE);
                 domaintv.setText("All");
-                getFollowerListFromSP();
+                getPostListFromSP();
             }
         });
 
@@ -294,6 +300,21 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         return view;
 
 
+    }
+
+    public void ToggleProgressBar() {
+        if (progress.getVisibility() == View.GONE) {
+            progress.setVisibility(View.VISIBLE);
+            getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+        } else {
+            progress.setVisibility(View.GONE);
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+
+        }
+        progress.setVisibility(View.VISIBLE);
     }
 
     //  fetching FollowerList  from SharedPreferences
@@ -333,8 +354,6 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
             addToPhotosList(list);
             addToContestList(list);
             addToFilteredFollowingList(list);
-            getPostListFromSP();
-            getContestListFromSP();
             getStory();
 
         }
@@ -351,8 +370,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
             removeFromPhotosList(ulist);
             removeFromContestList(ulist);
             removeFromFilteredFollowingList(ulist);
-            getPostListFromSP();
-            getContestListFromSP();
+
             getStory();
         }
 
@@ -480,6 +498,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                             }
                         } else {
                             Log.d(TAG, "checkContestUpdate: 5");
+
                             contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
                             contestUpcoming.setHasStableIds(true);
 
@@ -506,11 +525,9 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         if (mFollowing1 == null) {    //        if no arrayList is present
 
             mFollowing1 = new ArrayList<>();
-            Log.d(TAG, "onDataChange: wasd 2");
             getFollowingFilltered(domain);  //            make new Arraylist
 
         } else {
-            Log.d(TAG, "onDataChange: wasd 3");
 
             getfilterPhotos(mFollowing1);
         }
@@ -596,22 +613,26 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        int x=0;
                         for (int i = 0; i < list.size(); i++) {
-
+x++;
 
                             if (dataSnapshot.child(list.get(i))
                                     .child("domain").getValue().equals(domain)) {
                                 mFollowing1.add(list.get(i));
                             }
+                            if (x==dataSnapshot.getChildrenCount()){
+
+//                        Add newly Created ArrayList to Shared Preferences
+                                SharedPreferences.Editor editor = sp.edit();
+                                String json = gson.toJson(mFollowing1);
+                                editor.putString("ffl", json);
+                                editor.apply();
+                            }
 
 
                         }
 
-//                        Add newly Created ArrayList to Shared Preferences
-                        SharedPreferences.Editor editor = sp.edit();
-                        String json = gson.toJson(mFollowing1);
-                        editor.putString("ffl", json);
-                        editor.apply();
 
                     }
 
@@ -630,14 +651,31 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         }.getType();
         ArrayList<ContestDetail> list1 = new ArrayList<>();
         list1 = gson.fromJson(json, type);
-        if (list1.size() != 0) {
+        if (list1==null){
+            list1 = new ArrayList<>();
+        }
+        Log.d(TAG, "removeFromContestList: 3"+list1.size());
+
+        int z=list1.size();
+
+        if (list1.size() != 0&&list1!=null) {
             for (int i = 0; i < list.size(); i++) {
-                if (list1.get(i).getUserId().equals(list.get(i))) {
-                    list1.remove(list1.get(i));
+                Log.d(TAG, "removeFromContestList: 8 "+list1.size());
+                for (int x=0;x<list1.size();x++){
+                    Log.d(TAG, "removeFromContestList: 8m "+list1.size());
+
+                    Log.d(TAG, "removeFromContestList: 4"+list1.get(x));
+                    if (list1.get(x).getUserId().equals(list.get(i))) {
+                        Log.d(TAG, "removeFromContestList: 1");
+                        list1.remove(list1.get(x));
+                        x--;
+                    }
                 }
+
             }
         }
 
+        Log.d(TAG, "removeFromContestList: 3"+list1.size());
 
 //                        Add newly Created ArrayList to Shared Preferences
         SharedPreferences.Editor editor = sp.edit();
@@ -645,10 +683,29 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         editor.putString("cl", json);
         editor.apply();
 
+        contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
+        contestUpcoming.setHasStableIds(true);
+
+        contestRv.setAdapter(contestUpcoming);
+
+        contestUpcoming.notifyDataSetChanged();
+        flag3 = true;
+
+
+
 
     }
 
     private void addToContestList(ArrayList<String> list) {
+        String json = sp.getString("cl", null);
+        Type type = new TypeToken<ArrayList<ContestDetail>>() {
+        }.getType();
+        contestlist = gson.fromJson(json, type);
+        if (contestlist == null || contestlist.size() == 0) {    //        if no arrayList is present
+            contestlist = new ArrayList<>();
+
+        }
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
         for (int i = 0; i < list.size(); i++) {
@@ -673,7 +730,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                             if (!contestDetail.getResult()) {
                                 contestlist.add(contestDetail);
                             }
-                            if (x == dataSnapshot.getChildrenCount()) {
+                            if (x == dataSnapshot.getChildrenCount()&&count==list.size()-1) {
 
                                 Collections.reverse(contestlist);
 
@@ -682,6 +739,15 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                                 String json = gson.toJson(contestlist);
                                 editor.putString("cl", json);
                                 editor.apply();
+
+                                contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
+                                contestUpcoming.setHasStableIds(true);
+
+                                contestRv.setAdapter(contestUpcoming);
+
+                                contestUpcoming.notifyDataSetChanged();
+                                flag3 = true;
+
                             }
                         }
 
@@ -702,98 +768,65 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
 
     private void removeFromPhotosList(ArrayList<String> uid) {
+
+        String json = sp.getString("pl", null);
+        Type type = new TypeToken<ArrayList<Photo>>() {
+        }.getType();
+        mPhotos = gson.fromJson(json, type);
+        if (mPhotos == null || mPhotos.size() == 0) {                 //    if no arrayList is present
+
+            mPhotos = new ArrayList<>();                 //  make new Arraylist
+
+        }
+
         for (int x = 0; x < uid.size(); x++) {
-            Log.d(TAG, "getUpdatedPhotosFollower: " + uid.get(x));
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
-
-            Query query = reference
-                    .child(getString(R.string.dbname_user_photos))
-                    .child(uid.get(x));
-
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                    for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-                        Photo photo = new Photo();
-                        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-
-                        photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
-
-                        photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
-
-                        photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-
-                        photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
-
-                        photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
-
-                        photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-
-                        if (objectMap.get(getString(R.string.thumbnail)) != null) {
-                            photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
-
-                        }
-                        photo.setType(objectMap.get(getString(R.string.type)).toString());
-
-                        ArrayList<Comment> comments = new ArrayList<>();
-
-                        for (DataSnapshot dSnapshot : singleSnapshot
-                                .child(getString(R.string.field_comment)).getChildren()) {
-                            Comment comment = new Comment();
-                            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                            comments.add(comment);
-
-                        }
-                        photo.setComments(comments);
 
 //                    remove photo to mPhotos list
 
-                        ArrayList<Photo> l = new ArrayList<>(mPhotos);
-                        for (Photo a : l) {
-                            if (a.getUser_id().equals(photo.getUser_id())) {
-                                mPhotos.remove(a);
+            ArrayList<Photo> l = new ArrayList<>(mPhotos);
+            for (Photo a : l) {
+                if (a.getUser_id().equals(uid.get(x))) {
+                    mPhotos.remove(a);
 
-                            }
-                        }
-
-                    }
+                }
+            }
+        }
 
 //                    sort mPhotos
-                    Collections.sort(mPhotos, new Comparator<Photo>() {
-                        @Override
-                        public int compare(Photo o1, Photo o2) {
-                            return o2.getDate_created().compareTo(o1.getDate_created());
-                        }
-                    });
+        Collections.sort(mPhotos, new Comparator<Photo>() {
+            @Override
+            public int compare(Photo o1, Photo o2) {
+                return o2.getDate_created().compareTo(o1.getDate_created());
+            }
+        });
 
 //                add updated list to Shared Preference
-                    SharedPreferences.Editor editor = sp.edit();
-                    String json = gson.toJson(mPhotos);
-                    editor.remove("removefollowing");
-                    editor.putString("pl", json);
-                    editor.apply();
+        SharedPreferences.Editor editor = sp.edit();
+        json = gson.toJson(mPhotos);
+        editor.remove("removefollowing");
+        editor.putString("pl", json);
+        editor.apply();
+        displayPhotos();
 
 
-                }
-
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.d(TAG, "Query Cancelled");
-                }
-            });
-
-
-        }
     }
 
-    private void addToPhotosList(ArrayList<String> uid) {
-        for (int x = 0; x < uid.size(); x++) {
 
+    private void addToPhotosList(ArrayList<String> uid) {
+        String json = sp.getString("pl", null);
+        Type type = new TypeToken<ArrayList<Photo>>() {
+        }.getType();
+        mPhotos = gson.fromJson(json, type);
+        if (mPhotos == null || mPhotos.size() == 0) {                 //    if no arrayList is present
+
+            mPhotos = new ArrayList<>();                 //  make new Arraylist
+
+        }
+        int l = 0;
+
+        for (int x = 0; x < uid.size(); x++) {
+            l++;
 
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
@@ -802,11 +835,13 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     .child(getString(R.string.dbname_user_photos))
                     .child(uid.get(x));
 
+            int finalL = l;
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-
+                    int h = 0;
                     for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
+                        h++;
                         Photo photo = new Photo();
                         Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
@@ -840,22 +875,28 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                         photo.setComments(comments);
 //                    add photo to mPhotos list
                         mPhotos.add(photo);
-                    }
+
+                        if (finalL == uid.size() && h == snapshot.getChildrenCount()) {
 
 //                    sort mPhotos
-                    Collections.sort(mPhotos, new Comparator<Photo>() {
-                        @Override
-                        public int compare(Photo o1, Photo o2) {
-                            return o2.getDate_created().compareTo(o1.getDate_created());
-                        }
-                    });
+                            Collections.sort(mPhotos, new Comparator<Photo>() {
+                                @Override
+                                public int compare(Photo o1, Photo o2) {
+                                    return o2.getDate_created().compareTo(o1.getDate_created());
+                                }
+                            });
 
 //                add updated list to Shared Preference
-                    SharedPreferences.Editor editor = sp.edit();
-                    editor.remove("addfollowing");
-                    String json = gson.toJson(mPhotos);
-                    editor.putString("pl", json);
-                    editor.apply();
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.remove("addfollowing");
+                            String json = gson.toJson(mPhotos);
+                            editor.putString("pl", json);
+                            editor.apply();
+
+                            displayPhotos();
+
+                        }
+                    }
 
 
                 }
@@ -1113,7 +1154,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     }
 
     private void getcontest() {
-        if (contestlist == null) {
+        if (contestlist == null||contestlist.size()==0) {
 
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
@@ -1166,6 +1207,10 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     }
                 });
 
+            }
+
+            if (mFollowing.size()==0){
+                flag3=true;
             }
         } else {
             checkContestUpdate();
@@ -1264,6 +1309,9 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                 }
             });
 
+        }
+        if (mFollowing.size()==0){
+            flag2=true;
         }
     }
 
@@ -1366,7 +1414,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         Log.d(TAG, "display first 10 photo");
         flag1 = true;
         mPaginatedPhotos = new ArrayList<>();
-        if (mPhotos != null) {
+        if (mPhotos != null && mPhotos.size() != 0) {
 
             try {
 

@@ -186,32 +186,11 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
                     public void onClick(DialogInterface dialog, int which) {
                         Log.d(TAG, "DeleteMessage: deleteing message");
 
-                        SharedPreferences sp =context.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
-                        Gson gson=new Gson();
 
-                       mNotification.remove( mNotification.get(i));
-                        SharedPreferences.Editor editor = sp.edit();
-                        String json = gson.toJson(mNotification);
-                        editor.putString("nl", json);
-                        editor.apply();
 
-                        AdapterNotification2.this.notifyItemRemoved(i);
 
-                        DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference("users");
-                        ref1.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Notifications").child(timestamp)
-                                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(context, "Notification Deleted", Toast.LENGTH_SHORT).show();
+                        deleteNotification(notification,i);
 
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(context, "cannot Delete", Toast.LENGTH_SHORT).show();
-
-                            }
-                        });
 
                     }
                 });
@@ -227,6 +206,8 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
         });
 
     }
+
+
 
     private void bottomSheet(String msg2, String host) {
             BottomSheetDialog bottomSheetDialog =new BottomSheetDialog(context,R.style.BottomSheetDialogTheme);
@@ -280,12 +261,12 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
 
     private void getUserInfo(ImageView imageView, TextView username, String publisherId) {
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child(publisherId);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child(publisherId).child(context.getString(R.string.field_username));
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                users user = dataSnapshot.getValue(users.class);
-                username.setText(user.getUsername());
+                String user = dataSnapshot.getValue().toString();
+                username.setText(user);
 
             }
 
@@ -301,6 +282,7 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: eee"+postId+" "+postUid);
                 if(dataSnapshot.exists()) {
                         if(dataSnapshot.child("type").getValue().toString().equals("photo")){
                             String img = dataSnapshot.child("image_path").getValue().toString();
@@ -319,5 +301,51 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
 
             }
         });
+    }
+    private void deleteNotification(Notification notification, int i) {
+        DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference("users");
+        ref1.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Notifications").child(notification.getTimeStamp())
+                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                SharedPreferences sp =context.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                Gson gson=new Gson();
+
+                String json = sp.getString("nl", null);
+                Type type = new TypeToken<ArrayList<Notification>>() {
+                }.getType();
+                ArrayList<Notification> notifyList=new ArrayList<>();
+                notifyList = gson.fromJson(json, type);
+                if (notifyList==null){
+                    Log.d(TAG, "onClick: noti 3");
+
+                }else {
+                    Log.d(TAG, "onClick: noti 1"+notifyList.size());
+                    notifyList.remove(notification);
+                    mNotification.remove(notification);
+                    SharedPreferences.Editor editor = sp.edit();
+                    json = gson.toJson(notifyList);
+                    editor.putString("nl", json);
+                    editor.apply();
+                    Log.d(TAG, "onClick: noti 2"+notifyList.size());
+                    AdapterNotification2.this.notifyItemRemoved(i);
+
+
+                }
+
+                Toast.makeText(context, "Notification Deleted", Toast.LENGTH_SHORT).show();
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+
+
+                Toast.makeText(context, "cannot Delete", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
     }
 }

@@ -71,35 +71,39 @@
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:layout_below="@+id/topBar"
-        android:background="@color/white">
+       >
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@drawable/arrow_item"
+            android:layout_height="40dp"
             android:orientation="horizontal"
+            android:background="@drawable/arrow_item"
+
             android:weightSum="10">
 
             <TextView
                 android:id="@+id/userItemUsername"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="40dp"
                 android:layout_weight="3"
+                android:maxLines="1"
+
                 android:text="PRateek"
                 android:gravity="center_vertical|start"
-                android:textSize="24sp"
-                android:textStyle="bold"
+                android:textSize="22sp"
                 android:textColor="@color/white"
                 android:paddingStart="25dp"/>
 
             <TextView
                 android:id="@+id/userItemRank"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="40dp"
                 android:layout_weight="7"
                 android:gravity="center_vertical|end"
                 android:paddingRight="25dp"
-                android:textSize="32sp"
+                android:textSize="22sp"
+                android:text="#22"
                 android:textStyle="bold"
                 android:textColor="@color/scheme8"
                 android:paddingStart="25dp"/>

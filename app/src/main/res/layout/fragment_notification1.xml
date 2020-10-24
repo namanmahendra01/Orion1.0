@@ -6,13 +6,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Clear all Notification"
+        android:text="Clear all Notifications"
         android:id="@+id/clearNotification"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:textSize="16sp"
-        android:textColor="@color/black"
+        android:textColor="#F44336"
         android:paddingTop="5dp"
+        android:layout_marginBottom="8dp"
         android:paddingRight="5dp"/>
 
     <androidx.recyclerview.widget.RecyclerView

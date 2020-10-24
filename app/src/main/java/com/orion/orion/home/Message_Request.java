@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,6 +27,8 @@ import com.orion.orion.util.FirebaseMethods;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.orion.orion.util.SNTPClient.TAG;
+
 public class Message_Request extends AppCompatActivity {
 
     private static final String TAG = "Message_Request";
@@ -37,6 +41,7 @@ public class Message_Request extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
     FirebaseUser currentUser;
 
+    ImageView backArrow;
     private Context mcontext;
 
     RecyclerView recyclerView;
@@ -51,9 +56,16 @@ public class Message_Request extends AppCompatActivity {
 
 
         recyclerView = findViewById(R.id.recyclerview);
+        backArrow = findViewById(R.id.backarrow);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         chatList = new ArrayList<>();
 
@@ -71,6 +83,8 @@ public class Message_Request extends AppCompatActivity {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     String user = ds.getKey();
                     userlist.add(user);
+                    Log.d(TAG, "getItemId: lol1"+userlist);
+
                 }
 
                 adapterMessageRequest = new AdapterMessageRequest( Message_Request.this,userlist);
@@ -78,6 +92,8 @@ public class Message_Request extends AppCompatActivity {
                 recyclerView.setAdapter(adapterMessageRequest);
                 for (int i = 0; i < userlist.size(); i++) {
                     lastMessage(userlist.get(i));
+                    Log.d(TAG, "getItemId: lol2");
+
                 }
             }
 
@@ -109,6 +125,8 @@ public class Message_Request extends AppCompatActivity {
                     }
                 }
                 adapterMessageRequest.setLastMessage(uid, lmsg);
+                Log.d(TAG, "getItemId: lol3");
+
                 adapterMessageRequest.notifyDataSetChanged();
             }
 

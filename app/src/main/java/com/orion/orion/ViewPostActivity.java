@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -62,17 +64,21 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Adapters.AdapterMainfeed;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.Photo;
 import com.orion.orion.models.users;
+import com.orion.orion.profile.profile;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.SNTPClient;
 import com.orion.orion.util.SquareImageView;
 import com.orion.orion.util.UniversalImageLoader;
 
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -88,8 +94,6 @@ import static com.orion.orion.util.MyApplication.getProxy;
 
 public class ViewPostActivity extends AppCompatActivity {
     private static final String TAG = "ViewPostFragment";
-
-
 
 
     //firebase
@@ -111,11 +115,14 @@ public class ViewPostActivity extends AppCompatActivity {
     ArrayList<Comment> comments = new ArrayList<>();
 
 
-    private SquareImageView mPostImage,thumbnail;
+    private SquareImageView mPostImage, thumbnail;
     private BottomNavigationViewEx bottomNavigationView;
-    private TextView mBackLabel,duration, mCaption, mUsername, mTimestamp, mLikes, mCommentnumber, mcredit, domain, promoteNum;
-    private ImageView mBackArrow, mEllipses, mStarYellow, mStarWhite, mProfileImage, mComment, promote, promoted,play2, mute, unmute;
-
+    private TextView mBackLabel, duration, mCaption, mUsername, mTimestamp, mLikes, mCommentnumber, mcredit, domain, promoteNum;
+    private ImageView mBackArrow, mEllipses, mStarYellow, mStarWhite, mProfileImage, mComment, promote, promoted, play2, mute, unmute;
+    //    SP
+    Gson gson;
+    SharedPreferences sp;
+    LinearLayout progress;
     private users mCurrentUser;
     private boolean likeByCurrentsUser2;
 
@@ -144,28 +151,27 @@ public class ViewPostActivity extends AppCompatActivity {
         domain = (TextView) findViewById(R.id.domain12);
         promoteNum = (TextView) findViewById(R.id.promote_number);
 
+        progress = findViewById(R.id.pro);
 
         play2 = (ImageView) findViewById(R.id.play);
-        mute = (ImageView)findViewById(R.id.mute);
-        unmute = (ImageView)findViewById(R.id.unmute);
+        mute = (ImageView) findViewById(R.id.mute);
+        unmute = (ImageView) findViewById(R.id.unmute);
         playerView = findViewById(R.id.player_view);
-        progressBar =findViewById(R.id.progress_bar);
+        progressBar = findViewById(R.id.progress_bar);
         duration = (TextView) findViewById(R.id.duration);
         thumbnail = (SquareImageView) findViewById(R.id.thumbnail);
 
 
-
-
-
-
+//          Initialize SharedPreference variables
+        sp = getApplicationContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        gson = new Gson();
 
 
         Intent i = getIntent();
         mphoto = i.getParcelableExtra("photo");
         comments = i.getParcelableArrayListExtra("comments");
 
-          duration.setVisibility(View.GONE);
-
+        duration.setVisibility(View.GONE);
 
 
         mEllipses.setOnClickListener(new View.OnClickListener() {
@@ -173,8 +179,8 @@ public class ViewPostActivity extends AppCompatActivity {
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(ViewPostActivity.this, mEllipses);
                 if (mphoto.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                    popupMenu.getMenuInflater().inflate(R.menu.post_menu,popupMenu.getMenu());
-                    Log.d(TAG, "onClick: "+ "yespop");
+                    popupMenu.getMenuInflater().inflate(R.menu.post_menu, popupMenu.getMenu());
+                    Log.d(TAG, "onClick: " + "yespop");
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
@@ -208,9 +214,9 @@ public class ViewPostActivity extends AppCompatActivity {
                     popupMenu.show();
 
 
-                }else {
-                    popupMenu.getMenuInflater().inflate(R.menu.post_menu_all,popupMenu.getMenu());
-                    Log.d(TAG, "onClick: "+ "yespop");
+                } else {
+                    popupMenu.getMenuInflater().inflate(R.menu.post_menu_all, popupMenu.getMenu());
+                    Log.d(TAG, "onClick: " + "yespop");
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
@@ -255,9 +261,10 @@ public class ViewPostActivity extends AppCompatActivity {
             play2.setVisibility(View.GONE);
             UniversalImageLoader.setImage(mphoto.getImage_path(), mPostImage, null, "");
 
-        }else{
-           play2.setVisibility(View.VISIBLE);
-          mPostImage.setVisibility(View.GONE);
+        } else {
+            unmute.setVisibility(View.VISIBLE);
+            play2.setVisibility(View.VISIBLE);
+            mPostImage.setVisibility(View.GONE);
         }
 
 //                   ***********get Video***********
@@ -291,16 +298,36 @@ public class ViewPostActivity extends AppCompatActivity {
 
         final Handler[] mHandler = new Handler[1];
         final Runnable[] updateProgressAction = new Runnable[1];
+        mUsername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(ViewPostActivity.this, profile.class);
+                i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
+
+                i.putExtra(getString(R.string.intent_user), mphoto.getUser_id());
+                startActivity(i);
+            }
+        });
+        mProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(ViewPostActivity.this, profile.class);
+                i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
+
+                i.putExtra(getString(R.string.intent_user), mphoto.getUser_id());
+                startActivity(i);
+            }
+        });
 
         playerView.getVideoSurfaceView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               progressBar.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
 //                if paused
                 if (play) {
 
                     play = false;
-               play2.setVisibility(View.INVISIBLE);
+                    play2.setVisibility(View.INVISIBLE);
 
                     LoadControl loadControl = new DefaultLoadControl();
                     BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
@@ -367,8 +394,8 @@ public class ViewPostActivity extends AppCompatActivity {
                             } else if (playbackState == Player.STATE_READY) {
 
                                 duration.setVisibility(View.VISIBLE);
-                               thumbnail.setVisibility(GONE);
-                              progressBar.setVisibility(View.GONE);
+                                thumbnail.setVisibility(GONE);
+                                progressBar.setVisibility(View.GONE);
 
 //                                display duration
                                 updateProgressAction[0] = new Runnable() {
@@ -394,12 +421,12 @@ public class ViewPostActivity extends AppCompatActivity {
 
                                 play2.setVisibility(View.VISIBLE);
                                 play = true;
-                              thumbnail.setVisibility(View.VISIBLE);
+                                thumbnail.setVisibility(View.VISIBLE);
                                 simpleExoPlayer.seekTo(0);
                                 simpleExoPlayer.setPlayWhenReady(false);
                                 simpleExoPlayer.release();
 
-                            }else if (playbackState==Player.STATE_IDLE){
+                            } else if (playbackState == Player.STATE_IDLE) {
                                 play2.setVisibility(View.VISIBLE);
 
                             }
@@ -436,9 +463,9 @@ public class ViewPostActivity extends AppCompatActivity {
                     });
                 } else {
 //                    if playing
-                   play = true;
+                    play = true;
                     play2.setVisibility(View.VISIBLE);
-                  currentPosition = simpleExoPlayer.getCurrentPosition();
+                    currentPosition = simpleExoPlayer.getCurrentPosition();
                     simpleExoPlayer.setPlayWhenReady(false);
                     simpleExoPlayer.getPlaybackState();
                     simpleExoPlayer.release();
@@ -454,7 +481,7 @@ public class ViewPostActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 mute.setVisibility(View.GONE);
-               unmute.setVisibility(View.VISIBLE);
+                unmute.setVisibility(View.VISIBLE);
                 if (simpleExoPlayer != null) {
                     simpleExoPlayer.setVolume(AudioManager.STREAM_MUSIC);
 
@@ -467,7 +494,7 @@ public class ViewPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-       mute.setVisibility(View.VISIBLE);
+                mute.setVisibility(View.VISIBLE);
                 unmute.setVisibility(View.GONE);
                 if (simpleExoPlayer != null) {
                     simpleExoPlayer.setVolume(0f);
@@ -475,7 +502,6 @@ public class ViewPostActivity extends AppCompatActivity {
                 }
             }
         });
-
 
 
         getCurrentUser();
@@ -704,35 +730,86 @@ public class ViewPostActivity extends AppCompatActivity {
     }
 
     private void DeletePost() {
-        StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mphoto.getImage_path());
-        photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                // File deleted successfully
-                Log.d(VolleyLog.TAG, "onSuccess: deleted file");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Uh-oh, an error occurred!
-                Log.d(VolleyLog.TAG, "onFailure: did not delete file");
-            }
-        });
+
+        progress.setVisibility(View.VISIBLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        final int[] x = {0};
         DatabaseReference reference3 = FirebaseDatabase.getInstance().getReference();
         reference3.child(getString(R.string.dbname_follower))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot snapshot1:snapshot.getChildren()){
+                        if (snapshot.exists()) {
+                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                x[0]++;
+                                DatabaseReference reference3 = FirebaseDatabase.getInstance().getReference();
+                                reference3.child(getString(R.string.dbname_users))
+                                        .child(snapshot1.getKey())
+                                        .child(getString(R.string.post_updates))
+                                        .child(mphoto.getPhoto_id())
+                                        .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                if (x[0] == snapshot.getChildrenCount()) {
+                                    deleteFurther();
+                                }
+                            }
+                        }else{
+                            deleteFurther();
 
-                            DatabaseReference reference3 = FirebaseDatabase.getInstance().getReference();
-                            reference3.child(getString(R.string.dbname_users))
-                                    .child(snapshot1.getKey())
-                                    .child(getString(R.string.post_updates))
-                                    .child(mphoto.getPhoto_id())
-                                    .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         }
+                    }
+
+                    private void deleteFurther() {
+
+                        DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
+                        reference2.child(getString(R.string.dbname_user_photos))
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .child(mphoto.getPhoto_id())
+                                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mphoto.getImage_path());
+                                photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        // File deleted successfully
+
+                                        String json = sp.getString("pl", null);
+                                        Type type = new TypeToken<ArrayList<Photo>>() {
+                                        }.getType();
+                                        ArrayList<Photo> photoList = new ArrayList<>();
+                                        photoList = gson.fromJson(json, type);
+                                        if (photoList == null || photoList.size() == 0) {                 //    if no arrayList is present
+                                            progress.setVisibility(GONE);
+                                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            finish();
+
+
+                                        } else {
+
+                                            photoList.remove(mphoto);
+                                            //  delete from post list and save updated list
+                                            SharedPreferences.Editor editor = sp.edit();
+                                            json = gson.toJson(photoList);
+                                            editor.putString("pl", json);
+                                            editor.apply();
+                                            progress.setVisibility(GONE);
+                                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            finish();
+
+
+                                        }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        // Uh-oh, an error occurred!
+                                        Log.d(VolleyLog.TAG, "onFailure: did not delete file");
+                                    }
+                                });
+                            }
+                        });
                     }
 
                     @Override
@@ -741,12 +818,6 @@ public class ViewPostActivity extends AppCompatActivity {
                     }
                 });
 
-
-        DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
-        reference2.child(getString(R.string.dbname_user_photos))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child(mphoto.getPhoto_id())
-                .removeValue();
 
 
     }
@@ -1019,7 +1090,6 @@ public class ViewPostActivity extends AppCompatActivity {
     }
 
 
-
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -1062,7 +1132,7 @@ public class ViewPostActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (simpleExoPlayer!=null){
+        if (simpleExoPlayer != null) {
             simpleExoPlayer.release();
         }
     }
@@ -1070,7 +1140,7 @@ public class ViewPostActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (simpleExoPlayer!=null){
+        if (simpleExoPlayer != null) {
             simpleExoPlayer.release();
         }
     }

@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 <item
     android:id="@+id/ic_house"
-    android:icon="@drawable/ic_star"
+    android:icon="@drawable/ic_star_black"
     android:title="HOME">
 
 

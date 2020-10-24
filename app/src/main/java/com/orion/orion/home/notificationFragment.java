@@ -144,15 +144,19 @@ public class notificationFragment extends Fragment {
           .addValueEventListener(new ValueEventListener() {
               @Override
               public void onDataChange(@NonNull DataSnapshot snapshot) {
-                  for (DataSnapshot snapshot1:snapshot.getChildren()){
-                      Log.d(TAG, "getNotifcationFromSP: 3");
-                      if (notifyList.get(0).getTimeStamp().equals(snapshot1.getKey())){
-                          Log.d(TAG, "getNotifcationFromSP: 4");
-                          displayNotification();
-                      }else{
-                          Log.d(TAG, "getNotifcationFromSP: 5");
-                          updateNotificationList();
+                  for (DataSnapshot snapshot1:snapshot.getChildren()) {
+                      if (snapshot1.exists()&&notifyList.size()!=0) {
+                          Log.d(TAG, "getNotifcationFromSP: 3");
+                          if (notifyList.get(0).getTimeStamp().equals(snapshot1.getKey())) {
+                              Log.d(TAG, "getNotifcationFromSP: 4");
+                              displayNotification();
+                          } else {
+                              Log.d(TAG, "getNotifcationFromSP: 5");
+                              updateNotificationList();
+                          }
                       }
+                      displayNotification();
+
                   }
               }
 
@@ -176,32 +180,36 @@ public class notificationFragment extends Fragment {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        int x=0;
-                        for (DataSnapshot snapshot1:snapshot.getChildren()){
-                            x++;
-                            if (x==1){
-                               continue;
+                        if (snapshot.exists()) {
+                            int x = 0;
+                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                x++;
+                                if (x == 1) {
+                                    continue;
+                                }
+
+                                Notification notification = snapshot1.getValue(Notification.class);
+                                Log.d(TAG, "getNotifcationFromSP: 6" + notification);
+                                notifyList.add(notification);
                             }
+                            Collections.reverse(notifyList);
+                            //                        Add newly Created ArrayList to Shared Preferences
+                            SharedPreferences.Editor editor = sp.edit();
+                            String json = gson.toJson(notifyList);
+                            editor.putString("nl", json);
+                            editor.apply();
 
-                            Notification notification=snapshot1.getValue(Notification.class);
-                            Log.d(TAG, "getNotifcationFromSP: 6"+notification);
-                            notifyList.add(notification);
+                            displayNotification();
+                        }else{
+                            readNotification();
                         }
-                        Collections.reverse(notifyList);
-                        //                        Add newly Created ArrayList to Shared Preferences
-                        SharedPreferences.Editor editor = sp.edit();
-                        String json = gson.toJson(notifyList);
-                        editor.putString("nl", json);
-                        editor.apply();
-
-                        displayNotification();
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
 
                     }
                 });
+
 
 
     }
@@ -213,22 +221,26 @@ public class notificationFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 notifyList.clear();
-                long x=0;
+                int x=0;
                 for (DataSnapshot snapshot:dataSnapshot.getChildren()){
                     x++;
                     Notification notification=snapshot.getValue(Notification.class);
                     notifyList.add(notification);
 
-                }
-                Collections.reverse(notifyList);
+                    if (x==dataSnapshot.getChildrenCount()){
+                        Collections.reverse(notifyList);
 
 //                        Add newly Created ArrayList to Shared Preferences
-                SharedPreferences.Editor editor = sp.edit();
-                String json = gson.toJson(notifyList);
-                editor.putString("nl", json);
-                editor.apply();
+                        SharedPreferences.Editor editor = sp.edit();
+                        String json = gson.toJson(notifyList);
+                        editor.putString("nl", json);
+                        editor.apply();
 
-                displayNotification();
+                        displayNotification();
+                    }
+
+                }
+
             }
 
             @Override

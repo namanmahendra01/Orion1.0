@@ -104,13 +104,12 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.ViewHold
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                    username.setText((singleSnapshot.getValue(users.class).getUsername()));
+                    username.setText((dataSnapshot.getValue(users.class).getUsername()));
 
-              UniversalImageLoader.setImage(singleSnapshot.getValue(users.class).getProfile_photo(),profileimage,null,"");
+              UniversalImageLoader.setImage(dataSnapshot.getValue(users.class).getProfile_photo(),profileimage,null,"");
 
-                }
+
 
 
             }

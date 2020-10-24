@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.media.AudioManager;
 import android.net.Uri;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -65,10 +67,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orion.orion.CommentActivity;
 import com.orion.orion.R;
 import com.orion.orion.ViewPostActivity;
+import com.orion.orion.home.Homefragment;
+import com.orion.orion.home.MainActivity;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.Photo;
 import com.orion.orion.models.users;
@@ -78,6 +84,7 @@ import com.orion.orion.util.SNTPClient;
 import com.orion.orion.util.SquareImageView;
 import com.orion.orion.util.UniversalImageLoader;
 
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -115,7 +122,9 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
     private Context mContext;
     private String currentUsername = "";
     private String numberoflike = "0";
-
+    //    SP
+    Gson gson;
+    SharedPreferences sp;
 
     private FirebaseMethods mFirebaseMethods;
     private boolean notify = false;
@@ -144,11 +153,13 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
         mFirebaseMethods = new FirebaseMethods(mContext);
         Photo photo = photos.get(i);
-        getCurrentUsername(holder.domain, photo);
+        getCurrentUserDomain(holder.domain, photo);
         ifCurrentUserLiked(holder, photo);
         ifCurrentUserPromoted(holder, photo);
         holder.duration.setVisibility(View.GONE);
-
+//          Initialize SharedPreference variables
+        sp = mContext.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        gson = new Gson();
         Log.d(TAG, "onBindViewHolder: " + photo.getType() + photos.size());
 
 
@@ -170,7 +181,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                             builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    DeletePost(photo);
+                                    DeletePost(photo, i);
 
                                 }
                             });
@@ -244,7 +255,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
 
         holder.type = photo.getType();
-
+        Log.d(TAG, "onBindViewHolder: lll"+photo);
         if (holder.type.equals("photo")) {
             holder.image.setVisibility(View.VISIBLE);
             holder.play2.setVisibility(View.GONE);
@@ -254,6 +265,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         } else {
             UniversalImageLoader.setImage(photo.getThumbnail(), holder.thumbnail, null, "");
 
+            holder.unmute.setVisibility(View.VISIBLE);
             holder.play2.setVisibility(View.VISIBLE);
             holder.image.setVisibility(View.GONE);
         }
@@ -320,9 +332,10 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             @Override
             public void onClick(View view) {
                 holder.progressBar.setVisibility(View.VISIBLE);
+                Log.d(TAG, "onClick: play 1");
 //                if paused
                 if (holder.play) {
-
+                    Log.d(TAG, "onClick: play 2");
                     holder.play = false;
                     holder.play2.setVisibility(View.INVISIBLE);
 
@@ -332,19 +345,21 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                     BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
                     TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
                     if (simpleExoPlayer != null) {
-
+                        Log.d(TAG, "onClick: play 3");
                         simpleExoPlayer.release();
                     }
 
                     simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(mContext, trackSelector, loadControl);
-
+                    Log.d(TAG, "onClick: play 4");
                     DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
                             mContext, Util.getUserAgent(mContext, "RecyclerView VideoPlayer"));
                     String mediaUrl = photo.getImage_path();
+                    Log.d(TAG, "onClick: play 5");
                     HttpProxyCacheServer proxy = getProxy(mContext);
+                    Log.d(TAG, "onClick: play 6");
                     String proxyUrl = proxy.getProxyUrl(mediaUrl);
 
-
+                    Log.d(TAG, "onClick: play 7");
                     holder.playerView.setPlayer(simpleExoPlayer);
 
 
@@ -354,6 +369,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
                     MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
                             .createMediaSource(Uri.parse(proxyUrl));
+                    Log.d(TAG, "onClick: play 8");
 //                    set Volume
                     if (holder.mute.getVisibility() == View.VISIBLE) {
                         simpleExoPlayer.setVolume(0f);
@@ -370,28 +386,29 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                     simpleExoPlayer.addListener(new Player.EventListener() {
                         @Override
                         public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
-
+                            Log.d(TAG, "onClick: play 9");
                         }
 
                         @Override
                         public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-
+                            Log.d(TAG, "onClick: play 10");
                         }
 
                         @Override
                         public void onLoadingChanged(boolean isLoading) {
-
+                            Log.d(TAG, "onClick: play 11");
                         }
 
                         @Override
                         public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
 
                             if (playbackState == Player.STATE_BUFFERING) {
-
+                                Log.d(TAG, "onClick: play 12");
                                 holder.progressBar.setVisibility(View.VISIBLE);
 
 
                             } else if (playbackState == Player.STATE_READY) {
+                                Log.d(TAG, "onClick: play 13");
                                 holder.thumbnail.setVisibility(GONE);
                                 holder.duration.setVisibility(View.VISIBLE);
                                 holder.progressBar.setVisibility(View.GONE);
@@ -422,7 +439,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
 
                             } else if (playbackState == Player.STATE_ENDED) {
-
+                                Log.d(TAG, "onClick: play 15");
                                 holder.play2.setVisibility(View.VISIBLE);
                                 holder.play = true;
                                 holder.thumbnail.setVisibility(View.VISIBLE);
@@ -431,6 +448,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                                 simpleExoPlayer.release();
 
                             } else if (playbackState == Player.STATE_IDLE) {
+                                Log.d(TAG, "onClick: play 16");
                                 holder.play2.setVisibility(View.VISIBLE);
 
                             }
@@ -466,6 +484,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                         }
                     });
                 } else {
+                    Log.d(TAG, "onClick: play 17");
 //                    if playing
                     holder.play = true;
                     holder.play2.setVisibility(View.VISIBLE);
@@ -516,51 +535,48 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot singleSnapshot) {
-                    currentUsername = singleSnapshot.getValue(users.class).getUsername();
+                currentUsername = singleSnapshot.getValue(users.class).getUsername().toString();
 
-                    holder.username.setText(singleSnapshot.getValue(users.class).getUsername());
-                    holder.credit.setText("© " + singleSnapshot.getValue(users.class).getUsername());
-
-
-                    holder.username.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent i = new Intent(mContext, profile.class);
-                            i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
-
-                            i.putExtra(mContext.getString(R.string.intent_user),photo.getUser_id());
-                            mContext.startActivity(i);
-                        }
-                    });
-                    ImageLoader imageloader = ImageLoader.getInstance();
-
-                    imageloader.displayImage(singleSnapshot.getValue(users.class).getProfile_photo(), holder.mProfileImage);
-                    holder.mProfileImage.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent i = new Intent(mContext, profile.class);
-                            i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
-
-                            i.putExtra(mContext.getString(R.string.intent_user), photo.getUser_id());
-                            mContext.startActivity(i);
-                        }
-                    });
+                holder.username.setText(currentUsername);
+                holder.credit.setText("© " + currentUsername);
 
 
-                    holder.setting = singleSnapshot.getValue(users.class);
-                    holder.comment.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent i = new Intent(mContext, CommentActivity.class);
-                            i.putExtra("photoId", photo.getPhoto_id());
-                            i.putExtra("userId", photo.getUser_id());
-                            mContext.startActivity(i);
-                        }
-                    });
-                }
+                holder.username.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(mContext, profile.class);
+                        i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
+
+                        i.putExtra(mContext.getString(R.string.intent_user), photo.getUser_id());
+                        mContext.startActivity(i);
+                    }
+                });
+                ImageLoader imageloader = ImageLoader.getInstance();
+
+                imageloader.displayImage(singleSnapshot.getValue(users.class).getProfile_photo(), holder.mProfileImage);
+                holder.mProfileImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(mContext, profile.class);
+                        i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
+
+                        i.putExtra(mContext.getString(R.string.intent_user), photo.getUser_id());
+                        mContext.startActivity(i);
+                    }
+                });
 
 
-
+                holder.setting = singleSnapshot.getValue(users.class);
+                holder.comment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(mContext, CommentActivity.class);
+                        i.putExtra("photoId", photo.getPhoto_id());
+                        i.putExtra("userId", photo.getUser_id());
+                        mContext.startActivity(i);
+                    }
+                });
+            }
 
 
             @Override
@@ -718,15 +734,27 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                 db.child(mContext.getString(R.string.dbname_promote))
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .child(photo.getPhoto_id())
-                        .removeValue();
+                        .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                        reference.child(mContext.getString(R.string.dbname_user_photos))
+                                .child(photo.getUser_id())
+                                .child(photo.getPhoto_id())
+                                .child("Promote")
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                dialog.dismiss();
+                                Toast.makeText(mContext, "Post promotion removed!", Toast.LENGTH_SHORT).show();
 
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                reference.child(mContext.getString(R.string.dbname_user_photos))
-                        .child(photo.getUser_id())
-                        .child(photo.getPhoto_id())
-                        .child("Promote")
-                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .removeValue();
+                            }
+                        });
+                    }
+                });
+
+
 
 
             }
@@ -817,14 +845,14 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
                         addToHisNotification("" + photo.getUser_id(), photo.getPhoto_id(), "promoted your post.");
                         final DatabaseReference data = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_users))
-                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mContext.getString(R.string.field_username));
                         data.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                users user = dataSnapshot.getValue(users.class);
+                                String user = dataSnapshot.getValue().toString();
 
                                 if (notify) {
-                                    mFirebaseMethods.sendNotification(photo.getUser_id(), user.getUsername(), "promoted your post.", "Promote");
+                                    mFirebaseMethods.sendNotification(photo.getUser_id(), user, "promoted your post.", "Promote");
                                 }
                                 notify = false;
 
@@ -838,6 +866,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
 
                         bottomSheetDialog.dismiss();
+                        Toast.makeText(mContext, "Post Promoted!", Toast.LENGTH_SHORT).show();
 
                         Log.e(SNTPClient.TAG, rawDate);
 
@@ -900,8 +929,14 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String num = String.valueOf(dataSnapshot.getChildrenCount());
-                promoteNum.setText(num);
+                if (dataSnapshot.exists()){
+                    String num = String.valueOf(dataSnapshot.getChildrenCount());
+                    promoteNum.setText(num);
+                }else{
+                    promoteNum.setText("0");
+
+                }
+
 
 
             }
@@ -916,14 +951,14 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
     }
 
     private void togglePromoteBtn(ViewHolder holder) {
-        if (holder.promote.getVisibility() == View.VISIBLE){
+        if (holder.promote.getVisibility() == View.VISIBLE) {
             holder.promote.setVisibility(View.GONE);
             holder.promoted.setVisibility(View.VISIBLE);
-    }else{
+        } else {
             holder.promote.setVisibility(View.VISIBLE);
             holder.promoted.setVisibility(GONE);
         }
-}
+    }
 
     @Override
     public long getItemId(int position) {
@@ -1031,7 +1066,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
     }
 
-    private void getCurrentUsername(TextView domain, Photo photo) {
+    private void getCurrentUserDomain(TextView domain, Photo photo) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference
                 .child(mContext.getString(R.string.dbname_users))
@@ -1053,27 +1088,92 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         });
     }
 
-    private void DeletePost(Photo photo) {
-        StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(photo.getImage_path());
-        photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                // File deleted successfully
-                Log.d(VolleyLog.TAG, "onSuccess: deleted file");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Uh-oh, an error occurred!
-                Log.d(VolleyLog.TAG, "onFailure: did not delete file");
-            }
-        });
+    private void DeletePost(Photo photo, int i) {
 
-        DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
-        reference2.child(mContext.getString(R.string.dbname_user_photos))
+        final int[] x = {0};
+        DatabaseReference reference3 = FirebaseDatabase.getInstance().getReference();
+        reference3.child(mContext.getString(R.string.dbname_follower))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child(photo.getPhoto_id())
-                .removeValue();
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+
+                                x[0]++;
+                                DatabaseReference reference3 = FirebaseDatabase.getInstance().getReference();
+                                reference3.child(mContext.getString(R.string.dbname_users))
+                                        .child(snapshot1.getKey())
+                                        .child(mContext.getString(R.string.post_updates))
+                                        .child(photo.getPhoto_id())
+                                        .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                                if (x[0] == snapshot.getChildrenCount()) {
+                                    DeleteFurther();
+                                }
+                            }
+                        } else {
+                            DeleteFurther();
+                        }
+                    }
+
+                    private void DeleteFurther() {
+
+                        DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
+                        reference2.child(mContext.getString(R.string.dbname_user_photos))
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .child(photo.getPhoto_id())
+                                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(photo.getImage_path());
+                                photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        // File deleted successfully
+
+                                        String json = sp.getString("pl", null);
+                                        Type type = new TypeToken<ArrayList<Photo>>() {
+                                        }.getType();
+                                        ArrayList<Photo> photoList = new ArrayList<>();
+                                        photoList = gson.fromJson(json, type);
+                                        if (photoList == null || photoList.size() == 0) {                 //    if no arrayList is present
+
+                                        } else {
+
+                                            photoList.remove(photo);
+                                            photos.remove(photo);
+                                            //  delete from post list and save updated list
+                                            SharedPreferences.Editor editor = sp.edit();
+                                            json = gson.toJson(photoList);
+                                            editor.putString("pl", json);
+                                            editor.apply();
+
+                                            AdapterMainfeed.this.notifyItemRemoved(i);
+
+
+
+                                        }
+                                        Log.d(VolleyLog.TAG, "onSuccess: deleted file");
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        // Uh-oh, an error occurred!
+                                        Log.d(VolleyLog.TAG, "onFailure: did not delete file");
+                                    }
+                                });
+                            }
+                        });
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
 
 
     }
@@ -1084,7 +1184,13 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                 .child("posts")
                 .child(photo.getPhoto_id())
                 .child("user_id")
-                .setValue(photo.getUser_id());
+                .setValue(photo.getUser_id())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(mContext, "Post Reported!", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
 
@@ -1097,8 +1203,14 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                numberoflike = String.valueOf(dataSnapshot.getChildrenCount());
-                holder.likenumber.setText(numberoflike);
+                if (dataSnapshot.exists()){
+                    numberoflike = String.valueOf(dataSnapshot.getChildrenCount());
+                    holder.likenumber.setText(numberoflike);
+
+                }else{
+                    holder.likenumber.setText("0");
+
+                }
 
             }
 
@@ -1196,8 +1308,13 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                 .child(photo.getPhoto_id())
                 .child("likes")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .removeValue();
-        NumberOfLikes(holder, photo);
+                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                NumberOfLikes(holder, photo);
+
+            }
+        });
 
 
     }
