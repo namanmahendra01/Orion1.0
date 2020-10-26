@@ -216,7 +216,5 @@
             tools:listitem="@layout/item_leaderboard" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
     <include layout="@layout/layout_bottom_navigation_view" />
-
 </RelativeLayout>
