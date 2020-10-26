@@ -4,6 +4,7 @@ package com.orion.orion.contest;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,10 +18,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -45,12 +48,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.orion.orion.util.SNTPClient.TAG;
+
 
 public class jury_voting_media extends AppCompatActivity {
     private static final String TAG = "jury_voting_media";
 
     private TableLayout juryTable;
     String username2 = "";
+    ImageView backArrrow;
+
     List<EditText> etList1 = new ArrayList<EditText>();
     List<EditText> etList2 = new ArrayList<EditText>();
     String joiningKey, text = "", tex2t = "";
@@ -79,6 +86,16 @@ public class jury_voting_media extends AppCompatActivity {
         String userid = i.getStringExtra("userId");
         jury = i.getStringExtra("jury");
         comment = i.getStringExtra("comment");
+
+        backArrrow= findViewById(R.id.backarrow);
+
+        backArrrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
 
         //          Initialize SharedPreference variables
         sp = getSharedPreferences(contestkey, Context.MODE_PRIVATE);
@@ -111,12 +128,24 @@ public class jury_voting_media extends AppCompatActivity {
 
                     DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
 
-                    if (text.equals("") || tex2t.equals("")) {
+                    if (text.equals("") || tex2t.equals("")||(Integer.parseInt(text)>10||Integer.parseInt(text)<=0)) {
                         progress.setVisibility(View.GONE);
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                        et.setError("please fill");
-                        et2.setError("please fill");
-                    } else {
+                        if (text.equals("")){
+                            et.setError("please fill");
+
+                        }
+                        if (tex2t.equals("")){
+                            et2.setError("please fill");
+
+                        }
+                        if ((Integer.parseInt(text)>10||Integer.parseInt(text)<=0)){
+                            et.setError("marks must be between 1-10 range");
+
+                        }
+
+                    }
+                    else{
                         markList = new ArrayList<>(Collections.nCopies(4, "0"));
                         addUsernameAndMediaLinktoSP(joiningKey,text,tex2t);
 
@@ -140,6 +169,7 @@ public class jury_voting_media extends AppCompatActivity {
                                         if (i[0]==participantlist.size()){
                                             progress.setVisibility(View.GONE);
                                             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            Toast.makeText(jury_voting_media.this, "Marks Submitted!", Toast.LENGTH_SHORT).show();
 
                                         }
                                     }
@@ -367,19 +397,39 @@ ArrayList<String> list= new ArrayList<>(Collections.nCopies(4,"0"));
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                                         link[0] = dataSnapshot.getValue().toString();
-                                        if (link[0].substring(8,23).equals("firebasestorage")) {
-                                            Intent i = new Intent(jury_voting_media.this, activity_view_media.class);
-                                            i.putExtra("imageLink", link[0]);
-                                            i.putExtra("contestkey", contestkey);
-                                            i.putExtra("joiningkey", joiningKey);
-                                            i.putExtra("view", "No");
+                                        boolean ok= link[0].length() > 23;
+                                        if (ok){
+                                            if (link[0].substring(8,23).equals("firebasestorage")) {
+                                                Intent i = new Intent(jury_voting_media.this, activity_view_media.class);
+                                                i.putExtra("imageLink", link[0]);
+                                                i.putExtra("contestkey", contestkey);
+                                                i.putExtra("joiningkey", joiningKey);
+                                                i.putExtra("view", "No");
 
-                                            startActivity(i);
+                                                startActivity(i);
+                                            }else{
+                                                try {
+                                                    Uri uri = Uri.parse(link[0]);
+                                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                                    startActivity(intent);
+
+                                                } catch (ActivityNotFoundException e) {
+                                                    Toast.makeText(jury_voting_media.this, "Invalid Link", Toast.LENGTH_SHORT).show();
+                                                    Log.e(TAG, "onClick: " + e.getMessage());
+                                                }
+                                            }
                                         }else{
-                                            Uri uri = Uri.parse(link[0]);
-                                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                            startActivity(intent);
+                                            try {
+                                                Uri uri = Uri.parse(link[0]);
+                                                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                                startActivity(intent);
+
+                                            } catch (ActivityNotFoundException e) {
+                                                Toast.makeText(jury_voting_media.this, "Invalid Link", Toast.LENGTH_SHORT).show();
+                                                Log.e(TAG, "onClick: " + e.getMessage());
+                                            }
                                         }
+
                                     }
 
                                     @Override
@@ -481,18 +531,37 @@ ArrayList<String> list= new ArrayList<>(Collections.nCopies(4,"0"));
                 t2v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (markList.get(1).substring(8,23).equals("firebasestorage")) {
-                            Intent i = new Intent(jury_voting_media.this, activity_view_media.class);
-                            i.putExtra("imageLink", markList.get(1));
-                            i.putExtra("contestkey", contestkey);
-                            i.putExtra("joiningkey", joiningKey);
-                            i.putExtra("view", "No");
+                        boolean ok= markList.get(1).length() > 23;
+                        if (ok){
+                            if (markList.get(1).substring(8,23).equals("firebasestorage")) {
+                                Intent i = new Intent(jury_voting_media.this, activity_view_media.class);
+                                i.putExtra("imageLink", markList.get(1));
+                                i.putExtra("contestkey", contestkey);
+                                i.putExtra("joiningkey", joiningKey);
+                                i.putExtra("view", "No");
 
-                            startActivity(i);
+                                startActivity(i);
+                            }else{
+                                try {
+                                    Uri uri = Uri.parse(markList.get(1));
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                    startActivity(intent);
+
+                                } catch (ActivityNotFoundException e) {
+                                    Toast.makeText(jury_voting_media.this, "Invalid Link", Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG, "onClick: " + e.getMessage());
+                                }
+                            }
                         }else{
-                            Uri uri = Uri.parse(markList.get(1));
-                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                            startActivity(intent);
+                            try {
+                                Uri uri = Uri.parse(markList.get(1));
+                                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                startActivity(intent);
+
+                            } catch (ActivityNotFoundException e) {
+                                Toast.makeText(jury_voting_media.this, "Invalid Link", Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "onClick: " + e.getMessage());
+                            }
                         }
 
 

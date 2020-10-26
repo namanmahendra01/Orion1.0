@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     tools:context=".contest.create.CheckContest"
     >
 
@@ -150,7 +151,7 @@
                 android:gravity="center"
                 android:textSize="14sp"
                 android:textAlignment="center"
-                android:textColor="@color/grey"
+                android:textColor="#F44336"
                 android:layout_marginBottom="5dp"
                 android:text="You can edit only Description and Rules of this Contest."
                 android:layout_below="@+id/prizell"/>
@@ -169,10 +170,11 @@
 
                 android:id="@+id/descripTv"
                 android:layout_width="match_parent"
+
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/description"
                 android:layout_marginBottom="15dp"
-                android:background="@drawable/white_border"
+                android:background="@drawable/rectangular_border"
                 android:padding="5dp"
                  />
             <TextView
@@ -202,7 +204,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/rule"
                 android:layout_marginBottom="15dp"
-                android:background="@drawable/white_border"
+                android:background="@drawable/rectangular_border"
                 android:padding="5dp"
               />
             <TextView
@@ -212,7 +214,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/rule"
                 android:layout_marginBottom="15dp"
-                android:background="@drawable/white_border"
+                android:background="@drawable/rectangular_border"
                 android:padding="5dp"
                 />
 

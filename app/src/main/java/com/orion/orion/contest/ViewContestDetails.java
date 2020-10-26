@@ -45,7 +45,7 @@ import static com.android.volley.VolleyLog.TAG;
 public class ViewContestDetails extends AppCompatActivity {
 
     private static final String TAG = "ViewContestDetails";
-    private TextView entryfee, title, descrip, rules, totalprize, maxPart, voteType,gp,
+    private TextView entryfee, title, descrip, rules, totalprize, maxPart, voteType,gp,userTv,
             regBegin, regEnd, voteBegin, voteEnd, domain, openfor, juryname1, juryname2, juryname3, jury, jurypl1, jurypl2, jurypl3, hostedby, filetype, windate, p1Tv, p2Tv, p3Tv;
     private ImageView poster, jurypic1, jurypic2, jurypic3,options;
     private String mAppend = "";
@@ -53,7 +53,10 @@ public class ViewContestDetails extends AppCompatActivity {
     private CardView cardView;
     private Button participateBtn, VoteBtn;
     users user = new users();
+    String username="";
     Boolean ok = false;
+    ImageView backArrrow;
+
     int p = 0;
 
 
@@ -112,6 +115,8 @@ public class ViewContestDetails extends AppCompatActivity {
         VoteBtn = findViewById(R.id.voteBtn);
         options = findViewById(R.id.optionC);
         gp = findViewById(R.id.gp);
+        userTv = findViewById(R.id.usernameCreator);
+
 
         Intent i = getIntent();
         userId = i.getStringExtra("userId");
@@ -120,7 +125,14 @@ public class ViewContestDetails extends AppCompatActivity {
         reg = i.getStringExtra("reg");
 
         setgp(userId, gp);
+        backArrrow= findViewById(R.id.backarrow);
 
+        backArrrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         DatabaseReference db = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_participantList));
         db.child(contestId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -133,6 +145,7 @@ public class ViewContestDetails extends AppCompatActivity {
 
             }
         });
+
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contestlist));
         ref.child(contestId)
@@ -230,6 +243,21 @@ public class ViewContestDetails extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 CreateForm mCreateForm = dataSnapshot.getValue(CreateForm.class);
                 assert mCreateForm != null;
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
+                ref.child(mCreateForm.getUserid())
+                        .child(getString(R.string.field_username))
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                userTv.setText(snapshot.getValue().toString());
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
                 if (mCreateForm.getEntryfee().equals("")) {
                     entryfee.setText("Free");
                 } else {
@@ -521,12 +549,12 @@ public class ViewContestDetails extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
 
                             Intent i = new Intent(ViewContestDetails.this, profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
 
                         }
@@ -559,14 +587,13 @@ public class ViewContestDetails extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
 
                             Intent i = new Intent(ViewContestDetails.this, profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
-
                         }
 
 
@@ -597,12 +624,12 @@ public class ViewContestDetails extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
 
                             Intent i = new Intent(ViewContestDetails.this, profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
 
                         }
@@ -636,12 +663,12 @@ public class ViewContestDetails extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
 
                             Intent i = new Intent(ViewContestDetails.this, profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
 
                         }
@@ -673,13 +700,12 @@ public class ViewContestDetails extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                            user = singleSnapshot.getValue(users.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
 
                             Intent i = new Intent(ViewContestDetails.this, profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
 
                         }
@@ -712,12 +738,12 @@ public class ViewContestDetails extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
 
                             Intent i = new Intent(ViewContestDetails.this, profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
 
                         }
@@ -751,12 +777,12 @@ public class ViewContestDetails extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
 
                             Intent i = new Intent(ViewContestDetails.this, profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
 
                         }
@@ -789,12 +815,12 @@ public class ViewContestDetails extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
 
                             Intent i = new Intent(ViewContestDetails.this, profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
 
                         }
@@ -827,12 +853,12 @@ public class ViewContestDetails extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
 
                             Intent i = new Intent(ViewContestDetails.this, profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
 
                         }

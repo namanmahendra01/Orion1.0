@@ -70,7 +70,7 @@ public class AdapterVoterList extends RecyclerView.Adapter<AdapterVoterList.View
         String votingList= votingLists.get(i);
         holder.time.setVisibility(View.GONE);
 
-        getparticipantDetails(votingList,holder.username,holder.displayname,holder.profile);
+        getparticipantDetails(votingList,holder.username,holder.profile);
 
     }
 
@@ -86,7 +86,7 @@ public class AdapterVoterList extends RecyclerView.Adapter<AdapterVoterList.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView username, displayname, time;
+        private TextView username, time;
 
         private CircleImageView profile;
 
@@ -96,14 +96,13 @@ public class AdapterVoterList extends RecyclerView.Adapter<AdapterVoterList.View
 
             profile=(CircleImageView)itemView.findViewById(R.id.profilePartCv);
             username=itemView.findViewById(R.id.username);
-            displayname=itemView.findViewById(R.id.displayname);
             time=itemView.findViewById(R.id.timeStamp);
 
         }
     }
 
 
-    private void getparticipantDetails(String userid, TextView username, TextView displayname, CircleImageView profile) {
+    private void getparticipantDetails(String userid, TextView username, CircleImageView profile) {
         DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
         ref.child(mContext.getString(R.string.dbname_user_account_settings))
                 .child(userid)
@@ -117,7 +116,6 @@ public class AdapterVoterList extends RecyclerView.Adapter<AdapterVoterList.View
                         profilelink=user.getProfile_photo();
 
                         username.setText(user.getUsername());
-                        displayname.setText(user.getDisplay_name());
                         UniversalImageLoader.setImage(profilelink,profile,null,mAppend);
 
 

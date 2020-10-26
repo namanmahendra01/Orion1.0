@@ -228,8 +228,12 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
 
     }
     public long getItemId(int position) {
-        Notification form = mNotification.get(position);
-        return form.getTimeStamp().hashCode();
+        if (mNotification!=null&&mNotification.size()!=0) {
+            Notification form = mNotification.get(position);
+            return form.getTimeStamp().hashCode();
+        }else{
+            return position;
+        }
     }
     @Override
     public int getItemCount() {
@@ -317,17 +321,26 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
                 ArrayList<Notification> notifyList=new ArrayList<>();
                 notifyList = gson.fromJson(json, type);
                 if (notifyList==null){
-                    Log.d(TAG, "onClick: noti 3");
+                    Log.d(TAG, "onClick: notik 3");
 
                 }else {
-                    Log.d(TAG, "onClick: noti 1"+notifyList.size());
+                    Log.d(TAG, "onClick: notik 1"+notifyList.size());
                     notifyList.remove(notification);
+
                     mNotification.remove(notification);
+                    ArrayList<Notification> notifyList2=new ArrayList<>(notifyList);
+                    Log.d(TAG, "onClick: notik 2"+notifyList2.size());
+
+                    for(Notification a:notifyList){
+                        if (a.getTimeStamp().equals(notification.getTimeStamp())){
+                            notifyList2.remove(a);
+                        }
+                    }
                     SharedPreferences.Editor editor = sp.edit();
-                    json = gson.toJson(notifyList);
-                    editor.putString("nl", json);
+                    String json1 = gson.toJson(notifyList2);
+                    editor.putString("nl", json1);
                     editor.apply();
-                    Log.d(TAG, "onClick: noti 2"+notifyList.size());
+                    Log.d(TAG, "onClick: notik 3"+notifyList2.size());
                     AdapterNotification2.this.notifyItemRemoved(i);
 
 

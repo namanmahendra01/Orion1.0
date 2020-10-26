@@ -17,6 +17,7 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
@@ -57,11 +58,12 @@ public class fragment_upcomingContest extends Fragment {
     private EditText searchBox;
     int prevHeight;
     int height, dummyHeight;
+    LinearLayout blurBg;
     int x=0;
     private int mResults;
     private int mResults2;
     RelativeLayout relativeLayout;
-    ImageView gridB,gridY,colY,colB,filterB,filterY;
+    ImageView gridB,gridY,colY,colB,filterB,filterY,cross;
     private ArrayList<ContestDetail> contestlist2;
     private ArrayList<ContestDetail> contestlist3;
     private ArrayList<ContestDetail> paginatedcontestlist;
@@ -104,6 +106,9 @@ public class fragment_upcomingContest extends Fragment {
         filterY=view.findViewById(R.id.filteryellow);
         relativeLayout=view.findViewById(R.id.relparent);
         contesRefresh=view.findViewById(R.id.contest_refresh);
+        blurBg=view.findViewById(R.id.pro);
+        cross=view.findViewById(R.id.cross);
+
 
 
 //**************************************************************************************
@@ -183,6 +188,15 @@ public class fragment_upcomingContest extends Fragment {
 
 
 
+            }
+        });
+        cross.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                        paginatedcontestSearch.clear();
+                        adapterContestSearch.notifyDataSetChanged();
+                        searchBox.setText("");
+                blurBg.setVisibility(View.GONE);
             }
         });
 
@@ -276,6 +290,7 @@ public class fragment_upcomingContest extends Fragment {
                 }else {
                      key = searchBox.getText().toString();
                 }
+
                 searchContest(key);
 
             }
@@ -606,7 +621,7 @@ public class fragment_upcomingContest extends Fragment {
     }
     private void displaysearch() {
         Log.d(TAG, "display first 10 contest");
-
+blurBg.setVisibility(View.VISIBLE);
         paginatedcontestSearch = new ArrayList<>();
         if (contestlist2 != null) {
 

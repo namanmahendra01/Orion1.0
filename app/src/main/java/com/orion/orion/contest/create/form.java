@@ -232,8 +232,8 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
     @Override
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Are u sure")
-                .setMessage("You will discard all the changes u made?")
+        builder.setTitle("Are you sure")
+                .setMessage("You will discard all the changes you made?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", (dialog, id) -> finish())
                 .setNegativeButton("No", (dialog, id) -> dialog.cancel())
@@ -253,8 +253,8 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
         layout3.setOnClickListener(v -> hideKeyboardFrom(mContext, layout3));
         backArrow.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Are u sure")
-                    .setMessage("You will discard all the changes u made?")
+            builder.setTitle("Are you sure")
+                    .setMessage("You will discard all the changes you made?")
                     .setCancelable(false)
                     .setPositiveButton("Yes", (dialog, id) -> finish())
                     .setNegativeButton("No", (dialog, id) -> dialog.cancel())

@@ -25,14 +25,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/green"/>
+            android:background="@color/scheme8"/>
         <View
             android:id="@+id/active2"
             android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/green"
+            android:background="@color/scheme8"
             />
         <View
             android:id="@+id/active3"
@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/green"
+            android:background="@color/scheme8"
             />
     </LinearLayout>
 
@@ -105,11 +105,13 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
                 android:hint="Event Title"
+                android:padding="10dp"
+                android:background="@drawable/rectangular_border"
                 android:imeOptions="actionNext"
                 android:inputType="textFilter"
                 android:textColor="@color/black"
                 android:textColorHint="@color/grey"
-                android:textSize="24sp" />
+                android:textSize="18sp" />
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/hostedBy"
@@ -118,6 +120,9 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
+                android:background="@drawable/rectangular_border"
+                android:padding="10dp"
+
                 android:hint="Hosted By"
                 android:imeOptions="actionNext"
                 android:inputType="textFilter"
@@ -135,6 +140,8 @@
                 android:gravity="top"
                 android:hint="Description"
                 android:imeOptions="actionDone"
+                android:padding="10dp"
+                android:background="@drawable/rectangular_border"
                 android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
                 android:maxLines="5"
                 android:minLines="3"
@@ -233,8 +240,9 @@
             android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:padding="10dp"
-                android:background="@drawable/circular_corner_rectangle"
+                android:background="@drawable/white_round_button"
                 android:gravity="center_vertical"
+
                 android:text="Select your Domain"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
@@ -1030,7 +1038,7 @@
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:text="Previous"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="15sp" />
 
     <Button
@@ -1042,12 +1050,12 @@
         android:layout_marginRight="15dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/circular_button"
-        android:backgroundTint="@color/orange"
+        android:backgroundTint="@color/scheme8"
         android:elevation="5dp"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:text="NEXT"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="15sp" />
 
 </RelativeLayout>

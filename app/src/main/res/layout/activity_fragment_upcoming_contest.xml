@@ -2,6 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/parent"
+    android:background="@color/white"
 
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -16,12 +18,12 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/scheme8"
             android:visibility="visible"
 
             android:id="@+id/relparent">
         <RelativeLayout
             android:layout_width="match_parent"
+            android:background="@drawable/pink_round_button"
             android:layout_height="wrap_content"
             android:id="@+id/filterLayout">
             <LinearLayout
@@ -35,6 +37,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+
+                    android:layout_centerHorizontal="true"
+
                     android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
@@ -68,13 +74,15 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
+
                 android:layout_marginBottom="10dp"
                 android:orientation="vertical">
                 <Spinner
                     android:layout_width="wrap_content"
-                    android:background="@drawable/white_border"
+                    android:background="@drawable/white_round_button"
                     android:layout_height="wrap_content"
                     android:entries="@array/domain2"
+                    android:gravity="center"
                     android:layout_marginTop="5dp"
                     android:id="@+id/domainspinner"
                     />
@@ -83,7 +91,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:entries="@array/entryfee2"
-                android:background="@drawable/white_border"
+
+                android:textAlignment="center"
+
+                android:background="@drawable/white_round_button"
                 android:id="@+id/entryfeeSpinner"
                  />
             </LinearLayout>
@@ -106,7 +117,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/search"
-            android:background="@android:color/transparent"
+            android:background="#CCFFFFFF"
             android:id="@+id/drag">
             <ImageView
                 android:layout_width="25dp"
@@ -174,16 +185,10 @@
                 />
         </RelativeLayout>
 
+
+
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_below="@+id/drag"
-            android:id="@+id/recyclerKey">
-
-        </androidx.recyclerview.widget.RecyclerView>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_below="@+id/recyclerKey"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/recycler_view1">
@@ -191,4 +196,35 @@
     </androidx.recyclerview.widget.RecyclerView>
     </RelativeLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top|end"
+        android:id="@+id/pro"
+        android:background="#CC333232"
+        android:visibility="gone"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="end">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/cross"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_white_cross"
+                android:layout_margin="10dp"/>
+
+
+        </RelativeLayout>
+    </LinearLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:id="@+id/recyclerKey">
+
+    </androidx.recyclerview.widget.RecyclerView>
 </RelativeLayout>

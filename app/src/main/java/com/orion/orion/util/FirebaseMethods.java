@@ -112,20 +112,35 @@ public class FirebaseMethods {
             String user_id = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
             final StorageReference storageReference = mStorageReference.child(filepaths.FIREBASE_IMAGE_STORAGE + "/" + user_id + "/post" + (count + 1));
             if (bm == null) bm = ImageManager.getBitmap(imgURL);
-            byte[] bytes = ImageManager.getBytesFromBitmap(bm, 100);
-            UploadTask uploadTask;
+            File file=new File(imgURL);
+            long length=file.length()/1024;
+
+            byte[] bytes;
+            if(length<200){
+                bytes = ImageManager.getBytesFromBitmap(bm, 100);
+
+            }else if(length<500){
+                bytes = ImageManager.getBytesFromBitmap(bm, 65);
+
+            }else if(length<800){
+                bytes = ImageManager.getBytesFromBitmap(bm, 45);
+
+            }else{
+                bytes = ImageManager.getBytesFromBitmap(bm, 25);
+
+            }            UploadTask uploadTask;
             uploadTask = storageReference.putBytes(bytes);
             ProgressDialog dialog=ProgressDialog.show(mContext,"", "Uploading... - ",true);
 
-            Log.d(TAG, "uploadNewPhoto: photoType"+photoType);
-            Log.d(TAG, "uploadNewPhoto: caption"+caption);
-            Log.d(TAG, "uploadNewPhoto: count"+count);
-            Log.d(TAG, "uploadNewPhoto: imgURL"+imgURL);
-            Log.d(TAG, "uploadNewPhoto: filepaths"+filepaths);
-            Log.d(TAG, "uploadNewPhoto: user_id"+user_id);
-            Log.d(TAG, "uploadNewPhoto: StorageReference"+storageReference);
-            Log.d(TAG, "uploadNewPhoto: bm"+bm);
-            Log.d(TAG, "uploadNewPhoto: bytes"+ Arrays.toString(bytes));
+//            Log.d(TAG, "uploadNewPhoto: photoType"+photoType);
+//            Log.d(TAG, "uploadNewPhoto: caption"+caption);
+//            Log.d(TAG, "uploadNewPhoto: count"+count);
+//            Log.d(TAG, "uploadNewPhoto: imgURL"+imgURL);
+//            Log.d(TAG, "uploadNewPhoto: filepaths"+filepaths);
+//            Log.d(TAG, "uploadNewPhoto: user_id"+user_id);
+//            Log.d(TAG, "uploadNewPhoto: StorageReference"+storageReference);
+//            Log.d(TAG, "uploadNewPhoto: bm"+bm);
+//            Log.d(TAG, "uploadNewPhoto: bytes"+ Arrays.toString(bytes));
             Log.d(TAG, "uploadNewPhoto: uploadTask"+uploadTask);
 
             uploadTask.addOnSuccessListener(taskSnapshot -> {
@@ -153,8 +168,23 @@ public class FirebaseMethods {
             String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
             final StorageReference storageReference = mStorageReference.child(filepaths.FIREBASE_IMAGE_STORAGE + "/" + user_id + "/profile_photo");
             if (bm == null) bm = ImageManager.getBitmap(imgURL);
-            byte[] bytes = ImageManager.getBytesFromBitmap(bm, 100);
-            UploadTask uploadTask = null;
+            File file=new File(imgURL);
+            long length=file.length()/1024;
+
+            byte[] bytes;
+            if(length<200){
+                bytes = ImageManager.getBytesFromBitmap(bm, 100);
+
+            }else if(length<500){
+                bytes = ImageManager.getBytesFromBitmap(bm, 65);
+
+            }else if(length<800){
+                bytes = ImageManager.getBytesFromBitmap(bm, 45);
+
+            }else{
+                bytes = ImageManager.getBytesFromBitmap(bm, 25);
+
+            }            UploadTask uploadTask = null;
             uploadTask = storageReference.putBytes(bytes);
             uploadTask.addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
@@ -189,8 +219,23 @@ public class FirebaseMethods {
             if (bm == null) {
                 bm = ImageManager.getBitmap(imgURL);
             }
+            File file=new File(imgURL);
+            long length=file.length()/1024;
 
-            byte[] bytes = ImageManager.getBytesFromBitmap(bm, 100);
+            byte[] bytes;
+            if(length<200){
+                bytes = ImageManager.getBytesFromBitmap(bm, 100);
+
+            }else if(length<500){
+                bytes = ImageManager.getBytesFromBitmap(bm, 65);
+
+            }else if(length<800){
+                bytes = ImageManager.getBytesFromBitmap(bm, 45);
+
+            }else{
+                bytes = ImageManager.getBytesFromBitmap(bm, 25);
+
+            }
             UploadTask uploadTask = null;
             uploadTask = storageReference.putBytes(bytes);
 

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".contest.joined.JoiningForm">
     <RelativeLayout
         android:layout_width="match_parent"
@@ -29,31 +30,13 @@
                 android:text="Submission Form"
                 android:layout_gravity="center_horizontal"
                 android:textAlignment="center"
-                android:textColor="@color/black"
+                android:textColor="@color/scheme8"
                 android:textSize="20sp"
                 android:layout_margin="10dp"
+                android:textStyle="bold"
                 android:layout_marginBottom="30dp"
-                android:textStyle="bold"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Name: "
-                android:textColor="@color/black"
-                android:layout_marginLeft="20dp"
-                android:textSize="20sp"/>
+                />
 
-                <EditText
-                    android:id="@+id/nameEt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:layout_marginRight="10dp"/>
-
-            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -65,19 +48,31 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="college/school: "
+                    android:text="College/School: "
                     android:textColor="@color/black"
                     android:layout_marginLeft="20dp"
-                    android:textSize="20sp"/>
+                    android:textSize="15sp"/>
 
                 <EditText
                     android:id="@+id/collegeEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
+                    android:paddingRight="5dp"
+                    android:textSize="15sp"
+                    android:paddingLeft="5dp"
+
+                    android:maxLines="1"
+                    android:background="@drawable/rectangular_border"
                     android:layout_marginRight="10dp"/>
 
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -89,58 +84,70 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Upload your College/School Id: "
+                    android:text="Select College/School ID Image: "
                     android:textColor="@color/black"
                     android:layout_marginLeft="20dp"
-                    android:layout_weight="1"
                     android:layout_gravity="center_horizontal"
                     android:gravity="center_vertical"
-                    android:textSize="20sp"/>
+                    android:textSize="15sp"/>
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="Select"
                     android:id="@+id/selectid"
 
-                    android:background="@color/white"
+                    android:background="@drawable/white_round_button"
                     android:layout_marginRight="10dp"/>
 
 
 
             </LinearLayout>
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="5dp"
+                    android:id="@+id/idIv"
+                    android:visibility="gone"
+                    android:layout_gravity="center_horizontal"/>
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:visibility="gone"
+                android:layout_marginTop="10dp"
+                android:visibility="visible"
+
                 android:id="@+id/mediaLinearLayout"
-                android:orientation="vertical">
+                android:orientation="horizontal">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Submit Link to media"
+                    android:text="Paste Link to media: "
                     android:textColor="@color/black"
                     android:layout_marginLeft="20dp"
                     android:layout_gravity="center_horizontal"
-                    android:gravity="center_vertical"
-                    android:textSize="20sp"/>
+                    android:gravity="center"
+
+
+                    android:textSize="15sp"/>
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
+                    android:paddingRight="5dp"
+                    android:textSize="15sp"
+                    android:paddingLeft="5dp"
+
                     android:id="@+id/url_submission"
-                    android:background="@color/white"
-                    android:layout_margin="10dp"/>
+                    android:background="@drawable/rectangular_border"
+                  />
 
 
 
             </LinearLayout>
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="5dp"
-                android:id="@+id/idIv"
-                android:visibility="gone"
-                android:layout_gravity="center_horizontal"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -150,18 +157,18 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Submit Image: "
+                    android:text="Submit Submission Image: "
                     android:textColor="@color/black"
                     android:layout_marginLeft="20dp"
                     android:layout_gravity="center_horizontal"
                     android:gravity="center_vertical"
-                    android:textSize="20sp"/>
+                    android:textSize="15sp"/>
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="Select"
                     android:id="@+id/selectSubmission"
-                    android:background="@color/white"
+                    android:background="@drawable/white_round_button"
                     android:layout_marginRight="10dp"/>
 
 
@@ -197,15 +204,17 @@
 
 <TextView
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:id="@+id/warn"
     android:visibility="gone"
-android:text="You already submitted for this contest."
+
+android:text="You are already a Participant in this contest."
     android:layout_alignParentEnd="true"
     android:layout_alignParentBottom="true"
-    android:gravity="center_horizontal"
+    android:gravity="center"
+    android:background="#CC333232"
     android:textSize="18sp"
-    android:layout_marginBottom="30dp"
+    android:layout_marginTop="50dp"
     android:textColor="#F44336"
     android:layout_alignParentRight="true" />
     <LinearLayout

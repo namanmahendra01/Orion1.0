@@ -13,8 +13,8 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                android:id="@+id/profileName"/>
+                android:layout_height="match_parent"
+                android:id="@+id/profileName">
 
                 <ImageView
                     android:id="@+id/backarrow"
@@ -25,7 +25,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginEnd="20dp"
                     android:layout_marginRight="20dp"
-                    android:src="@drawable/ic_backarrow" />
+                    android:src="@drawable/ic_back_black_arrow" />
 
 
                 <TextView
@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@+id/backarrow"
+                    android:layout_centerHorizontal="true"
                     android:text="Create Contest"
                     android:textColor="#000000" />
 

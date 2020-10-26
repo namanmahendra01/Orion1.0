@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.google.firebase.database.DataSnapshot;
@@ -34,6 +35,7 @@ public class public_voting_media extends AppCompatActivity {
     private static final int NUM_GRID_COLUMNS = 3;
     private static final int ACTIVITY_NUM = 4;
     RecyclerView gridRv;
+    ImageView backArrrow;
     ArrayList<ParticipantList> imgURLsList;
     private AdapterGridImageContest adapterGridImage;
 
@@ -45,6 +47,14 @@ public class public_voting_media extends AppCompatActivity {
 
 
         gridRv=(RecyclerView) findViewById(R.id.gridRv);
+        backArrrow= findViewById(R.id.backarrow);
+
+        backArrrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
 
         gridRv.setHasFixedSize(true);
@@ -86,7 +96,7 @@ public class public_voting_media extends AppCompatActivity {
                         }
                        imgURLsList.addAll(participantLists);
                         boolean isImage=false;
-                        if (imgURLsList.size()!=0){
+                        if (imgURLsList.size()!=0&&imgURLsList.get(0).getMediaLink().length()>23){
                             isImage= imgURLsList.get(0).getMediaLink().substring(8,23).equals("firebasestorage");
 
                         }

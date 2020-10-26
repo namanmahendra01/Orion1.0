@@ -1,6 +1,7 @@
 package com.orion.orion.Adapters;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
@@ -27,7 +29,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -36,10 +37,10 @@ import com.google.gson.reflect.TypeToken;
 import com.orion.orion.R;
 import com.orion.orion.contest.Contest_Evaluation.activity_view_media;
 import com.orion.orion.models.JoinForm;
-import com.orion.orion.models.Notification;
 import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
+import com.orion.orion.util.SNTPClient;
 import com.orion.orion.util.UniversalImageLoader;
 
 import java.lang.reflect.Type;
@@ -94,7 +95,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
         holder.time.setText(dateTime);
 
 
-        getparticipantDetails(mparticipantLists.getUserid(), holder.username, holder.displayname, holder.profile, null, null, null);
+        getparticipantDetails(mparticipantLists.getUserid(), holder.username, holder.profile, null, null, null);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,7 +115,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                 LinearLayout layout = bottomSheetView.findViewById(R.id.collegeLinear);
                 CircleImageView profileview = bottomSheetView.findViewById(R.id.profileBs);
 
-                getparticipantDetails(mparticipantLists.getUserid(), holder.username, holder.displayname, holder.profile, name, username, profileview);
+                getparticipantDetails(mparticipantLists.getUserid(), holder.username, holder.profile, name, username, profileview);
                 name.setText(name1);
                 username.setText(username1);
                 UniversalImageLoader.setImage(profilelink, profileview, null, mAppend);
@@ -143,7 +144,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                         .setValue("Rejected");
 
                                 db.child(mContext.getString(R.string.dbname_contests))
-                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(mparticipantLists.getUserid())
                                         .child("Joinedupdates")
                                         .child(mparticipantLists.getJoiningKey())
                                         .setValue("Rejected");
@@ -154,9 +155,42 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                         .child(mparticipantLists.getUserid())
                                         .removeValue()
                                         .addOnSuccessListener(aVoid -> {
-                                            if (mparticipantLists.getMediaLink() == null || mparticipantLists.getMediaLink().equals("")
-                                                    || mparticipantLists.getMediaLink().substring(8, 23).equals("firebasestorage")) {
+                                            if (mparticipantLists.getMediaLink().length()<23)
+                                            {
+                                                deleteUrl(dialog);
+                                            }
+                                           else if (mparticipantLists.getMediaLink() == null || mparticipantLists.getMediaLink().equals("")
+                                                    || !mparticipantLists.getMediaLink().substring(8, 23).equals("firebasestorage")) {
 
+                                               deleteUrl(dialog);
+
+
+                                            } else {
+
+                                               deleteImage(dialog);
+
+                                            }
+
+                                        });
+
+
+                            }
+
+                            private void deleteImage(DialogInterface dialog) {
+                                DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+
+                                StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMediaLink());
+                                photoRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+
+                                        DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
+                                        ref2.child(mContext.getString(R.string.dbname_participantList))
+                                                .child(mparticipantLists.getContestkey())
+                                                .child(mparticipantLists.getJoiningKey())
+                                                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
                                                 //    Add newly Created ArrayList to Shared Preferences
                                                 String json = sp.getString(mparticipantLists.getContestkey(), null);
 
@@ -169,10 +203,21 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                                 if (participantList==null){
 
                                                 }else{
-                                                    participantList.remove(participantLists.get(i));
+                                                    ArrayList<ParticipantList> participantList2=new ArrayList<>(participantList);
+
+
+                                                    Log.d(TAG, "onSuccess: lklk"+participantList2.size());
+                                                    for (ParticipantList a:participantList){
+                                                        if (a.getJoiningKey().equals(mparticipantLists.getJoiningKey())){
+                                                            participantList2.remove(a);
+                                                        }
+                                                    }
+                                                    Log.d(TAG, "onSuccess: lklk 2"+participantList2.size());
+
+                                                    participantList.remove(mparticipantLists);
 
                                                     SharedPreferences.Editor editor = sp.edit();
-                                                    json = gson.toJson(participantList);
+                                                    json = gson.toJson(participantList2);
                                                     editor.putString(mparticipantLists.getContestkey(), json);
                                                     editor.apply();
 
@@ -183,70 +228,69 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
 
                                                 AdapterParticipantList.this.notifyItemRemoved(i);
 
+
                                                 db.child(mContext.getString(R.string.dbname_users))
                                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                                         .child(mContext.getString(R.string.changedJoinedContest))
                                                         .setValue("true");
+
+
                                                 dialog.dismiss();
-
-                                            } else {
-
-                                                StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMediaLink());
-                                                photoRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-
-                                                        DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
-                                                        ref2.child(mContext.getString(R.string.dbname_participantList))
-                                                                .child(mparticipantLists.getContestkey())
-                                                                .child(mparticipantLists.getJoiningKey())
-                                                                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void aVoid) {
-                                                                //    Add newly Created ArrayList to Shared Preferences
-                                                                String json = sp.getString(mparticipantLists.getContestkey(), null);
-
-                                                                Type type = new TypeToken<ArrayList<ParticipantList>>() {
-                                                                }.getType();
-                                                                ArrayList<ParticipantList> participantList=new ArrayList<>();
-
-                                                                participantList = gson.fromJson(json, type);
-
-                                                                if (participantList==null){
-
-                                                                }else{
-                                                                    participantList.remove(participantLists.get(i));
-
-                                                                    SharedPreferences.Editor editor = sp.edit();
-                                                                    json = gson.toJson(participantList);
-                                                                    editor.putString(mparticipantLists.getContestkey(), json);
-                                                                    editor.apply();
-
-                                                                }
-
-
-                                                                participantLists.remove(participantLists.get(i));
-
-                                                                AdapterParticipantList.this.notifyItemRemoved(i);
-
-
-                                                                db.child(mContext.getString(R.string.dbname_users))
-                                                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                                        .child(mContext.getString(R.string.changedJoinedContest))
-                                                                        .setValue("true");
-
-
-                                                                dialog.dismiss();
-                                                            }
-                                                        });
-
-                                                    }
-                                                });
                                             }
-
                                         });
 
+                                    }
+                                });
+                            }
 
+                            private void deleteUrl(DialogInterface dialog) {
+                                DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+
+                                //    Add newly Created ArrayList to Shared Preferences
+                                String json = sp.getString(mparticipantLists.getContestkey(), null);
+
+                                Type type = new TypeToken<ArrayList<ParticipantList>>() {
+                                }.getType();
+                                ArrayList<ParticipantList> participantList=new ArrayList<>();
+
+                                participantList = gson.fromJson(json, type);
+
+                                if (participantList==null){
+
+                                }else{
+                                    ArrayList<ParticipantList> participantList2=new ArrayList<>(participantList);
+
+                                    Log.d(TAG, "onSuccess: lklk 8"+participantList2.size());
+
+                                    for (ParticipantList a:participantList){
+                                        Log.d(TAG, "onSuccess: lklk ioi");
+
+                                        if (a.getJoiningKey().equals(participantLists.get(i).getJoiningKey())){
+                                            Log.d(TAG, "onSuccess: lklk yes");
+                                            participantList2.remove(a);
+                                        }
+                                    }
+                                    Log.d(TAG, "onSuccess: lklk 9"+participantList2.size());
+
+                                    participantList.remove(participantLists.get(i));
+
+                                    SharedPreferences.Editor editor = sp.edit();
+                                    json = gson.toJson(participantList2);
+                                    editor.putString(mparticipantLists.getContestkey(), json);
+                                    editor.apply();
+
+                                }
+
+
+                                participantLists.remove(participantLists.get(i));
+
+                                AdapterParticipantList.this.notifyItemRemoved(i);
+
+                                db.child(mContext.getString(R.string.dbname_users))
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(mContext.getString(R.string.changedJoinedContest))
+                                        .setValue("true");
+                                dialog.dismiss();
                             }
 
 
@@ -300,17 +344,41 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                 submission.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (mparticipantLists.getMediaLink().substring(8, 23).equals("firebasestorage")) {
-                            Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
-                            i.putExtra("imageLink", mparticipantLists.getMediaLink());
-                            i.putExtra("view", "No");
+                        boolean ok=mparticipantLists.getMediaLink().length()>23;
+                        boolean ifNull=mparticipantLists.getMediaLink() != null && !mparticipantLists.getMediaLink().equals("");
+                        if (ifNull){
+                            Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
 
-                            mContext.startActivity(i);
-                        } else {
-                            Uri uri = Uri.parse(mparticipantLists.getMediaLink());
-                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                            mContext.startActivity(intent);
+                        }else if (ok) {
+                            if (mparticipantLists.getMediaLink().substring(8, 23).equals("firebasestorage")) {
+                                Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
+                                i.putExtra("imageLink", mparticipantLists.getMediaLink());
+                                i.putExtra("view", "No");
+
+                                mContext.startActivity(i);
+                            } else {
+                                try{
+                                    Uri uri = Uri.parse(mparticipantLists.getMediaLink());
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                    mContext.startActivity(intent);
+
+                                }catch (ActivityNotFoundException e){
+                                    Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
+                                    Log.e(SNTPClient.TAG, "onClick: "+ e.getMessage());
+                                }
+                            }
+                        }else {
+                            try{
+                                Uri uri = Uri.parse(mparticipantLists.getMediaLink());
+                                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                mContext.startActivity(intent);
+
+                            }catch (ActivityNotFoundException e){
+                                Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
+                                Log.e(SNTPClient.TAG, "onClick: "+ e.getMessage());
+                            }
                         }
+
 
 
                     }
@@ -391,7 +459,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView username, displayname, time;
+        private TextView username, time;
         private DatabaseReference mReference;
 
         private CircleImageView profile;
@@ -403,14 +471,13 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
 
             profile = (CircleImageView) itemView.findViewById(R.id.profilePartCv);
             username = itemView.findViewById(R.id.username);
-            displayname = itemView.findViewById(R.id.displayname);
             time = itemView.findViewById(R.id.timeStamp);
 
         }
     }
 
 
-    private void getparticipantDetails(String userid, TextView username, TextView displayname, CircleImageView profile, TextView name, TextView username2, CircleImageView profileview) {
+    private void getparticipantDetails(String userid, TextView username, CircleImageView profile, TextView name, TextView username2, CircleImageView profileview) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child(mContext.getString(R.string.dbname_user_account_settings))
                 .child(userid)
@@ -433,7 +500,6 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                         }
 
                         username.setText(user.getUsername());
-                        displayname.setText(user.getDisplay_name());
                         UniversalImageLoader.setImage(profilelink, profile, null, mAppend);
 
 

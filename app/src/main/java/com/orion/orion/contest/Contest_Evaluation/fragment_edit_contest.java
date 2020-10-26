@@ -812,7 +812,7 @@ public class fragment_edit_contest extends Fragment {
                                    @Override
                                    public void onSuccess(Void aVoid) {
 
-                                       Toast.makeText(context, "Your changes are saved!", Toast.LENGTH_SHORT).show();
+                                       Toast.makeText(getContext(), "Your changes are saved!", Toast.LENGTH_SHORT).show();
                                    }
                                }) ;
                            }

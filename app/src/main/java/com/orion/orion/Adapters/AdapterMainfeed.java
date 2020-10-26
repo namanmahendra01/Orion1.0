@@ -242,7 +242,34 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         numberofPromote(holder.promoteNum, photo.getPhoto_id(), photo.getUser_id(), holder);
 //            set the comment
         List<Comment> comments = photo.getComments();
-        holder.commentnumber.setText(String.valueOf(comments.size()));
+        Log.d(TAG, "onBindViewHolder: comment 1"+comments);
+        Log.d(TAG, "onBindViewHolder: comment 2"+comments.size());
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+
+        Query query = reference
+                .child(mContext.getString(R.string.dbname_user_photos))
+                .child(photo.getUser_id())
+                .child(photo.getPhoto_id())
+                .child("comment");
+        query  .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            holder.commentnumber.setText(String.valueOf(snapshot.getChildrenCount()));
+
+                        }else{
+                            holder.commentnumber.setText("0");
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
 
 //        get time
         holder.timeDate.setText(photo.getDate_created().substring(0, 10));
@@ -528,11 +555,11 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
 
 //        get username
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference
+        DatabaseReference reference3 = FirebaseDatabase.getInstance().getReference();
+        Query query3 = reference3
                 .child(mContext.getString(R.string.dbname_user_account_settings))
                 .child(photo.getUser_id());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        query3.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot singleSnapshot) {
                 currentUsername = singleSnapshot.getValue(users.class).getUsername().toString();
@@ -865,8 +892,8 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                         });
 
 
+
                         bottomSheetDialog.dismiss();
-                        Toast.makeText(mContext, "Post Promoted!", Toast.LENGTH_SHORT).show();
 
                         Log.e(SNTPClient.TAG, rawDate);
 

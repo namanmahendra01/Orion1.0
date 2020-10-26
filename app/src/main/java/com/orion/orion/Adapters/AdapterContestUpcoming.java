@@ -414,6 +414,36 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
             }
         });
 
+        holder.gp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+                alertDialog.setTitle("GP:GENUINE PERCENTAGE");
+                alertDialog.setMessage("This is the percentage showing how much genuine this host is.");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cool",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+        });
+        holder.info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+                alertDialog.setTitle("GP:GENUINE PERCENTAGE");
+                alertDialog.setMessage("This is the percentage showing how much genuine this host is.");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cool",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+        });
 
         holder.participateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -431,7 +461,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
         holder.voteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mcontest.getVoteType().equals("Public")) {
+                if (mcontest.getVoteType().equals("1Public")) {
                     Intent i = new Intent(mContext.getApplicationContext(), public_voting_media.class);
                     i.putExtra("userId", mcontest.getUserId());
                     i.putExtra("contestId", mcontest.getContestId());
@@ -670,7 +700,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView domain, title, regEnd, entryFee, host, totalP, ended, gp;
-        private ImageView poster, option;
+        private ImageView poster, option,info;
         String vote = "No";
         String reg = "No";
         String voteS = "";
@@ -698,6 +728,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
             limitBtn = itemView.findViewById(R.id.limitBtn);
             option = itemView.findViewById(R.id.optionC);
             gp = itemView.findViewById(R.id.gp);
+            info = itemView.findViewById(R.id.info);
 
 
             Log.d(TAG, "hello2kk2: " + timestamp2);

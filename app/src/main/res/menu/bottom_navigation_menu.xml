@@ -2,35 +2,35 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 <item
     android:id="@+id/ic_house"
-    android:icon="@drawable/ic_star_black"
+    android:icon="@drawable/ic_home_black"
     android:title="HOME">
 
 
 </item>
     <item
         android:id="@+id/ic_notification"
-        android:icon="@drawable/ic_media"
+        android:icon="@drawable/ic_explore_black"
         android:title="EXPLORE">
 
 
     </item>
     <item
         android:id="@+id/ic_contest"
-        android:icon="@drawable/ic_contest"
+        android:icon="@drawable/ic_contest_black"
         android:title="CONTEST">
 
 
     </item>
     <item
         android:id="@+id/ic_leaderboard"
-        android:icon="@drawable/ic_leaderboard"
+        android:icon="@drawable/ic_leaderboard_black"
         android:title="LEADERBOARD ">
 
 
     </item>
     <item
         android:id="@+id/ic_profile"
-        android:icon="@drawable/ic_profile"
+        android:icon="@drawable/ic_profile_black"
         android:title="PROFILE">
 
 

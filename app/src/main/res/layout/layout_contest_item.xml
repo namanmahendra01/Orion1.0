@@ -37,6 +37,13 @@
                     android:gravity="top"
                     android:id="@+id/gpTv"
                     android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_toRightOf="@+id/gp"
+                        android:src="@drawable/ic_binfo"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/info"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -53,6 +60,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="2dp"
+                    android:id="@+id/parent"
                     android:layout_gravity="center_horizontal"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal">
@@ -77,8 +85,10 @@
             android:layout_height="35dp"
             android:text="Participate"
             android:textColor="#FFC107"
-
             android:padding="10dp"
+
+
+
             android:gravity="center"
             android:textAlignment="center"
             android:layout_marginTop="5dp"
@@ -168,7 +178,9 @@
                 android:layout_width="match_parent"
                 android:gravity="right"
                 android:layout_height="wrap_content">
-        <ImageView
+
+
+                <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:src="@drawable/ic_eclipse"
@@ -184,11 +196,12 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/rainbow"
                 android:id="@+id/posterD"
+
                 android:layout_gravity="center_horizontal"
                 android:scaleType="centerInside"
                 android:adjustViewBounds="true"
-                android:paddingRight="90dp"
-                android:paddingLeft="90dp"
+                android:paddingRight="60dp"
+                android:paddingLeft="60dp"
                 android:paddingTop="10dp"/>
 
 
@@ -236,13 +249,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="domain: "
-                    android:textColor="@color/black"/>
+                    android:text="Domain: "
+                    android:textColor="@color/grey"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/domainD"
+                    android:textColor="@color/black"
                     android:text="Photoraphy"/>
                 <RelativeLayout
 
@@ -252,16 +266,18 @@
                     android:layout_height="wrap_content">
 
                     <TextView
+                        android:id="@+id/regend"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="registration end: "
-                        android:id="@+id/regend"
-                        android:textColor="@color/black"/>
+                        android:text="Registration End: "
+                        android:textColor="@color/grey" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/regendD"
+                        android:textColor="@color/black"
+
                         android:layout_toRightOf="@+id/regend"
                         android:text="3/5/77"/>
                 </RelativeLayout>
@@ -279,13 +295,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Entry fee: "
-                    android:textColor="@color/black"/>
+                    android:text="Entry Fee: "
+                    android:textColor="@color/grey"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/entryfeeD"
+                    android:textColor="@color/black"
+
                     android:text="100"/>
                 <RelativeLayout
 
@@ -299,13 +317,14 @@
                         android:layout_height="wrap_content"
                         android:text="Hosted by: "
                         android:id="@+id/hosted"
-                        android:textColor="@color/black"/>
+                        android:textColor="@color/grey"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/hosted"
                         android:id="@+id/hostD"
+                        android:textColor="@color/black"
                         android:text="Naman"/>
                 </RelativeLayout>
             </LinearLayout>

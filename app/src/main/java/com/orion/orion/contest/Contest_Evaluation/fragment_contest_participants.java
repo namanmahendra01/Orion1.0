@@ -193,6 +193,8 @@ public class fragment_contest_participants extends Fragment {
                 }
             }
         });
+        getParticipantListFromSP();
+
         return view;
     }
 
@@ -228,8 +230,12 @@ public class fragment_contest_participants extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
+                            Log.d(TAG, "onDataChange: hjh 1");
                             for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                Log.d(TAG, "onDataChange: hjh 2");
+
                                 if (participantLists.get(0).getJoiningKey().equals(snapshot1.getKey())) {
+                                    Log.d(TAG, "onDataChange: hjh 3");
 
                                     displayParticipant();
                                 } else {
@@ -262,21 +268,28 @@ public class fragment_contest_participants extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
+                            int x=0;
                             for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                x++;
                                 ParticipantList participantList = snapshot1.getValue(ParticipantList.class);
 
                                 participantLists.add(participantList);
+
+                                if(x==snapshot.getChildrenCount()){
+                                    Collections.reverse(participantLists);
+
+                                    //    Add newly Created ArrayList to Shared Preferences
+                                    SharedPreferences.Editor editor = sp.edit();
+                                    String json = gson.toJson(participantLists);
+                                    editor.putString(Conteskey, json);
+                                    editor.apply();
+
+
+                                    displayParticipant();
+                                }
+
                             }
-                            Collections.reverse(participantLists);
 
-                            //    Add newly Created ArrayList to Shared Preferences
-                            SharedPreferences.Editor editor = sp.edit();
-                            String json = gson.toJson(participantLists);
-                            editor.putString(Conteskey, json);
-                            editor.apply();
-
-
-                            displayParticipant();
 
 
                         } else {
@@ -299,20 +312,26 @@ public class fragment_contest_participants extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
+                            int x=0;
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                x++;
                                 ParticipantList participantList = snapshot.getValue(ParticipantList.class);
 
                                 participantLists.add(participantList);
+
+                                if(x==dataSnapshot.getChildrenCount()){
+                                    Collections.reverse(participantLists);
+
+                                    //    Add newly Created ArrayList to Shared Preferences
+                                    SharedPreferences.Editor editor = sp.edit();
+                                    String json = gson.toJson(participantLists);
+                                    editor.putString(Conteskey, json);
+                                    editor.apply();
+
+                                    displayParticipant();
+                                }
                             }
-                            Collections.reverse(participantLists);
 
-                            //    Add newly Created ArrayList to Shared Preferences
-                            SharedPreferences.Editor editor = sp.edit();
-                            String json = gson.toJson(participantLists);
-                            editor.putString(Conteskey, json);
-                            editor.apply();
-
-                            displayParticipant();
 
 
                         } else {

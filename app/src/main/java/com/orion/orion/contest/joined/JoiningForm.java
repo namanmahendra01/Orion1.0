@@ -63,8 +63,8 @@ import static com.orion.orion.profile.ProfileActivity.VERIFY_PERMISSION_REQUEST;
 public class JoiningForm extends AppCompatActivity {
     private static final String TAG = "JoiningForm";
 
-    private EditText nameEt, collegeEt, urlEt;
-    private ImageView idIv, submissionIv;
+    private EditText  collegeEt, urlEt;
+    private ImageView idIv, submissionIv,backArrow;
     TextView warn;
     private Button submitBtn, idBtn, mediaBtn;
     boolean isKitKat;
@@ -103,7 +103,6 @@ public class JoiningForm extends AppCompatActivity {
         userId = i.getStringExtra("userId");
         contestId = i.getStringExtra("contestId");
 
-        nameEt = findViewById(R.id.nameEt);
         collegeEt = findViewById(R.id.collegeEt);
         urlEt = findViewById(R.id.url_submission);
 
@@ -119,7 +118,14 @@ public class JoiningForm extends AppCompatActivity {
         imageLinear = findViewById(R.id.ImageLinearLayout);
         mediaLinear = findViewById(R.id.mediaLinearLayout);
         linearLayout = findViewById(R.id.pro);
+        backArrow = findViewById(R.id.backarrow);
 
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         Log.d(TAG, "onCreate: llll" + userId + "  " + contestId);
@@ -277,7 +283,6 @@ public class JoiningForm extends AppCompatActivity {
                                 mediaLink = urlEt.getText().toString();
                             }
                             HashMap<String, Object> hashMap = new HashMap<>();
-                            hashMap.put("name", nameEt.getText().toString());
                             hashMap.put("college", collegeEt.getText().toString());
                             hashMap.put("status", "waiting");
                             hashMap.put("payment", "true");
@@ -351,7 +356,7 @@ public class JoiningForm extends AppCompatActivity {
 
 
                 } else {
-                    Toast.makeText(JoiningForm.this, "please fill all entries!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(JoiningForm.this, "please fill all entries Correctly!", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -363,22 +368,54 @@ public class JoiningForm extends AppCompatActivity {
 
     public boolean checkValidity() {
 
-
+        Log.d(TAG, "checkValidity: 1");
         if (openfor.equals("Students")) {
-            if (collegeEt.getText().equals("") || idIv.getDrawable() == null) {
+            Log.d(TAG, "checkValidity: 8");
+
+            if (collegeEt.getText().equals("") || idIv.getDrawable() == null||collegeEt.getText()==null) {
+                Log.d(TAG, "checkValidity: 2");
+
                 return false;
+            }else{
+                Log.d(TAG, "checkValidity: 7");
+
+                if (type.equals("Image")) {
+                    Log.d(TAG, "checkValidity: 9");
+
+                    if (submissionIv.getDrawable() == null) {
+                        Log.d(TAG, "checkValidity: 3");
+
+                        return false;
+
+                    }
+
+                }else {
+                    Log.d(TAG, "checkValidity: 4");
+
+                    return isValidUrl(urlEt.getText().toString());
+                }
             }
 
-        }
-        if (type.equals("Image")) {
-            if (submissionIv.getDrawable() == null) {
-                return false;
+        }else{
+            Log.d(TAG, "checkValidity: 10");
 
-            } else {
+            if (type.equals("Image")) {
+                Log.d(TAG, "checkValidity: 11");
+
+                if (submissionIv.getDrawable() == null) {
+                    Log.d(TAG, "checkValidity: 5");
+
+                    return false;
+
+                }
+
+            }else {
+                Log.d(TAG, "checkValidity: 6");
+
                 return isValidUrl(urlEt.getText().toString());
             }
-
         }
+
 
         return true;
 

@@ -1,12 +1,11 @@
 package com.orion.orion.Adapters;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.net.Uri;
-import android.renderscript.Sampler;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
@@ -29,11 +29,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.orion.orion.CommentActivity;
 import com.orion.orion.R;
 import com.orion.orion.contest.Contest_Evaluation.activity_view_media;
 import com.orion.orion.models.JoinForm;
@@ -98,7 +96,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
         holder.time.setText(dateTime);
 
 
-        getparticipantDetails(mparticipantLists.getUserid(), holder.username, holder.displayname, holder.profile, null, null, null);
+        getparticipantDetails(mparticipantLists.getUserid(), holder.username, holder.profile, null, null, null);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,7 +117,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                 CircleImageView profileview = bottomSheetView.findViewById(R.id.profileBs);
 
 
-                getparticipantDetails(mparticipantLists.getUserid(), holder.username, holder.displayname, holder.profile, name, username, profileview);
+                getparticipantDetails(mparticipantLists.getUserid(), holder.username, holder.profile, name, username, profileview);
                 name.setText(name1);
                 username.setText(username1);
                 UniversalImageLoader.setImage(profilelink, profileview, null, mAppend);
@@ -162,8 +160,12 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                 submission.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (mparticipantLists.getMediaLink() != null && !mparticipantLists.getMediaLink().equals("")) {
+                        boolean ok=mparticipantLists.getMediaLink().length()>23;
+                        boolean ifNull=mparticipantLists.getMediaLink() != null && !mparticipantLists.getMediaLink().equals("");
+                        if (ifNull){
+                            Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
 
+                        }else if (ok) {
                             if (mparticipantLists.getMediaLink().substring(8, 23).equals("firebasestorage")) {
                                 Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
                                 i.putExtra("imageLink", mparticipantLists.getMediaLink());
@@ -171,12 +173,28 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
 
                                 mContext.startActivity(i);
                             } else {
+                                try{
+                                    Uri uri = Uri.parse(mparticipantLists.getMediaLink());
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                    mContext.startActivity(intent);
+
+                                }catch (ActivityNotFoundException e){
+                                    Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
+                                    Log.e(SNTPClient.TAG, "onClick: "+ e.getMessage());
+                                }
+                            }
+                        }else {
+                            try{
                                 Uri uri = Uri.parse(mparticipantLists.getMediaLink());
                                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                                 mContext.startActivity(intent);
-                            }
 
+                            }catch (ActivityNotFoundException e){
+                                Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
+                                Log.e(SNTPClient.TAG, "onClick: "+ e.getMessage());
+                            }
                         }
+
                     }
                 });
                 idcard.setOnClickListener(new View.OnClickListener() {
@@ -511,7 +529,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView username, displayname, time;
+        private TextView username, time;
         private DatabaseReference mReference;
 
         private CircleImageView profile;
@@ -523,14 +541,13 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
 
             profile=(CircleImageView)itemView.findViewById(R.id.profilePartCv);
             username=itemView.findViewById(R.id.username);
-            displayname=itemView.findViewById(R.id.displayname);
             time=itemView.findViewById(R.id.timeStamp);
 
         }
     }
 
 
-    private void getparticipantDetails(String userid, TextView username, TextView displayname, CircleImageView profile,TextView name,TextView username2,CircleImageView profileview) {
+    private void getparticipantDetails(String userid, TextView username, CircleImageView profile, TextView name, TextView username2, CircleImageView profileview) {
         DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
         ref.child(mContext.getString(R.string.dbname_user_account_settings))
                 .child(userid)
@@ -553,7 +570,6 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                         }
 
                         username.setText(user.getUsername());
-                        displayname.setText(user.getDisplay_name());
                         UniversalImageLoader.setImage(profilelink,profile,null,mAppend);
 
 

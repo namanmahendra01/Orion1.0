@@ -52,6 +52,7 @@ public class fragment_joinedContest_details extends Fragment {
     private String jpic1="",jpic2="",jpic3="",posterlink="";
     private CardView cardView;
     users user = new users();
+    String username;
 
     private LinearLayout prizeLinear;
     String userid,Contestkey;
@@ -415,12 +416,12 @@ public class fragment_joinedContest_details extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
 
-                            Intent i = new Intent(getActivity(), profile.class);
+                            Intent i = new Intent(getContext(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
 
                         }
@@ -453,12 +454,13 @@ public class fragment_joinedContest_details extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
 
-                            Intent i = new Intent(getActivity(), profile.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
+
+                            Intent i = new Intent(getContext(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
 
                         }
@@ -491,12 +493,12 @@ public class fragment_joinedContest_details extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
 
-                            Intent i = new Intent(getActivity(), profile.class);
+                            Intent i = new Intent(getContext(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
 
                         }
@@ -530,12 +532,13 @@ public class fragment_joinedContest_details extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
 
-                            Intent i = new Intent(getActivity(), profile.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
+
+                            Intent i = new Intent(getContext(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
 
                         }
@@ -568,12 +571,13 @@ public class fragment_joinedContest_details extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
 
-                            Intent i = new Intent(getActivity(), profile.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
+
+                            Intent i = new Intent(getContext(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
 
                         }
@@ -606,12 +610,13 @@ public class fragment_joinedContest_details extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
 
-                            Intent i = new Intent(getActivity(), profile.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
+
+                            Intent i = new Intent(getContext(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
 
                         }
@@ -645,12 +650,13 @@ public class fragment_joinedContest_details extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
 
-                            Intent i = new Intent(getActivity(), profile.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
+
+                            Intent i = new Intent(getContext(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
 
                         }
@@ -683,12 +689,12 @@ public class fragment_joinedContest_details extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
 
-                            Intent i = new Intent(getActivity(), profile.class);
+                            Intent i = new Intent(getContext(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
 
                         }
@@ -721,12 +727,13 @@ public class fragment_joinedContest_details extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            user = singleSnapshot.getValue(users.class);
 
-                            Intent i = new Intent(getActivity(), profile.class);
+                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
+
+                            Intent i = new Intent(getContext(), profile.class);
                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                            i.putExtra(getString(R.string.intent_user), user);
+                            i.putExtra(getString(R.string.intent_user), username);
                             startActivity(i);
 
                         }

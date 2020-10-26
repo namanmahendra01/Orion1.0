@@ -1,8 +1,10 @@
 package com.orion.orion.Adapters;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +35,6 @@ import static com.orion.orion.util.SNTPClient.TAG;
 public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridImageContest.ViewHolder> {
 
 
-
     private Context mContext;
     boolean isImage;
     private List<ParticipantList> participantLists;
@@ -49,11 +50,11 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = null;
-        if (isImage){
-           view = LayoutInflater.from(mContext).inflate(R.layout.grid_image_item,parent,false);
+        if (isImage) {
+            view = LayoutInflater.from(mContext).inflate(R.layout.grid_image_item, parent, false);
 
-        }else {
-            view = LayoutInflater.from(mContext).inflate(R.layout.public_vote_item,parent,false);
+        } else {
+            view = LayoutInflater.from(mContext).inflate(R.layout.public_vote_item, parent, false);
 
         }
         return new AdapterGridImageContest.ViewHolder(view);
@@ -63,13 +64,12 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
 
-        ParticipantList participantList= participantLists.get(i);
+        ParticipantList participantList = participantLists.get(i);
         if (isImage) {
             UniversalImageLoader.setImage(participantList.getMediaLink(), holder.image, null, "");
             holder.image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
 
 
                     Intent i = new Intent(mContext, activity_view_media.class);
@@ -82,27 +82,30 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
                     mContext.startActivity(i);
 
 
-
                 }
             });
-        }else{
-            ifCurrentUserVote(holder,participantList.getJoiningKey(),participantList.getContestkey());
+        } else {
+            ifCurrentUserVote(holder, participantList.getJoiningKey(), participantList.getContestkey());
 
             holder.viewSub.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
+                    try {
+                        Uri uri = Uri.parse(participantList.getMediaLink());
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        mContext.startActivity(intent);
 
-                    Uri uri = Uri.parse(participantList.getMediaLink());
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    mContext.startActivity(intent);
-
+                    } catch (ActivityNotFoundException e) {
+                        Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "onClick: " + e.getMessage());
+                    }
 
 
                 }
             });
 
-            holder.num.setText(String.valueOf(i+1));
+            holder.num.setText(String.valueOf(i + 1));
 
 
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
@@ -127,10 +130,10 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
 //
 
 
-       holder.voteNo.setOnClickListener(new View.OnClickListener() {
+        holder.voteNo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference reference=FirebaseDatabase.getInstance().getReference();
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                 reference.child(mContext.getString(R.string.dbname_contestlist))
                         .child(participantList.getContestkey())
                         .child("voterlist")
@@ -140,10 +143,10 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
                                     Toast.makeText(mContext, "You have already voted for this contest.", Toast.LENGTH_SHORT).show();
-                                }else{
-                                    holder. voteNo.setVisibility(View.GONE);
+                                } else {
+                                    holder.voteNo.setVisibility(View.GONE);
                                     holder.voteYes.setVisibility(View.VISIBLE);
-                                    addVote(holder,participantList.getJoiningKey(),participantList.getContestkey());
+                                    addVote(holder, participantList.getJoiningKey(), participantList.getContestkey());
                                 }
                             }
 
@@ -154,7 +157,6 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
                         });
 
 
-
             }
         });
         holder.voteYes.setOnClickListener(new View.OnClickListener() {
@@ -163,7 +165,7 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
 
                 holder.voteNo.setVisibility(View.VISIBLE);
                 holder.voteYes.setVisibility(View.GONE);
-                removeVote(holder,participantList.getJoiningKey(),participantList.getContestkey());
+                removeVote(holder, participantList.getJoiningKey(), participantList.getContestkey());
 
 
             }
@@ -171,7 +173,6 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
 
 
     }
-
 
 
     private void removeVote(ViewHolder holder, String joiningKey, String contestkey) {
@@ -209,11 +210,11 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
     }
 
 
-
     public long getItemId(int position) {
         ParticipantList form = participantLists.get(position);
         return form.getJoiningKey().hashCode();
     }
+
     @Override
     public int getItemCount() {
         return participantLists.size();
@@ -222,7 +223,7 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView image;
-        TextView viewSub,num,name;
+        TextView viewSub, num, name;
         private ImageView voteNo, voteYes;
         private TextView votingNumber;
         private String mVotingnumber = "";
@@ -230,13 +231,12 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            voteNo =  itemView.findViewById(R.id.noVote);
-            voteYes =  itemView.findViewById(R.id.yesVote);
+            voteNo = itemView.findViewById(R.id.noVote);
+            voteYes = itemView.findViewById(R.id.yesVote);
             image = itemView.findViewById(R.id.image);
             viewSub = itemView.findViewById(R.id.view);
             num = itemView.findViewById(R.id.num);
             name = itemView.findViewById(R.id.name);
-
 
 
         }
@@ -253,7 +253,7 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
-                        Log.d(TAG, "onDataChange: dddd"+contestKey+joiningKey+dataSnapshot2);
+                        Log.d(TAG, "onDataChange: dddd" + contestKey + joiningKey + dataSnapshot2);
                         if (dataSnapshot2.exists()) {
                             holder.voteNo.setVisibility(View.GONE);
                             holder.voteYes.setVisibility(View.VISIBLE);
@@ -272,10 +272,7 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
                 });
 
 
-
     }
-
-
 
 
 }

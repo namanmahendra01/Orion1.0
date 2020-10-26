@@ -3,6 +3,7 @@ package com.orion.orion.Adapters;
 import android.app.AlertDialog;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
@@ -81,6 +82,36 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+        holder.gp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+                alertDialog.setTitle("GP:GENUINE PERCENTAGE");
+                alertDialog.setMessage("This is the percentage showing how much genuine this host is.");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cool",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+        });
+        holder.info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+                alertDialog.setTitle("GP:GENUINE PERCENTAGE");
+                alertDialog.setMessage("This is the percentage showing how much genuine this host is.");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cool",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
             }
         });
         holder.option.setOnClickListener(v -> {
@@ -249,7 +280,7 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
         Boolean ok = false;
         int p = 0;
         private TextView domain, title, regEnd, entryFee, host, gp, totalP, status;
-        private ImageView poster, option;
+        private ImageView poster, option,info;
         private RelativeLayout relStatus;
 
         public ViewHolder(@NonNull View itemView) {
@@ -265,6 +296,8 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
             status = itemView.findViewById(R.id.status);
             option = itemView.findViewById(R.id.optionC);
             gp = itemView.findViewById(R.id.gp);
+            info = itemView.findViewById(R.id.info);
+
         }
     }
 }
