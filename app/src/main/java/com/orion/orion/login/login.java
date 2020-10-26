@@ -1,7 +1,9 @@
 package com.orion.orion.login;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -77,7 +79,7 @@ public class login extends AppCompatActivity {
 //          Initialize SharedPreference variables
         sp =getSharedPreferences("Login", Context.MODE_PRIVATE);
         gson = new Gson();
-         justRegistered=sp.getString("yes","");
+        justRegistered=sp.getString("yes","");
 
         Log.d(TAG, "onCreate: 333"+justRegistered);
 
@@ -90,7 +92,6 @@ public class login extends AppCompatActivity {
                 finish();
             }
         }
-
         init();
 
     }
@@ -114,7 +115,6 @@ public class login extends AppCompatActivity {
 
 
     private void init() {
-
         rootView.setOnClickListener(v -> {
             InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Activity.INPUT_METHOD_SERVICE);
             assert imm != null;
@@ -141,7 +141,6 @@ public class login extends AppCompatActivity {
                 mEmail.setText("");
                 mEmail.setError("Please enter a email-id");
                 mEmail.requestFocus();
-
             } else if (password.equals("")) {
                 mProgressBar.setVisibility(View.GONE);
                 YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mPassword);
@@ -153,25 +152,29 @@ public class login extends AppCompatActivity {
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(login.this, task -> {
                     FirebaseUser user = mAuth.getCurrentUser();
                     if (task.isSuccessful()) {
-
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithEmail:success");
-                        Toast.makeText(login.this, "Authentication Success.", Toast.LENGTH_SHORT).show();
+                        ProgressDialog progressDialog = new ProgressDialog(mContext);
+                        progressDialog.setMessage("Authenticating");
+                        progressDialog.show();
                         mProgressBar.setVisibility(View.GONE);
                         try {
                             assert user != null;
                             Log.d(TAG, "init: " + user);
                             if (user.isEmailVerified()) {
-
                                 Log.d(TAG, "onComplete:email is verified.");
                                 SharedPreferences.Editor editor = sp.edit();
                                 editor.putString("yes", "no");
                                 editor.apply();
-
+                                progressDialog.dismiss();
                                 Intent intent = new Intent(login.this, MainActivity.class);
                                 startActivity(intent);
                             } else {
-                                Toast.makeText(login.this, "Email is not verified \n Check your email inbox", Toast.LENGTH_SHORT).show();
+                                new AlertDialog.Builder(mContext)
+                                        .setTitle("Sorry")
+                                        .setMessage("Email is not verified \n Check your email inbox")
+                                        .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss())
+                                        .show();
                                 mProgressBar.setVisibility(View.GONE);
                                 mAuth.signOut();
                             }
@@ -183,14 +186,17 @@ public class login extends AppCompatActivity {
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithEmail:failure", task.getException());
-                        Toast.makeText(login.this, "Verify email first", Toast.LENGTH_SHORT).show();
+                        new AlertDialog.Builder(mContext)
+                                .setTitle("Sorry")
+                                .setMessage("We ran into an error \n Please try again later")
+                                .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss())
+                                .show();
                         YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mEmail);
                         YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mPassword);
                         mEmail.setText("");
                         mPassword.setText("");
                         mProgressBar.setVisibility(View.GONE);
                     }
-                    // ...
                 });
             }
         });

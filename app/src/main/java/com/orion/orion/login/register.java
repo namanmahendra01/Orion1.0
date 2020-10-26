@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.daimajia.androidanimations.library.Techniques;
@@ -94,8 +95,6 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_signup);
         Log.d(TAG, "onCreate: started.");
-
-
 
 //          Initialize SharedPreference variables
         sp =getSharedPreferences("Login", Context.MODE_PRIVATE);
@@ -264,7 +263,6 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
 
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
-
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
@@ -332,7 +330,11 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                    Toast.makeText(mContext, "New account cannot be created. Try using a different email id", Toast.LENGTH_SHORT).show();
+                    new AlertDialog.Builder(mContext)
+                            .setTitle("New account cannot be created")
+                            .setMessage("Try using a different email id")
+                            .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss())
+                            .show();
                     mProgressBar.setVisibility(View.INVISIBLE);
                     YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mPassword);
                     YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mConfirmPassword);
@@ -356,16 +358,18 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
         if (user != null) {
             user.sendEmailVerification().addOnCompleteListener(task -> {
                 if (!task.isSuccessful()) {
-                    Toast.makeText(mContext, "Could not send Verification Mail", Toast.LENGTH_SHORT).show();
+                    new AlertDialog.Builder(mContext)
+                            .setTitle("Sorry")
+                            .setMessage("Could not send Verification Mail")
+                            .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss())
+                            .show();
                 }else{
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putString("yes", "yes");
                     editor.apply();
-
                     Intent intent = new Intent(register.this, login.class);
-
                     startActivity(intent);
-                    Toast.makeText(mContext, " Verification Mail sent.Please Verify!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, " Verification Mail sent. Please Verify!", Toast.LENGTH_LONG).show();
                 }
             });
         }

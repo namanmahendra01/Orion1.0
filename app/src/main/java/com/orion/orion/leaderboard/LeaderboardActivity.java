@@ -74,6 +74,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
     private static final String TAG = "LeaderboardActivity";
     private static final int ACTIVITY_NUM = 3;
     private static final int ANIMATION_DURATION = 500;
+    private static final int LEADERBOAD_SIZE=20;
     private Context mContext;
     FirebaseMethods firebaseMethods;
     //initializing widgets
@@ -789,50 +790,51 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         filterBox.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP && topBar.getVisibility()==View.VISIBLE) {
-                    topBar.animate()
-                            .alpha(0.0f)
-                            .setDuration(500)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    super.onAnimationEnd(animation);
-                                    topBar.setVisibility(View.GONE);
-                                }
-                            });
-                    userItem.animate()
-                            .alpha(1.0f)
-                            .setDuration(500)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    super.onAnimationEnd(animation);
-                                    userItem.setVisibility(View.VISIBLE);
-                                }
-                            });
-                    return true;
-                }
-                else if(event.getAction() == MotionEvent.ACTION_DOWN && topBar.getVisibility()==View.GONE){
-                    topBar.animate()
-                            .alpha(1.0f)
-                            .setDuration(500)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    super.onAnimationEnd(animation);
-                                    topBar.setVisibility(View.VISIBLE);
-                                }
-                            });
-                    userItem.animate()
-                            .alpha(0.0f)
-                            .setDuration(500)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    super.onAnimationEnd(animation);
-                                    userItem.setVisibility(View.GONE);
-                                }
-                            });
+                if (v.getId() != filterParams.getId()) {
+                    if (event.getAction() == MotionEvent.ACTION_UP && topBar.getVisibility() == View.VISIBLE) {
+                        topBar.animate()
+                                .alpha(0.0f)
+                                .setDuration(500)
+                                .setListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        topBar.setVisibility(View.GONE);
+                                    }
+                                });
+                        userItem.animate()
+                                .alpha(1.0f)
+                                .setDuration(500)
+                                .setListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        userItem.setVisibility(View.VISIBLE);
+                                    }
+                                });
+                        return true;
+                    } else if (event.getAction() == MotionEvent.ACTION_DOWN && topBar.getVisibility() == View.GONE) {
+                        topBar.animate()
+                                .alpha(1.0f)
+                                .setDuration(500)
+                                .setListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        topBar.setVisibility(View.VISIBLE);
+                                    }
+                                });
+                        userItem.animate()
+                                .alpha(0.0f)
+                                .setDuration(500)
+                                .setListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        userItem.setVisibility(View.GONE);
+                                    }
+                                });
+                    }
                 }
                 return false;
 
@@ -933,7 +935,6 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
     }
 
     private void filter() {
-
         swipeRefreshLayout.setRefreshing(true);
         mRecyclerView.setVisibility(View.GONE);
         //deciding parameter for time and assigning field to search in
@@ -1157,7 +1158,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
             }
         }
         //removing extra nodes
-        if (mList.size() == 11) mList.remove(10);
+        if (mList.size() == LEADERBOAD_SIZE+1) mList.remove(LEADERBOAD_SIZE);
         return rank;
     }
 

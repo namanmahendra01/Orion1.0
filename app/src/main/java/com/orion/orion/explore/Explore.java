@@ -2,6 +2,7 @@ package com.orion.orion.explore;
 
 import android.Manifest;
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -22,6 +23,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -43,6 +45,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -70,6 +73,8 @@ import com.orion.orion.profile.profile;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 import com.orion.orion.util.SNTPClient;
 import com.orion.orion.util.UniversalImageLoader;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -107,11 +112,13 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     private String user7;
     private String user8 ;
     private int c = 0;
+    private RelativeLayout topBox;
+    private RelativeLayout collapse;
     private TextView spinner;
     private EditText mSearchParam;
     private ListView mListView;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView exploreRv;
-    private ProgressBar progressBar;
     private AdapterGridImageExplore adapterGridImage;
 
     private ArrayList<String> topUser8;
@@ -121,7 +128,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     private ArrayList<Photo> paginatedPhotos;
     private boolean shuffled = false;
 
-    RelativeLayout collapse;
     int prevHeight;
     int height, dummyHeight;
 
@@ -136,7 +142,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             }
     }
 
-    @SuppressLint("CommitPrefEdits")
+    @SuppressLint({"CommitPrefEdits", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,29 +151,47 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         initWidgets();
         initOnClickListeners();
 
+
+        topBox.setOnClickListener(v -> {
+            if (v.getId() != spinner.getId()) exploreRv.post(() -> expand(collapse, 500));
+        });
+        topBox.setOnTouchListener((v, event) -> {
+            if (v.getId() != collapse.getId())
+                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_UP) {
+                    exploreRv.post(() -> expand(collapse, 500));
+                    return true;
+                }
+            return false;
+
+        });
+
         exploreRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 
                 super.onScrollStateChanged(recyclerView, newState);
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE)
-                    displayMorePhotos();
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE){
+                    if(paginatedPhotos.size()<fieldPhotos.size()) displayMorePhotos();
+                    else if(collapse.getVisibility()==View.VISIBLE) exploreRv.post(() -> expand(collapse, 500));
+                }
                 else if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     Log.d(TAG, "onScrollStateChanged: top");
-                    exploreRv.post(() -> expand(collapse, 500));
+//                    if(collapse.getVisibility()!=View.VISIBLE) exploreRv.post(() -> expand(collapse, 500));
                 }
             }
 
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                if (dy > 0) {
-//                    // Recycle view scrolling down...
-//                    Log.d(TAG, "onScrolled: down");
-//                    if (collapse.getVisibility() == View.VISIBLE)
-//                        exploreRv.post(() -> expand(collapse, 2500));
-//                }
-//            }
+            @Override
+            public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    // Recycle view scrolling down...
+                    Log.d(TAG, "onScrolled: down");
+                    if (collapse.getVisibility() == View.VISIBLE);
+//                        exploreRv.post(() -> expand(collapse, 500));
+                }
+            }
         });
+        swipeRefreshLayout.setOnRefreshListener(this::displayPhotos);
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
 
 
         setupBottomNavigationView();
@@ -194,9 +218,11 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         topUser8 = new ArrayList<>();
         fieldPhotos = new ArrayList<>();
         paginatedPhotos = new ArrayList<>();
-
         mSearchParam = findViewById(R.id.search);
         mListView = findViewById(R.id.listview);
+        topBox = findViewById(R.id.topBox);
+        swipeRefreshLayout = findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setRefreshing(true);
         exploreRv = findViewById(R.id.exploreRv);
         star1 = findViewById(R.id.circleImageView2);
         star2 = findViewById(R.id.circleImageView3);
@@ -206,7 +232,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         star6 = findViewById(R.id.circleImageView5);
         star7 = findViewById(R.id.circleImageView);
         star8 = findViewById(R.id.circleImageView8);
-        progressBar = findViewById(R.id.progress_circular);
         spinner = findViewById(R.id.spinnerDo);
         collapse = findViewById(R.id.collapse);
 
@@ -215,7 +240,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
 
         Log.d(TAG, "initWidgets: " + prevHeight + "  " + dummyHeight);
         height = 0;
-        progressBar.setVisibility(View.VISIBLE);
 
 
         GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 2);
@@ -298,35 +322,22 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         if (prevHeight == 0) {
             int measureSpecParams = View.MeasureSpec.getSize(View.MeasureSpec.UNSPECIFIED);
             v.measure(measureSpecParams, measureSpecParams);
-            Log.d(TAG, "expand: " + height + "  " + dummyHeight);
             height = dummyHeight;
-            Log.d(TAG, "expand: 2");
-        } else {
-            Log.d(TAG, "expand: 6");
-            height = 0;
-        }
-        Log.d(TAG, "expand: 5  " + prevHeight + "  " + height);
+        } else height = 0;
         ValueAnimator valueAnimator = ValueAnimator.ofInt(prevHeight, height);
         valueAnimator.addUpdateListener(animation -> {
             v.getLayoutParams().height = (int) animation.getAnimatedValue();
             v.requestLayout();
         });
-
         valueAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                if (expand) {
-                    v.setVisibility(View.VISIBLE);
-                    Log.d(TAG, "expand: 3");
-                }
+                if (expand) v.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (!expand) {
-                    v.setVisibility(View.INVISIBLE);
-                    Log.d(TAG, "expand: 4");
-                }
+                if (!expand) v.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -1008,9 +1019,8 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     @Override
     public void onButtonClicked(String text) {
         spinner.setText(text);
-
+        swipeRefreshLayout.setRefreshing(true);
         Log.d(TAG, "onItemSelected: qwer" + text);
-        progressBar.setVisibility(View.VISIBLE);
         displayPhotos();
     }
 
@@ -1080,50 +1090,41 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     }
 
     private void displayPhotos() {
-        if (progressBar.getVisibility() == View.VISIBLE) {
+        if (swipeRefreshLayout.isRefreshing()) {
             Log.d(TAG, "displayPhotos: started");
             String field = spinner.getText().toString();
             if (field.equals("All")) field = "Overall";
+            Log.d(TAG, "displayPhotos: started"+field);
             paginatedPhotos.clear();
             fieldPhotos.clear();
-
+            if(adapterGridImage!=null) adapterGridImage.notifyDataSetChanged();
             Gson gson = new Gson();
             String json = mPreferences.getString(field + "_TopPosts", null);
             if (json == null || json.equals("")) {
                 Log.d(TAG, "displayPhotos: handler1");
                 handler.postDelayed(this::displayPhotos, RETRY_DURATION);
-
             } else {
                 Log.d(TAG, "displayPhotos: handler2");
-
                 handler.removeCallbacks(this::displayPhotos);
                 Type type = new TypeToken<List<Photo>>() {
                 }.getType();
                 fieldPhotos = gson.fromJson(json, type);
-
-
                 Log.d(TAG, "displayPhotos: photos retrieved " + fieldPhotos.size());
-
                 try {
                     if (!shuffled) {
                         Collections.shuffle(fieldPhotos);
                         shuffled = true;
                     }
-
                     paginatedPhotos = new ArrayList<>();
                     for (int i = 0; i < fieldPhotos.size(); i++) {
                         if (i == fieldPhotos.size() - 1 || i == 8) {
-
                             Log.d(TAG, "displayPhotos: paginatedPhotos" + paginatedPhotos.size());
-                            progressBar.setVisibility(View.INVISIBLE);
                             adapterGridImage = new AdapterGridImageExplore(mContext, paginatedPhotos, this);
                             ((SimpleItemAnimator) exploreRv.getItemAnimator()).setSupportsChangeAnimations(false);
-
+                            swipeRefreshLayout.setRefreshing(false);
                             adapterGridImage.setHasStableIds(true);
                             exploreRv.setAdapter(adapterGridImage);
-
                             break;
-
                         } else paginatedPhotos.add(fieldPhotos.get(i));
                     }
 
@@ -1139,7 +1140,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
 
     public void displayMorePhotos() {
         Log.d(TAG, "displayMorePhotos: started");
-
         int l = paginatedPhotos.size();
         Log.d(TAG, "displayMorePhotos: photos retrieved " + fieldPhotos.size());
         try {

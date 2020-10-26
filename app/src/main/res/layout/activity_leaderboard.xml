@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/leaderboardActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/scheme8"
@@ -71,39 +70,35 @@
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:layout_below="@+id/topBar"
-       >
+        android:background="@color/white">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:orientation="horizontal"
+            android:layout_height="60dp"
             android:background="@drawable/arrow_item"
-
+            android:orientation="horizontal"
             android:weightSum="10">
 
             <TextView
                 android:id="@+id/userItemUsername"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:maxLines="1"
-
                 android:text="PRateek"
                 android:gravity="center_vertical|start"
-                android:textSize="22sp"
+                android:textSize="24sp"
+                android:textStyle="bold"
                 android:textColor="@color/white"
                 android:paddingStart="25dp"/>
 
             <TextView
                 android:id="@+id/userItemRank"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="match_parent"
                 android:layout_weight="7"
                 android:gravity="center_vertical|end"
                 android:paddingRight="25dp"
-                android:textSize="22sp"
-                android:text="#22"
+                android:textSize="32sp"
                 android:textStyle="bold"
                 android:textColor="@color/scheme8"
                 android:paddingStart="25dp"/>
@@ -205,7 +200,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/filterBox"
-        android:background="@drawable/circular_corner_rectangle"
+        android:layout_above="@+id/bottom"
+        android:background="@drawable/circular_top_corner_rectangle"
         android:backgroundTint="@color/white">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -213,7 +209,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:background="@drawable/circular_corner_rectangle"
             android:backgroundTint="@color/white"
             android:paddingTop="10dp"
             android:visibility="gone"

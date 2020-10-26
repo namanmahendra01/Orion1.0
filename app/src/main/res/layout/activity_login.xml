@@ -44,7 +44,6 @@
 
 
         <LinearLayout
-            android:id="@+id/inputFields"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -85,15 +84,15 @@
                     android:backgroundTint="@color/white"
                     android:textSize="18sp"
                     android:imeOptions="actionDone"/>
-                    <ImageView
-                        android:id="@+id/show_pass_btn"
-                        android:tag="0"
-                        android:layout_width="match_parent"
-                        android:layout_weight="9"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|bottom"
-                        android:layout_marginBottom="15dp"
-                        android:src="@drawable/ic_visibility_off"/>
+                <ImageView
+                    android:id="@+id/show_pass_btn"
+                    android:tag="0"
+                    android:layout_width="match_parent"
+                    android:layout_weight="9"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|bottom"
+                    android:layout_marginBottom="15dp"
+                    android:src="@drawable/ic_visibility_off"/>
 
             </LinearLayout>
             <androidx.appcompat.widget.AppCompatButton
@@ -111,50 +110,49 @@
                 android:textColor="@color/primaryBackground"
                 android:textSize="16sp"
                 android:background="@drawable/white_round_button"/>
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:layout_marginTop="20dp"
-    android:orientation="horizontal"
-    >
-            <TextView
-                android:id="@+id/forgotPassword1"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:layout_below="@+id/btn_login"
-                android:maxLines="2"
-                android:text="Forgot your password?"
-                android:textColor="@color/grey"
-                android:textSize="16sp"
-               />
-    <TextView
-        android:id="@+id/forgotPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:layout_below="@+id/btn_login"
-        android:maxLines="2"
-        android:text=" Click here"
-        android:textColor="@color/primaryTop"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-</LinearLayout>
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:layout_below="@+id/btn_login"
+                    android:maxLines="2"
+                    android:text="Forgot your password?"
+                    android:textColor="@color/grey"
+                    android:textSize="16sp"
+                    />
+                <TextView
+                    android:id="@+id/forgotPassword"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:layout_below="@+id/btn_login"
+                    android:maxLines="2"
+                    android:text=" Click here"
+                    android:textColor="@color/primaryTop"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
 
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="bottom|center_horizontal"
->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom|center_horizontal"
+            >
 
-        <TextView
+            <TextView
                 android:id="@+id/link_signup1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="bottom|center_horizontal"
-            android:layout_alignParentBottom="true"
+                android:layout_alignParentBottom="true"
                 android:layout_marginBottom="20dp"
 
                 android:maxLines="2"
@@ -162,24 +160,24 @@
                 android:text="Don't have an account yet?"
                 android:textColor="@color/grey"
                 android:textSize="16sp"
-             />
-        <TextView
-            android:id="@+id/link_signup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-android:layout_alignParentBottom="true"
-            android:maxLines="2"
-            android:minLines="2"
-            android:text= " Sign up here"
-            android:textColor="@color/primaryTop"
-            android:layout_toRightOf="@+id/link_signup1"
-            android:textSize="16sp"
-            android:gravity="bottom|center_horizontal"
+                />
+            <TextView
+                android:id="@+id/link_signup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_alignParentBottom="true"
+                android:maxLines="2"
+                android:minLines="2"
+                android:text= " Sign up here"
+                android:textColor="@color/primaryTop"
+                android:layout_toRightOf="@+id/link_signup1"
+                android:textSize="16sp"
+                android:gravity="bottom|center_horizontal"
 
-            android:textStyle="bold" />
+                android:textStyle="bold" />
 
-</RelativeLayout>
+        </RelativeLayout>
 
     </RelativeLayout>
 </RelativeLayout>
