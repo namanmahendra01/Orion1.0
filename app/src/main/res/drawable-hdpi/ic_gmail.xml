@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:width="512dp"
+    android:height="512dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512"
+    tools:ignore="VectorRaster">
+    <path
+        android:fillColor="@color/scheme8"
+        android:pathData="M15 0H497A15 15 0 0 1 512 15V497A15 15 0 0 1 497 512H15A15 15 0 0 1 0 497V15A15 15 0 0 1 15 0Z" />
+    <path
+        android:fillColor="@color/scheme8"
+        android:pathData="M83 120H429A8 8 0 0 1 437 128V384A8 8 0 0 1 429 392H83A8 8 0 0 1 75 384V128A8 8 0 0 1 83 120Z" />
+    <path
+        android:fillColor="@color/white"
+        android:pathData="M120 392H97c-12 0 -22 -10 -22 -23V143h45z" />
+    <path
+        android:fillColor="@color/white"
+        android:pathData="M392 392h23c12 0 22 -10 22 -23V143h-45z" />
+    <path
+        android:fillAlpha="0.05"
+        android:fillColor="#000000"
+        android:pathData="M256 286L120 392V187z" />
+    <path
+        android:fillAlpha="0.08"
+        android:fillColor="#000000"
+        android:pathData="M82 159l235 233h75V159z" />
+    <path
+        android:pathData="M97 143l159 115 159 -115"
+        android:strokeWidth="45"
+        android:strokeColor="@color/white"
+        android:strokeLineCap="round" />
+    <path
+        android:fillColor="@color/scheme8"
+        android:pathData="M415 120c-5 0 -10 2 -13 4L256 230 110 124c-3 -2 -8 -4 -13 -4z" />
+</vector>

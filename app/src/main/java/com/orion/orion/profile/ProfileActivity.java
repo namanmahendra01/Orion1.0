@@ -87,12 +87,25 @@ public class ProfileActivity extends AppCompatActivity{
     Uri imageUri;
     boolean isKitKat;
     //    Profile Widgets
-    private ProgressBar mProgressBar;
     private ImageView menu;
-    private CircleImageView mProfilePhoto;
     private TextView mUsername;
-    private TextView mFollowers;
     private TextView mDomain;
+    private CircleImageView mProfilePhoto;
+
+    private TextView mGmail;
+    private TextView mInstagram;
+    private TextView mFacebook;
+    private TextView mTwitter;
+    private TextView mWhatsapp;
+
+    private TextView mPosts;
+    private TextView mFans;
+    private TextView mWins;
+    private TextView mCreations;
+    private TextView mParticipation;
+    private TextView mRank;
+
+    private TextView mFollowers;
     private Button editProfile;
     private TextView mCreated;
     private TextView mJoined;
@@ -121,29 +134,33 @@ public class ProfileActivity extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_profile);
-        mProgressBar = findViewById(R.id.profileprogressbar);
+
         dialog=ProgressDialog.show(this,"","Loading Profile...",true);
 
-        mProfilePhoto = (CircleImageView) findViewById(R.id.profile_photo);
+        menu=(ImageView) findViewById(R.id.menu);
         mUsername = (TextView) findViewById(R.id.display_name);
-        mFollowers = (TextView) findViewById(R.id.follower);
         mDomain = (TextView)findViewById(R.id.domain);
+        mProfilePhoto = (CircleImageView) findViewById(R.id.profile_photo);
 
-        mCreated=(TextView) findViewById(R.id.created_contests);
-        mJoined=(TextView) findViewById(R.id.joined_contests);
-        mWon=(TextView) findViewById(R.id.contests_won);
+        mGmail = findViewById(R.id.gmail);
+        mInstagram = findViewById(R.id.instagram);
+        mFacebook = findViewById(R.id.facebook);
+        mTwitter = findViewById(R.id.twitter);
+        mWhatsapp = findViewById(R.id.whatsapp);
 
-        editProfile=(Button) findViewById(R.id.texteditprofile);
+        mPosts = findViewById(R.id.post);
+        mFans = findViewById(R.id.fans);
+        mWins = findViewById(R.id.win);
+        mCreated = findViewById(R.id.creations);
+        mParticipation = findViewById(R.id.participations);
+        mRank = findViewById(R.id.rank);
 
         mDescription = (TextView) findViewById(R.id.description);
         mWebsite = (TextView) findViewById(R.id.website);
-        menu=(ImageView) findViewById(R.id.menu);
 
-//          Initialize SharedPreference variables
-        sp =getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
-        gson = new Gson();
         share_btn = (LinearLayout) findViewById(R.id.share_skill_btn);
-        gridRv = (RecyclerView) findViewById(R.id.gridRv);
+
+        gridRv = findViewById(R.id.gridRv);
         gridRv.setHasFixedSize(true);
         GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 3);
         gridRv.setDrawingCacheEnabled(true);
@@ -151,14 +168,28 @@ public class ProfileActivity extends AppCompatActivity{
         linearLayoutManager.setItemPrefetchEnabled(true);
         linearLayoutManager.setInitialPrefetchItemCount(20);
         gridRv.setLayoutManager(linearLayoutManager);
+
         imgURLsList = new ArrayList<>();
 
         bottomNavigationView = (BottomNavigationViewEx) findViewById(R.id.BottomNavViewBar);
         mFirebaseMethods = new FirebaseMethods(this);
 
+//        mFollowers = (TextView) findViewById(R.id.follower);
+//        mCreated=(TextView) findViewById(R.id.created_contests);
+//        mJoined=(TextView) findViewById(R.id.joined_contests);
+//        mWon=(TextView) findViewById(R.id.contests_won);
+//
+//        editProfile=(Button) findViewById(R.id.texteditprofile);
+
+
+//          Initialize SharedPreference variables
+        sp =getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        gson = new Gson();
+
         Log.d(TAG, "onCreateView:started");
         setupBottomNavigationView();
         setupFirebaseAuth();
+
         fetchPhotosFromSp();
 //        SetupGridView();
         getFollowerCount();
@@ -176,12 +207,12 @@ public class ProfileActivity extends AppCompatActivity{
             startActivity(intent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         });
-        editProfile.setOnClickListener(v -> {
-            Intent intent = new Intent(this, AccountSettingActivity.class);
-            intent.putExtra(getString(R.string.calling_activity), getString(R.string.profile_activity));
-            startActivity(intent);
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-        });
+//        editProfile.setOnClickListener(v -> {
+//            Intent intent = new Intent(this, AccountSettingActivity.class);
+//            intent.putExtra(getString(R.string.calling_activity), getString(R.string.profile_activity));
+//            startActivity(intent);
+//            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+//        });
     }
     private void fetchPhotosFromSp() {
         String json = sp.getString("myMedia", null);
@@ -194,7 +225,6 @@ public class ProfileActivity extends AppCompatActivity{
 
         } else {
             checkUpdate();       //         Check if new post is there
-
         }
     }
     private void checkUpdate() {
@@ -481,7 +511,6 @@ public class ProfileActivity extends AppCompatActivity{
         mDescription.setText(userSetting.getDescription());
         mDomain.setText(userSetting.getDomain());
         mWebsite.setText(userSetting.getEmail());
-        mProgressBar.setVisibility(View.GONE);
         dialog.dismiss();
     }
     private void setupBottomNavigationView() {

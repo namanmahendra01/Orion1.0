@@ -1,26 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="match_parent">
-
-    <ProgressBar
-        android:id="@+id/profileprogressbar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="12dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="-4dp"
-        android:foregroundGravity="bottom"
-        android:indeterminate="true"
-        android:padding="0dp"
-        android:theme="@style/Widget.AppCompat.ProgressBar.Horizontal" />
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/profileprogressbar">
+        tools:ignore="UselessParent">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -30,298 +18,512 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/linearLayout1"
                     android:layout_width="match_parent"
-                    android:layout_height="220dp"
-                    android:background="@drawable/circular_bottom_gradient"
+                    android:layout_height="150dp"
+                    android:background="@color/scheme8"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
 
                     <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
-                        android:layout_weight="8"
-                        android:gravity="center"
-                        android:text="Profile"
+                        android:id="@+id/display_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="25dp"
+                        android:text="Username"
                         android:textColor="@color/black"
-                        android:textSize="28sp"
+                        android:textSize="20sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/domain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Domain"
+                        android:textColor="@color/white"
+                        android:textSize="24sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/display_name" />
 
                     <ImageView
                         android:id="@+id/menu"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
-                        android:background="@drawable/ic_eclipse"
+                        android:background="@drawable/ic_baseline_setttings"
                         app:layout_constraintBottom_toBottomOf="@+id/textView"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/black" />
+
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/relativeLayout"
-                    android:layout_width="match_parent"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="10dp"
-                    android:layout_height="280dp"
-                    android:layout_marginStart="25dp"
-                    android:layout_marginLeft="25dp"
-                    android:layout_marginTop="25dp"
-                    android:layout_marginEnd="25dp"
-                    android:layout_marginRight="25dp"
-                    android:layout_marginBottom="25dp"
-                    android:background="@drawable/circular_gradient_background"
-                    android:backgroundTint="@color/white"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile_photo"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_profile"
+                    app:civ_border_color="@color/white"
+                    app:civ_border_width="4dp"
                     app:layout_constraintBottom_toBottomOf="@id/linearLayout1"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout1">
+                    app:layout_constraintTop_toBottomOf="@id/linearLayout1" />
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true">
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/profile_photo"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_gravity="center"
-                            android:layout_marginTop="25dp"
-                            android:elevation="2dp"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/ic_profile"
-                            app:civ_border_color="@color/orange"
-                            app:civ_border_width="2dp"
-                            app:layout_constraintBottom_toBottomOf="@+id/imageView"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/display_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="Username"
-                            android:textColor="@color/black"
-                            android:textSize="20sp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/profile_photo" />
-
-
-                        <TextView
-                            android:id="@+id/follower"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="0 Fans"
-                            android:textColor="@color/black"
-                            android:textSize="20sp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/display_name" />
-
-                        <TextView
-                            android:id="@+id/domain"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="Domain"
-                            android:textColor="@color/orange"
-                            android:textSize="24sp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/follower" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingTop="15dp"
-                        android:paddingBottom="15dp"
-                        android:weightSum="100">
-
-                    </LinearLayout>
-
-<!--                    <Button-->
-<!--                        android:id="@+id/texteditprofile"-->
-<!--                        android:layout_width="wrap_content"-->
-
-<!--                        android:layout_height="40dp"-->
-<!--                        android:background="@drawable/circular_button"-->
-<!--                        android:backgroundTint="#E5E6EB"-->
-<!--                        android:elevation="2dp"-->
-<!--                        android:gravity="center"-->
-<!--                        android:letterSpacing="0.04"-->
-<!--                        android:paddingStart="35dp"-->
-<!--                        android:paddingEnd="35dp"-->
-<!--                        android:text="Edit Profile"-->
-<!--                        android:textAllCaps="false"-->
-<!--                        android:textSize="16sp" />-->
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/circular_button"
-                        android:backgroundTint="#E5E6EB"
-                        android:gravity="center"
-                        android:text="EDIT PROFILE"
-                        android:id="@+id/texteditprofile"
-                        android:paddingLeft="30dp"
-                        android:paddingRight="30dp"
-                        android:layout_gravity="center|bottom"
-                        android:layout_marginBottom="15dp"/>
-                </androidx.cardview.widget.CardView>
+            <RelativeLayout
+                android:id="@+id/profileLinks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout1"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="25dp">
 
                 <LinearLayout
-                    android:id="@+id/linearLayout"
+                    android:id="@+id/linksLine1"
                     android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_height="70dp"
                     android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:layout_weight="3"
+                            android:src="@drawable/ic_gmail" />
+
+                        <TextView
+                            android:id="@+id/gmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="7"
+                            android:gravity="center"
+                            android:text="abc@gmail.com" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:layout_weight="3"
+                            android:src="@drawable/ic_instagram" />
+
+                        <TextView
+                            android:id="@+id/instagram"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="7"
+                            android:gravity="center"
+                            android:text="/@instagram" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:layout_weight="3"
+                            android:src="@drawable/ic_facebook" />
+
+                        <TextView
+                            android:id="@+id/facebook"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="7"
+                            android:gravity="center"
+                            android:text="twitter" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:layout_below="@id/linksLine1"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:layout_weight="3"
+                            android:src="@drawable/ic_twitter" />
+
+                        <TextView
+                            android:id="@+id/twitter"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="7"
+                            android:gravity="center"
+                            android:text="abc@gmail.com" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:layout_weight="3"
+                            android:src="@drawable/ic_whatsapp" />
+
+                        <TextView
+                            android:id="@+id/whatsapp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="7"
+                            android:gravity="center"
+                            android:text="+91 999999999" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/line1"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_below="@id/profileLinks"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:background="@color/scheme8" />
+
+            <RelativeLayout
+                android:id="@+id/profile_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/line1"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/info_container"
+                android:elevation="5dp">
+
+
+                <LinearLayout
+                    android:id="@+id/info_lines"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical"
+                    android:weightSum="3"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:layout_height="80dp"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
 
-                        <TextView
-                            android:id="@+id/created_contests"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:gravity="center_horizontal|bottom"
-                            android:text="0"
-                            android:textColor="@color/orange"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
+                            android:orientation="vertical">
 
-                        <TextView
+                            <TextView
+                                android:id="@+id/posts"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal|bottom"
+                                android:text="0"
+                                android:textColor="@color/scheme8"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal|top"
+                                android:text="Posts"
+                                android:textAllCaps="true"
+                                android:textColor="@color/black"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
+                            android:background="#EEEEEE" />
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:gravity="center_horizontal|top"
-                            android:text="Creations"
-                            android:textColor="@color/black"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
+                            android:orientation="vertical">
 
+                            <TextView
+                                android:id="@+id/fans"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal|bottom"
+                                android:text="0"
+                                android:textColor="@color/scheme8"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal|top"
+                                android:text="Fans"
+                                android:textAllCaps="true"
+                                android:textColor="@color/black"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="2dp"
-                        android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:background="#EEEEEE" />
-
-
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:layout_height="80dp"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
 
-                        <TextView
-                            android:id="@+id/joined_contests"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:gravity="center_horizontal|bottom"
-                            android:text="0"
-                            android:textColor="@color/orange"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
+                            android:orientation="vertical">
 
-                        <TextView
+                            <TextView
+                                android:id="@+id/win"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal|bottom"
+                                android:text="0"
+                                android:textColor="@color/scheme8"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal|top"
+                                android:text="Win"
+                                android:textAllCaps="true"
+                                android:textColor="@color/black"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
+                            android:background="#EEEEEE" />
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:gravity="center_horizontal|top"
-                            android:text="Participations"
-                            android:textColor="@color/black"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/creations"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal|bottom"
+                                android:text="0"
+                                android:textColor="@color/scheme8"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal|top"
+                                android:text="Creations"
+                                android:textAllCaps="true"
+                                android:textColor="@color/black"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="2dp"
-                        android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:background="#EEEEEE" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:layout_height="80dp"
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
 
-
-                        <TextView
-                            android:id="@+id/contests_won"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:gravity="center_horizontal|bottom"
-                            android:text="0"
-                            android:textColor="@color/orange"
-                            android:textSize="20sp"
-                            android:textStyle="bold" />
+                            android:orientation="vertical">
 
-                        <TextView
+                            <TextView
+                                android:id="@+id/participations"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal|bottom"
+                                android:text="0"
+                                android:textColor="@color/scheme8"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal|top"
+                                android:text="Participation's"
+                                android:textAllCaps="true"
+                                android:textColor="@color/black"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
+                            android:background="#EEEEEE" />
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:gravity="center_horizontal|top"
-                            android:text="Winnings"
-                            android:textColor="@color/black"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/rank"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal|bottom"
+                                android:text="0"
+                                android:textColor="@color/scheme8"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal|top"
+                                android:text="Rank"
+                                android:textAllCaps="true"
+                                android:textColor="@color/black"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
                     </LinearLayout>
 
                 </LinearLayout>
 
-                <View
-                    android:layout_width="wrap_content"
-                    android:layout_height="2dp"
-                    android:layout_margin="5dp"
-                    android:background="#EEEEEE"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/linearLayout" />
+            </RelativeLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <View
+                android:id="@+id/line2"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_below="@id/profile_info"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:background="@color/scheme8" />
 
             <!--        About               -->
             <LinearLayout
                 android:id="@id/linearLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/layout1"
-                android:layout_marginStart="25dp"
-                android:layout_marginEnd="25dp"
+                android:layout_below="@id/line2"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:orientation="vertical"
                 android:weightSum="100">
 
@@ -332,8 +534,7 @@
                     android:paddingBottom="10dp"
                     android:text="About"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
-                    />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/description"
@@ -372,36 +573,42 @@
                         android:textSize="18sp" />
 
 
-
                 </LinearLayout>
 
 
             </LinearLayout>
+
+            <View
+                android:id="@+id/line3"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_below="@id/linearLayout2"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:background="@color/scheme8" />
 
             <!--        Image Grid          -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/gridRv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/linearLayout2"
-                android:layout_marginTop="25dp"
+                android:layout_below="@+id/line3"
+                android:layout_marginBottom="50dp"
                 android:background="@color/white"
                 android:gravity="center"
                 android:horizontalSpacing="1dp"
                 android:stretchMode="columnWidth"
                 android:verticalSpacing="1dp"
-                android:layout_marginBottom="50dp"
-
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:spanCount="3">
 
             </androidx.recyclerview.widget.RecyclerView>
+
+
         </RelativeLayout>
-
     </ScrollView>
-
-    <include layout="@layout/layout_bottom_navigation_view"
-        />
 
 
 </RelativeLayout>
