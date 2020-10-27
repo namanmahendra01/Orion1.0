@@ -3,6 +3,7 @@ package com.orion.orion.contest.result;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -33,6 +34,7 @@ import com.orion.orion.Adapters.AdapterContestCreated;
 import com.orion.orion.Adapters.AdapterRankList;
 import com.orion.orion.Adapters.AdapterWinners;
 import com.orion.orion.R;
+import com.orion.orion.contest.ranking;
 import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.ParticipantList;
@@ -64,8 +66,9 @@ public class fragment_result_overview extends Fragment {
     private ArrayList<ParticipantList> participantLists;
     private ArrayList<ParticipantList> participantLists2;
 
+    private ArrayList<ParticipantList> paginatedParticipantLists;
     private AdapterRankList rankList;
-
+    int mResults;
 
     users user = new users();
 
@@ -75,6 +78,7 @@ public class fragment_result_overview extends Fragment {
 
 
     String Conteskey;
+    TextView seeRank;
 
 
     public fragment_result_overview() {
@@ -94,20 +98,26 @@ public class fragment_result_overview extends Fragment {
         Conteskey = b.getString("contestId");
         relWinner = view.findViewById(R.id.relWin);
 
-        juryMarksTable(Conteskey);
-        juryAndPublicMarksTable(Conteskey);
+        relWinner.setVisibility(View.VISIBLE);
 
+        seeRank = view.findViewById(R.id.seeRank);
+
+        seeRank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getContext(), ranking.class);
+                Bundle args = new Bundle();
+                args.putParcelableArrayList("participant", (ArrayList<? extends Parcelable>) participantLists);
+                i.putExtra("BUNDLE", args);
+                startActivity(i);
+            }
+        });
 
         rankRv = view.findViewById(R.id.rankList);
         rankRv.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rankRv.setLayoutManager(linearLayoutManager);
-
-
         participantLists = new ArrayList<>();
-        rankList = new AdapterRankList(getContext(), participantLists);
-        rankList.setHasStableIds(true);
-        rankRv.setAdapter(rankList);
 
         getRank(Conteskey);
 //        **********************************************************
@@ -121,93 +131,11 @@ public class fragment_result_overview extends Fragment {
         winnerList.setHasStableIds(true);
         winnerRv.setAdapter(winnerList);
 
-        SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
-            @Override
-            public void onTimeReceived(String rawDate) {
-                // rawDate -> 2019-11-05T17:51:01+0530
-
-                //*************************************************************************
-                String currentTime = StringManipilation.getTime(rawDate);
-                java.text.DateFormat formatter1 = new SimpleDateFormat("dd-MM-yyyy");
-                Date date1 = null;
-                try {
-                    date1 = (Date) formatter1.parse(currentTime);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                timestamp = String.valueOf(date1.getTime());
-
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                ref.child(getString(R.string.dbname_contestlist))
-                        .child(Conteskey)
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                ContestDetail contestDetail = dataSnapshot.getValue(ContestDetail.class);
-                                String WinDec = contestDetail.getWinDec();
-
-
-                                java.text.DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-                                Date date = null;
-                                try {
-                                    date = (Date) formatter.parse(WinDec);
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
-                                String winD = String.valueOf(date.getTime());
-                                Thread thread = new Thread() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            synchronized (this) {
-                                                wait(1000);
-
-                                                getActivity().runOnUiThread(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-
-                                                        if (Long.parseLong(winD) <= Long.parseLong(timestamp)) {
-                                                            relWinner.setVisibility(View.VISIBLE);
-
-                                                        }
-
-
-                                                    }
-                                                });
-
-                                            }
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                    }
-
-                                    ;
-                                };
-                                thread.start();
-                            }
-
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-
-                Log.e(SNTPClient.TAG, rawDate);
-
-            }
-
-
-            @Override
-            public void onError(Exception ex) {
-                Log.e(SNTPClient.TAG, ex.getMessage());
-            }
-        });
-
 
         getRank(Conteskey);
+
+        juryMarksTable(Conteskey);
+        juryAndPublicMarksTable(Conteskey);
 
 
         return view;
@@ -557,7 +485,6 @@ public class fragment_result_overview extends Fragment {
 
     private void getRank(String contestkey) {
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(getString(R.string.dbname_participantList))
                 .child(contestkey)
@@ -583,11 +510,11 @@ public class fragment_result_overview extends Fragment {
                                 participantLists2.add(participantLists.get(x));
 
                             }
-                        }catch (IndexOutOfBoundsException e){
-                            Log.e(TAG, "onDataChange: "+e.getMessage() );
+                        } catch (IndexOutOfBoundsException e) {
+                            Log.e(TAG, "onDataChange: " + e.getMessage());
                         }
 
-                        rankList.notifyDataSetChanged();
+                        displayParticipantRank();
                         winnerList.notifyDataSetChanged();
 
                     }
@@ -599,4 +526,35 @@ public class fragment_result_overview extends Fragment {
                 });
     }
 
+    private void displayParticipantRank() {
+        Log.d(TAG, "display first 10 contest");
+        paginatedParticipantLists = new ArrayList<>();
+        if (participantLists != null) {
+
+            try {
+
+
+                int iteration = participantLists.size();
+                if (iteration > 10) {
+                    iteration = 10;
+                }
+                mResults = 10;
+                for (int i = 0; i < iteration; i++) {
+                    paginatedParticipantLists.add(participantLists.get(i));
+                }
+                Log.d(TAG, "contest: sss" + paginatedParticipantLists.size());
+                rankList = new AdapterRankList(getContext(), paginatedParticipantLists);
+                rankList.setHasStableIds(true);
+                rankRv.setAdapter(rankList);
+
+            } catch (NullPointerException e) {
+                Log.e(TAG, "Null pointer exception" + e.getMessage());
+
+            } catch (IndexOutOfBoundsException e) {
+                Log.e(TAG, "index out of bound" + e.getMessage());
+
+            }
+
+        }
+    }
 }
