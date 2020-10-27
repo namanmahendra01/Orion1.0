@@ -76,7 +76,10 @@ public class AdapterItemLeaderboard extends RecyclerView.Adapter<AdapterItemLead
 
         });
     }
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     public long getItemId(int position) {
         ItemLeaderboard board = mList.get(position);
         return board.getUserID().hashCode();

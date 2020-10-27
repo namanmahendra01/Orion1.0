@@ -133,7 +133,10 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.ViewHold
     public int getItemCount() {
         return comments.size();
     }
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView comment,username,timestamp;

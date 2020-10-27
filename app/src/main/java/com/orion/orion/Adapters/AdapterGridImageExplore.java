@@ -111,7 +111,10 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
     public int getItemCount() {
         return photos.size();
     }
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView username;
         private ImageView image;

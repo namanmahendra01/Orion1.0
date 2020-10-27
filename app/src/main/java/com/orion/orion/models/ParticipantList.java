@@ -1,8 +1,11 @@
 package com.orion.orion.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
-public class ParticipantList {
+public class ParticipantList  implements Parcelable {
 
     String userid,timestamp,joiningKey,mediaLink,idLink,contestkey;
     int totalScore;
@@ -19,6 +22,44 @@ public class ParticipantList {
     }
 
     public ParticipantList(){}
+
+    protected ParticipantList(Parcel in) {
+        userid = in.readString();
+        timestamp = in.readString();
+        joiningKey = in.readString();
+        mediaLink = in.readString();
+        idLink = in.readString();
+        contestkey = in.readString();
+        totalScore = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(userid);
+        dest.writeString(timestamp);
+        dest.writeString(joiningKey);
+        dest.writeString(mediaLink);
+        dest.writeString(idLink);
+        dest.writeString(contestkey);
+        dest.writeInt(totalScore);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ParticipantList> CREATOR = new Creator<ParticipantList>() {
+        @Override
+        public ParticipantList createFromParcel(Parcel in) {
+            return new ParticipantList(in);
+        }
+
+        @Override
+        public ParticipantList[] newArray(int size) {
+            return new ParticipantList[size];
+        }
+    };
 
     public String getUserid() {
         return userid;

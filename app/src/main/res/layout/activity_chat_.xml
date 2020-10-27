@@ -10,7 +10,6 @@
      <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-         android:padding="5dp"
     android:id="@+id/relLayout1">
     <include layout="@layout/snippet_chat_toolbar" />
 
@@ -30,6 +29,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/chat_recyclerView"
         android:layout_above="@+id/chatLayout"
+
         />
 
 
@@ -38,15 +38,16 @@
         android:layout_height="wrap_content"
         android:id="@+id/chatLayout"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/black_border"
         android:gravity="center"
         android:orientation="horizontal">
         <EditText
             android:layout_width="0dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="2dp"
             android:layout_height="wrap_content"
             android:id="@+id/messageEt"
             android:layout_weight="1"
-            android:background="@null"
+            android:background="@drawable/white_round_button"
             android:hint="Start typing.."
             android:padding="15dp"
             android:inputType="textMultiLine|textCapSentences"/>

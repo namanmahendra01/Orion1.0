@@ -285,6 +285,10 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
 
 
     }
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     public long getItemId(int position) {
         ContestDetail form = contestDetails.get(position);
         return form.getContestId().hashCode();

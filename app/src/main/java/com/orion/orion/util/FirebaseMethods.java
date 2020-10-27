@@ -5,18 +5,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.icu.lang.UCharacter;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.graphics.BitmapCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
@@ -24,15 +21,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,7 +31,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
@@ -51,24 +41,19 @@ import com.orion.orion.R;
 import com.orion.orion.contest.contestMainActivity;
 import com.orion.orion.contest.create.CheckContest;
 import com.orion.orion.contest.joined.JoiningForm;
-import com.orion.orion.home.MainActivity;
 import com.orion.orion.models.CreateForm;
-import com.orion.orion.models.Leaderboard;
+import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.Photo;
-import com.orion.orion.models.TopUsers;
-import com.orion.orion.models.users;
-import com.orion.orion.profile.Account.AccountSettingActivity;
 import com.orion.orion.profile.PostPhotoActivity;
 import com.orion.orion.profile.ProfileActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -528,7 +513,148 @@ public class FirebaseMethods {
             }
         });
     }
+    public void publishResut(boolean manual, String Conteskey, ArrayList<ParticipantList> participantLists, LinearLayout progress, FragmentActivity activity) {
+        Log.d(TAG, "publishResut: agaga run "+participantLists.size());
+        if (manual) {
 
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+            ref.child(mContext.getString(R.string.dbname_contestlist))
+                    .child(Conteskey)
+                    .child("result")
+                    .setValue(true);
+
+            DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
+            ref2.child(mContext.getString(R.string.dbname_contests))
+                    .child(Conteskey)
+                    .child("completed")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                long x = (long) snapshot.getValue();
+                                ref2.child(mContext.getString(R.string.dbname_contests))
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child("completed")
+                                        .setValue(x + 1);
+                            } else {
+                                ref2.child(mContext.getString(R.string.dbname_contests))
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child("completed")
+                                        .setValue(1);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+        }else{
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+            ref.child(mContext.getString(R.string.dbname_contestlist))
+                    .child(Conteskey)
+                    .child("result")
+                    .setValue(true);
+        }
+
+
+        if (participantLists.size() != 0) {
+            for (int x = 0; x < participantLists.size(); x++) {
+
+                  sendNotification(participantLists.get(x).getUserid(), "", "Result has been declared of a contest.Check your ranking now.", "Result Declared");
+
+
+                addToHisNotification("" + participantLists.get(x).getUserid(), "Result has been declared of a contest.Check your ranking now.");
+
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                int finalX = x;
+                ref.child(mContext.getString(R.string.dbname_contests))
+                        .child(participantLists.get(finalX).getUserid())
+                        .child("participated")
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    long l= (long) snapshot.getValue();
+                                    ref.child(mContext.getString(R.string.dbname_contests))
+                                            .child(participantLists.get(finalX).getUserid())
+                                            .child("participated")
+                                            .setValue(l+ 1);
+                                    if (finalX==participantLists.size()-1){
+                                        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                                                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                        progress.setVisibility(View.GONE);
+                                    }
+                                } else {
+                                    ref.child(mContext.getString(R.string.dbname_contests))
+                                            .child(participantLists.get(finalX).getUserid())
+                                            .child("participated")
+                                            .setValue(1);
+                                    if (finalX==participantLists.size()-1){
+                                        progress.setVisibility(View.GONE);
+                                      activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                                                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+
+            }
+        }
+    }
+    private void addToHisNotification(String hisUid, String notification) {
+
+        SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
+            @Override
+            public void onTimeReceived(String rawDate) {
+                // rawDate -> 2019-11-05T17:51:01+0530
+
+                String str_date = rawDate;
+                java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+                Date date = null;
+                try {
+                    date = (Date) formatter.parse(str_date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Log.d(TAG, "onCreateView: timestampyesss" + date.getTime());
+                String timestamp = String.valueOf(date.getTime());
+
+
+                //data to put in notification
+                HashMap<Object, String> hashMap = new HashMap<>();
+                hashMap.put("pId", "false");
+                hashMap.put("timeStamp", timestamp);
+                hashMap.put("pUid", hisUid);
+                hashMap.put("seen", "false");
+                hashMap.put("notificaton", notification);
+                hashMap.put("sUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
+                ref.child(hisUid).child("Notifications").child(timestamp).setValue(hashMap)
+                        .addOnSuccessListener(aVoid -> {
+
+                        }).addOnFailureListener(e -> {
+
+                });
+                Log.e(SNTPClient.TAG, rawDate);
+
+            }
+
+            @Override
+            public void onError(Exception ex) {
+                Log.e(SNTPClient.TAG, ex.getMessage());
+            }
+        });
+
+
+    }
     public int getImageCount(DataSnapshot dataSnapshot) {
 
         int count = 0;

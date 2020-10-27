@@ -7,8 +7,7 @@
         android:id="@+id/r1"
         app:cardBackgroundColor="@color/white"
         app:cardUseCompatPadding="true"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="2dp"
+        app:cardCornerRadius="5dp"
         app:contentPadding="3dp"
         android:layout_below="@+id/winner">
         <LinearLayout
@@ -24,49 +23,54 @@
                 android:layout_height="wrap_content"
                 android:text="Rank "
                 android:id="@+id/rank1"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 android:textColor="@color/black"
-                android:textStyle="bold"/>
+               />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=" 1: "
                     android:id="@+id/ranknum"
-                    android:textSize="18sp"
+                    android:textSize="14sp"
                     android:textColor="@color/black"
                     android:textStyle="bold"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:weightSum="1"
                 android:layout_gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_width="50dp"
+                    android:layout_width="0dp"
                     android:src="@drawable/ic_star"
+                    android:layout_weight="0.15"
                     android:id="@+id/profileW1"
                     android:layout_gravity="center_vertical"
-                    android:layout_height="50dp"/>
+                    android:layout_height="40dp"/>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="0.65"
                     android:layout_gravity="center_vertical"
                     android:orientation="vertical">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Naman Mahendra"
+                        android:text="Naman Mahendrnnnnna"
+                        android:maxLines="1"
                         android:id="@+id/displayW1"
                         android:layout_marginLeft="5dp"
-                        android:textSize="18sp"
-                        android:textColor="@color/black"/>
+                        android:textSize="15sp"
+                        android:textColor="#FFC107"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Naman"
+
                         android:id="@+id/usernameW1"
                         android:layout_marginLeft="5dp"
                         android:textSize="14sp"
@@ -74,12 +78,13 @@
                 </LinearLayout>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:id="@+id/mediaW1"
-                    android:text="View Submission"
+                    android:layout_weight="0.2"
+                    android:text="View"
                     android:textSize="15sp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/dot_dark_screen3"
                     android:layout_marginLeft="50dp"/>
 
 

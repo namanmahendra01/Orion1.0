@@ -275,7 +275,10 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
             }
         });
     }
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
         Boolean ok = false;
         int p = 0;

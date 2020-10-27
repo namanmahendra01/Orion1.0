@@ -102,6 +102,10 @@ if (photo.getType().equals("photo")){
             }
         });
     }
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     public long getItemId(int position) {
         Photo photo = photos.get(position);
         return photo.getPhoto_id().hashCode();

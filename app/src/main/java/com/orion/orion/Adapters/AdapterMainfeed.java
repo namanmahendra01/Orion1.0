@@ -997,7 +997,10 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
     public int getItemCount() {
         return photos.size();
     }
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         CircleImageView mProfileImage;

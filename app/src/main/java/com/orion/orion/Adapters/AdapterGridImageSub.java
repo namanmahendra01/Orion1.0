@@ -71,6 +71,10 @@ public class AdapterGridImageSub extends RecyclerView.Adapter<AdapterGridImageSu
         });
 
     }
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     public long getItemId(int position) {
         ParticipantList form = participantLists.get(position);
         return form.getJoiningKey().hashCode();

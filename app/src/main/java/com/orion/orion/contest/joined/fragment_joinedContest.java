@@ -205,7 +205,6 @@ public class fragment_joinedContest extends Fragment {
                         if (snapshot.exists()){
                             for (DataSnapshot snapshot1:snapshot.getChildren()){
 
-                                int x=0;
                                 for (JoinForm a:contestlist){
 
 
@@ -214,7 +213,7 @@ public class fragment_joinedContest extends Fragment {
 
                                         a.setStatus(snapshot1.getValue().toString());
                                     }
-                                    x++;
+
                                 }
 
                                 //    Add newly Created ArrayList to Shared Preferences

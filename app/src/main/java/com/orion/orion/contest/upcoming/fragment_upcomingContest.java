@@ -312,14 +312,12 @@ public class fragment_upcomingContest extends Fragment {
 
             private void checkRefresh() {
                 if (contesRefresh.isRefreshing() && flag1 ) {
-                    Log.d(TAG, "onRefresh: 22");
                     contesRefresh.setRefreshing(false);
                     handler.removeCallbacks(this::checkRefresh);
 
                     flag1 = false;
 
                 } else {
-                    Log.d(TAG, "onRefresh: 33");
                     handler.postDelayed(this::checkRefresh, RETRY_DURATION);
 
                 }
@@ -332,24 +330,18 @@ public class fragment_upcomingContest extends Fragment {
     public void expand(final View v, int duration) {
         final boolean expand = v.getVisibility() != View.VISIBLE;
 
-        Log.d(TAG, "expand: aa"+v.getHeight()+"  "+v.getMeasuredHeight()+" "+v.getMeasuredHeightAndState());
         prevHeight = v.getHeight();
         if (x == 0) {
             x++;
             dummyHeight = v.getHeight();
         }
-        Log.d(TAG, "expand: 1" + expand);
         if (prevHeight == 0) {
             int measureSpecParams = View.MeasureSpec.getSize(View.MeasureSpec.UNSPECIFIED);
             v.measure(measureSpecParams, measureSpecParams);
-            Log.d(TAG, "expand: " + height + "  " + dummyHeight);
             height = dummyHeight;
-            Log.d(TAG, "expand: 2");
         } else {
-            Log.d(TAG, "expand: 6");
             height = 0;
         }
-        Log.d(TAG, "expand: 5  " + prevHeight + "  " + height);
         ValueAnimator valueAnimator = ValueAnimator.ofInt(prevHeight, height);
         int finalHeight = height;
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -366,7 +358,6 @@ public class fragment_upcomingContest extends Fragment {
             public void onAnimationStart(Animator animation) {
                 if (expand) {
                     v.setVisibility(View.VISIBLE);
-                    Log.d(TAG, "expand: 3");
                 }
             }
 
@@ -374,7 +365,6 @@ public class fragment_upcomingContest extends Fragment {
             public void onAnimationEnd(Animator animation) {
                 if (!expand) {
                     v.setVisibility(View.INVISIBLE);
-                    Log.d(TAG, "expand: 4");
                 }
             }
 

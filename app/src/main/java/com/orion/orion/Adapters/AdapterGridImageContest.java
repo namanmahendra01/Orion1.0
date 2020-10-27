@@ -214,7 +214,10 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
         ParticipantList form = participantLists.get(position);
         return form.getJoiningKey().hashCode();
     }
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     @Override
     public int getItemCount() {
         return participantLists.size();

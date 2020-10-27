@@ -161,8 +161,9 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                     @Override
                     public void onClick(View v) {
                         boolean ok=mparticipantLists.getMediaLink().length()>23;
-                        boolean ifNull=mparticipantLists.getMediaLink() != null && !mparticipantLists.getMediaLink().equals("");
+                        boolean ifNull=mparticipantLists.getMediaLink() == null || mparticipantLists.getMediaLink().equals("");
                         if (ifNull){
+                            Log.d(TAG, "onClick: mmm"+mparticipantLists.getJoiningKey());
                             Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
 
                         }else if (ok) {
@@ -173,6 +174,8 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
 
                                 mContext.startActivity(i);
                             } else {
+                                Log.d(TAG, "onClick: mmm 3"+mparticipantLists.getJoiningKey());
+
                                 try{
                                     Uri uri = Uri.parse(mparticipantLists.getMediaLink());
                                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -184,6 +187,8 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                 }
                             }
                         }else {
+                            Log.d(TAG, "onClick: mmm 2"+mparticipantLists.getJoiningKey());
+
                             try{
                                 Uri uri = Uri.parse(mparticipantLists.getMediaLink());
                                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);

@@ -73,6 +73,10 @@ public class AdapterVoterList extends RecyclerView.Adapter<AdapterVoterList.View
         getparticipantDetails(votingList,holder.username,holder.profile);
 
     }
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 
     public long getItemId(int position) {
 

@@ -227,6 +227,10 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
 
 
     }
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     public long getItemId(int position) {
         if (mNotification!=null&&mNotification.size()!=0) {
             Notification form = mNotification.get(position);

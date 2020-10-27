@@ -9,38 +9,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/participant_refresh">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:gravity="end"
+
         android:layout_height="wrap_content">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
+            android:background="@drawable/pink_round_button"
             android:id="@+id/relRequest">
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:rotation="-25"
-            android:src="@drawable/ic_send"
-            android:elevation="6dp"
-            app:backgroundTint="#FFFFFF"
-            android:layout_centerVertical="true"
-            app:fabSize="normal"
-            android:layout_margin="20dp"
-            android:id="@+id/float_btn"
-           />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Participants: 23"
+                android:textColor="@color/white"
+                android:layout_margin="10dp"
+                android:layout_alignParentLeft="true"
+
+                android:textSize="18dp"
+                android:id="@+id/partNum"
+                />
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/request"
             android:gravity="end"
-            android:textColor="#000000"
+            android:textColor="@color/white"
             android:textSize="18sp"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_margin="10dp"
             android:text="Requests"/>
         </RelativeLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
@@ -53,5 +58,19 @@
 
     </RelativeLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:rotation="-25"
+        android:src="@drawable/ic_send_white"
+        android:elevation="6dp"
+        app:backgroundTint="@color/scheme8"
+        android:layout_centerVertical="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        app:fabSize="normal"
+        android:layout_margin="30dp"
+        android:id="@+id/float_btn"
+        />
 
 </RelativeLayout>

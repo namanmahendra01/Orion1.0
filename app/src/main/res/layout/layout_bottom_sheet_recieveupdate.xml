@@ -15,12 +15,11 @@
         android:id="@+id/username"
         android:textSize="22sp"
         android:textColor="@color/black"
-        android:textStyle="bold"
         android:gravity="center_horizontal"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/grey"
+        android:background="@color/scheme8"
         android:layout_marginBottom="10dp"/>
 
         <TextView
@@ -28,11 +27,13 @@
             android:layout_height="wrap_content"
             android:id="@+id/msg"
             android:hint=" Message"
+            android:textColor="@color/black"
+            android:background="@drawable/rectangular_border"
             android:textAlignment="textStart"
             android:gravity="start"
             android:padding="20dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"/>
+            android:layout_margin="10dp"
+            />
 
 
 </LinearLayout>

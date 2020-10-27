@@ -2,50 +2,67 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 <ScrollView
     android:layout_width="match_parent"
+    android:id="@+id/scroll"
     android:layout_height="wrap_content">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/resultLayout">
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:background="@color/black"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
             android:text=" Publish Result "
+
             android:id="@+id/pubBtn"
-            android:gravity="end"
+            android:gravity="center"
+            android:padding="10dp"
+
+            android:layout_margin="20dp"
             android:visibility="gone"
             android:layout_marginTop="5dp"
             android:layout_centerHorizontal="true"
-            android:textColor="@color/white"/>
+            android:textColor="@color/black"/>
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
+            android:layout_height="wrap_content"
             android:background="#8BC34A"
             android:text=" Result Published "
             android:id="@+id/pubBtn2"
-            android:gravity="end"
+            android:gravity="center"
+            android:padding="10dp"
+
+            android:layout_margin="20dp"
             android:visibility="gone"
             android:layout_marginTop="5dp"
             android:layout_centerHorizontal="true"
             android:textColor="@color/white"/>
+        </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:layout_below="@+id/pubBtn"
+            android:layout_below="@+id/resultLayout"
             android:id="@+id/relWin">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Winners: "
+                android:text="Winners"
                 android:id="@+id/winner"
                 android:textSize="18sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/scheme8"
+                />
          <androidx.recyclerview.widget.RecyclerView
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
@@ -57,37 +74,56 @@
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="Rank: "
+    android:text="Ranking"
     android:id="@+id/rank"
     android:layout_below="@+id/relWin"
     android:textSize="18sp"
-    android:textColor="@color/black"
-    android:textStyle="bold"/>
+    android:textStyle="bold"
+
+    android:layout_centerHorizontal="true"
+    android:textColor="@color/scheme8"
+   />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rank"
+        android:layout_marginBottom="30dp"
+
         android:id="@+id/relLayout">
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
+            tools:itemCount="10"
+            android:layout_marginBottom="5dp"
             android:id="@+id/rankList">
         </androidx.recyclerview.widget.RecyclerView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="See all rankings"
+            android:id="@+id/seeRank"
+            android:layout_below="@+id/rankList"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/dot_dark_screen3"/>
     </RelativeLayout>
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/relLayout"
 
             android:id="@+id/juryvoteTable">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Jury Votes: "
+            android:text="Jury Votes"
             android:textSize="18sp"
-            android:textColor="@color/black"
-            android:textStyle="bold"/>
+            android:gravity="center"
+            android:textStyle="bold"
+
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/scheme8"
+            />
         </RelativeLayout>
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -99,7 +135,7 @@
 
     </RelativeLayout>
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/relLayout1"
 
@@ -107,10 +143,13 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Result: "
+                android:text="Result"
+                android:textStyle="bold"
+
                 android:textSize="18sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"/>
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/scheme8"
+                />
         </RelativeLayout>
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -121,5 +160,38 @@
     </RelativeLayout>
     </RelativeLayout>
 </ScrollView>
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:id="@+id/pro"
+        android:background="#CC333232"
+        android:visibility="gone"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/white_border"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_gravity="center">
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                />
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/progressBar"
+                android:layout_centerInParent="true"
+                android:textColor="@color/black"
+                android:text="Publishing Result..."
+                android:textSize="18sp"
+                />
+        </RelativeLayout>
+    </LinearLayout>
 </RelativeLayout>

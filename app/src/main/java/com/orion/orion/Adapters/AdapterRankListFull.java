@@ -2,30 +2,20 @@ package com.orion.orion.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
-import com.orion.orion.contest.Contest_Evaluation.contest_evaluation_activity;
-import com.orion.orion.contest.ViewContestDetails;
-import com.orion.orion.models.ContestDetail;
-import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
@@ -35,15 +25,13 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.android.volley.VolleyLog.TAG;
-
-public class AdapterRankList extends RecyclerView.Adapter<AdapterRankList.ViewHolder> {
+public class AdapterRankListFull extends RecyclerView.Adapter<AdapterRankListFull.ViewHolder> {
     private String mAppend = "";
 
     private Context mContext;
     private List<ParticipantList> participantLists;
 
-    public AdapterRankList(Context mContext, List<ParticipantList> participantLists) {
+    public AdapterRankListFull(Context mContext, List<ParticipantList> participantLists) {
         this.mContext = mContext;
         this.participantLists = participantLists;
     }
@@ -53,16 +41,16 @@ public class AdapterRankList extends RecyclerView.Adapter<AdapterRankList.ViewHo
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(mContext).inflate(R.layout.rank_list_item, parent, false);
-        return new AdapterRankList.ViewHolder(view);
+        return new AdapterRankListFull.ViewHolder(view);
 
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
-
         ParticipantList mparticipantList = participantLists.get(i);
 
         holder.totalScore.setText(String.valueOf(mparticipantList.getTotalScore()));
+        if (holder.rankNum.getText().equals(""))
         holder.rankNum.setText(String.valueOf(i + 1));
 
         getParticipantDetails(mparticipantList.getUserid(), holder.username, holder.profile);
@@ -110,7 +98,7 @@ public class AdapterRankList extends RecyclerView.Adapter<AdapterRankList.ViewHo
     }
     public long getItemId(int position) {
         ParticipantList form = participantLists.get(position);
-        return form.getJoiningKey().hashCode();
+        return form.getTimestamp().hashCode();
     }
     @Override
     public int getItemCount() {

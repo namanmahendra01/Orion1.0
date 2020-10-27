@@ -156,7 +156,10 @@ private HashMap<String,String> LastMessagemap;
     }
 
 
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     public void setLastMessage(String userId,String lastMessage){
         LastMessagemap.put(userId,lastMessage);
     }

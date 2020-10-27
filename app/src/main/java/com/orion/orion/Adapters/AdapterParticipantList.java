@@ -149,6 +149,11 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                         .child(mparticipantLists.getJoiningKey())
                                         .setValue("Rejected");
 
+                                db.child(mContext.getString(R.string.dbname_participantList))
+                                        .child(mparticipantLists.getContestkey())
+                                        .child(mparticipantLists.getJoiningKey())
+                                        .removeValue();
+
                                 db.child(mContext.getString(R.string.dbname_contestlist))
                                         .child(mparticipantLists.getContestkey())
                                         .child("participantlist")
@@ -157,17 +162,17 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                         .addOnSuccessListener(aVoid -> {
                                             if (mparticipantLists.getMediaLink().length()<23)
                                             {
-                                                deleteUrl(dialog);
+                                                deleteUrl();
                                             }
                                            else if (mparticipantLists.getMediaLink() == null || mparticipantLists.getMediaLink().equals("")
                                                     || !mparticipantLists.getMediaLink().substring(8, 23).equals("firebasestorage")) {
 
-                                               deleteUrl(dialog);
+                                               deleteUrl();
 
 
                                             } else {
 
-                                               deleteImage(dialog);
+                                               deleteImage();
 
                                             }
 
@@ -176,7 +181,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
 
                             }
 
-                            private void deleteImage(DialogInterface dialog) {
+                            private void deleteImage() {
                                 DatabaseReference db = FirebaseDatabase.getInstance().getReference();
 
                                 StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMediaLink());
@@ -235,7 +240,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                                         .setValue("true");
 
 
-                                                dialog.dismiss();
+                                                bottomSheetDialog.dismiss();
                                             }
                                         });
 
@@ -243,7 +248,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                 });
                             }
 
-                            private void deleteUrl(DialogInterface dialog) {
+                            private void deleteUrl() {
                                 DatabaseReference db = FirebaseDatabase.getInstance().getReference();
 
                                 //    Add newly Created ArrayList to Shared Preferences
@@ -265,7 +270,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                     for (ParticipantList a:participantList){
                                         Log.d(TAG, "onSuccess: lklk ioi");
 
-                                        if (a.getJoiningKey().equals(participantLists.get(i).getJoiningKey())){
+                                        if (a.getJoiningKey().equals(participantList.get(i).getJoiningKey())){
                                             Log.d(TAG, "onSuccess: lklk yes");
                                             participantList2.remove(a);
                                         }
@@ -290,7 +295,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.changedJoinedContest))
                                         .setValue("true");
-                                dialog.dismiss();
+                                bottomSheetDialog.dismiss();
                             }
 
 
@@ -345,7 +350,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                     @Override
                     public void onClick(View v) {
                         boolean ok=mparticipantLists.getMediaLink().length()>23;
-                        boolean ifNull=mparticipantLists.getMediaLink() != null && !mparticipantLists.getMediaLink().equals("");
+                        boolean ifNull=mparticipantLists.getMediaLink() == null ||mparticipantLists.getMediaLink().equals("");
                         if (ifNull){
                             Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
 

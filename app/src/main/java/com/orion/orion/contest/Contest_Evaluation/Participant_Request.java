@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,6 +35,7 @@ public class Participant_Request extends AppCompatActivity {
 
     private int mResults;
     private FirebaseAuth fAuth;
+    ImageView backArrow;
 
     String Conteskey;
 
@@ -45,7 +48,14 @@ public class Participant_Request extends AppCompatActivity {
 
         Intent i = getIntent();
         Conteskey = i.getStringExtra("ContestKey");
+        backArrow = findViewById(R.id.backarrow);
 
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         participantRv = findViewById(R.id.recycler_view4);
         participantRv.setHasFixedSize(true);
@@ -114,10 +124,10 @@ public class Participant_Request extends AppCompatActivity {
             try {
 
                 int iteration = participantLists.size();
-                if (iteration > 10) {
-                    iteration = 10;
+                if (iteration > 20) {
+                    iteration = 20;
                 }
-                mResults = 10;
+                mResults = 20;
                 for (int i = 0; i < iteration; i++) {
                     paginatedparticipantList.add(participantLists.get(i));
                 }
@@ -144,9 +154,9 @@ public class Participant_Request extends AppCompatActivity {
             if (participantLists.size() > mResults && participantLists.size() > 0) {
 
                 int iterations;
-                if (participantLists.size() > (mResults + 15)) {
+                if (participantLists.size() > (mResults + 20)) {
                     Log.d(TAG, "display next 15 participant");
-                    iterations = 15;
+                    iterations = 20;
                 } else {
                     Log.d(TAG, "display less tha 15 participant");
                     iterations = participantLists.size() - mResults;

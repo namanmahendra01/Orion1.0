@@ -217,7 +217,10 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
     public int getItemCount() {
         return joiningForms.size();
     }
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView domain, title, regEnd, entryFee, host, totalP,status,statusTv,gp;

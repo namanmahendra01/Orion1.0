@@ -68,7 +68,7 @@ public class fragment_contest_participants extends Fragment {
     private ArrayList<ParticipantList> participantLists;
     private ArrayList<ParticipantList> paginatedparticipantList;
     private FirebaseAuth fAuth;
-    private TextView request;
+    private TextView request,partNum;
     private int mResults;
     String Conteskey;
     boolean notify = false;
@@ -100,6 +100,7 @@ public class fragment_contest_participants extends Fragment {
 
         mFirebaseMethods = new FirebaseMethods(getActivity());
         participantRefresh = view.findViewById(R.id.participant_refresh);
+        partNum = view.findViewById(R.id.partNum);
 
         Bundle b = getActivity().getIntent().getExtras();
         Conteskey = b.getString("contestId");
@@ -389,6 +390,7 @@ public class fragment_contest_participants extends Fragment {
                                 addToHisNotification(participantLists.get(x).getUserid(), noti);
                                 if (x == participantLists.size() - 1) {
                                     bottomSheetDialog.dismiss();
+                                    Toast.makeText(getContext(), "Message sent!", Toast.LENGTH_SHORT).show();
                                 }
                             }
                             notify = false;
@@ -453,8 +455,9 @@ public class fragment_contest_participants extends Fragment {
 
 
     private void displayParticipant() {
-        Log.d(TAG, "display first 10 participant");
+        Log.d(TAG, "display first 20 participant");
         flag1 = true;
+        partNum.setText("Participants: "+String.valueOf(participantLists.size()));
         paginatedparticipantList = new ArrayList<>();
         if (participantLists != null) {
 
@@ -462,10 +465,10 @@ public class fragment_contest_participants extends Fragment {
 
 
                 int iteration = participantLists.size();
-                if (iteration > 10) {
-                    iteration = 10;
+                if (iteration > 20) {
+                    iteration = 20;
                 }
-                mResults = 10;
+                mResults = 20;
                 for (int i = 0; i < iteration; i++) {
                     paginatedparticipantList.add(participantLists.get(i));
                 }
@@ -486,15 +489,15 @@ public class fragment_contest_participants extends Fragment {
     }
 
     public void displayMoreParticipnat() {
-        Log.d(TAG, "display next 15 participant");
+        Log.d(TAG, "display next 20 participant");
 
         try {
             if (participantLists.size() > mResults && participantLists.size() > 0) {
 
                 int iterations;
-                if (participantLists.size() > (mResults + 15)) {
+                if (participantLists.size() > (mResults + 20)) {
                     Log.d(TAG, "display next 15 participant");
-                    iterations = 15;
+                    iterations = 20;
                 } else {
                     Log.d(TAG, "display less tha 15 participant");
                     iterations = participantLists.size() - mResults;

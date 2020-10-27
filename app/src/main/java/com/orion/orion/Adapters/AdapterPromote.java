@@ -173,7 +173,10 @@ db.child(context.getString(R.string.dbname_promote))
     public int getItemCount() {
         return promoteList.size();
     }
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 
     class MyHolder extends RecyclerView.ViewHolder {
 

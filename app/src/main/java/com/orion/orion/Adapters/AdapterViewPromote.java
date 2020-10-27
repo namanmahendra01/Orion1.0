@@ -247,7 +247,10 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
 
     }
 
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 
     public long getItemId(int position) {
         Promote form = promoteList.get(position);
