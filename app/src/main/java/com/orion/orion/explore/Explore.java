@@ -2,7 +2,6 @@ package com.orion.orion.explore;
 
 import android.Manifest;
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -30,7 +29,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -104,13 +102,13 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     int x = 0;
     private CircleImageView star1, star2, star3, star4, star5, star6, star7, star8;
     private String user1;
-    private String user2 ;
-    private String user3 ;
+    private String user2;
+    private String user3;
     private String user4;
-    private String user5 ;
-    private String user6 ;
+    private String user5;
+    private String user6;
     private String user7;
-    private String user8 ;
+    private String user8;
     private int c = 0;
     private RelativeLayout topBox;
     private RelativeLayout collapse;
@@ -170,11 +168,11 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 
                 super.onScrollStateChanged(recyclerView, newState);
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE){
-                    if(paginatedPhotos.size()<fieldPhotos.size()) displayMorePhotos();
-                    else if(collapse.getVisibility()==View.VISIBLE) exploreRv.post(() -> expand(collapse, 500));
-                }
-                else if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (paginatedPhotos.size() < fieldPhotos.size()) displayMorePhotos();
+                    else if (collapse.getVisibility() == View.VISIBLE)
+                        exploreRv.post(() -> expand(collapse, 500));
+                } else if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     Log.d(TAG, "onScrollStateChanged: top");
 //                    if(collapse.getVisibility()!=View.VISIBLE) exploreRv.post(() -> expand(collapse, 500));
                 }
@@ -185,7 +183,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 if (dy > 0) {
                     // Recycle view scrolling down...
                     Log.d(TAG, "onScrolled: down");
-                    if (collapse.getVisibility() == View.VISIBLE);
+                    if (collapse.getVisibility() == View.VISIBLE) ;
 //                        exploreRv.post(() -> expand(collapse, 500));
                 }
             }
@@ -318,7 +316,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             x++;
             dummyHeight = v.getHeight();
         }
-        Log.d(TAG, "expand: 1" + expand);
+        Log.d(TAG, "expand:" + expand);
         if (prevHeight == 0) {
             int measureSpecParams = View.MeasureSpec.getSize(View.MeasureSpec.UNSPECIFIED);
             v.measure(measureSpecParams, measureSpecParams);
@@ -338,6 +336,9 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             @Override
             public void onAnimationEnd(Animator animation) {
                 if (!expand) v.setVisibility(View.INVISIBLE);
+                if (expand) {
+                    v.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -1094,10 +1095,10 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             Log.d(TAG, "displayPhotos: started");
             String field = spinner.getText().toString();
             if (field.equals("All")) field = "Overall";
-            Log.d(TAG, "displayPhotos: started"+field);
+            Log.d(TAG, "displayPhotos: started" + field);
             paginatedPhotos.clear();
             fieldPhotos.clear();
-            if(adapterGridImage!=null) adapterGridImage.notifyDataSetChanged();
+            if (adapterGridImage != null) adapterGridImage.notifyDataSetChanged();
             Gson gson = new Gson();
             String json = mPreferences.getString(field + "_TopPosts", null);
             if (json == null || json.equals("")) {
