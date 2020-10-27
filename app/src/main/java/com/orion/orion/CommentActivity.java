@@ -1,10 +1,5 @@
 package com.orion.orion;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +10,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,16 +24,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.Adapters.AdapterComment;
-import com.orion.orion.Adapters.AdapterContestJoined;
-import com.orion.orion.home.MainActivity;
 import com.orion.orion.models.Comment;
-import com.orion.orion.models.JoinForm;
 import com.orion.orion.models.users;
 import com.orion.orion.util.FirebaseMethods;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -58,20 +54,19 @@ public class CommentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_comment);
 
         Intent i = getIntent();
-        String phhotoId=i.getStringExtra("photoId");
-        String userId=i.getStringExtra("userId");
-        Log.d(TAG, "onCreate: kol"+phhotoId+userId);
+        String phhotoId = i.getStringExtra("photoId");
+        String userId = i.getStringExtra("userId");
+        Log.d(TAG, "onCreate: kol" + phhotoId + userId);
 
-        mBackArrow=(ImageView)findViewById(R.id.backarrow);
-        mCheckMark=(ImageView)findViewById(R.id.checkMark);
-        mComment=(EditText)findViewById(R.id.comment);
+        mBackArrow = findViewById(R.id.backarrow);
+        mCheckMark = findViewById(R.id.checkMark);
+        mComment = findViewById(R.id.comment);
         mFirebaseMethods = new FirebaseMethods(CommentActivity.this);
 
 
-
-        commentRv=findViewById(R.id.recyclerComment);
+        commentRv = findViewById(R.id.recyclerComment);
         commentRv.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         commentRv.setItemViewCacheSize(9);
         commentRv.setDrawingCacheEnabled(true);
         commentRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);

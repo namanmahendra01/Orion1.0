@@ -128,6 +128,10 @@
     <string name="changedFollowers">changedFollowers</string>
     <string name="changedJoinedContest">changedJoinedContest</string>
     <string name="changedCreatedContest">changedCreatedContest</string>
+    <string name="field_instagram">instagram</string>
+    <string name="field_facebook">facebook</string>
+    <string name="field_twitter">twitter</string>
+    <string name="field_whatsapp">whatsapp</string>
 
     field_post
 

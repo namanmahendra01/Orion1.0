@@ -1,18 +1,11 @@
 package com.orion.orion.home;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -22,11 +15,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,39 +33,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orion.orion.Adapters.AdapterChat;
-
-import com.orion.orion.Adapters.AdapterNotification2;
-import com.orion.orion.Notifications.Data;
-import com.orion.orion.Notifications.Sender;
-import com.orion.orion.Notifications.Token;
 import com.orion.orion.R;
 import com.orion.orion.models.Chat;
-import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.users;
 import com.orion.orion.util.FirebaseMethods;
-import com.orion.orion.Adapters.UserListAdapter;
 import com.orion.orion.util.SNTPClient;
-import com.orion.orion.util.StringManipilation;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
-
-import static com.android.volley.VolleyLog.TAG;
 
 public class
 Chat_Activity extends AppCompatActivity {
@@ -125,17 +102,17 @@ Chat_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_);
 
-        mUsername = (TextView) findViewById(R.id.username);
-        accept = (TextView) findViewById(R.id.accept);
+        mUsername = findViewById(R.id.username);
+        accept = findViewById(R.id.accept);
 
-        decline = (TextView) findViewById(R.id.decline);
-        reqLayout = (LinearLayout) findViewById(R.id.requestLayout);
-        chatLayout = (LinearLayout) findViewById(R.id.chatLayout);
+        decline = findViewById(R.id.decline);
+        reqLayout = findViewById(R.id.requestLayout);
+        chatLayout = findViewById(R.id.chatLayout);
 
 
-        mSendBtn = (ImageButton) findViewById(R.id.sendBtn);
-        mMessages = (EditText) findViewById(R.id.messageEt);
-        mprofileImage = (ImageView) findViewById(R.id.profile_image);
+        mSendBtn = findViewById(R.id.sendBtn);
+        mMessages = findViewById(R.id.messageEt);
+        mprofileImage = findViewById(R.id.profile_image);
         recyclerView = findViewById(R.id.chat_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -499,7 +476,7 @@ int p=0;
                                     java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
                                     Date date = null;
                                     try {
-                                        date = (Date) formatter.parse(str_date);
+                                        date = formatter.parse(str_date);
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
@@ -591,7 +568,7 @@ int p=0;
                 java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
                 Date date = null;
                 try {
-                    date = (Date) formatter.parse(str_date);
+                    date = formatter.parse(str_date);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

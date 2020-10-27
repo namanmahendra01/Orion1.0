@@ -1,8 +1,5 @@
 package com.orion.orion.share;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -14,6 +11,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,8 +24,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.UniversalImageLoader;
-
-import java.io.File;
 
 public class NextActivity extends AppCompatActivity {
 
@@ -51,20 +49,20 @@ public class NextActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_next);
         mFirebaseMethods = new FirebaseMethods(NextActivity.this);
-        mCaption=(EditText)findViewById(R.id.caption);
+        mCaption = findViewById(R.id.caption);
 
 
 
 
         setupFirebaseAuth();
-        ImageView backArrow = (ImageView) findViewById(R.id.ivbackarrow);
+        ImageView backArrow = findViewById(R.id.ivbackarrow);
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        TextView share = (TextView) findViewById(R.id.tvShare);
+        TextView share = findViewById(R.id.tvShare);
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,8 +78,8 @@ public class NextActivity extends AppCompatActivity {
 
 
                 }else if(intent.hasExtra(getString(R.string.selected_bitmap))){
-                    bitmap = (Bitmap)intent.getParcelableExtra(getString(R.string.selected_bitmap));
-                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo),caption,imageCount,null,bitmap );
+                    bitmap = intent.getParcelableExtra(getString(R.string.selected_bitmap));
+                    mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, null, bitmap);
 
                 }
 
@@ -93,7 +91,7 @@ public class NextActivity extends AppCompatActivity {
 
         private void setImage(){
              intent = getIntent();
-            ImageView image = (ImageView)findViewById(R.id.imageshare);
+            ImageView image = findViewById(R.id.imageshare);
             if(intent.hasExtra(getString(R.string.selected_image))){
                 imgURL = intent.getStringExtra(getString(R.string.selected_image));
 
@@ -101,7 +99,7 @@ public class NextActivity extends AppCompatActivity {
                 UniversalImageLoader.setImage(imgURL,image,null,mAppend);
 
             }else if(intent.hasExtra(getString(R.string.selected_bitmap))){
-                bitmap = (Bitmap)intent.getParcelableExtra(getString(R.string.selected_bitmap));
+                bitmap = intent.getParcelableExtra(getString(R.string.selected_bitmap));
                 image.setImageBitmap(bitmap);
             }
 

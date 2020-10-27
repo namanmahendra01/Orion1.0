@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -24,13 +23,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyLog;
-import com.google.android.exoplayer2.DefaultLoadControl.Builder;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -50,11 +46,9 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultAllocator;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
-import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -73,8 +67,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orion.orion.CommentActivity;
 import com.orion.orion.R;
 import com.orion.orion.ViewPostActivity;
-import com.orion.orion.home.Homefragment;
-import com.orion.orion.home.MainActivity;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.Photo;
 import com.orion.orion.models.users;
@@ -562,7 +554,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         query3.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot singleSnapshot) {
-                currentUsername = singleSnapshot.getValue(users.class).getUsername().toString();
+                currentUsername = singleSnapshot.getValue(users.class).getUsername();
 
                 holder.username.setText(currentUsername);
                 holder.credit.setText("© " + currentUsername);
@@ -800,7 +792,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mContext, R.style.BottomSheetDialogTheme);
 
         View bottomSheetView = ((FragmentActivity) mContext).getLayoutInflater()
-                .inflate(R.layout.layout_bottom_sheet_promote, (LinearLayout) bottomSheetDialog.findViewById(R.id.layout_bottom_sheet_container));
+                .inflate(R.layout.layout_bottom_sheet_promote, bottomSheetDialog.findViewById(R.id.layout_bottom_sheet_container));
         TextView username = bottomSheetView.findViewById(R.id.usernameBs);
         TextView cancel = bottomSheetView.findViewById(R.id.cancel);
         TextView promote = bottomSheetView.findViewById(R.id.promote);
@@ -837,7 +829,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                         java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
                         Date date = null;
                         try {
-                            date = (Date) formatter.parse(str_date);
+                            date = formatter.parse(str_date);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
@@ -1024,36 +1016,36 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             super(itemView);
 
 
-            username = (TextView) itemView.findViewById(R.id.username);
-            image = (SquareImageView) itemView.findViewById(R.id.post_image);
-            yellowstar = (ImageView) itemView.findViewById(R.id.image_star_yellow);
-            whitestar = (ImageView) itemView.findViewById(R.id.image_star);
-            comment = (ImageView) itemView.findViewById(R.id.image_shoutout);
-            caption = (TextView) itemView.findViewById(R.id.image_caption);
-            timeDate = (TextView) itemView.findViewById(R.id.images_time);
-            mProfileImage = (CircleImageView) itemView.findViewById(R.id.profile_photo);
-            promote = (ImageView) itemView.findViewById(R.id.promote);
-            promoted = (ImageView) itemView.findViewById(R.id.promoted);
-            domain = (TextView) itemView.findViewById(R.id.domain12);
-            promoteNum = (TextView) itemView.findViewById(R.id.promote_number);
+            username = itemView.findViewById(R.id.username);
+            image = itemView.findViewById(R.id.post_image);
+            yellowstar = itemView.findViewById(R.id.image_star_yellow);
+            whitestar = itemView.findViewById(R.id.image_star);
+            comment = itemView.findViewById(R.id.image_shoutout);
+            caption = itemView.findViewById(R.id.image_caption);
+            timeDate = itemView.findViewById(R.id.images_time);
+            mProfileImage = itemView.findViewById(R.id.profile_photo);
+            promote = itemView.findViewById(R.id.promote);
+            promoted = itemView.findViewById(R.id.promoted);
+            domain = itemView.findViewById(R.id.domain12);
+            promoteNum = itemView.findViewById(R.id.promote_number);
             users = new StringBuilder();
-            commentnumber = (TextView) itemView.findViewById(R.id.comments_number);
-            likenumber = (TextView) itemView.findViewById(R.id.likes_number);
+            commentnumber = itemView.findViewById(R.id.comments_number);
+            likenumber = itemView.findViewById(R.id.likes_number);
             eclipse = itemView.findViewById(R.id.ivEllipses);
 //         exoplayer
-            play2 = (ImageView) itemView.findViewById(R.id.play);
-            mute = (ImageView) itemView.findViewById(R.id.mute);
-            unmute = (ImageView) itemView.findViewById(R.id.unmute);
+            play2 = itemView.findViewById(R.id.play);
+            mute = itemView.findViewById(R.id.mute);
+            unmute = itemView.findViewById(R.id.unmute);
             playerView = itemView.findViewById(R.id.player_view);
             progressBar = itemView.findViewById(R.id.progress_bar);
-            duration = (TextView) itemView.findViewById(R.id.duration);
-            thumbnail = (SquareImageView) itemView.findViewById(R.id.thumbnail);
+            duration = itemView.findViewById(R.id.duration);
+            thumbnail = itemView.findViewById(R.id.thumbnail);
             postRelLayout = itemView.findViewById(R.id.post_imagelayout);
             footerLayout = itemView.findViewById(R.id.promotion);
             headerLatout = itemView.findViewById(R.id.header);
 
 
-            credit = (TextView) itemView.findViewById(R.id.credit);
+            credit = itemView.findViewById(R.id.credit);
 
 
         }

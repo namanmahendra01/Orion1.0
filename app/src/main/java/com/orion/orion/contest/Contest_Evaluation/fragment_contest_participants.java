@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +21,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -32,7 +30,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,25 +37,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.orion.orion.Adapters.AdapterContestCreated;
-import com.orion.orion.Adapters.AdapterContestUpcoming;
 import com.orion.orion.Adapters.AdapterParticipantList;
 import com.orion.orion.R;
-import com.orion.orion.ViewPostActivity;
-import com.orion.orion.contest.create.form;
-import com.orion.orion.models.CreateForm;
-import com.orion.orion.models.JoinForm;
 import com.orion.orion.models.ParticipantList;
-import com.orion.orion.profile.profile;
 import com.orion.orion.util.FirebaseMethods;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class fragment_contest_participants extends Fragment {
@@ -356,8 +343,8 @@ public class fragment_contest_participants extends Fragment {
     private void bottomsheet() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
 
-        View bottomSheetView = ((FragmentActivity) getActivity()).getLayoutInflater()
-                .inflate(R.layout.layout_bottom_sheet_sendupdate, (LinearLayout) bottomSheetDialog.findViewById(R.id.layout_bottom_sheet_container));
+        View bottomSheetView = getActivity().getLayoutInflater()
+                .inflate(R.layout.layout_bottom_sheet_sendupdate, bottomSheetDialog.findViewById(R.id.layout_bottom_sheet_container));
         EditText msg = bottomSheetView.findViewById(R.id.msg);
         TextView send = bottomSheetView.findViewById(R.id.send);
         TextView cancel = bottomSheetView.findViewById(R.id.cancel);
@@ -457,7 +444,7 @@ public class fragment_contest_participants extends Fragment {
     private void displayParticipant() {
         Log.d(TAG, "display first 20 participant");
         flag1 = true;
-        partNum.setText("Participants: "+String.valueOf(participantLists.size()));
+        partNum.setText("Participants: " + participantLists.size());
         paginatedparticipantList = new ArrayList<>();
         if (participantLists != null) {
 

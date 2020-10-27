@@ -14,6 +14,10 @@ public class users implements Parcelable {
     private String changedFollowers;
     private String changedCreateContest;
     private String changedJoinedContest;
+    private String instagram;
+    private String facebook;
+    private String twitter;
+    private String whatsapp;
 
     public users(String user_id, String email, String domain, String username, String profile_photo, String description, String display_name, String changedFollowers, String changedCreateContest, String changedJoinedContest) {
         this.user_id = user_id;
@@ -26,6 +30,42 @@ public class users implements Parcelable {
         this.changedFollowers = changedFollowers;
         this.changedCreateContest = changedCreateContest;
         this.changedJoinedContest = changedJoinedContest;
+        this.instagram = "";
+        this.facebook = "";
+        this.twitter = "";
+        this.whatsapp = "";
+    }
+
+    public String getInstagram() {
+        return instagram;
+    }
+
+    public void setInstagram(String instagram) {
+        this.instagram = instagram;
+    }
+
+    public String getFacebook() {
+        return facebook;
+    }
+
+    public void setFacebook(String facebook) {
+        this.facebook = facebook;
+    }
+
+    public String getTwitter() {
+        return twitter;
+    }
+
+    public void setTwitter(String twitter) {
+        this.twitter = twitter;
+    }
+
+    public String getWhatsapp() {
+        return whatsapp;
+    }
+
+    public void setWhatsapp(String whatsapp) {
+        this.whatsapp = whatsapp;
     }
 
     public String getChangedFollowers() {

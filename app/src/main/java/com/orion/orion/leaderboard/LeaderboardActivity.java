@@ -118,7 +118,6 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 //    @Override
 //    protected void onStart() {
 //        super.onStart();
-//
 //        Query query = reference.child(getString(R.string.dbname_users));
 //        query.addListenerForSingleValueEvent(new ValueEventListener() {
 //            @Override

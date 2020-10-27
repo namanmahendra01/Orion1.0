@@ -1,11 +1,5 @@
 package com.orion.orion.contest.joined;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
 import android.annotation.TargetApi;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -28,6 +22,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -264,7 +262,7 @@ public class JoiningForm extends AppCompatActivity {
                             java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
                             Date date = null;
                             try {
-                                date = (Date) formatter.parse(str_date);
+                                date = formatter.parse(str_date);
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -450,12 +448,7 @@ public class JoiningForm extends AppCompatActivity {
     public boolean checkPermissions(String permission) {
 
         int permissionRequest = ActivityCompat.checkSelfPermission(JoiningForm.this, permission);
-        if (permissionRequest != PackageManager.PERMISSION_GRANTED) {
-            return false;
-
-        } else {
-            return true;
-        }
+        return permissionRequest == PackageManager.PERMISSION_GRANTED;
     }
 
     @TargetApi(19)

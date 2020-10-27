@@ -1,6 +1,5 @@
 package com.orion.orion.contest.create;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +26,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.orion.orion.R;
-import com.orion.orion.contest.contestMainActivity;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.users;
 import com.orion.orion.util.FirebaseMethods;

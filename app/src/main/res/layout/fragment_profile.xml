@@ -2,13 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:scrollbars="none"
         tools:ignore="UselessParent">
+
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -76,9 +82,9 @@
                     android:id="@+id/profile_photo"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:backgroundTint="@color/white"
                     android:layout_gravity="center"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/ic_profile"
                     app:civ_border_color="@color/white"
                     app:civ_border_width="4dp"
                     app:layout_constraintBottom_toBottomOf="@id/linearLayout1"
@@ -96,17 +102,18 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="25dp">
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp">
 
                 <LinearLayout
-                    android:id="@+id/linksLine1"
+                    android:id="@+id/linksLine"
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:weightSum="3">
+                    android:weightSum="5">
 
                     <LinearLayout
+                        android:id="@+id/gmail_link"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -116,20 +123,22 @@
                         <ImageView
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:layout_gravity="center"
                             android:layout_weight="3"
+                            android:elevation="3dp"
                             android:src="@drawable/ic_gmail" />
 
                         <TextView
                             android:id="@+id/gmail"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
+                            android:layout_weight="10"
+                            android:lines="1"
                             android:layout_height="match_parent"
-                            android:layout_weight="7"
-                            android:gravity="center"
-                            android:text="abc@gmail.com" />
+                            android:maxLength="15"
+                            android:text="@null" />
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/instagram_link"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -139,20 +148,22 @@
                         <ImageView
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:layout_gravity="center"
+                            android:elevation="3dp"
                             android:layout_weight="3"
                             android:src="@drawable/ic_instagram" />
 
                         <TextView
                             android:id="@+id/instagram"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_weight="7"
-                            android:gravity="center"
-                            android:text="/@instagram" />
+                            android:layout_weight="10"
+                            android:lines="1"
+                            android:maxLength="10"
+                            android:text="@null" />
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/facebook_link"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -162,28 +173,22 @@
                         <ImageView
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:layout_gravity="center"
+                            android:elevation="3dp"
                             android:layout_weight="3"
                             android:src="@drawable/ic_facebook" />
 
                         <TextView
                             android:id="@+id/facebook"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_weight="7"
-                            android:gravity="center"
-                            android:text="twitter" />
+                            android:layout_weight="10"
+                            android:lines="1"
+                            android:maxLength="10"
+                            android:text="@null" />
                     </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp"
-                    android:layout_below="@id/linksLine1"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
 
                     <LinearLayout
+                        android:id="@+id/twitter_link"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -193,20 +198,22 @@
                         <ImageView
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:layout_gravity="center"
                             android:layout_weight="3"
+                            android:elevation="3dp"
+                            android:maxLength="10"
                             android:src="@drawable/ic_twitter" />
 
                         <TextView
                             android:id="@+id/twitter"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_weight="7"
-                            android:gravity="center"
-                            android:text="abc@gmail.com" />
+                            android:layout_weight="10"
+                            android:lines="1"
+                            android:text="@null" />
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/whatsapp_link"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -216,42 +223,43 @@
                         <ImageView
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:layout_gravity="center"
+                            android:elevation="3dp"
                             android:layout_weight="3"
                             android:src="@drawable/ic_whatsapp" />
 
                         <TextView
                             android:id="@+id/whatsapp"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:layout_weight="7"
-                            android:gravity="center"
-                            android:text="+91 999999999" />
+                            android:layout_weight="10"
+                            android:lines="1"
+                            android:maxLength="10"
+                            android:text="@null" />
                     </LinearLayout>
-
                 </LinearLayout>
+
             </RelativeLayout>
 
-            <View
-                android:id="@+id/line1"
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:layout_below="@id/profileLinks"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
-                android:background="@color/scheme8" />
+            <!--            <View-->
+            <!--                android:id="@+id/line1"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="3dp"-->
+            <!--                android:layout_below="@id/profileLinks"-->
+            <!--                android:layout_alignParentStart="true"-->
+            <!--                android:layout_alignParentEnd="true"-->
+            <!--                android:layout_margin="15dp"-->
+            <!--                android:background="@color/white" />-->
 
             <RelativeLayout
                 android:id="@+id/profile_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/line1"
+                android:layout_below="@id/profileLinks"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/info_container"
                 android:elevation="5dp">
 
@@ -269,7 +277,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="80dp"
+                        android:layout_height="60dp"
                         android:layout_marginTop="5dp"
                         android:orientation="horizontal"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -347,7 +355,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="80dp"
+                        android:layout_height="60dp"
                         android:layout_marginTop="5dp"
                         android:orientation="horizontal"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -425,7 +433,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="80dp"
+                        android:layout_height="60dp"
                         android:layout_marginTop="5dp"
                         android:orientation="horizontal"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -505,25 +513,24 @@
 
             </RelativeLayout>
 
-            <View
-                android:id="@+id/line2"
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:layout_below="@id/profile_info"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
-                android:background="@color/scheme8" />
+            <!--            <View-->
+            <!--            android:id="@+id/line2"-->
+            <!--            android:layout_width="match_parent"-->
+            <!--            android:layout_height="3dp"-->
+            <!--            android:layout_below="@id/profile_info"-->
+            <!--            android:layout_alignParentStart="true"-->
+            <!--            android:layout_alignParentEnd="true"-->
+            <!--            android:background="@color/white" />-->
 
             <!--        About               -->
             <LinearLayout
                 android:id="@id/linearLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/line2"
+                android:layout_below="@id/profile_info"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:layout_marginTop="10dp"
                 android:orientation="vertical"
                 android:weightSum="100">
 
@@ -578,23 +585,23 @@
 
             </LinearLayout>
 
-            <View
-                android:id="@+id/line3"
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:layout_below="@id/linearLayout2"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
-                android:background="@color/scheme8" />
+            <!--            <View-->
+            <!--                android:id="@+id/line3"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="3dp"-->
+            <!--                android:layout_below="@id/linearLayout2"-->
+            <!--                android:layout_alignParentStart="true"-->
+            <!--                android:layout_alignParentEnd="true"-->
+            <!--                android:layout_marginTop="15dp"-->
+            <!--                android:layout_marginBottom="15dp"-->
+            <!--                android:background="@color/scheme8" />-->
 
             <!--        Image Grid          -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/gridRv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/line3"
+                android:layout_below="@+id/linearLayout2"
                 android:layout_marginBottom="50dp"
                 android:background="@color/white"
                 android:gravity="center"
@@ -610,5 +617,5 @@
         </RelativeLayout>
     </ScrollView>
 
-
+    <include layout="@layout/layout_bottom_navigation_view" />
 </RelativeLayout>

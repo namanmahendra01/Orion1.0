@@ -28,8 +28,8 @@ public class DialogPostSelection extends Dialog implements View.OnClickListener 
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_select_post_type);
-        btnPhoto = (LinearLayout) findViewById(R.id.btnPhoto);
-        btnVideo = (LinearLayout) findViewById(R.id.btnVideo);
+        btnPhoto = findViewById(R.id.btnPhoto);
+        btnVideo = findViewById(R.id.btnVideo);
         btnPhoto.setOnClickListener(this);
         btnVideo.setOnClickListener(this);
 

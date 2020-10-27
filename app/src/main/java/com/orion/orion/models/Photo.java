@@ -25,14 +25,13 @@ public class Photo implements Parcelable {
         this.photo_id = photo_id;
         this.user_id = user_id;
         this.users = users;
-        Tags = tags;
+        this.Tags = tags;
         this.comment = comment;
         this.thumbnail = thumbnail;
         this.type=type;
     }
 
     public Photo(){
-        this.type="";
     }
 
 

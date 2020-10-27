@@ -2,6 +2,7 @@ package com.orion.orion.profile;
 
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -19,11 +20,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -55,7 +55,6 @@ import com.orion.orion.models.Photo;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.Account.AccountSettingActivity;
 import com.orion.orion.util.BottomNaavigationViewHelper;
-import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.Permissions;
 import com.orion.orion.util.UniversalImageLoader;
 
@@ -63,7 +62,6 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -74,15 +72,20 @@ import java.util.regex.Pattern;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class ProfileActivity extends AppCompatActivity{
+public class ProfileActivity extends AppCompatActivity {
 
     public static final int VERIFY_PERMISSION_REQUEST = 1;
     private static final String TAG = "ProfileFragment";
     private static final int ACTIVITY_NUM = 4;
     private static final int NUM_GRID_COLUMNS = 3;
     private static final int PICK_IMAGE = 100;
+    FirebaseUser user;
+    int rank = 1;
+    private Context mContext;
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private DatabaseReference myRef;
 
-    RecyclerView gridRv;
     ArrayList<Photo> imgURLsList;
     Uri imageUri;
     boolean isKitKat;
@@ -91,12 +94,22 @@ public class ProfileActivity extends AppCompatActivity{
     private TextView mUsername;
     private TextView mDomain;
     private CircleImageView mProfilePhoto;
+    private ProgressDialog dialog;
+    private LinearLayout mGmailLink;
+    private LinearLayout mInstagramLink;
+    private LinearLayout mFacebookLink;
+    private LinearLayout mTwitterLink;
 
     private TextView mGmail;
     private TextView mInstagram;
     private TextView mFacebook;
     private TextView mTwitter;
     private TextView mWhatsapp;
+    private LinearLayout mWhatsappLink;
+    private String gmail;
+    private String instagramProfile;
+    private String facebookProfile;
+    private String twitterProfile;
 
     private TextView mPosts;
     private TextView mFans;
@@ -105,28 +118,19 @@ public class ProfileActivity extends AppCompatActivity{
     private TextView mParticipation;
     private TextView mRank;
 
-    private TextView mFollowers;
-    private Button editProfile;
-    private TextView mCreated;
-    private TextView mJoined;
-    private TextView mWon;
     private TextView mDescription;
     private TextView mWebsite;
+    private String whatsappNo;
+    private LinearLayout share_btn;
+    private RecyclerView gridRv;
+    private BottomNavigationViewEx bottomNavigationView;
+    private AdapterGridImage adapterGridImage;
 
     //    SP
     Gson gson;
     SharedPreferences sp;
-    private BottomNavigationViewEx bottomNavigationView;
-    private LinearLayout share_btn;
-    private AdapterGridImage adapterGridImage;
-    //firebase
-    private FirebaseAuth mAuth;
-    private FirebaseMethods mFirebaseMethods;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private DatabaseReference myRef;
-    private FirebaseDatabase mFirebaseDatabase;
-    private ProgressDialog dialog;
 
+    //firebase
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
@@ -135,12 +139,19 @@ public class ProfileActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_profile);
 
-        dialog=ProgressDialog.show(this,"","Loading Profile...",true);
+        dialog = ProgressDialog.show(this, "", "Loading Profile...", true);
+        mContext = ProfileActivity.this;
 
-        menu=(ImageView) findViewById(R.id.menu);
-        mUsername = (TextView) findViewById(R.id.display_name);
-        mDomain = (TextView)findViewById(R.id.domain);
-        mProfilePhoto = (CircleImageView) findViewById(R.id.profile_photo);
+        menu = findViewById(R.id.menu);
+        mUsername = findViewById(R.id.display_name);
+        mDomain = findViewById(R.id.domain);
+        mProfilePhoto = findViewById(R.id.profile_photo);
+
+        mGmailLink = findViewById(R.id.gmail_link);
+        mInstagramLink = findViewById(R.id.instagram_link);
+        mFacebookLink = findViewById(R.id.facebook_link);
+        mTwitterLink = findViewById(R.id.twitter_link);
+        mWhatsappLink = findViewById(R.id.whatsapp_link);
 
         mGmail = findViewById(R.id.gmail);
         mInstagram = findViewById(R.id.instagram);
@@ -148,52 +159,98 @@ public class ProfileActivity extends AppCompatActivity{
         mTwitter = findViewById(R.id.twitter);
         mWhatsapp = findViewById(R.id.whatsapp);
 
-        mPosts = findViewById(R.id.post);
+        mPosts = findViewById(R.id.posts);
         mFans = findViewById(R.id.fans);
         mWins = findViewById(R.id.win);
-        mCreated = findViewById(R.id.creations);
+        mCreations = findViewById(R.id.creations);
         mParticipation = findViewById(R.id.participations);
         mRank = findViewById(R.id.rank);
 
-        mDescription = (TextView) findViewById(R.id.description);
-        mWebsite = (TextView) findViewById(R.id.website);
+        mDescription = findViewById(R.id.description);
+        mWebsite = findViewById(R.id.website);
 
-        share_btn = (LinearLayout) findViewById(R.id.share_skill_btn);
+        share_btn = findViewById(R.id.share_skill_btn);
 
         gridRv = findViewById(R.id.gridRv);
+
+        bottomNavigationView = findViewById(R.id.BottomNavViewBar);
+
+
         gridRv.setHasFixedSize(true);
         GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 3);
+        gridRv.setLayoutManager(linearLayoutManager);
         gridRv.setDrawingCacheEnabled(true);
         gridRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
         linearLayoutManager.setItemPrefetchEnabled(true);
         linearLayoutManager.setInitialPrefetchItemCount(20);
+        gridRv.setItemViewCacheSize(9);
+        gridRv.setDrawingCacheEnabled(true);
+        gridRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
         gridRv.setLayoutManager(linearLayoutManager);
 
         imgURLsList = new ArrayList<>();
 
-        bottomNavigationView = (BottomNavigationViewEx) findViewById(R.id.BottomNavViewBar);
-        mFirebaseMethods = new FirebaseMethods(this);
-
-//        mFollowers = (TextView) findViewById(R.id.follower);
-//        mCreated=(TextView) findViewById(R.id.created_contests);
-//        mJoined=(TextView) findViewById(R.id.joined_contests);
-//        mWon=(TextView) findViewById(R.id.contests_won);
-//
-//        editProfile=(Button) findViewById(R.id.texteditprofile);
-
 
 //          Initialize SharedPreference variables
-        sp =getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        sp = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
-
-        Log.d(TAG, "onCreateView:started");
         setupBottomNavigationView();
         setupFirebaseAuth();
-
         fetchPhotosFromSp();
 //        SetupGridView();
-        getFollowerCount();
-        getCompDetails();
+
+        mGmailLink.setOnClickListener(v -> {
+            if (gmail != null && !gmail.equals("")) {
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setPackage("com.google.android.gm");
+                i.setType("message/rfc822");
+                i.putExtra(Intent.EXTRA_EMAIL, new String[]{gmail});
+                i.putExtra(Intent.EXTRA_SUBJECT, "Orion");
+                i.putExtra(Intent.EXTRA_TEXT, "We from Orion would like to help and connect u with others out there");
+                try {
+                    startActivity(Intent.createChooser(i, "Send mail..."));
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(mContext, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        mInstagramLink.setOnClickListener(v -> {
+            Uri uri = Uri.parse("http://instagram.com/_u/" + instagramProfile);
+            Intent likeIng = new Intent(Intent.ACTION_VIEW, uri);
+            likeIng.setPackage("com.instagram.android");
+            try {
+                startActivity(likeIng);
+            } catch (ActivityNotFoundException e) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://instagram.com/xxx")));
+            }
+        });
+        mFacebookLink.setOnClickListener(v -> {
+            try {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("fb://profile/426253597411506"));
+                startActivity(intent);
+            } catch (Exception e) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.facebook.com/appetizerandroid")));
+            }
+        });
+        mTwitterLink.setOnClickListener(v -> {
+            Intent intent = null;
+            try {
+                this.getPackageManager().getPackageInfo("com.twitter.android", 0);
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=" + twitterProfile));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            } catch (Exception e) {
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/USERID_OR_PROFILENAME"));
+            }
+            this.startActivity(intent);
+        });
+        mWhatsappLink.setOnClickListener(v -> {
+            if (whatsappNo != null && !whatsappNo.equals("")) {
+                String url = "https://api.whatsapp.com/send?phone=" + whatsappNo;
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
 
         share_btn.setOnClickListener(v -> {
             YoYo.with(Techniques.FadeIn).duration(500).playOn(share_btn);
@@ -207,39 +264,167 @@ public class ProfileActivity extends AppCompatActivity{
             startActivity(intent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         });
-//        editProfile.setOnClickListener(v -> {
-//            Intent intent = new Intent(this, AccountSettingActivity.class);
-//            intent.putExtra(getString(R.string.calling_activity), getString(R.string.profile_activity));
-//            startActivity(intent);
-//            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-//        });
     }
+
+    private void setUpInfoBox() {
+        getFans();
+        getPosts();
+        getWins();
+        getCreations();
+        getParticipation();
+        mRank.setText(String.valueOf(rank));
+        getRank();
+        dialog.dismiss();
+    }
+
+    private void getFans() {
+        Query query = myRef.child(getString(R.string.dbname_follower)).child(user.getUid());
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int size = (int) snapshot.getChildrenCount();
+                Log.d(TAG, "setUpInfoBox: fansCount" + size);
+                if (size == 0) mFans.setText("0");
+                else mFans.setText(String.valueOf(size));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                mFans.setText("?");
+            }
+        });
+    }
+
+    private void getPosts() {
+        Query query = myRef.child(getString(R.string.dbname_user_photos)).child(user.getUid());
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int size = (int) snapshot.getChildrenCount();
+                Log.d(TAG, "setUpInfoBox: postsCount" + size);
+                if (size == 0) mPosts.setText("0");
+                else mPosts.setText(String.valueOf(size));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                mPosts.setText("?");
+            }
+        });
+    }
+
+    private void getWins() {
+    }
+
+    private void getCreations() {
+        Query query = myRef.child(getString(R.string.dbname_contests)).child(user.getUid()).child(getString(R.string.created_contest));
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int size = (int) snapshot.getChildrenCount();
+                Log.d(TAG, "setUpInfoBox: creations" + size);
+//                mCreations.setText((int) size);
+                if (size == 0) mCreations.setText("0");
+                else mCreations.setText(String.valueOf(size));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                mCreations.setText("?");
+            }
+        });
+    }
+
+    private void getParticipation() {
+        Query query = myRef.child(getString(R.string.dbname_contests)).child(user.getUid()).child(getString(R.string.joined_contest));
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int size = (int) snapshot.getChildrenCount();
+                Log.d(TAG, "setUpInfoBox: participationsCount" + size);
+//                mParticipation.setText((int) size);
+                if (size == 0) mParticipation.setText("0");
+                else mParticipation.setText(String.valueOf(size));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                mParticipation.setText("?");
+            }
+        });
+    }
+
+    private void getRank() {
+        Query query = myRef.child(getString(R.string.dbname_leaderboard)).child(user.getUid());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int userRating = (int) (long) snapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_post)).getValue()
+                        + (int) (long) snapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).getValue()
+                        + (int) (long) snapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
+                Query query1 = myRef.child(getString(R.string.dbname_leaderboard));
+                query1.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
+                            int rating = (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_post)).getValue()
+                                    + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).getValue()
+                                    + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
+                            if (rating > userRating && !user.getUid().equals(singleSnapshot.getKey()))
+                                updateRank();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        mRank.setText("?");
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                mRank.setText("?");
+            }
+        });
+    }
+
+    private void updateRank() {
+        rank += 1;
+        mRank.setText(String.valueOf(rank));
+    }
+
     private void fetchPhotosFromSp() {
         String json = sp.getString("myMedia", null);
         Type type = new TypeToken<ArrayList<Photo>>() {
         }.getType();
         imgURLsList = gson.fromJson(json, type);
-        if (true) {    //        if no arrayList is present
+//        Log.d(TAG, "fetchPhotosFromSp: "+imgURLsList.size());
+        if (imgURLsList == null || imgURLsList.size() == 0) {
             imgURLsList = new ArrayList<>();
-            SetupGridView();             //            make new Arraylist
-
+            SetupGridView();
         } else {
-            checkUpdate();       //         Check if new post is there
+            checkUpdate();
         }
     }
+
     private void checkUpdate() {
+        Log.d(TAG, "checkUpdate: started");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbname_user_photos)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).limitToLast(1);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        assert user != null;
+        Log.d(TAG, "checkUpdate: user" + user.getUid());
+        Query query = reference.child(getString(R.string.dbname_user_photos)).child(user.getUid()).limitToLast(1);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot:snapshot.getChildren()){
-                    if (imgURLsList.get(0).getPhoto_id().equals(dataSnapshot.getKey())){
-
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    if (imgURLsList.get(0).getPhoto_id().equals(dataSnapshot.getKey())) {
+                        Log.d(TAG, "onDataChange: photoList" + imgURLsList);
                         adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
                         adapterGridImage.setHasStableIds(true);
                         gridRv.setAdapter(adapterGridImage);
-                    }else{
+                    } else {
                         SetupGridView();
                     }
                 }
@@ -252,23 +437,21 @@ public class ProfileActivity extends AppCompatActivity{
         });
 
     }
+
     public void verifyPermission(String[] permissions) {
         ActivityCompat.requestPermissions(this, permissions, VERIFY_PERMISSION_REQUEST);
     }
-    public boolean checkPermissionArray(String[] permissions) {
 
-        for (String check : permissions) {
-            if (!checkPermissions(check)) {
-                return false;
-            }
-        }
+    public boolean checkPermissionArray(String[] permissions) {
+        for (String check : permissions) if (!checkPermissions(check)) return false;
         return true;
     }
-    public boolean checkPermissions(String permission) {
 
+    public boolean checkPermissions(String permission) {
         int permissionRequest = ActivityCompat.checkSelfPermission(this, permission);
         return permissionRequest == PackageManager.PERMISSION_GRANTED;
     }
+
     @TargetApi(19)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -369,7 +552,7 @@ public class ProfileActivity extends AppCompatActivity{
                     String[] projection = {column};
 
                     try {
-                        cursor =this.getContentResolver().query(contentUri, projection, selection, selectionArgs, null);
+                        cursor = this.getContentResolver().query(contentUri, projection, selection, selectionArgs, null);
                         if (cursor != null && cursor.moveToFirst()) {
                             int column_index = cursor.getColumnIndexOrThrow(column);
                             imgPath = cursor.getString(column_index);
@@ -413,39 +596,7 @@ public class ProfileActivity extends AppCompatActivity{
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-    private void getFollowerCount() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbname_follower)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mFollowers.setText(dataSnapshot.getChildrenCount() +" FANS");
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-    private void getCompDetails() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbname_contests)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String joinedContests= String.valueOf(snapshot.child(getString(R.string.field_joined_contest)).getChildrenCount());
-                String createdContests= String.valueOf(snapshot.child(getString(R.string.field_created_contest)).getChildrenCount());
-                mJoined.setText(joinedContests);
-                mCreated.setText(createdContests);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
     private void SetupGridView() {
         final ArrayList<Photo> photos = new ArrayList<>();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -454,9 +605,10 @@ public class ProfileActivity extends AppCompatActivity{
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                    Log.d(TAG, "onBindViewHolder: "+dataSnapshot.getChildrenCount());
+                    Log.d(TAG, "onBindViewHolder: " + dataSnapshot.getChildrenCount());
                     Photo photo = new Photo();
-                    Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                    Map<String, Object> objectMap = (Map<String, Object>) singleSnapshot.getValue();
+                    Log.d(TAG, "onDataChange: objectMap" + objectMap);
                     try {
                         photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
                         photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
@@ -464,7 +616,8 @@ public class ProfileActivity extends AppCompatActivity{
                         photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
                         photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
                         photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
-                        if (objectMap.get(getString(R.string.thumbnail))!=null) photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
+                        if (objectMap.get(getString(R.string.thumbnail)) != null)
+                            photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
                         photo.setType(objectMap.get(getString(R.string.type)).toString());
                         ArrayList<Comment> comments = new ArrayList<>();
                         for (DataSnapshot dSnapshot : singleSnapshot.child(getString(R.string.field_comment)).getChildren()) {
@@ -486,7 +639,9 @@ public class ProfileActivity extends AppCompatActivity{
                         Log.e(TAG, "null pointer exception" + e.getMessage());
                     }
                 }
+                Log.d(TAG, "onDataChange: imgURLsList.size()" + imgURLsList.size());
                 imgURLsList.addAll(photos);
+                Log.d(TAG, "onDataChange: imgURLsList.size()" + imgURLsList.size());
                 Collections.reverse(imgURLsList);
                 //    Add newly Created ArrayList to Shared Preferences
                 SharedPreferences.Editor editor = sp.edit();
@@ -495,24 +650,73 @@ public class ProfileActivity extends AppCompatActivity{
                 editor.apply();
                 adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
                 adapterGridImage.setHasStableIds(true);
-
                 gridRv.setAdapter(adapterGridImage);//
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.d(TAG, "Query Cancelled");
             }
         });
     }
+
     private void setProfileWidgets(users userSetting) {
-        Log.d(TAG, "onDataChange: 1234" + userSetting.toString());
+        Log.d(TAG, "onDataChange: " + userSetting.toString());
         UniversalImageLoader.setImage(userSetting.getProfile_photo(), mProfilePhoto, null, "");
         mUsername.setText(userSetting.getUsername());
-        mDescription.setText(userSetting.getDescription());
         mDomain.setText(userSetting.getDomain());
-        mWebsite.setText(userSetting.getEmail());
-        dialog.dismiss();
+
+        if (userSetting.getDescription() == null || userSetting.getDescription().equals(""))
+            mDescription.setVisibility(View.GONE);
+        else {
+            mDescription.setVisibility(View.VISIBLE);
+            mDescription.setText(userSetting.getDescription());
+        }
+
+        if (userSetting.getEmail() == null || userSetting.getEmail().equals("")) {
+            mWebsite.setVisibility(View.GONE);
+            mGmailLink.setClickable(false);
+            mGmailLink.setAlpha(0.5f);
+        } else {
+            mWebsite.setVisibility(View.VISIBLE);
+            mWebsite.setText(userSetting.getEmail());
+            mGmail.setText(userSetting.getEmail());
+        }
+
+        if (userSetting.getInstagram() == null || userSetting.getInstagram().equals("")) {
+            mInstagramLink.setClickable(false);
+            mInstagramLink.setAlpha(0.5f);
+        } else {
+            mInstagram.setText(userSetting.getInstagram());
+            instagramProfile = userSetting.getInstagram();
+        }
+
+        if (userSetting.getFacebook() == null || userSetting.getFacebook().equals("")) {
+            mFacebookLink.setClickable(false);
+            mFacebookLink.setAlpha(0.5f);
+        } else {
+            mFacebook.setText(userSetting.getFacebook());
+            facebookProfile = userSetting.getFacebook();
+
+        }
+        if (userSetting.getTwitter() == null || userSetting.getTwitter().equals("")) {
+            mTwitterLink.setClickable(false);
+            mTwitterLink.setAlpha(0.5f);
+        } else {
+            mTwitter.setText(userSetting.getTwitter());
+            twitterProfile = userSetting.getTwitter();
+        }
+
+        if (userSetting.getWhatsapp() == null || userSetting.getWhatsapp().equals("")) {
+            mWhatsappLink.setClickable(false);
+            mWhatsappLink.setAlpha(0.5f);
+        } else {
+            mWhatsapp.setText(userSetting.getWhatsapp());
+            whatsappNo = userSetting.getWhatsapp();
+        }
+//        dialog.dismiss();
     }
+
     private void setupBottomNavigationView() {
         Log.d(TAG, " setupBottomNavigationView:setting up BottomNavigationView");
         BottomNaavigationViewHelper.setupBottomNavigationView(bottomNavigationView);
@@ -522,28 +726,33 @@ public class ProfileActivity extends AppCompatActivity{
         menuItem.setChecked(true);
 
     }
+
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = firebaseAuth -> {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user != null) Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
-            else Log.d(TAG, "onAuthStateChanged:signed_out");
-        };
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //retrieve user information from the database
-                setProfileWidgets(Objects.requireNonNull(dataSnapshot.child(getString(R.string.dbname_users)).child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).getValue(users.class)));
-                //retrieve image for the user in question
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
+                myRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        //retrieve user information from the database
+                        setProfileWidgets(Objects.requireNonNull(dataSnapshot.child(getString(R.string.dbname_users)).child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).getValue(users.class)));
+                        //retrieve image for the user in question
+                        setUpInfoBox();
+                    }
 
-            }
-        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            } else Log.d(TAG, "onAuthStateChanged:signed_out");
+        };
+
     }
 
     @Override

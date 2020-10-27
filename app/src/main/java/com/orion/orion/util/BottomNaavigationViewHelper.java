@@ -3,18 +3,16 @@ package com.orion.orion.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-import com.orion.orion.home.MainActivity;
 import com.orion.orion.R;
 import com.orion.orion.contest.contestMainActivity;
-import com.orion.orion.leaderboard.LeaderboardActivity;
 import com.orion.orion.explore.Explore;
+import com.orion.orion.home.MainActivity;
+import com.orion.orion.leaderboard.LeaderboardActivity;
 import com.orion.orion.profile.profile;
 
 public class BottomNaavigationViewHelper {
@@ -29,8 +27,6 @@ public class BottomNaavigationViewHelper {
         bottomNavigationViewEx.enableShiftingMode(true);
         bottomNavigationViewEx.setTextVisibility(true);
         bottomNavigationViewEx.setTextSize(10);
-
-
     }
 
     public static void enableNavigation(final Context context, final Activity callingActivity ,BottomNavigationViewEx view) {

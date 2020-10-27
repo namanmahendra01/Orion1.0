@@ -1,6 +1,5 @@
 package com.orion.orion.home;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,8 +39,6 @@ import com.orion.orion.Adapters.AdapterMainFeedContest;
 import com.orion.orion.Adapters.AdapterMainfeed;
 import com.orion.orion.Adapters.AdapterPromote;
 import com.orion.orion.R;
-import com.orion.orion.contest.contestMainActivity;
-import com.orion.orion.contest.joined.JoiningForm;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.Photo;
@@ -112,10 +108,10 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        ListViewRv = (RecyclerView) view.findViewById(R.id.listview);
-        star = (ImageView) view.findViewById(R.id.domainBtn);
-        starFill = (ImageView) view.findViewById(R.id.domainBtnSel);
-        domaintv = (TextView) view.findViewById(R.id.domainTv);
+        ListViewRv = view.findViewById(R.id.listview);
+        star = view.findViewById(R.id.domainBtn);
+        starFill = view.findViewById(R.id.domainBtnSel);
+        domaintv = view.findViewById(R.id.domainTv);
         username = view.findViewById(R.id.story_username);
         storySeen = view.findViewById(R.id.story_photo_seen);
         story = view.findViewById(R.id.story_photo);
@@ -1338,7 +1334,6 @@ x++;
 
                             Photo photo = new Photo();
                             Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-
                             photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
 
                             photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());

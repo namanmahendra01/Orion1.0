@@ -1,6 +1,7 @@
 package com.orion.orion.profile;
 
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +16,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,14 +31,26 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.orion.orion.R;
+import com.orion.orion.models.Photo;
+import com.orion.orion.util.FilePaths;
 import com.orion.orion.util.FirebaseMethods;
+import com.orion.orion.util.ImageManager;
+import com.orion.orion.util.StringManipilation;
 import com.orion.orion.util.UniversalImageLoader;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 public class PostPhotoActivity extends AppCompatActivity {
@@ -54,7 +66,6 @@ public class PostPhotoActivity extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
 
     private EditText mCaption;
-    ProgressBar progressBar;
 
     private String mAppend = "file:/";
     private ImageView backArrow;
@@ -62,8 +73,6 @@ public class PostPhotoActivity extends AppCompatActivity {
     private ImageView image;
     private int imageCount = 0;
     private String imgURL;
-    private Intent intent;
-    private Bitmap bitmap;
     private ExtendedFloatingActionButton fab;
 
     public PostPhotoActivity() {
@@ -102,9 +111,89 @@ public class PostPhotoActivity extends AppCompatActivity {
         post.setOnClickListener(v -> {
             Toast.makeText(PostPhotoActivity.this, "Attempting to upload new photo", Toast.LENGTH_SHORT).show();
             String caption = mCaption.getText().toString();
-            Log.d(TAG, "onCreate: imgURL"+imgURL);
-            Log.d(TAG, "onCreate: imageCount"+imageCount);
+            Log.d(TAG, "onCreate: imgURL" + imgURL);
+            Log.d(TAG, "onCreate: imageCount" + imageCount);
+            uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgURL);
             mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgURL, null);
+        });
+    }
+
+    private void uploadNewPhoto(String string, String caption, int imageCount, String imgURL) {
+        FilePaths filepaths = new FilePaths();
+        String user_id = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+        final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(filepaths.FIREBASE_IMAGE_STORAGE + "/" + user_id + "/post" + (imageCount + 1));
+        Bitmap bm = ImageManager.getBitmap(imgURL);
+        File file = new File(imgURL);
+        long length = file.length() / 1024;
+
+        byte[] bytes;
+        if (length < 200) bytes = ImageManager.getBytesFromBitmap(bm, 100);
+        else if (length < 500) bytes = ImageManager.getBytesFromBitmap(bm, 65);
+        else if (length < 800) bytes = ImageManager.getBytesFromBitmap(bm, 45);
+        else bytes = ImageManager.getBytesFromBitmap(bm, 25);
+        UploadTask uploadTask;
+        uploadTask = storageReference.putBytes(bytes);
+        ProgressDialog dialog = ProgressDialog.show(mContext, "", "Uploading... - ", true);
+
+//            Log.d(TAG, "uploadNewPhoto: photoType"+photoType);
+//            Log.d(TAG, "uploadNewPhoto: caption"+caption);
+//            Log.d(TAG, "uploadNewPhoto: count"+count);
+//            Log.d(TAG, "uploadNewPhoto: imgURL"+imgURL);
+//            Log.d(TAG, "uploadNewPhoto: filepaths"+filepaths);
+//            Log.d(TAG, "uploadNewPhoto: user_id"+user_id);
+//            Log.d(TAG, "uploadNewPhoto: StorageReference"+storageReference);
+//            Log.d(TAG, "uploadNewPhoto: bm"+bm);
+//            Log.d(TAG, "uploadNewPhoto: bytes"+ Arrays.toString(bytes));
+        Log.d(TAG, "uploadNewPhoto: uploadTask" + uploadTask);
+
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
+            dialog.dismiss();
+            storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
+                Toast.makeText(mContext, "Photo Upload success", Toast.LENGTH_SHORT).show();
+                addPhotoToDatabase(caption, uri.toString());
+            });
+            mContext.startActivity(new Intent(mContext, ProfileActivity.class));
+        }).addOnFailureListener(e -> {
+            dialog.dismiss();
+            Log.d(TAG, "onFailure: Photo Upload Failed");
+            Toast.makeText(mContext, "Photo Upload failed", Toast.LENGTH_SHORT).show();
+            mContext.startActivity(new Intent(mContext, PostPhotoActivity.class));
+        }).addOnProgressListener(taskSnapshot -> {
+            double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+            ProgressDialog.show(mContext, "", "Uploading... - " + String.format("%.0f", progress) + "%", true);
+            Toast.makeText(mContext, "Photo Upload Progress" + String.format("%.0f", progress) + "%", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "onProgress: upload progress" + progress + "% done");
+        });
+    }
+
+    private void addPhotoToDatabase(String caption, String url) {
+        Log.d(TAG, "addPhtotto database: adding photo to database");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
+        String tags = StringManipilation.getTags(caption);
+        String newPhotoKey = myRef.child(mContext.getString(R.string.dbname_user_photos)).push().getKey();
+        Photo photo = new Photo();
+        photo.setCaption(caption);
+        photo.setDate_created(sdf.format(new Date()));
+        photo.setImage_path(url);
+        photo.setTags(tags);
+        photo.setUser_id(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+        photo.setPhoto_id(newPhotoKey);
+        photo.setThumbnail("");
+        photo.setType("photo");
+        assert newPhotoKey != null;
+        myRef.child(mContext.getString(R.string.dbname_user_photos)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(newPhotoKey).setValue(photo);
+        myRef.child(mContext.getString(R.string.dbname_follower)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot snapshot1 : snapshot.getChildren())
+                    myRef.child(mContext.getString(R.string.dbname_users)).child(Objects.requireNonNull(snapshot1.getKey())).child(mContext.getString(R.string.post_updates)).child(newPhotoKey).setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
         });
     }
 
@@ -151,7 +240,7 @@ public class PostPhotoActivity extends AppCompatActivity {
                             String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
                             Collections.addAll(rv, rawSecondaryStorages);
                         }
-                        String[] temp = rv.toArray(new String[rv.size()]);
+                        String[] temp = rv.toArray(new String[0]);
                         for (String s : temp) {
                             File tempf = new File(s + "/" + split[1]);
                             if (tempf.exists()) {
@@ -225,7 +314,7 @@ public class PostPhotoActivity extends AppCompatActivity {
 
     private void setImage(String imgPath) {
         Log.d(TAG, "setImage next " + imgPath);
-        imgURL=imgPath;
+        imgURL = imgPath;
         UniversalImageLoader.setImage(imgURL, image, null, mAppend);
     }
 
@@ -245,16 +334,19 @@ public class PostPhotoActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 imageCount = mFirebaseMethods.getImageCount(dataSnapshot);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
     }
+
     @Override
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
     }
+
     @Override
     public void onStop() {
         super.onStop();
