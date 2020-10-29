@@ -169,7 +169,7 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
 
         holder.entryFee.setText(mcreateForm.getEntryfee());
         holder.domain.setText(mcreateForm.getDomain());
-        UniversalImageLoader.setImage(mcreateForm.getPoster(), holder.poster, null, mAppend);
+        UniversalImageLoader.setImage(mcreateForm.getPoster(), holder.poster, holder.progress, mAppend);
         holder.title.setText(mcreateForm.getTitle());
         holder.host.setText(mcreateForm.getHost());
         holder.regEnd.setText(mcreateForm.getRegEnd());
@@ -283,7 +283,7 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
         Boolean ok = false;
         int p = 0;
         private TextView domain, title, regEnd, entryFee, host, gp, totalP, status;
-        private ImageView poster, option,info;
+        private ImageView poster, option,info,progress;
         private RelativeLayout relStatus;
 
         public ViewHolder(@NonNull View itemView) {
@@ -300,6 +300,8 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
             option = itemView.findViewById(R.id.optionC);
             gp = itemView.findViewById(R.id.gp);
             info = itemView.findViewById(R.id.info);
+            progress = itemView.findViewById(R.id.progress);
+
 
         }
     }

@@ -1,27 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:elevation="3dp"
+    app:cardCornerRadius="3dp">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
     <TextView
         android:id="@+id/txt_dia"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="25dp"
-        android:text="oi cunt,Plz select the fucking post type to u want to upload?"
+        android:text="Please select post type to you want to upload."
         android:textColor="@android:color/black"
         android:textSize="16dp"
+        android:gravity="center"
         android:paddingBottom="10dp"
-        android:textStyle="bold" />
+         />
 
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@color/colorAccent"
+        android:background="@color/white"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -37,7 +47,7 @@
                 android:layout_height="70dp"
                 android:layout_gravity="center_horizontal"
                 android:elevation="5dp"
-                android:src="@drawable/ic_photo" />
+                android:src="@drawable/ic_image_logo" />
 
 
             <Button
@@ -46,7 +56,7 @@
                 android:layout_gravity="center_horizontal"
                 android:background="@android:color/white"
                 android:text="Photo"
-                android:textColor="@color/colorAccent"
+                android:textColor="#03A9F4"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -69,7 +79,7 @@
                     android:layout_height="70dp"
                     android:layout_gravity="center_horizontal"
                     android:elevation="5dp"
-                    android:src="@drawable/ic_video" />
+                    android:src="@drawable/ic_video_logo" />
 
 
                 <Button
@@ -78,12 +88,12 @@
                     android:layout_gravity="center_horizontal"
                     android:background="@android:color/white"
                     android:text="Video"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="#03A9F4"
                     android:textStyle="bold" />
             </LinearLayout>
 
 
         </LinearLayout>
-
     </LinearLayout>
-</LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

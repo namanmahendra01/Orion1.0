@@ -19,7 +19,7 @@ import com.orion.orion.R;
 
 public class UniversalImageLoader {
 
-    private static final int defaultimage=R.drawable.ic_profile;
+    private static final int defaultimage=R.drawable.default_image2;
     private Context mcontext;
 
     public UniversalImageLoader(Context context) {
@@ -44,9 +44,10 @@ public class UniversalImageLoader {
 
     }
 //    this method is used for set image which are static.
-    public static void setImage(String imgURL , ImageView image , final ProgressBar mProgressBar,String append){
+    public static void setImage(String imgURL , ImageView image , final ImageView mProgressBar,String append){
         ImageLoader imageLoader = com.nostra13.universalimageloader.core.ImageLoader.getInstance();
         imageLoader.displayImage(append + imgURL, image, new ImageLoadingListener() {
+
             @Override
             public void onLoadingStarted(String imageUri, View view) {
                 if(mProgressBar!=null)

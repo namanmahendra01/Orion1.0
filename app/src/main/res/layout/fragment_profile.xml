@@ -33,7 +33,7 @@
                     android:id="@+id/linearLayout1"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
-                    android:background="@color/scheme8"
+                    android:background="@drawable/pink_round_button"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -64,19 +64,10 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/display_name" />
 
-                    <ImageView
-                        android:id="@+id/menu"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/ic_baseline_setttings"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:tint="@color/black" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profile_photo"
@@ -94,16 +85,40 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CONNECT"
+                android:layout_marginTop="20dp"
+
+                android:layout_below="@id/layout1"
+                android:textSize="14sp"
+                android:layout_centerHorizontal="true"
+
+                android:textColor="@color/black"
+                android:id="@+id/conct"/>
+            <ImageView
+                android:id="@+id/menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_whilte_eclipse"
+                android:layout_alignParentRight="true"
+
+
+                app:tint="@color/black" />
             <RelativeLayout
                 android:id="@+id/profileLinks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/layout1"
+                android:layout_below="@id/conct"
+                android:gravity="center"
+
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp">
+                android:layout_marginEnd="10dp">
 
                 <LinearLayout
                     android:id="@+id/linksLine"
@@ -112,130 +127,59 @@
                     android:orientation="horizontal"
                     android:weightSum="5">
 
-                    <LinearLayout
-                        android:id="@+id/gmail_link"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:weightSum="10">
 
                         <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_weight="3"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
                             android:elevation="3dp"
-                            android:src="@drawable/ic_gmail" />
+                            android:id="@+id/gmail_link"
+                            android:src="@drawable/ic_gmail_logo" />
 
-                        <TextView
-                            android:id="@+id/gmail"
-                            android:layout_width="wrap_content"
-                            android:layout_weight="10"
-                            android:lines="1"
-                            android:layout_height="match_parent"
-                            android:maxLength="15"
-                            android:text="@null" />
-                    </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/instagram_link"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:weightSum="10">
+
 
                         <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:elevation="3dp"
-                            android:layout_weight="3"
-                            android:src="@drawable/ic_instagram" />
+                            android:layout_weight="1"
+                            android:id="@+id/instagram_link"
+                            android:src="@drawable/ic_insta_logo" />
 
-                        <TextView
-                            android:id="@+id/instagram"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="10"
-                            android:lines="1"
-                            android:maxLength="10"
-                            android:text="@null" />
-                    </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/facebook_link"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:weightSum="10">
 
                         <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:elevation="3dp"
-                            android:layout_weight="3"
-                            android:src="@drawable/ic_facebook" />
+                            android:id="@+id/facebook_link"
+                            android:layout_weight="1"
+                            android:src="@drawable/ic_fb_logo" />
 
-                        <TextView
-                            android:id="@+id/facebook"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="10"
-                            android:lines="1"
-                            android:maxLength="10"
-                            android:text="@null" />
-                    </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/twitter_link"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:weightSum="10">
 
                         <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_weight="3"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
                             android:elevation="3dp"
                             android:maxLength="10"
-                            android:src="@drawable/ic_twitter" />
+                            android:id="@+id/twitter_link"
+                            android:src="@drawable/ic_twitter_logo" />
 
-                        <TextView
-                            android:id="@+id/twitter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="10"
-                            android:lines="1"
-                            android:text="@null" />
-                    </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/whatsapp_link"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:weightSum="10">
+
 
                         <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:elevation="3dp"
-                            android:layout_weight="3"
-                            android:src="@drawable/ic_whatsapp" />
+                            android:layout_weight="1"
+                            android:id="@+id/whatsapp_link"
+                            android:src="@drawable/ic_whatsapp_logo" />
 
-                        <TextView
-                            android:id="@+id/whatsapp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="10"
-                            android:lines="1"
-                            android:maxLength="10"
-                            android:text="@null" />
-                    </LinearLayout>
+
                 </LinearLayout>
 
             </RelativeLayout>
@@ -257,12 +201,12 @@
                 android:layout_below="@id/profileLinks"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/info_container"
                 android:elevation="5dp">
-
 
                 <LinearLayout
                     android:id="@+id/info_lines"
@@ -299,7 +243,7 @@
                                 android:text="0"
                                 android:textColor="@color/scheme8"
                                 android:textSize="20sp"
-                                android:textStyle="bold" />
+                                />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -310,7 +254,7 @@
                                 android:textAllCaps="true"
                                 android:textColor="@color/black"
                                 android:textSize="15sp"
-                                android:textStyle="bold" />
+                                />
 
 
                         </LinearLayout>
@@ -336,7 +280,7 @@
                                 android:text="0"
                                 android:textColor="@color/scheme8"
                                 android:textSize="20sp"
-                                android:textStyle="bold" />
+                                />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -347,7 +291,7 @@
                                 android:textAllCaps="true"
                                 android:textColor="@color/black"
                                 android:textSize="15sp"
-                                android:textStyle="bold" />
+                                 />
 
                         </LinearLayout>
 
@@ -377,7 +321,7 @@
                                 android:text="0"
                                 android:textColor="@color/scheme8"
                                 android:textSize="20sp"
-                                android:textStyle="bold" />
+                                 />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -388,7 +332,7 @@
                                 android:textAllCaps="true"
                                 android:textColor="@color/black"
                                 android:textSize="15sp"
-                                android:textStyle="bold" />
+                             />
 
 
                         </LinearLayout>
@@ -414,7 +358,7 @@
                                 android:text="0"
                                 android:textColor="@color/scheme8"
                                 android:textSize="20sp"
-                                android:textStyle="bold" />
+                               />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -425,7 +369,7 @@
                                 android:textAllCaps="true"
                                 android:textColor="@color/black"
                                 android:textSize="15sp"
-                                android:textStyle="bold" />
+                               />
 
                         </LinearLayout>
 
@@ -455,7 +399,7 @@
                                 android:text="0"
                                 android:textColor="@color/scheme8"
                                 android:textSize="20sp"
-                                android:textStyle="bold" />
+                                />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -466,7 +410,7 @@
                                 android:textAllCaps="true"
                                 android:textColor="@color/black"
                                 android:textSize="15sp"
-                                android:textStyle="bold" />
+                           />
 
 
                         </LinearLayout>
@@ -492,7 +436,7 @@
                                 android:text="0"
                                 android:textColor="@color/scheme8"
                                 android:textSize="20sp"
-                                android:textStyle="bold" />
+                                 />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -503,7 +447,7 @@
                                 android:textAllCaps="true"
                                 android:textColor="@color/black"
                                 android:textSize="15sp"
-                                android:textStyle="bold" />
+                                />
 
                         </LinearLayout>
 
@@ -539,7 +483,7 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
-                    android:text="About"
+                    android:text="ABOUT"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 

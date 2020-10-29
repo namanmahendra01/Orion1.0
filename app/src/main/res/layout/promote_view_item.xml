@@ -26,7 +26,15 @@
                 android:layout_height="200dp"
                 android:id="@+id/post"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/rainbow"/>
+               />
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:id="@+id/progress"
+                android:src="@drawable/load"
+                android:visibility="gone"
+                android:layout_centerHorizontal="true"
+                />
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="25dp"

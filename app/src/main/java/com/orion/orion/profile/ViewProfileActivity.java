@@ -82,16 +82,11 @@ public class ViewProfileActivity extends AppCompatActivity {
     private TextView mDomain;
     private FirebaseDatabase mFirebaseDatabase;
     private CircleImageView mProfilePhoto;
-    private LinearLayout mGmailLink;
-    private LinearLayout mInstagramLink;
-    private LinearLayout mFacebookLink;
-    private LinearLayout mTwitterLink;
-    private LinearLayout mWhatsappLink;
-    private TextView mGmail;
-    private TextView mInstagram;
-    private TextView mFacebook;
-    private TextView mTwitter;
-    private TextView mWhatsapp;
+    private ImageView mGmailLink;
+    private ImageView mInstagramLink;
+    private ImageView mFacebookLink;
+    private ImageView mTwitterLink;
+    private ImageView mWhatsappLink;
     private String gmail;
     private String instagramProfile;
     private String facebookProfile;
@@ -139,11 +134,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         mTwitterLink = findViewById(R.id.twitter_link);
         mWhatsappLink = findViewById(R.id.whatsapp_link);
 
-        mGmail = findViewById(R.id.gmail);
-        mInstagram = findViewById(R.id.instagram);
-        mFacebook = findViewById(R.id.facebook);
-        mTwitter = findViewById(R.id.twitter);
-        mWhatsapp = findViewById(R.id.whatsapp);
+
 
         mFollow = findViewById(R.id.followButton);
         mMessage = findViewById(R.id.messageButton);
@@ -653,7 +644,6 @@ public class ViewProfileActivity extends AppCompatActivity {
         } else {
             mWebsite.setVisibility(View.VISIBLE);
             mWebsite.setText(userSetting.getEmail());
-            mGmail.setText(userSetting.getEmail());
             gmail = userSetting.getEmail();
         }
 
@@ -661,7 +651,6 @@ public class ViewProfileActivity extends AppCompatActivity {
             mInstagramLink.setClickable(false);
             mInstagramLink.setAlpha(0.5f);
         } else {
-            mInstagram.setText(userSetting.getInstagram());
             instagramProfile = userSetting.getInstagram();
         }
 
@@ -669,7 +658,6 @@ public class ViewProfileActivity extends AppCompatActivity {
             mFacebookLink.setClickable(false);
             mFacebookLink.setAlpha(0.5f);
         } else {
-            mFacebook.setText(userSetting.getFacebook());
             facebookProfile = userSetting.getFacebook();
 
         }
@@ -677,7 +665,6 @@ public class ViewProfileActivity extends AppCompatActivity {
             mTwitterLink.setClickable(false);
             mTwitterLink.setAlpha(0.5f);
         } else {
-            mTwitter.setText(userSetting.getTwitter());
             twitterProfile = userSetting.getTwitter();
         }
 
@@ -685,7 +672,6 @@ public class ViewProfileActivity extends AppCompatActivity {
             mWhatsappLink.setClickable(false);
             mWhatsappLink.setAlpha(0.5f);
         } else {
-            mWhatsapp.setText(userSetting.getWhatsapp());
             whatsappNo = userSetting.getWhatsapp();
         }
 //        dialog.dismiss();

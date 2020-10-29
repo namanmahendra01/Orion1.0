@@ -439,7 +439,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
         holder.domain.setText(mcontest.getDoman());
 
         getcontestDetails(mcontest.getUserId(), mcontest.getContestId(), holder.poster
-                , holder.title, holder.host, holder.regEnd, holder.totalP);
+                , holder.title, holder.host, holder.regEnd, holder.totalP,holder.progress);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -608,7 +608,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView domain, title, regEnd, entryFee, host, totalP, gp;
-        private ImageView poster,option;
+        private ImageView poster,option,progress;
         private Button voteBtn, participateBtn, regSoonBtn, contestBtn, resultBtn;
 
         Boolean ok = false;
@@ -630,6 +630,8 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
             resultBtn = itemView.findViewById(R.id.resultBtn);
             gp = itemView.findViewById(R.id.gp);
             option = itemView.findViewById(R.id.optionC);
+            progress = itemView.findViewById(R.id.progress);
+
 
 
 
@@ -638,7 +640,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
     }
 
     private void getcontestDetails(String userid, String contestid, ImageView poster, TextView title,
-                                   TextView host, TextView regend, TextView totalp) {
+                                   TextView host, TextView regend, TextView totalp, ImageView progress) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
                 .child(userid)
                 .child(mContext.getString(R.string.created_contest))
@@ -652,7 +654,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                 regend.setText(createForm.getRegEnd());
                 totalp.setText(createForm.getTotal_prize());
                 Log.d(TAG, "onDataChange: image" + createForm.getPoster());
-                UniversalImageLoader.setImage(createForm.getPoster(), poster, null, mAppend);
+                UniversalImageLoader.setImage(createForm.getPoster(), poster, progress, mAppend);
 
             }
 

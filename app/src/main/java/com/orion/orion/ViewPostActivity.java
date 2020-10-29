@@ -115,7 +115,7 @@ public class ViewPostActivity extends AppCompatActivity {
     ArrayList<Comment> comments = new ArrayList<>();
 
 
-    private SquareImageView mPostImage, thumbnail;
+    private SquareImageView mPostImage, thumbnail, progress2;
     private BottomNavigationViewEx bottomNavigationView;
     private TextView mBackLabel, duration, mCaption, mUsername, mTimestamp, mLikes, mCommentnumber, mcredit, domain, promoteNum;
     private ImageView mBackArrow, mEllipses, mStarYellow, mStarWhite, mProfileImage, mComment, promote, promoted, play2, mute, unmute;
@@ -152,6 +152,8 @@ public class ViewPostActivity extends AppCompatActivity {
         promoteNum = (TextView) findViewById(R.id.promote_number);
 
         progress = findViewById(R.id.pro);
+        progress2 = findViewById(R.id.progress);
+
 
         play2 = (ImageView) findViewById(R.id.play);
         mute = (ImageView) findViewById(R.id.mute);
@@ -259,7 +261,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
             mPostImage.setVisibility(View.VISIBLE);
             play2.setVisibility(View.GONE);
-            UniversalImageLoader.setImage(mphoto.getImage_path(), mPostImage, null, "");
+            UniversalImageLoader.setImage(mphoto.getImage_path(), mPostImage, progress2, "");
 
         } else {
             unmute.setVisibility(View.VISIBLE);
@@ -754,7 +756,7 @@ public class ViewPostActivity extends AppCompatActivity {
                                     deleteFurther();
                                 }
                             }
-                        }else{
+                        } else {
                             deleteFurther();
 
                         }
@@ -775,373 +777,407 @@ public class ViewPostActivity extends AppCompatActivity {
                                     public void onSuccess(Void aVoid) {
                                         // File deleted successfully
 
+
                                         String json = sp.getString("pl", null);
+                                        String json2 = sp.getString("myMedia", null);
+
                                         Type type = new TypeToken<ArrayList<Photo>>() {
                                         }.getType();
                                         ArrayList<Photo> photoList = new ArrayList<>();
+                                        ArrayList<Photo> mymediaList = new ArrayList<>();
+
                                         photoList = gson.fromJson(json, type);
+                                        mymediaList = gson.fromJson(json2, type);
+                                        ArrayList<Photo> photoList2 = new ArrayList<>(photoList);
+                                        ArrayList<Photo> mymediaList2 = new ArrayList<>(mymediaList);
+
+
+
                                         if (photoList == null || photoList.size() == 0) {                 //    if no arrayList is present
-                                            progress.setVisibility(GONE);
-                                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                            finish();
 
 
                                         } else {
 
-                                            photoList.remove(mphoto);
-                                            //  delete from post list and save updated list
-                                            SharedPreferences.Editor editor = sp.edit();
-                                            json = gson.toJson(photoList);
-                                            editor.putString("pl", json);
-                                            editor.apply();
-                                            progress.setVisibility(GONE);
-                                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                            finish();
+                                            for (Photo a : photoList) {
+                                                if (a.getPhoto_id().equals(mphoto.getPhoto_id()))
+                                                    photoList2.remove(a);
 
-
+                                            }
                                         }
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception exception) {
-                                        // Uh-oh, an error occurred!
-                                        Log.d(VolleyLog.TAG, "onFailure: did not delete file");
-                                    }
-                                });
-                            }
-                        });
+
+
+
+                                            if (mymediaList == null || mymediaList.size() == 0) {                 //    if no arrayList is present
+
+
+                                            } else {
+
+                                                for (Photo a : mymediaList) {
+                                                    if (a.getPhoto_id().equals(mphoto.getPhoto_id()))
+                                                        mymediaList2.remove(a);
+
+                                                }
+                                            }
+
+
+                                                //  delete from post list and save updated list
+                                                SharedPreferences.Editor editor = sp.edit();
+                                                json = gson.toJson(photoList2);
+                                                json2 = gson.toJson(mymediaList2);
+
+                                                editor.putString("pl", json);
+                                                editor.putString("myMedia", json2);
+
+                                                editor.apply();
+                                                progress.setVisibility(GONE);
+                                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                                finish();
+
+
+                                            }
+
+                                    }).
+
+                                    addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure (@NonNull Exception exception){
+                                            // Uh-oh, an error occurred!
+                                            Log.d(VolleyLog.TAG, "onFailure: did not delete file");
+                                        }
+                                    });
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled (@NonNull DatabaseError error){
+
+                        }
+                    });
+
+
+                }
+
+        @SuppressLint("ClickableViewAccessibility")
+
+
+        private void getCurrentUser () {
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            Query query = reference
+                    .child(getString(R.string.dbname_users))
+                    .orderByChild(getString(R.string.field_user_id))
+                    .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                        mCurrentUser = singleSnapshot.getValue(users.class);
                     }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.d(TAG, "Query Cancelled");
+                }
+            });
+        }
+
+        private void NumberOfLikes () {
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            Query query = reference.child(getString(R.string.dbname_user_photos))
+                    .child(mphoto.getUser_id())
+                    .child(mphoto.getPhoto_id())
+                    .child("likes");
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    numberoflike = String.valueOf(dataSnapshot.getChildrenCount());
+                    mLikes.setText(numberoflike);
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
+        }
+
+        private void ifCurrentUserLiked () {
+            Log.d(TAG, " checking current user liked or not");
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            Query query = reference.child(getString(R.string.dbname_user_photos))
+                    .child(mphoto.getUser_id())
+                    .child(mphoto.getPhoto_id())
+                    .child("likes")
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        Log.d(TAG, " checking current user liked or not: Already liked");
+                        mStarWhite.setVisibility(View.GONE);
+                        mStarYellow.setVisibility(View.VISIBLE);
+                        NumberOfLikes();
+                        likeByCurrentsUser2 = true;
+
+                    } else {
+                        Log.d(TAG, " checking current user liked or not: not liked");
+                        mStarWhite.setVisibility(View.VISIBLE);
+                        mStarYellow.setVisibility(View.GONE);
+                        NumberOfLikes();
+                        likeByCurrentsUser2 = false;
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+
+        }
+
+        private void addToHisNotification (String hisUid, String pId, String notification){
+
+            SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
+                @Override
+                public void onTimeReceived(String rawDate) {
+                    // rawDate -> 2019-11-05T17:51:01+0530
+
+
+                    String str_date = rawDate;
+                    java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+                    Date date = null;
+                    try {
+                        date = (Date) formatter.parse(str_date);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    Log.d(TAG, "onCreateView: timestampyesss" + date.getTime());
+                    String timestamp = String.valueOf(date.getTime());
+
+                    //        data to put in notification
+                    HashMap<Object, String> hashMap = new HashMap<>();
+                    hashMap.put("pId", pId);
+
+                    hashMap.put("timeStamp", timestamp);
+
+                    hashMap.put("pUid", hisUid);
+
+                    hashMap.put("notificaton", notification);
+                    hashMap.put("seen", "false");
+
+
+                    hashMap.put("sUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
+                    ref.child(hisUid).child("Notifications").child(timestamp).setValue(hashMap)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+
+
+                    Log.e(SNTPClient.TAG, rawDate);
+
+                }
+
+                @Override
+                public void onError(Exception ex) {
+                    Log.e(SNTPClient.TAG, ex.getMessage());
+                }
+            });
+
+
+        }
+
+        private void addlike () {
+            Log.d(TAG, " like add");
+
+            DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
+            reference1.child(getString(R.string.dbname_user_photos))
+                    .child(mphoto.getUser_id())
+                    .child(mphoto.getPhoto_id())
+                    .child("likes")
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .child(getString(R.string.field_user_id))
+                    .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            NumberOfLikes();
+            addToHisNotification("" + mphoto.getUser_id(), mphoto.getPhoto_id(), "Liked your post");
+
+
+        }
+
+        private void removeLike () {
+            Log.d(TAG, " like removed");
+
+            DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
+            reference1.child(getString(R.string.dbname_user_photos))
+                    .child(mphoto.getUser_id())
+                    .child(mphoto.getPhoto_id())
+                    .child("likes")
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .removeValue();
+            NumberOfLikes();
+
+
+        }
+
+        private void ifCurrentUserPromoted () {
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            Query query = reference.child(getString(R.string.dbname_user_photos))
+                    .child(mphoto.getUser_id())
+                    .child(mphoto.getPhoto_id())
+                    .child("Promote")
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        Log.d(TAG, " checking current user liked or not: Already liked");
+                        promote.setVisibility(View.GONE);
+                        promoted.setVisibility(View.VISIBLE);
+
+                    } else {
+                        Log.d(TAG, " checking current user liked or not: not liked");
+                        promote.setVisibility(View.VISIBLE);
+                        promoted.setVisibility(View.GONE);
+
 
                     }
-                });
+                }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                }
+            });
 
-    }
+        }
 
-    @SuppressLint("ClickableViewAccessibility")
+        private void getPhototDetail () {
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            Query query = reference
+                    .child(getString(R.string.dbname_users))
+                    .child(mphoto.getUser_id());
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    users user = dataSnapshot.getValue(users.class);
+                    mUsername.setText(user.getUsername());
+                    currentUsername = user.getUsername();
+                    UniversalImageLoader.setImage(user.getProfile_photo(), mProfileImage, null, "");
+                    mcredit.setText("© " + user.getUsername());
 
-
-    private void getCurrentUser() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference
-                .child(getString(R.string.dbname_users))
-                .orderByChild(getString(R.string.field_user_id))
-                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                    mCurrentUser = singleSnapshot.getValue(users.class);
                 }
 
 
-            }
-
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d(TAG, "Query Cancelled");
-            }
-        });
-    }
-
-    private void NumberOfLikes() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbname_user_photos))
-                .child(mphoto.getUser_id())
-                .child(mphoto.getPhoto_id())
-                .child("likes");
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                numberoflike = String.valueOf(dataSnapshot.getChildrenCount());
-                mLikes.setText(numberoflike);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
-    }
-
-    private void ifCurrentUserLiked() {
-        Log.d(TAG, " checking current user liked or not");
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbname_user_photos))
-                .child(mphoto.getUser_id())
-                .child(mphoto.getPhoto_id())
-                .child("likes")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    Log.d(TAG, " checking current user liked or not: Already liked");
-                    mStarWhite.setVisibility(View.GONE);
-                    mStarYellow.setVisibility(View.VISIBLE);
-                    NumberOfLikes();
-                    likeByCurrentsUser2 = true;
-
-                } else {
-                    Log.d(TAG, " checking current user liked or not: not liked");
-                    mStarWhite.setVisibility(View.VISIBLE);
-                    mStarYellow.setVisibility(View.GONE);
-                    NumberOfLikes();
-                    likeByCurrentsUser2 = false;
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.d(TAG, "Query Cancelled");
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+            });
+        }
 
 
-    }
+        @SuppressLint("ClickableViewAccessibility")
+        private void setupWidgets () {
+            mTimestamp.setText(mphoto.getDate_created().substring(0, 10));
 
-    private void addToHisNotification(String hisUid, String pId, String notification) {
-
-        SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
-            @Override
-            public void onTimeReceived(String rawDate) {
-                // rawDate -> 2019-11-05T17:51:01+0530
-
-
-                String str_date = rawDate;
-                java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-                Date date = null;
-                try {
-                    date = (Date) formatter.parse(str_date);
-                } catch (ParseException e) {
-                    e.printStackTrace();
+            mBackArrow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
                 }
-                Log.d(TAG, "onCreateView: timestampyesss" + date.getTime());
-                String timestamp = String.valueOf(date.getTime());
-
-                //        data to put in notification
-                HashMap<Object, String> hashMap = new HashMap<>();
-                hashMap.put("pId", pId);
-
-                hashMap.put("timeStamp", timestamp);
-
-                hashMap.put("pUid", hisUid);
-
-                hashMap.put("notificaton", notification);
-                hashMap.put("seen", "false");
+            });
 
 
-                hashMap.put("sUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
-                ref.child(hisUid).child("Notifications").child(timestamp).setValue(hashMap)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-
-                    }
-                });
-
-
-                Log.e(SNTPClient.TAG, rawDate);
-
-            }
-
-            @Override
-            public void onError(Exception ex) {
-                Log.e(SNTPClient.TAG, ex.getMessage());
-            }
-        });
-
-
-    }
-
-    private void addlike() {
-        Log.d(TAG, " like add");
-
-        DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
-        reference1.child(getString(R.string.dbname_user_photos))
-                .child(mphoto.getUser_id())
-                .child(mphoto.getPhoto_id())
-                .child("likes")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child(getString(R.string.field_user_id))
-                .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        NumberOfLikes();
-        addToHisNotification("" + mphoto.getUser_id(), mphoto.getPhoto_id(), "Liked your post");
-
-
-    }
-
-    private void removeLike() {
-        Log.d(TAG, " like removed");
-
-        DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
-        reference1.child(getString(R.string.dbname_user_photos))
-                .child(mphoto.getUser_id())
-                .child(mphoto.getPhoto_id())
-                .child("likes")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .removeValue();
-        NumberOfLikes();
-
-
-    }
-
-    private void ifCurrentUserPromoted() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbname_user_photos))
-                .child(mphoto.getUser_id())
-                .child(mphoto.getPhoto_id())
-                .child("Promote")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    Log.d(TAG, " checking current user liked or not: Already liked");
-                    promote.setVisibility(View.GONE);
-                    promoted.setVisibility(View.VISIBLE);
-
-                } else {
-                    Log.d(TAG, " checking current user liked or not: not liked");
-                    promote.setVisibility(View.VISIBLE);
-                    promoted.setVisibility(View.GONE);
-
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
-    private void getPhototDetail() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference
-                .child(getString(R.string.dbname_users))
-                .child(mphoto.getUser_id());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                users user = dataSnapshot.getValue(users.class);
-                mUsername.setText(user.getUsername());
-                currentUsername = user.getUsername();
-                UniversalImageLoader.setImage(user.getProfile_photo(), mProfileImage, null, "");
-                mcredit.setText("© " + user.getUsername());
-
-            }
-
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d(TAG, "Query Cancelled");
-            }
-        });
-    }
-
-
-    @SuppressLint("ClickableViewAccessibility")
-    private void setupWidgets() {
-        mTimestamp.setText(mphoto.getDate_created().substring(0, 10));
-
-        mBackArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-
-        mComment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            mComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 //
-                Intent i = new Intent(ViewPostActivity.this, CommentActivity.class);
-                i.putExtra("photoId", mphoto.getPhoto_id());
-                i.putExtra("userId", mphoto.getUser_id());
-                startActivity(i);
+                    Intent i = new Intent(ViewPostActivity.this, CommentActivity.class);
+                    i.putExtra("photoId", mphoto.getPhoto_id());
+                    i.putExtra("userId", mphoto.getUser_id());
+                    startActivity(i);
 
-            }
-        });
-        mCommentnumber.setText(String.valueOf(comments.size()));
-        mCaption.setText(mphoto.getCaption());
-        mLikes.setText(mLikesString);
-
-
-    }
-
-
-    private void setupFirebaseAuth() {
-        Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference();
-        mAuth = FirebaseAuth.getInstance();
-
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                if (user != null) {
-                    Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
-                } else {
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
+            });
+            mCommentnumber.setText(String.valueOf(comments.size()));
+            mCaption.setText(mphoto.getCaption());
+            mLikes.setText(mLikesString);
+
+
+        }
+
+
+        private void setupFirebaseAuth () {
+            Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
+            mFirebaseDatabase = FirebaseDatabase.getInstance();
+            myRef = mFirebaseDatabase.getReference();
+            mAuth = FirebaseAuth.getInstance();
+
+
+            mAuthListener = new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                    if (user != null) {
+                        Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
+                    } else {
+                        Log.d(TAG, "onAuthStateChanged:signed_out");
+                    }
+                }
+            };
+
+        }
+
+        @Override
+        public void onStart () {
+            super.onStart();
+
+            mAuth.addAuthStateListener(mAuthListener);
+
+
+        }
+
+        @Override
+        public void onStop () {
+            super.onStop();
+            if (mAuthListener != null) {
+                mAuth.removeAuthStateListener(mAuthListener);
             }
-        };
+        }
 
-    }
+        @Override
+        protected void onPause () {
+            super.onPause();
+            if (simpleExoPlayer != null) {
+                simpleExoPlayer.release();
+            }
+        }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        mAuth.addAuthStateListener(mAuthListener);
-
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
+        @Override
+        protected void onDestroy () {
+            super.onDestroy();
+            if (simpleExoPlayer != null) {
+                simpleExoPlayer.release();
+            }
         }
     }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (simpleExoPlayer != null) {
-            simpleExoPlayer.release();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (simpleExoPlayer != null) {
-            simpleExoPlayer.release();
-        }
-    }
-}

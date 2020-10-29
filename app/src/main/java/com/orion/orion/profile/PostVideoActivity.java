@@ -111,6 +111,8 @@ public class PostVideoActivity extends AppCompatActivity {
     private ImageView close;
     private ImageView mute;
     private ImageView unmute;
+    private ImageView thumbnailImage;
+
     private ImageView thumbnailButton;
     private SquareImageView thumbnail;
     private StorageReference mStorageReference;
@@ -209,6 +211,8 @@ public class PostVideoActivity extends AppCompatActivity {
         progress = findViewById(R.id.progress);
         videoBox = findViewById(R.id.videoBox);
         thumbnail = findViewById(R.id.thumbnail);
+        thumbnailImage = findViewById(R.id.thumbnailImage);
+
         playerView = findViewById(R.id.player_view);
         play2 = findViewById(R.id.play);
         mute = findViewById(R.id.mute);
@@ -233,15 +237,17 @@ public class PostVideoActivity extends AppCompatActivity {
             Log.d(TAG, "postVideo: size" + size / 1024 / 1024 + "MB");
             uploadVideo();
         } else {
-            if (!progress.getText().equals("100% completed"))
-                Toast.makeText(mContext, "Please wait for some more time ^_^''", Toast.LENGTH_SHORT).show();
-            else if (videoUri == null)
+
+             if (videoUri == null)
                 Toast.makeText(mContext, "No video to upload :(", Toast.LENGTH_SHORT).show();
             else if(caption.length()>=150)
-                Toast.makeText(mContext, "Caption size more then 150 letters //0‑0\\\\", Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(mContext, "Plz add a thumbnail also ༼ つ ◕_◕ ༽つdt", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Caption size must be less then 150 letters //0‑0\\\\", Toast.LENGTH_SHORT).show();
+            else if(imageUri==null)
+                Toast.makeText(mContext, "Please add a thumbnail also ༼ つ ◕_◕ ༽つdt", Toast.LENGTH_SHORT).show();
+             else
+                 Toast.makeText(mContext, "Please wait for some more time", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     private void uploadVideo() {
@@ -773,6 +779,7 @@ public class PostVideoActivity extends AppCompatActivity {
                             Log.d(TAG, "onActivityResult: path: " + path);
                             Log.d(TAG, "onActivityResult: uri: " + uri);
                             imageUri = uri;
+                            thumbnailImage.setImageURI(imageUri);
                             if (thumbnail.getVisibility() == View.VISIBLE)
                                 thumbnail.setImageURI(imageUri);
                         }

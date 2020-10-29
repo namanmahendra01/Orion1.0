@@ -113,8 +113,13 @@ public class PostPhotoActivity extends AppCompatActivity {
             String caption = mCaption.getText().toString();
             Log.d(TAG, "onCreate: imgURL" + imgURL);
             Log.d(TAG, "onCreate: imageCount" + imageCount);
-            uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgURL);
-            mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgURL, null);
+            if (imgURL!=null&&!imgURL.equals("")){
+                uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgURL);
+
+            }else{
+                Toast.makeText(PostPhotoActivity.this, "Please Select Image First.", Toast.LENGTH_SHORT).show();
+
+            }
         });
     }
 
@@ -135,15 +140,7 @@ public class PostPhotoActivity extends AppCompatActivity {
         uploadTask = storageReference.putBytes(bytes);
         ProgressDialog dialog = ProgressDialog.show(mContext, "", "Uploading... - ", true);
 
-//            Log.d(TAG, "uploadNewPhoto: photoType"+photoType);
-//            Log.d(TAG, "uploadNewPhoto: caption"+caption);
-//            Log.d(TAG, "uploadNewPhoto: count"+count);
-//            Log.d(TAG, "uploadNewPhoto: imgURL"+imgURL);
-//            Log.d(TAG, "uploadNewPhoto: filepaths"+filepaths);
-//            Log.d(TAG, "uploadNewPhoto: user_id"+user_id);
-//            Log.d(TAG, "uploadNewPhoto: StorageReference"+storageReference);
-//            Log.d(TAG, "uploadNewPhoto: bm"+bm);
-//            Log.d(TAG, "uploadNewPhoto: bytes"+ Arrays.toString(bytes));
+
         Log.d(TAG, "uploadNewPhoto: uploadTask" + uploadTask);
 
         uploadTask.addOnSuccessListener(taskSnapshot -> {

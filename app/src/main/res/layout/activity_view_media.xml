@@ -29,10 +29,19 @@
             android:adjustViewBounds="true"
             android:id="@+id/mediaIv"
             android:layout_gravity="center_horizontal"
-
-
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_star"/>
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:id="@+id/progress"
+            android:src="@drawable/load"
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerVertical="true"
+            />
 
 
 

@@ -194,9 +194,20 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/rainbow"
                 android:id="@+id/posterD"
 
+                android:layout_gravity="center_horizontal"
+                android:scaleType="centerInside"
+                android:adjustViewBounds="true"
+                android:paddingRight="60dp"
+                android:paddingLeft="60dp"
+                android:paddingTop="10dp"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/progress"
+                android:src="@drawable/load"
+                android:visibility="gone"
                 android:layout_gravity="center_horizontal"
                 android:scaleType="centerInside"
                 android:adjustViewBounds="true"

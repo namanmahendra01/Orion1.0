@@ -33,7 +33,7 @@
                     android:id="@+id/linearLayout1"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
-                    android:background="@color/scheme8"
+                    android:background="@drawable/pink_round_button"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -43,7 +43,7 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_margin="10dp"
-                        android:background="@drawable/back_arrow_new"
+                        android:background="@drawable/ic_back_black_arrow"
                         app:layout_constraintBottom_toBottomOf="@+id/textView"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -91,17 +91,28 @@
                     app:layout_constraintTop_toBottomOf="@id/linearLayout1" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="CONNECT"
+                android:layout_below="@id/layout1"
+                android:textSize="14sp"
+                android:layout_centerHorizontal="true"
 
+                android:textColor="@color/black"
+                android:id="@+id/conct"/>
             <RelativeLayout
                 android:id="@+id/profileLinks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/layout1"
                 android:layout_alignParentStart="true"
+                android:layout_below="@id/conct"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="20dp">
+
 
                 <LinearLayout
                     android:id="@+id/linksLine"
@@ -110,135 +121,59 @@
                     android:orientation="horizontal"
                     android:weightSum="5">
 
-                    <LinearLayout
+
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:elevation="3dp"
                         android:id="@+id/gmail_link"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_gmail_logo" />
+
+
+
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:elevation="3dp"
                         android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:weightSum="10">
-
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_weight="3"
-                            android:elevation="3dp"
-                            android:src="@drawable/ic_gmail"
-                            tools:ignore="NestedWeights" />
-
-                        <TextView
-                            android:id="@+id/gmail"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="10"
-                            android:lines="1"
-                            android:maxLength="15"
-                            android:text="@null" />
-                    </LinearLayout>
-
-                    <LinearLayout
                         android:id="@+id/instagram_link"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:weightSum="10">
+                        android:src="@drawable/ic_insta_logo" />
 
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_weight="3"
-                            android:elevation="3dp"
-                            android:src="@drawable/ic_instagram"
-                            tools:ignore="NestedWeights" />
 
-                        <TextView
-                            android:id="@+id/instagram"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="10"
-                            android:lines="1"
-                            android:maxLength="10"
-                            android:text="@null" />
-                    </LinearLayout>
 
-                    <LinearLayout
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:elevation="3dp"
                         android:id="@+id/facebook_link"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:weightSum="10">
+                        android:src="@drawable/ic_fb_logo" />
 
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_weight="3"
-                            android:elevation="3dp"
-                            android:src="@drawable/ic_facebook"
-                            tools:ignore="NestedWeights" />
 
-                        <TextView
-                            android:id="@+id/facebook"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="10"
-                            android:lines="1"
-                            android:maxLength="10"
-                            android:text="@null" />
-                    </LinearLayout>
 
-                    <LinearLayout
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:elevation="3dp"
+                        android:maxLength="10"
                         android:id="@+id/twitter_link"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_twitter_logo" />
+
+
+
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:elevation="3dp"
                         android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:weightSum="10">
-
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_weight="3"
-                            android:elevation="3dp"
-                            android:maxLength="10"
-                            android:src="@drawable/ic_twitter"
-                            tools:ignore="NestedWeights" />
-
-                        <TextView
-                            android:id="@+id/twitter"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="10"
-                            android:lines="1"
-                            android:text="@null" />
-                    </LinearLayout>
-
-                    <LinearLayout
                         android:id="@+id/whatsapp_link"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:weightSum="10">
+                        android:src="@drawable/ic_whatsapp_logo" />
 
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_weight="3"
-                            android:elevation="3dp"
-                            android:src="@drawable/ic_whatsapp"
-                            tools:ignore="NestedWeights" />
-
-                        <TextView
-                            android:id="@+id/whatsapp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="10"
-                            android:lines="1"
-                            android:maxLength="10"
-                            android:text="@null" />
-                    </LinearLayout>
                 </LinearLayout>
 
             </RelativeLayout>
@@ -246,6 +181,7 @@
 
             <LinearLayout
                 android:id="@+id/contactButtons"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/profileLinks"
@@ -253,7 +189,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_gravity="center"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="30dp"
                 android:layout_marginEnd="20dp"
                 android:gravity="center"
                 android:orientation="horizontal"
@@ -268,6 +204,7 @@
                     android:background="@drawable/circular_button"
                     android:backgroundTint="@color/scheme8"
                     android:gravity="center"
+                    android:textColor="@color/white"
                     android:text="Become a Fan"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -304,9 +241,10 @@
                 android:layout_below="@id/contactButtons"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
+             android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/info_container"
                 android:elevation="5dp">
 
@@ -346,7 +284,7 @@
                                 android:text="0"
                                 android:textColor="@color/scheme8"
                                 android:textSize="20sp"
-                                android:textStyle="bold" />
+                                />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -357,7 +295,7 @@
                                 android:textAllCaps="true"
                                 android:textColor="@color/black"
                                 android:textSize="15sp"
-                                android:textStyle="bold" />
+                              />
 
 
                         </LinearLayout>
@@ -377,24 +315,23 @@
                             <TextView
                                 android:id="@+id/fans"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|bottom"
                                 android:text="0"
                                 android:textColor="@color/scheme8"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
+                                android:textSize="20sp" />
 
                             <TextView
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
+                                android:layout_height="30dp"
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|top"
                                 android:text="Fans"
                                 android:textAllCaps="true"
                                 android:textColor="@color/black"
                                 android:textSize="15sp"
-                                android:textStyle="bold" />
+                                 />
 
                         </LinearLayout>
 
@@ -424,7 +361,7 @@
                                 android:text="0"
                                 android:textColor="@color/scheme8"
                                 android:textSize="20sp"
-                                android:textStyle="bold" />
+                               />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -435,7 +372,7 @@
                                 android:textAllCaps="true"
                                 android:textColor="@color/black"
                                 android:textSize="15sp"
-                                android:textStyle="bold" />
+                            />
 
 
                         </LinearLayout>
@@ -461,7 +398,7 @@
                                 android:text="0"
                                 android:textColor="@color/scheme8"
                                 android:textSize="20sp"
-                                android:textStyle="bold" />
+                                />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -472,7 +409,7 @@
                                 android:textAllCaps="true"
                                 android:textColor="@color/black"
                                 android:textSize="15sp"
-                                android:textStyle="bold" />
+                                />
 
                         </LinearLayout>
 
@@ -502,7 +439,7 @@
                                 android:text="0"
                                 android:textColor="@color/scheme8"
                                 android:textSize="20sp"
-                                android:textStyle="bold" />
+                               />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -513,7 +450,7 @@
                                 android:textAllCaps="true"
                                 android:textColor="@color/black"
                                 android:textSize="15sp"
-                                android:textStyle="bold" />
+                                 />
 
 
                         </LinearLayout>
@@ -539,7 +476,7 @@
                                 android:text="0"
                                 android:textColor="@color/scheme8"
                                 android:textSize="20sp"
-                                android:textStyle="bold" />
+                                 />
 
                             <TextView
                                 android:layout_width="match_parent"
@@ -550,7 +487,7 @@
                                 android:textAllCaps="true"
                                 android:textColor="@color/black"
                                 android:textSize="15sp"
-                                android:textStyle="bold" />
+                            />
 
                         </LinearLayout>
 

@@ -95,17 +95,13 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView mDomain;
     private CircleImageView mProfilePhoto;
     private ProgressDialog dialog;
-    private LinearLayout mGmailLink;
-    private LinearLayout mInstagramLink;
-    private LinearLayout mFacebookLink;
-    private LinearLayout mTwitterLink;
 
-    private TextView mGmail;
-    private TextView mInstagram;
-    private TextView mFacebook;
-    private TextView mTwitter;
-    private TextView mWhatsapp;
-    private LinearLayout mWhatsappLink;
+    private ImageView mGmailLink;
+    private ImageView mInstagramLink;
+    private ImageView mFacebookLink;
+    private ImageView mTwitterLink;
+    private ImageView mWhatsappLink;
+
     private String gmail;
     private String instagramProfile;
     private String facebookProfile;
@@ -153,11 +149,6 @@ public class ProfileActivity extends AppCompatActivity {
         mTwitterLink = findViewById(R.id.twitter_link);
         mWhatsappLink = findViewById(R.id.whatsapp_link);
 
-        mGmail = findViewById(R.id.gmail);
-        mInstagram = findViewById(R.id.instagram);
-        mFacebook = findViewById(R.id.facebook);
-        mTwitter = findViewById(R.id.twitter);
-        mWhatsapp = findViewById(R.id.whatsapp);
 
         mPosts = findViewById(R.id.posts);
         mFans = findViewById(R.id.fans);
@@ -599,6 +590,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void SetupGridView() {
         final ArrayList<Photo> photos = new ArrayList<>();
+       imgURLsList = new ArrayList<>();
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(getString(R.string.dbname_user_photos)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -680,14 +673,12 @@ public class ProfileActivity extends AppCompatActivity {
         } else {
             mWebsite.setVisibility(View.VISIBLE);
             mWebsite.setText(userSetting.getEmail());
-            mGmail.setText(userSetting.getEmail());
         }
 
         if (userSetting.getInstagram() == null || userSetting.getInstagram().equals("")) {
             mInstagramLink.setClickable(false);
             mInstagramLink.setAlpha(0.5f);
         } else {
-            mInstagram.setText(userSetting.getInstagram());
             instagramProfile = userSetting.getInstagram();
         }
 
@@ -695,7 +686,6 @@ public class ProfileActivity extends AppCompatActivity {
             mFacebookLink.setClickable(false);
             mFacebookLink.setAlpha(0.5f);
         } else {
-            mFacebook.setText(userSetting.getFacebook());
             facebookProfile = userSetting.getFacebook();
 
         }
@@ -703,7 +693,6 @@ public class ProfileActivity extends AppCompatActivity {
             mTwitterLink.setClickable(false);
             mTwitterLink.setAlpha(0.5f);
         } else {
-            mTwitter.setText(userSetting.getTwitter());
             twitterProfile = userSetting.getTwitter();
         }
 
@@ -711,7 +700,6 @@ public class ProfileActivity extends AppCompatActivity {
             mWhatsappLink.setClickable(false);
             mWhatsappLink.setAlpha(0.5f);
         } else {
-            mWhatsapp.setText(userSetting.getWhatsapp());
             whatsappNo = userSetting.getWhatsapp();
         }
 //        dialog.dismiss();

@@ -66,7 +66,7 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
 
         ParticipantList participantList = participantLists.get(i);
         if (isImage) {
-            UniversalImageLoader.setImage(participantList.getMediaLink(), holder.image, null, "");
+            UniversalImageLoader.setImage(participantList.getMediaLink(), holder.image, holder.progress, "");
             holder.image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -227,7 +227,7 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
 
         private ImageView image;
         TextView viewSub, num, name;
-        private ImageView voteNo, voteYes;
+        private ImageView voteNo, voteYes,progress;
         private TextView votingNumber;
         private String mVotingnumber = "";
 
@@ -240,6 +240,7 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
             viewSub = itemView.findViewById(R.id.view);
             num = itemView.findViewById(R.id.num);
             name = itemView.findViewById(R.id.name);
+            progress = itemView.findViewById(R.id.progress);
 
 
         }

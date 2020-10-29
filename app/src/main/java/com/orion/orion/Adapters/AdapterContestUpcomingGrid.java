@@ -393,7 +393,7 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
         holder.domain.setText(mcontest.getDoman());
 
         getcontestDetails(mcontest.getUserId(),mcontest.getContestId(),holder.poster
-        ,holder.title);
+        ,holder.title,holder.progress);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -457,7 +457,7 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView domain, title, entryFee,gp;
-        private ImageView poster,option;
+        private ImageView poster,option,progress;
         String vote="No";
         String reg="No";
         String voteS="";
@@ -474,6 +474,8 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
             poster = itemView.findViewById(R.id.posterD);
             option = itemView.findViewById(R.id.optionC);
             gp = itemView.findViewById(R.id.gp);
+            progress = itemView.findViewById(R.id.progress);
+
 
 
             Log.d(TAG, "hello2kk2: "+ timestamp2);
@@ -481,7 +483,7 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
 
         }
     }
-        private  void getcontestDetails(String userid, String contestid, ImageView poster, TextView title){
+        private  void getcontestDetails(String userid, String contestid, ImageView poster, TextView title, ImageView progress){
             DatabaseReference ref= FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
                     .child(userid)
                     .child(mContext.getString(R.string.created_contest))
@@ -492,7 +494,7 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
                     CreateForm createForm=dataSnapshot.getValue(CreateForm.class);
                     title.setText(createForm.getTitle());
                     Log.d(TAG, "onDataChange: image"+createForm.getPoster() );
-                    UniversalImageLoader.setImage(createForm.getPoster(),poster,null,mAppend);
+                    UniversalImageLoader.setImage(createForm.getPoster(),poster,progress,mAppend);
 
                 }
 

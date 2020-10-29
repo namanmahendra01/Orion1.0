@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,32 +45,23 @@ public class fragment_contest_detail_result extends Fragment {
     public fragment_contest_detail_result(){}
 
 
-    private TextView entryfee,title,totalprize,maxPart,voteType,
+    private TextView entryfee,title,totalprize,maxPart,voteType,gp,
             regBegin,regEnd,voteBegin,voteEnd,domain,openfor,juryname1,juryname2,juryname3,jury
             ,jurypl1,jurypl2,jurypl3,hostedby,filetype,windate,p1Tv,p2Tv,p3Tv,descrip,rules;;
     private ImageView poster,jurypic1,jurypic2,jurypic3;
-    private String mAppend = "";
-    private String jpic1="",jpic2="",jpic3="",posterlink="";
+    private String mAppend = "",username="";
+    private String posterlink="";
     private CardView cardView;
+    RelativeLayout topLayout;
 
-    String descrip2="",rule2="";
-
-    private  String newContestKey;
     private LinearLayout prizeLinear;
     String userid,Contestkey;
 
-    //firebase
-    private FirebaseFirestore db;
-    private FirebaseAuth mAuth;
-    private FirebaseMethods mFirebaseMethods;
-    private  FirebaseAuth.AuthStateListener mAuthListener;
-    private DatabaseReference myRef;
-    private FirebaseDatabase mFirebaseDatabase;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_contest_detail_result, container, false);
+        View view = inflater.inflate(R.layout.activity_contest_details, container, false);
 
 
         entryfee=view.findViewById(R.id.entryfeeTv);
@@ -104,6 +96,11 @@ public class fragment_contest_detail_result extends Fragment {
         p2Tv=view.findViewById(R.id.p2Tv);
         p3Tv=view.findViewById(R.id.p3Tv);
         prizeLinear=view.findViewById(R.id.prizell);
+        gp = view.findViewById(R.id.gp);
+
+        topLayout = view.findViewById(R.id.reLayout1);
+
+        topLayout.setVisibility(View.GONE);
 
 
 
@@ -111,6 +108,8 @@ public class fragment_contest_detail_result extends Fragment {
         Bundle b1=getActivity().getIntent().getExtras();
         Contestkey=b1.getString("contestId");
         userid=b1.getString("userId");
+
+        setgp(userid, gp);
 
         DatabaseReference ref= FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests))
                 .child(userid)
@@ -398,36 +397,7 @@ public class fragment_contest_detail_result extends Fragment {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
-
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl1.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                           users user = singleSnapshot.getValue(users.class);
-
-                            Intent i = new Intent(getActivity(), profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
-                            startActivity(i);
-
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
+                juryProfile(jurypl1.getText().toString());
 
 
             }
@@ -436,36 +406,7 @@ public class fragment_contest_detail_result extends Fragment {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
-
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl1.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                           users user = singleSnapshot.getValue(users.class);
-
-                            Intent i = new Intent(getActivity(), profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
-                            startActivity(i);
-
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
+                juryProfile(jurypl1.getText().toString());
 
 
             }
@@ -474,36 +415,8 @@ public class fragment_contest_detail_result extends Fragment {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+                juryProfile(jurypl1.getText().toString());
 
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl1.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                            users user = singleSnapshot.getValue(users.class);
-
-                            Intent i = new Intent(getActivity(), profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
-                            startActivity(i);
-
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
 
 
             }
@@ -513,36 +426,8 @@ public class fragment_contest_detail_result extends Fragment {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+                juryProfile(jurypl2.getText().toString());
 
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl2.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                            users user = singleSnapshot.getValue(users.class);
-
-                            Intent i = new Intent(getActivity(), profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
-                            startActivity(i);
-
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
 
 
             }
@@ -551,36 +436,8 @@ public class fragment_contest_detail_result extends Fragment {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+                juryProfile(jurypl2.getText().toString());
 
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl2.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                            users user = singleSnapshot.getValue(users.class);
-
-                            Intent i = new Intent(getActivity(), profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
-                            startActivity(i);
-
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
 
 
             }
@@ -589,35 +446,8 @@ public class fragment_contest_detail_result extends Fragment {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+                juryProfile(jurypl2.getText().toString());
 
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl2.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                            users user = singleSnapshot.getValue(users.class);
-
-                            Intent i = new Intent(getActivity(), profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
-                            startActivity(i);
-
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
 
 
             }
@@ -627,36 +457,8 @@ public class fragment_contest_detail_result extends Fragment {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+                juryProfile(jurypl3.getText().toString());
 
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl3.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                            users user = singleSnapshot.getValue(users.class);
-
-                            Intent i = new Intent(getActivity(), profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
-                            startActivity(i);
-
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
 
 
             }
@@ -665,35 +467,7 @@ public class fragment_contest_detail_result extends Fragment {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
-
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl3.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                            users user = singleSnapshot.getValue(users.class);
-
-                            Intent i = new Intent(getActivity(), profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
-                            startActivity(i);
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
+                juryProfile(jurypl3.getText().toString());
 
 
             }
@@ -702,36 +476,8 @@ public class fragment_contest_detail_result extends Fragment {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+                juryProfile(jurypl3.getText().toString());
 
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl3.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                            users user = singleSnapshot.getValue(users.class);
-
-                            Intent i = new Intent(getActivity(), profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), user.getUser_id());
-                            startActivity(i);
-
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
 
 
             }
@@ -742,6 +488,84 @@ public class fragment_contest_detail_result extends Fragment {
         return view;
     }
 
+    private void juryProfile(String toString) {
+        DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+
+        Query userquery = ref
+                .child(getString(R.string.dbname_users))
+                .orderByChild(getString(R.string.field_username))
+                .equalTo(toString);
+        userquery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+
+                    username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
+
+                    Intent i = new Intent(getContext(), profile.class);
+                    i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
+
+                    i.putExtra(getString(R.string.intent_user), username);
+                    startActivity(i);
+
+                }
+
+
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d(TAG, "Query Cancelled");
+            }
+        });
+
+    }
+    private void setgp(String userid, TextView gp) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child(getString(R.string.dbname_contests))
+                .child(userid)
+                .child("completed")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            long y = (long) snapshot.getValue();
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                            reference.child(getString(R.string.dbname_contests))
+                                    .child(userid)
+                                    .child("reports")
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                            if (snapshot.exists()) {
+                                                long x = (long) snapshot.getValue();
+                                                gp.setText(String.valueOf(100 - (((x * 100) / y))) + "%");
+                                            } else {
+                                                gp.setText("100%");
+
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+
+                        } else {
+                            gp.setText("100%");
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
 
 
 }

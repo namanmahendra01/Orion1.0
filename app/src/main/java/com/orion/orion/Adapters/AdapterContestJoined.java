@@ -182,7 +182,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
 
 
         getcontestDetails(joiningForm.getHostId(),joiningForm.getContestKey(),holder.poster
-                ,holder.title,holder.host,holder.regEnd,holder.totalP,holder.entryFee,holder.domain);
+                ,holder.title,holder.host,holder.regEnd,holder.totalP,holder.entryFee,holder.domain,holder.progress);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,7 +224,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView domain, title, regEnd, entryFee, host, totalP,status,statusTv,gp;
-        private ImageView poster,option;
+        private ImageView poster,option,progress;
         RelativeLayout relStatus;
         Boolean ok = false;
         int p = 0;
@@ -246,6 +246,8 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
             option = itemView.findViewById(R.id.optionC);
             gp = itemView.findViewById(R.id.gp);
             relStatus = itemView.findViewById(R.id.relStatus);
+            progress = itemView.findViewById(R.id.progress);
+
 
 
 
@@ -383,8 +385,8 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
                 });
     }
 
-    private  void getcontestDetails(String userid,String contestid,ImageView poster,TextView title,
-                                    TextView host,TextView regend,TextView totalp,TextView entryfee,TextView domain){
+    private  void getcontestDetails(String userid, String contestid, ImageView poster, TextView title,
+                                    TextView host, TextView regend, TextView totalp, TextView entryfee, TextView domain, ImageView progress){
         DatabaseReference ref= FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
 
                 .child(userid)
@@ -402,7 +404,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
                 entryfee.setText(createForm.getEntryfee());
                 domain.setText(createForm.getDomain());
                 Log.d(TAG, "onDataChange: image"+createForm.getPoster() );
-                UniversalImageLoader.setImage(createForm.getPoster(),poster,null,mAppend);
+                UniversalImageLoader.setImage(createForm.getPoster(),poster,progress,mAppend);
 
             }
 

@@ -1,8 +1,6 @@
 package com.orion.orion.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.Constraints;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -19,12 +16,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
-import com.orion.orion.ViewPostActivity;
-import com.orion.orion.models.Comment;
 import com.orion.orion.models.Photo;
 import com.orion.orion.util.UniversalImageLoader;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridImageExplore.ViewHolder> {
@@ -60,13 +54,14 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
         Photo photo = photos.get(i);
+
         if (photo.getType() != null)
             if (photo.getType().equals("video"))
-                UniversalImageLoader.setImage(photo.getThumbnail(), holder.image, null, "");
+                UniversalImageLoader.setImage(photo.getThumbnail(), holder.image, holder.progress, "");
             else
-                UniversalImageLoader.setImage(photo.getImage_path(), holder.image, null, "");
+                UniversalImageLoader.setImage(photo.getImage_path(), holder.image, holder.progress, "");
         else
-            UniversalImageLoader.setImage(photo.getImage_path(), holder.image, null, "");
+            UniversalImageLoader.setImage(photo.getImage_path(), holder.image, holder.progress, "");
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(mContext.getString(R.string.dbname_users)).child(photo.getUser_id()).child(mContext.getString(R.string.field_username)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -117,12 +112,13 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
     }
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView username;
-        private ImageView image;
+        private ImageView image,progress;
         OnPostItemClickListner onPostItemClickListner;
 
         public ViewHolder(@NonNull View itemView, OnPostItemClickListner onPostItemClickListner) {
             super(itemView);
             image = itemView.findViewById(R.id.image);
+            progress = itemView.findViewById(R.id.progress);
             username = itemView.findViewById(R.id.username);
             this.onPostItemClickListner=onPostItemClickListner;
             itemView.setOnClickListener(this);

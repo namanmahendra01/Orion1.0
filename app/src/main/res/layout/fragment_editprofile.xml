@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="match_parent">
 
     <RelativeLayout
@@ -17,7 +18,7 @@
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:backgroundTint="@color/scheme8">
+                android:backgroundTint="@color/white">
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/profileToolbar"
@@ -46,7 +47,7 @@
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="5dp"
-                            android:layout_toRightOf="@+id/backarrow"
+                            android:layout_centerHorizontal="true"
                             android:text="Edit Profile"
                             android:textColor="#000000" />
 
@@ -106,7 +107,7 @@
                         android:layout_below="@+id/profile_photo"
                         android:layout_centerHorizontal="true"
                         android:text="Change Photo"
-                        android:textColor="@color/scheme8"
+                        android:textColor="#03A9F4"
                         android:textSize="16sp" />
 
                     <TextView
@@ -118,33 +119,29 @@
                         android:layout_marginTop="30dp"
                         android:gravity="start"
                         android:text="Personal Info"
-                        android:textColor="@color/scheme8"
-                        android:textSize="32dp"
-                        android:textStyle="bold" />
+                        android:textColor="@color/black"
+                        android:textSize="22dp"
+                        />
                     <!--    username-->
                     <RelativeLayout
                         android:id="@+id/relLayout1"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_below="@+id/pi"
-                        android:background="@drawable/grey_border_bottom">
+                        android:background="@color/white">
 
-                        <ImageView
-                            android:layout_width="35dp"
-                            android:layout_height="match_parent"
-                            android:layout_centerVertical="true"
-                            android:src="@drawable/ic_profile"
-                            app:tint="@color/scheme8" />
+
 
                         <EditText
                             android:id="@+id/username"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_centerVertical="true"
-                            android:layout_marginStart="40dp"
-                            android:layout_marginLeft="40dp"
-                            android:background="@null"
+                            android:padding="10dp"
+
+                            android:background="@drawable/rectangular_border"
                             android:hint="Username"
+
                             android:inputType="textNoSuggestions" />
 
                     </RelativeLayout>
@@ -155,23 +152,16 @@
                         android:layout_height="50dp"
                         android:layout_below="@+id/relLayout1"
                         android:layout_marginTop="15dp"
-                        android:background="@drawable/grey_border_bottom">
+                        android:background="@color/white">
 
-                        <ImageView
-                            android:layout_width="35dp"
-                            android:layout_height="match_parent"
-                            android:layout_centerVertical="true"
-                            android:src="@drawable/ic_display"
-                            app:tint="@color/scheme8" />
 
                         <EditText
                             android:id="@+id/display_name"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_centerVertical="true"
-                            android:layout_marginStart="40dp"
-                            android:layout_marginLeft="40dp"
-                            android:background="@null"
+                         android:padding="10dp"
+                            android:background="@drawable/rectangular_border"
                             android:hint="Display name"
                             android:inputType="textNoSuggestions" />
 
@@ -186,23 +176,16 @@
                         android:layout_below="@+id/relLayout2"
                         android:layout_marginTop="15dp"
 
-                        android:background="@drawable/grey_border_bottom">
+                        android:background="@color/white">
 
-                        <ImageView
-                            android:layout_width="35dp"
-                            android:layout_height="match_parent"
-                            android:layout_centerVertical="true"
-                            android:src="@drawable/ic_website"
-                            app:tint="@color/scheme8" />
 
                         <EditText
                             android:id="@+id/description"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_centerVertical="true"
-                            android:layout_marginStart="40dp"
-                            android:layout_marginLeft="40dp"
-                            android:background="@null"
+                         android:padding="10dp"
+                            android:background="@drawable/rectangular_border"
 
                             android:hint="description"
                             android:inputType="textNoSuggestions" />
@@ -218,10 +201,10 @@
                         android:layout_marginTop="50dp"
                         android:background="@drawable/grey_border_bottom"
                         android:gravity="start"
-                        android:text="Personal Links"
-                        android:textColor="@color/scheme8"
-                        android:textSize="32dp"
-                        android:textStyle="bold" />
+                        android:text="Connections"
+                        android:textColor="@color/black"
+                        android:textSize="22dp"
+                         />
 
                     <RelativeLayout
                         android:id="@+id/profileLinks"
@@ -248,20 +231,14 @@
                                 android:weightSum="10">
 
                                 <ImageView
-                                    android:layout_width="50dp"
-                                    android:layout_height="50dp"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
                                     android:layout_weight="3"
                                     android:elevation="3dp"
-                                    android:src="@drawable/ic_gmail"
+                                    android:src="@drawable/ic_gmail_logo"
                                     tools:ignore="NestedWeights" />
 
-                                <TextView
-                                    android:id="@+id/gmail"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="10"
-                                    android:lines="1"
-                                    android:text="@null" />
+
                             </LinearLayout>
 
                             <LinearLayout
@@ -273,20 +250,14 @@
                                 android:weightSum="10">
 
                                 <ImageView
-                                    android:layout_width="50dp"
-                                    android:layout_height="50dp"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
                                     android:layout_weight="3"
                                     android:elevation="3dp"
-                                    android:src="@drawable/ic_instagram"
+                                    android:src="@drawable/ic_insta_logo"
                                     tools:ignore="NestedWeights" />
 
-                                <TextView
-                                    android:id="@+id/instagram"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="10"
-                                    android:lines="1"
-                                    android:text="@null" />
+
                             </LinearLayout>
 
                             <LinearLayout
@@ -298,20 +269,14 @@
                                 android:weightSum="15">
 
                                 <ImageView
-                                    android:layout_width="50dp"
-                                    android:layout_height="50dp"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
                                     android:layout_weight="3"
                                     android:elevation="3dp"
-                                    android:src="@drawable/ic_facebook"
+                                    android:src="@drawable/ic_fb_logo"
                                     tools:ignore="NestedWeights" />
 
-                                <TextView
-                                    android:id="@+id/facebook"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="10"
-                                    android:lines="1"
-                                    android:text="@null" />
+
                             </LinearLayout>
 
                             <LinearLayout
@@ -323,20 +288,13 @@
                                 android:weightSum="10">
 
                                 <ImageView
-                                    android:layout_width="50dp"
-                                    android:layout_height="50dp"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
                                     android:layout_weight="3"
                                     android:elevation="3dp"
-                                    android:src="@drawable/ic_twitter"
+                                    android:src="@drawable/ic_twitter_logo"
                                     tools:ignore="NestedWeights" />
 
-                                <TextView
-                                    android:id="@+id/twitter"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="10"
-                                    android:lines="1"
-                                    android:text="@null" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -348,20 +306,14 @@
                                 android:weightSum="10">
 
                                 <ImageView
-                                    android:layout_width="50dp"
-                                    android:layout_height="50dp"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
                                     android:layout_weight="3"
                                     android:elevation="3dp"
-                                    android:src="@drawable/ic_whatsapp"
+                                    android:src="@drawable/ic_whatsapp_logo"
                                     tools:ignore="NestedWeights" />
 
-                                <TextView
-                                    android:id="@+id/whatsapp"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="10"
-                                    android:lines="1"
-                                    android:text="@null" />
+
                             </LinearLayout>
                         </LinearLayout>
 

@@ -36,7 +36,7 @@
 
                 android:layout_centerHorizontal="true"
                 android:adjustViewBounds="true"
-                android:src="@drawable/rainbow" />
+                 />
 
             <LinearLayout
                 android:id="@+id/host"
@@ -569,7 +569,6 @@
                             android:scaleType="centerInside"
                             android:adjustViewBounds="true"
                             android:id="@+id/jpic1"
-                            android:src="@drawable/rainbow"
                             android:layout_weight="1"/>
                         <ImageView
                             android:visibility="gone"
@@ -582,7 +581,7 @@
                             android:layout_weight="1"
                             android:scaleType="centerInside"
                             android:adjustViewBounds="true"
-                            android:src="@drawable/rainbow"/>
+                           />
 
                     </TableRow>
 
@@ -665,7 +664,7 @@
                             android:layout_width="100dp"
                             android:scaleType="centerInside"
                             android:adjustViewBounds="true"
-                            android:src="@drawable/rainbow"                            android:layout_weight="1"/>
+                                                     android:layout_weight="1"/>
 
 
                     </TableRow>

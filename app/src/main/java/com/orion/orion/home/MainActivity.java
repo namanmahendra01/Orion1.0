@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity
     private void initializeImageLoader() {
         UniversalImageLoader universalImageLoader = new UniversalImageLoader(MainActivity.this);
         ImageLoader.getInstance().init(universalImageLoader.getConfig());
+
     }
 
     //    for adding 3 tabs -media,home,message

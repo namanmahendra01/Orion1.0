@@ -513,31 +513,35 @@ public class FirebaseMethods {
             }
         });
     }
-    public void publishResut(boolean manual, String Conteskey, ArrayList<ParticipantList> participantLists, LinearLayout progress, FragmentActivity activity) {
-        Log.d(TAG, "publishResut: agaga run "+participantLists.size());
+
+
+
+
+    public void publishResut(boolean manual, String Conteskey, ArrayList<ParticipantList> participantLists,
+                             LinearLayout progress, FragmentActivity activity, ArrayList<ParticipantList> winnerList) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+
         if (manual) {
 
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
             ref.child(mContext.getString(R.string.dbname_contestlist))
                     .child(Conteskey)
                     .child("result")
                     .setValue(true);
 
-            DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
-            ref2.child(mContext.getString(R.string.dbname_contests))
-                    .child(Conteskey)
+            ref.child(mContext.getString(R.string.dbname_contests))
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                     .child("completed")
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.exists()) {
                                 long x = (long) snapshot.getValue();
-                                ref2.child(mContext.getString(R.string.dbname_contests))
+                                ref.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child("completed")
                                         .setValue(x + 1);
                             } else {
-                                ref2.child(mContext.getString(R.string.dbname_contests))
+                                ref.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child("completed")
                                         .setValue(1);
@@ -550,13 +554,181 @@ public class FirebaseMethods {
                         }
                     });
         }else{
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
             ref.child(mContext.getString(R.string.dbname_contestlist))
                     .child(Conteskey)
                     .child("result")
                     .setValue(true);
         }
 
+        ref.child(mContext.getString(R.string.dbname_contests))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(mContext.getString(R.string.field_created_contest))
+                .child(Conteskey)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (!snapshot.child("jname_1").getValue().toString().equals("")){
+                            ref.child(mContext.getString(R.string.dbname_users))
+                                    .orderByChild(mContext.getString(R.string.field_username))
+                                    .equalTo(snapshot.child("jname_1").getValue().toString())
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if (snapshot.exists()){
+                                                for (DataSnapshot snapshot1:snapshot.getChildren()){
+                                                    DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
+                                                            .child(snapshot1.getKey())
+                                                            .child("judged");
+
+                                                          ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                @Override
+                                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                    if (snapshot.exists()) {
+                                                                        long l = (long) snapshot.getValue();
+                                                                        ref2.setValue(l+1);
+                                                                    }else{
+                                                                        ref2.setValue(1);
+                                                                    }
+
+                                                                }
+
+                                                                @Override
+                                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                }
+                                                            });
+
+                                                }
+                                            }
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+                        }
+                        if (!snapshot.child("jname_2").getValue().toString().equals("")){
+                            ref.child(mContext.getString(R.string.dbname_users))
+                                    .orderByChild(mContext.getString(R.string.field_username))
+                                    .equalTo(snapshot.child("jname_2").getValue().toString())
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if (snapshot.exists()){
+                                                for (DataSnapshot snapshot1:snapshot.getChildren()){
+                                                    DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
+                                                            .child(snapshot1.getKey())
+                                                            .child("judged");
+
+                                                    ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            if (snapshot.exists()) {
+                                                                long l = (long) snapshot.getValue();
+                                                                ref2.setValue(l+1);
+                                                            }else{
+                                                                ref2.setValue(1);
+                                                            }
+
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    });
+
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+                        }
+                        if (!snapshot.child("jname_3").getValue().toString().equals("")){
+                            ref.child(mContext.getString(R.string.dbname_users))
+                                    .orderByChild(mContext.getString(R.string.field_username))
+                                    .equalTo(snapshot.child("jname_3").getValue().toString())
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if (snapshot.exists()){
+                                                for (DataSnapshot snapshot1:snapshot.getChildren()){
+                                                    DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
+                                                            .child(snapshot1.getKey())
+                                                            .child("judged");
+
+                                                    ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            if (snapshot.exists()) {
+                                                                long l = (long) snapshot.getValue();
+                                                                ref2.setValue(l+1);
+                                                            }else{
+                                                                ref2.setValue(1);
+                                                            }
+
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    });
+
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+        if (winnerList.size() != 0) {
+
+            for (int x = 0; x < winnerList.size(); x++) {
+                DatabaseReference ref3 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
+                        .child(winnerList.get(x).getUserid())
+                        .child("win");
+
+                int finalX = x;
+                ref3.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot1) {
+                        Log.d(TAG, "onDataChange: mnmn "+winnerList.get(finalX).getUserid());
+                        if (snapshot1.exists()){
+                            long l= (long)snapshot1.getValue();
+                            ref3.setValue(l+1);
+                        }else{
+                            ref3.setValue(1);
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+            }
+            }
 
         if (participantLists.size() != 0) {
             for (int x = 0; x < participantLists.size(); x++) {
@@ -566,7 +738,6 @@ public class FirebaseMethods {
 
                 addToHisNotification("" + participantLists.get(x).getUserid(), "Result has been declared of a contest.Check your ranking now.");
 
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                 int finalX = x;
                 ref.child(mContext.getString(R.string.dbname_contests))
                         .child(participantLists.get(finalX).getUserid())
@@ -581,8 +752,7 @@ public class FirebaseMethods {
                                             .child("participated")
                                             .setValue(l+ 1);
                                     if (finalX==participantLists.size()-1){
-                                        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                                                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
                                         progress.setVisibility(View.GONE);
                                     }
                                 } else {
@@ -592,8 +762,7 @@ public class FirebaseMethods {
                                             .setValue(1);
                                     if (finalX==participantLists.size()-1){
                                         progress.setVisibility(View.GONE);
-                                      activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                                                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
                                     }
                                 }
                             }
@@ -606,8 +775,13 @@ public class FirebaseMethods {
 
 
             }
+        }else {
+            progress.setVisibility(View.GONE);
+
         }
     }
+
+
     private void addToHisNotification(String hisUid, String notification) {
 
         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {

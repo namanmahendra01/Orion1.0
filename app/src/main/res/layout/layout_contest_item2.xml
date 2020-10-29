@@ -50,7 +50,18 @@
                 android:scaleType="centerInside"
                 android:id="@+id/posterD"
                 app:layout_constraintTop_toTopOf="parent"
-                android:src="@drawable/rainbow"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="W,1:1"
+                android:scaleType="centerInside"
+                android:id="@+id/progress"
+                app:layout_constraintTop_toTopOf="parent"
+                android:src="@drawable/load"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"/>

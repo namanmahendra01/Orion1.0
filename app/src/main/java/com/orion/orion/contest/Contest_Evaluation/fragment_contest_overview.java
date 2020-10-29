@@ -13,7 +13,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -276,14 +275,9 @@ int c=0;
                 builder.setPositiveButton("Publish", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Log.d(Constraints.TAG, "Publish result: publishing result");
-                        progress.setVisibility(View.VISIBLE);
-                        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                        boolean manual=true;
-                       mFirebaseMethods.publishResut(manual,Conteskey,participantLists,progress,getActivity());
-                        pubBtn2.setVisibility(View.VISIBLE);
-                        relWinner.setVisibility(View.VISIBLE);
+
+                        getWinners(participantLists,true);
+
 
                     }
                 });
@@ -312,34 +306,24 @@ int c=0;
     }
 
     private void publishResultAutomatically() {
-        Log.d(TAG, "onDataChange: run 10");
         progress.setVisibility(View.VISIBLE);
-        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child(getString(R.string.dbname_participantList))
                 .child(Conteskey)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Log.d(TAG, "onDataChange: run 11");
 
                         int x=0;
                         ArrayList<ParticipantList> participantLists=new ArrayList<>();
                          for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             x++;
-                             Log.d(TAG, "onDataChange: run 8");
                             participantLists.add(snapshot.getValue(ParticipantList.class));
                             if (x==dataSnapshot.getChildrenCount()){
-                                Log.d(TAG, "onDataChange: run 9");
+                                getWinners(participantLists,false);
 
-                                boolean manual=false;
-//                                for (int l=0;l<4;l++){
-//                                    participantLists.addAll(participantLists);
-//                                }
-                                mFirebaseMethods.publishResut(manual,Conteskey,participantLists, progress, getActivity());
-                                pubBtn2.setVisibility(View.VISIBLE);
-                                relWinner.setVisibility(View.VISIBLE);
+
 
                             }
 
@@ -351,6 +335,28 @@ int c=0;
 
                         }
                     });
+    }
+
+    private void getWinners(ArrayList<ParticipantList> participantLists,boolean manual) {
+        Collections.sort(participantLists, new Comparator<ParticipantList>() {
+            @Override
+            public int compare(ParticipantList o1, ParticipantList o2) {
+                return Integer.compare(o1.getTotalScore(), o2.getTotalScore());
+            }
+        });
+        Collections.reverse(participantLists);
+        try {
+            for (int x = 0; x < 3; x++) {
+                participantLists2.add(participantLists.get(x));
+
+            }
+        } catch (IndexOutOfBoundsException e) {
+            Log.e(TAG, "onDataChange: " + e.getMessage());
+        }
+
+        mFirebaseMethods.publishResut(manual, Conteskey, participantLists, progress, getActivity(), participantLists2);
+        pubBtn2.setVisibility(View.VISIBLE);
+        relWinner.setVisibility(View.VISIBLE);
     }
 
 

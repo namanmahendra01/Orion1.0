@@ -118,7 +118,7 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
         if (notification.getpId().equals("false")) {
             holder.post_image.setVisibility(View.GONE);
         } else {
-            getpostImage(holder.post_image, notification.getpId(), notification.getpUid());
+            getpostImage(holder.post_image, notification.getpId(), notification.getpUid(),holder.progress);
             holder.post_image.setVisibility(View.VISIBLE);
         }
 
@@ -249,7 +249,7 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
 
         Photo photo;
 
-        public ImageView post_image;
+        public ImageView post_image,progress;
         public TextView username1, text1, timeStamp1;
         private LinearLayout lin;
         String host="",msg1="",msg2="";
@@ -285,7 +285,7 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
         });
     }
 
-    private void getpostImage(ImageView imageView, String postId, String postUid) {
+    private void getpostImage(ImageView imageView, String postId, String postUid, ImageView progress) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(context.getString(R.string.dbname_user_photos)).child(postUid).child(postId);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -294,11 +294,11 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
                 if(dataSnapshot.exists()) {
                         if(dataSnapshot.child("type").getValue().toString().equals("photo")){
                             String img = dataSnapshot.child("image_path").getValue().toString();
-                            UniversalImageLoader.setImage(img, imageView, null, "");
+                            UniversalImageLoader.setImage(img, imageView, progress, "");
 
                         }else{
                             String img = dataSnapshot.child("thumbnail").getValue().toString();
-                            UniversalImageLoader.setImage(img, imageView, null, "");
+                            UniversalImageLoader.setImage(img, imageView, progress, "");
 
                         }
                 }

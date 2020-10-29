@@ -21,13 +21,24 @@
         android:layout_height="1dp"
         android:background="@color/scheme8"
         android:layout_marginBottom="10dp"/>
-
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    >
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/ic_star"
             android:layout_gravity="center_horizontal"
             android:id="@+id/postBs"/>
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/load"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/progress"/>
+</RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"

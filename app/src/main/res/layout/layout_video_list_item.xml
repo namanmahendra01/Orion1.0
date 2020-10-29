@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:background="#fff"
             android:scaleType="centerInside"
-            android:src="@drawable/rainbow" />
+            />
 
         <ImageView
             android:layout_width="25dp"

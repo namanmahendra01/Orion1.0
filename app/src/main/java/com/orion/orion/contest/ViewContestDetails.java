@@ -49,25 +49,22 @@ public class ViewContestDetails extends AppCompatActivity {
             regBegin, regEnd, voteBegin, voteEnd, domain, openfor, juryname1, juryname2, juryname3, jury, jurypl1, jurypl2, jurypl3, hostedby, filetype, windate, p1Tv, p2Tv, p3Tv;
     private ImageView poster, jurypic1, jurypic2, jurypic3,options;
     private String mAppend = "";
-    private String jpic1 = "", jpic2 = "", jpic3 = "", posterlink = "";
+    private String posterlink = "";
     private CardView cardView;
     private Button participateBtn, VoteBtn;
-    users user = new users();
-    String username="";
+    String username="",currentUser="",hostUsername="";
     Boolean ok = false;
     ImageView backArrrow;
 
     int p = 0;
 
 
-    private String newContestKey, juryusername1 = "", juryusername2 = "", juryusername3 = "";
+    private String  juryusername1 = "", juryusername2 = "", juryusername3 = "";
     private LinearLayout prizeLinear;
     String userId, contestId, vot, reg;
 
     //firebase
-    private FirebaseFirestore db;
     private FirebaseAuth mAuth;
-    private FirebaseMethods mFirebaseMethods;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
@@ -145,7 +142,35 @@ public class ViewContestDetails extends AppCompatActivity {
 
             }
         });
+        DatabaseReference ref8 = FirebaseDatabase.getInstance().getReference();
+        ref8.child(getString(R.string.dbname_users))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(getString(R.string.field_username))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        currentUser= dataSnapshot.getValue().toString();
 
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+        ref8.child(getString(R.string.dbname_users))
+                .child(userId)
+                .child(getString(R.string.field_username))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                       hostUsername = dataSnapshot.getValue().toString();
+
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contestlist));
         ref.child(contestId)
@@ -538,36 +563,7 @@ public class ViewContestDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
-
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl1.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
-
-                            Intent i = new Intent(ViewContestDetails.this, profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), username);
-                            startActivity(i);
-
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
+                juryProfile(jurypl1.getText().toString());
 
 
             }
@@ -576,35 +572,7 @@ public class ViewContestDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
-
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl1.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
-
-                            Intent i = new Intent(ViewContestDetails.this, profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), username);
-                            startActivity(i);
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
+                juryProfile(jurypl1.getText().toString());
 
 
             }
@@ -613,36 +581,8 @@ public class ViewContestDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+                juryProfile(jurypl1.getText().toString());
 
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl1.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
-
-                            Intent i = new Intent(ViewContestDetails.this, profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), username);
-                            startActivity(i);
-
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
 
 
             }
@@ -652,36 +592,8 @@ public class ViewContestDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+                juryProfile(jurypl2.getText().toString());
 
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl2.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
-
-                            Intent i = new Intent(ViewContestDetails.this, profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), username);
-                            startActivity(i);
-
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
 
 
             }
@@ -690,35 +602,8 @@ public class ViewContestDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+                juryProfile(jurypl2.getText().toString());
 
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl2.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
-
-                            Intent i = new Intent(ViewContestDetails.this, profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), username);
-                            startActivity(i);
-
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
 
 
             }
@@ -727,36 +612,8 @@ public class ViewContestDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+                juryProfile(jurypl2.getText().toString());
 
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl2.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
-
-                            Intent i = new Intent(ViewContestDetails.this, profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), username);
-                            startActivity(i);
-
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
 
 
             }
@@ -766,36 +623,8 @@ public class ViewContestDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+                juryProfile(jurypl3.getText().toString());
 
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl3.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
-
-                            Intent i = new Intent(ViewContestDetails.this, profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), username);
-                            startActivity(i);
-
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
 
 
             }
@@ -804,36 +633,7 @@ public class ViewContestDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
-
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl3.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
-
-                            Intent i = new Intent(ViewContestDetails.this, profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), username);
-                            startActivity(i);
-
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
+                juryProfile(jurypl3.getText().toString());
 
 
             }
@@ -842,36 +642,8 @@ public class ViewContestDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+                juryProfile(jurypl3.getText().toString());
 
-                Query userquery = ref
-                        .child(getString(R.string.dbname_users))
-                        .orderByChild(getString(R.string.field_username))
-                        .equalTo(jurypl3.getText().toString());
-                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                            username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
-
-                            Intent i = new Intent(ViewContestDetails.this, profile.class);
-                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                            i.putExtra(getString(R.string.intent_user), username);
-                            startActivity(i);
-
-                        }
-
-
-                    }
-
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.d(TAG, "Query Cancelled");
-                    }
-                });
 
 
             }
@@ -881,11 +653,20 @@ public class ViewContestDetails extends AppCompatActivity {
             participateBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    Intent i = new Intent(ViewContestDetails.this, JoiningForm.class);
-                    i.putExtra("userId", userId);
-                    i.putExtra("contestId", contestId);
-                    startActivity(i);
+                    if (currentUser.equals(juryusername1)||currentUser.equals(juryusername2)
+                            ||currentUser.equals(juryusername3)||currentUser.equals(hostUsername)) {
+                        Intent i = new Intent(getApplicationContext(), JoiningForm.class);
+                        i.putExtra("userId", userId);
+                        i.putExtra("contestId", contestId);
+                        i.putExtra("isJuryOrHost",true);
+                        startActivity(i);
+                    }else{
+                        Intent i = new Intent(getApplicationContext(), JoiningForm.class);
+                        i.putExtra("userId", userId);
+                        i.putExtra("contestId", contestId);
+                        i.putExtra("isJuryOrHost",false);
+                        startActivity(i);
+                    }
                 }
             });
         } else {
@@ -952,6 +733,40 @@ public class ViewContestDetails extends AppCompatActivity {
         } else {
             VoteBtn.setVisibility(View.GONE);
         }
+
+    }
+
+    private void juryProfile(String toString) {
+        DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+
+        Query userquery = ref
+                .child(getString(R.string.dbname_users))
+                .orderByChild(getString(R.string.field_username))
+                .equalTo(toString);
+        userquery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+
+                    username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
+
+                    Intent i = new Intent(ViewContestDetails.this, profile.class);
+                    i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
+
+                    i.putExtra(getString(R.string.intent_user), username);
+                    startActivity(i);
+
+                }
+
+
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d(TAG, "Query Cancelled");
+            }
+        });
 
     }
 

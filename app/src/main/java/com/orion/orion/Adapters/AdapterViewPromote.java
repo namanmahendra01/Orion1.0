@@ -106,7 +106,7 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
                             myHolder.image=promote.getPhotoLink();
 
                         }
-                        setWidgets(promote.getUserid(),myHolder.image,myHolder.username,myHolder.post);
+                        setWidgets(promote.getUserid(),myHolder.image,myHolder.username,myHolder.post,myHolder.progress);
 
                     }
 
@@ -223,7 +223,7 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
 
     }
 
-    private void setWidgets(String promoterId, String photoLink, TextView username, ImageView post) {
+    private void setWidgets(String promoterId, String photoLink, TextView username, ImageView post, ImageView progress) {
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(context.getString(R.string.dbname_users))
@@ -233,7 +233,7 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user=dataSnapshot.getValue(users.class);
                         username.setText("@"+user.getUsername());
-                        UniversalImageLoader.setImage(photoLink,post,null,"");
+                        UniversalImageLoader.setImage(photoLink,post,progress,"");
 
                     }
 
@@ -265,7 +265,7 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
     class MyHolder extends RecyclerView.ViewHolder {
 
         TextView username;
-        ImageView post,delete;
+        ImageView post,delete,progress;
         Photo photo;
         String image="";
 
@@ -277,6 +277,8 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
             username=itemView.findViewById(R.id.username);
             post=itemView.findViewById(R.id.post);
             delete=itemView.findViewById(R.id.delete);
+            progress=itemView.findViewById(R.id.progress);
+
 
 
 

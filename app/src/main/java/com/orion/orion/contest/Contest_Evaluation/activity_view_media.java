@@ -25,7 +25,7 @@ import com.orion.orion.util.UniversalImageLoader;
 public class activity_view_media extends AppCompatActivity {
     private static final String TAG = "activity_view_media";
 
-    private ImageView mediaIv, voteNo, voteYes;
+    private ImageView mediaIv, voteNo, voteYes,progress;
     private TextView votingNumber;
     private String mVotingnumber = "";
     private RelativeLayout relativeLayout;
@@ -43,6 +43,7 @@ public class activity_view_media extends AppCompatActivity {
         voteYes = findViewById(R.id.yesVote);
         relativeLayout = findViewById(R.id.relLayout2);
         votingNumber = findViewById(R.id.votingNumber);
+        progress = findViewById(R.id.progress);
 
 
         Intent i = getIntent();
@@ -50,7 +51,7 @@ public class activity_view_media extends AppCompatActivity {
         contestKey = i.getStringExtra("contestkey");
         joiningKey = i.getStringExtra("joiningkey");
         view = i.getStringExtra("view");
-        UniversalImageLoader.setImage(imagelink, mediaIv, null, "");
+        UniversalImageLoader.setImage(imagelink, mediaIv, progress, "");
 
 
         if (view.equals("No")) {

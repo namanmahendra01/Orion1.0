@@ -47,7 +47,7 @@ public class AdapterGridImageSub extends RecyclerView.Adapter<AdapterGridImageSu
 
         ParticipantList participantList= participantLists.get(i);
         Log.d(TAG, "onBindViewHolder: sdf"+participantList.getMediaLink());
-        UniversalImageLoader.setImage(participantList.getMediaLink(),holder.image,null,"");
+        UniversalImageLoader.setImage(participantList.getMediaLink(),holder.image,holder.progress,"");
 //
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -86,13 +86,15 @@ public class AdapterGridImageSub extends RecyclerView.Adapter<AdapterGridImageSu
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView image;
+        private ImageView image,progress;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
 
             image = itemView.findViewById(R.id.image);
+            progress = itemView.findViewById(R.id.progress);
+
 
 
 

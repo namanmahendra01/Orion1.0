@@ -6,10 +6,18 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     tools:context=".contest.create.CheckContest">
+    <RelativeLayout
+        android:id="@+id/reLayout2"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="wrap_content">
 
+        <include layout="@layout/snippet_top_check_form_bar" />
+    </RelativeLayout>
     <RelativeLayout
         android:id="@+id/reLayout1"
         android:layout_width="match_parent"
+
         android:layout_height="wrap_content">
 
         <include layout="@layout/snippet_top_contest_bar" />
@@ -35,7 +43,7 @@
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_star" />
+                android:src="@drawable/load" />
 
             <LinearLayout
                 android:id="@+id/host"
@@ -184,7 +192,18 @@
 
 
             </LinearLayout>
-
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/text"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:textAlignment="center"
+                android:textColor="#F44336"
+                android:visibility="gone"
+                android:layout_marginBottom="5dp"
+                android:text="You can edit only Description and Rules of this Contest."
+                android:layout_below="@+id/prizell"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -200,6 +219,7 @@
                     android:layout_centerHorizontal="true"
 
                     android:layout_margin="10dp"
+                    android:visibility="gone"
 
                     android:layout_marginBottom="15dp"
                     android:background="@drawable/rectangular_border"
@@ -210,7 +230,7 @@
                 <Button
                     android:id="@+id/voteBtn"
                     android:layout_width="wrap_content"
-
+android:visibility="gone"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_margin="10dp"
@@ -218,6 +238,32 @@
                     android:textColor="@color/scheme8"
                     android:background="@drawable/rectangular_border"
                     android:text="Vote"
+                    android:textAlignment="gravity" />
+                <Button
+                    android:id="@+id/postContest"
+                    android:layout_width="wrap_content"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="10dp"
+                    android:layout_marginBottom="15dp"
+                    android:textColor="@color/scheme8"
+                    android:padding="5dp"
+                    android:background="@drawable/rectangular_border"
+                    android:text="Submit Contest"
+                    android:textAlignment="gravity" />
+                <Button
+                    android:id="@+id/save"
+                    android:layout_width="wrap_content"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="10dp"
+                    android:layout_marginBottom="15dp"
+                    android:textColor="@color/scheme8"
+                    android:background="@drawable/rectangular_border"
+                    android:text="Save Edit"
+                    android:padding="5dp"
                     android:textAlignment="gravity" />
             </LinearLayout>
 
@@ -232,16 +278,33 @@
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text"
 
+                android:id="@+id/desRelative">
             <TextView
                 android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/prizell"
                 android:text="Descritpion:"
                 android:textColor="@color/black"
                 android:textSize="15sp"
                 android:textStyle="bold" />
+
+            <EditText
+
+                android:id="@+id/descripEv"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/description"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/rectangular_border"
+                android:padding="5dp"
+                />
 
             <TextView
 
@@ -253,17 +316,32 @@
                 android:background="@drawable/rectangular_border"
                 android:padding="5dp"
                 android:text="@string/descrip" />
+            </RelativeLayout>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/desRelative"
+
+            android:id="@+id/ruleRelative">
             <TextView
                 android:id="@+id/rule"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/descripTv"
                 android:text="Rules: "
                 android:textColor="@color/black"
                 android:textSize="15sp"
                 android:textStyle="bold" />
-
+            <EditText
+                android:id="@+id/ruleEv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rule"
+                android:visibility="gone"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/rectangular_border"
+                android:padding="5dp"
+                />
             <TextView
                 android:id="@+id/ruleTv"
                 android:layout_width="match_parent"
@@ -273,12 +351,12 @@
                 android:background="@drawable/rectangular_border"
                 android:padding="5dp"
                 android:text="@string/rule" />
-
+        </RelativeLayout>
             <TextView
                 android:id="@+id/details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/ruleTv"
+                android:layout_below="@+id/ruleRelative"
                 android:text="Details: "
                 android:textColor="@color/black"
                 android:textSize="15sp"
@@ -658,7 +736,6 @@
                             android:layout_weight="1"
                             android:adjustViewBounds="true"
                             android:scaleType="centerInside"
-                            android:src="@drawable/rainbow"
                             android:visibility="gone" />
 
                         <ImageView
@@ -671,7 +748,6 @@
                             android:layout_weight="1"
                             android:adjustViewBounds="true"
                             android:scaleType="centerInside"
-                            android:src="@drawable/rainbow"
                             android:visibility="gone" />
 
                     </TableRow>
@@ -758,7 +834,6 @@
                             android:layout_weight="1"
                             android:adjustViewBounds="true"
                             android:scaleType="centerInside"
-                            android:src="@drawable/rainbow"
                             android:visibility="gone" />
 
 

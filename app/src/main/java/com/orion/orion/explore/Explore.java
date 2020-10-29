@@ -145,8 +145,8 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate: started.");
-        setContentView(R.layout.activity_explore);
-        initWidgets();
+setContentView(R.layout.activity_explore);
+initWidgets();
         initOnClickListeners();
 
 

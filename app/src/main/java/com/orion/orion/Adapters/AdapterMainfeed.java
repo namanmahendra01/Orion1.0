@@ -279,7 +279,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             holder.image.setVisibility(View.VISIBLE);
             holder.play2.setVisibility(View.GONE);
             ImageLoader imageloader = ImageLoader.getInstance();
-            imageloader.displayImage(photo.getImage_path(), holder.image);
+            UniversalImageLoader.setImage(photo.getImage_path(), holder.image,holder.progress,"");
 
         } else {
             UniversalImageLoader.setImage(photo.getThumbnail(), holder.thumbnail, null, "");
@@ -797,10 +797,12 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         TextView cancel = bottomSheetView.findViewById(R.id.cancel);
         TextView promote = bottomSheetView.findViewById(R.id.promote);
         ImageView post = bottomSheetView.findViewById(R.id.postBs);
+        ImageView progress = bottomSheetView.findViewById(R.id.progress);
+
         if (photo.getType().equals("photo")) {
-            UniversalImageLoader.setImage(photo.getImage_path(), post, null, "");
+            UniversalImageLoader.setImage(photo.getImage_path(), post, progress, "");
         } else {
-            UniversalImageLoader.setImage(photo.getThumbnail(), post, null, "");
+            UniversalImageLoader.setImage(photo.getThumbnail(), post, progress, "");
 
         }
 
@@ -998,7 +1000,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         CircleImageView mProfileImage;
         TextView username, timeDate, domain, caption, commentnumber, likenumber, credit, promoteNum, duration;
         ImageView yellowstar, whitestar, comment, promote, promoted, eclipse, play2, mute, unmute;
-        SquareImageView image, thumbnail;
+        SquareImageView image, thumbnail,progress;
         PlayerView playerView;
         ProgressBar progressBar;
 
@@ -1043,6 +1045,8 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             postRelLayout = itemView.findViewById(R.id.post_imagelayout);
             footerLayout = itemView.findViewById(R.id.promotion);
             headerLatout = itemView.findViewById(R.id.header);
+            progress = itemView.findViewById(R.id.progress);
+
 
 
             credit = itemView.findViewById(R.id.credit);

@@ -273,6 +273,7 @@
                         android:layout_centerHorizontal="true"
                         />
 
+
                     <ImageView
                         android:layout_width="60dp"
                         android:layout_height="60dp"
@@ -326,6 +327,15 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                   />
+                    <com.orion.orion.util.SquareImageView
+                        android:id="@+id/progress"
+                        android:visibility="gone"
+                        android:src="@drawable/load"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        />
+
  <TextView
                         android:id="@+id/credit"
                         android:layout_width="wrap_content"

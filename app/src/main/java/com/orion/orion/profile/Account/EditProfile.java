@@ -90,11 +90,7 @@ public class EditProfile extends AppCompatActivity {
     private LinearLayout mTwitterLink;
     private LinearLayout mWhatsappLink;
 
-    private TextView mGmail;
-    private TextView mInstagram;
-    private TextView mFacebook;
-    private TextView mTwitter;
-    private TextView mWhatsapp;
+
 
     private String gmail;
     private String instagramProfile;
@@ -138,11 +134,7 @@ public class EditProfile extends AppCompatActivity {
         mTwitterLink = findViewById(R.id.twitter_link);
         mWhatsappLink = findViewById(R.id.whatsapp_link);
 
-        mGmail = findViewById(R.id.gmail);
-        mInstagram = findViewById(R.id.instagram);
-        mFacebook = findViewById(R.id.facebook);
-        mTwitter = findViewById(R.id.twitter);
-        mWhatsapp = findViewById(R.id.whatsapp);
+
 
         gmail = "";
         instagramProfile = "";
@@ -187,7 +179,6 @@ public class EditProfile extends AppCompatActivity {
             buttonSubmit.setOnClickListener(view -> {
                 String text = String.valueOf(editComment.getText());
                 gmail = text;
-                mGmail.setText(text);
                 if (text.equals("")) editComment.setError("Cant be empty");
                 else {
                     mGmailLink.setAlpha(1.0f);
@@ -208,7 +199,6 @@ public class EditProfile extends AppCompatActivity {
             buttonSubmit.setOnClickListener(view -> {
                 String text = String.valueOf(editComment.getText());
                 instagramProfile = text;
-                mInstagram.setText(text);
                 if (text.equals("")) editComment.setError("Cant be empty");
                 else {
                     mInstagramLink.setAlpha(1.0f);
@@ -229,7 +219,6 @@ public class EditProfile extends AppCompatActivity {
             buttonSubmit.setOnClickListener(view -> {
                 String text = String.valueOf(editComment.getText());
                 facebookProfile = text;
-                mFacebook.setText(text);
                 if (text.equals("")) editComment.setError("Cant be empty");
                 else {
                     mFacebookLink.setAlpha(1.0f);
@@ -250,7 +239,6 @@ public class EditProfile extends AppCompatActivity {
             buttonSubmit.setOnClickListener(view -> {
                 String text = String.valueOf(editComment.getText());
                 twitterProfile = text;
-                mTwitter.setText(text);
                 if (text.equals("")) editComment.setError("Cant be empty");
                 else {
                     mTwitterLink.setAlpha(1.0f);
@@ -271,7 +259,6 @@ public class EditProfile extends AppCompatActivity {
             buttonSubmit.setOnClickListener(view -> {
                 String text = String.valueOf(editComment.getText());
                 whatsappNo = text;
-                mWhatsapp.setText(text);
                 if (text.equals("")) editComment.setError("Cant be empty");
                 else {
                     mWhatsappLink.setAlpha(1.0f);
@@ -421,35 +408,30 @@ public class EditProfile extends AppCompatActivity {
         if (userSetting.getEmail() == null || userSetting.getEmail().equals("")) {
             mGmailLink.setAlpha(0.5f);
         } else {
-            mGmail.setText(userSetting.getEmail());
             gmail = userSetting.getEmail();
         }
 
         if (userSetting.getInstagram() == null || userSetting.getInstagram().equals(""))
             mInstagramLink.setAlpha(0.5f);
         else {
-            mInstagram.setText(userSetting.getInstagram());
             instagramProfile = userSetting.getInstagram();
         }
 
         if (userSetting.getFacebook() == null || userSetting.getFacebook().equals("")) {
             mFacebookLink.setAlpha(0.5f);
         } else {
-            mFacebook.setText(userSetting.getFacebook());
             facebookProfile = userSetting.getFacebook();
 
         }
         if (userSetting.getTwitter() == null || userSetting.getTwitter().equals("")) {
             mTwitterLink.setAlpha(0.5f);
         } else {
-            mTwitter.setText(userSetting.getTwitter());
             twitterProfile = userSetting.getTwitter();
         }
 
         if (userSetting.getWhatsapp() == null || userSetting.getWhatsapp().equals("")) {
             mWhatsappLink.setAlpha(0.5f);
         } else {
-            mWhatsapp.setText(userSetting.getWhatsapp());
             whatsappNo = userSetting.getWhatsapp();
         }
     }

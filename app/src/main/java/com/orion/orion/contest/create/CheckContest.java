@@ -8,6 +8,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +39,7 @@ public class CheckContest extends AppCompatActivity {
     private static final int ACTIVITY_NUM = 3;
 
 
-    private TextView entryfee, title, descrip, rules, totalprize, maxPart, voteType,
+    private TextView entryfee, title, descrip, rules, totalprize, maxPart, voteType,gp,
             regBegin, regEnd, voteBegin, voteEnd, domain, openfor, juryname1, juryname2, juryname3, jury, jurypl1, jurypl2, jurypl3, hostedby, filetype, windate, p1Tv, p2Tv, p3Tv;
     private ImageView poster, jurypic1, jurypic2, jurypic3;
     private String mAppend = "file:/";
@@ -46,6 +47,7 @@ public class CheckContest extends AppCompatActivity {
     private CardView cardView;
     private Button postContest;
    public LinearLayout progress;
+   RelativeLayout topLayout1,topLayout2;
 
     private String newContestKey;
     private CreateForm mCreateForm;
@@ -66,7 +68,7 @@ public class CheckContest extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_view_contest);
+        setContentView(R.layout.activity_contest_details);
         Log.d(TAG, "onCreate: started.");
         mFirebaseMethods = new FirebaseMethods(CheckContest.this);
         setupFirebaseAuth();
@@ -105,6 +107,20 @@ public class CheckContest extends AppCompatActivity {
         p3Tv = findViewById(R.id.p3Tv);
         postContest = findViewById(R.id.postContest);
         prizeLinear = findViewById(R.id.prizell);
+
+        gp =findViewById(R.id.gp);
+
+        topLayout1 =findViewById(R.id.reLayout1);
+        topLayout2 =findViewById(R.id.reLayout2);
+
+        topLayout1.setVisibility(View.GONE);
+        topLayout1.setVisibility(View.VISIBLE);
+
+
+
+        postContest.setVisibility(View.VISIBLE);
+
+        setgp(FirebaseAuth.getInstance().getCurrentUser().getUid(), gp);
 
 
         Intent intent = getIntent();
@@ -416,6 +432,52 @@ public class CheckContest extends AppCompatActivity {
             }
         });
     }
+    private void setgp(String userid, TextView gp) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child(getString(R.string.dbname_contests))
+                .child(userid)
+                .child("completed")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            long y = (long) snapshot.getValue();
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                            reference.child(getString(R.string.dbname_contests))
+                                    .child(userid)
+                                    .child("reports")
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                            if (snapshot.exists()) {
+                                                long x = (long) snapshot.getValue();
+                                                gp.setText(String.valueOf(100 - (((x * 100) / y))) + "%");
+                                            } else {
+                                                gp.setText("100%");
+
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+
+                        } else {
+                            gp.setText("100%");
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
 
     @Override
     public void onStart() {

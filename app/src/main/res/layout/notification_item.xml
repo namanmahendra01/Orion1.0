@@ -53,6 +53,13 @@
         android:id="@+id/post_image"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true" />
-
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/progress"
+        android:src="@drawable/load"
+        android:visibility="gone"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" />
 
 </RelativeLayout>

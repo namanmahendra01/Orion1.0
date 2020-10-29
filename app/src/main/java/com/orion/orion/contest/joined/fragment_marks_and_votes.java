@@ -31,8 +31,10 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.Adapters.AdapterContestCreated;
 import com.orion.orion.Adapters.AdapterRankList;
+import com.orion.orion.Adapters.AdapterRankListFull;
 import com.orion.orion.Adapters.AdapterVoterList;
 import com.orion.orion.R;
+import com.orion.orion.contest.ranking;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.juryMarks;
@@ -53,6 +55,8 @@ public class fragment_marks_and_votes extends Fragment {
     String joiningKey ="";
     RecyclerView votesRv;
     private ArrayList<String> votingLists;
+    private ArrayList<String> paginatedVotingList;
+    int mResults;
     users user = new users();
 
 
@@ -86,10 +90,22 @@ public class fragment_marks_and_votes extends Fragment {
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getContext());
         votesRv.setLayoutManager(linearLayoutManager);
 
+
+
+        votesRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+
+                    displayMoreVoterList();
+
+                }
+            }
+        });
+
         votingLists=new ArrayList<>();
-        voterList = new AdapterVoterList(getContext(),votingLists);
-        voterList.setHasStableIds(true);
-        votesRv.setAdapter(voterList);
 
         getRank(Conteskey,joiningKey);
 
@@ -142,7 +158,6 @@ public class fragment_marks_and_votes extends Fragment {
 
     private void getRank(String contestkey, String joiningKey) {
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference =FirebaseDatabase.getInstance().getReference();
         reference.child(getString(R.string.dbname_participantList))
                 .child(contestkey)
@@ -152,14 +167,22 @@ public class fragment_marks_and_votes extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         votingLists.clear();
+                        int x=0;
                         for (DataSnapshot snapshot:dataSnapshot.getChildren()){
+                            x++;
                             String votingList= snapshot.getKey();
 
+
                             votingLists.add(votingList);
+                            if (x==dataSnapshot.getChildrenCount()){
+                                Collections.reverse(votingLists);
+
+                                displayVoterList();
+                            }
+
                         }
 
-                        Collections.reverse(votingLists);
-                        voterList.notifyDataSetChanged();
+
 
                     }
 
@@ -168,6 +191,74 @@ public class fragment_marks_and_votes extends Fragment {
 
                     }
                 });
+    }
+    private void displayVoterList() {
+        paginatedVotingList = new ArrayList<>();
+        if (votingLists != null) {
+
+            try {
+
+
+                int iteration = votingLists.size();
+                if (iteration > 20) {
+                    iteration = 20;
+                }
+                mResults = 20;
+                for (int i = 0; i < iteration; i++) {
+                    paginatedVotingList.add(votingLists.get(i));
+                }
+                voterList = new AdapterVoterList(getContext(),votingLists);
+                voterList.setHasStableIds(true);
+                votesRv.setAdapter(voterList);
+
+
+            } catch (NullPointerException e) {
+                Log.e(TAG, "Null pointer exception" + e.getMessage());
+
+            } catch (IndexOutOfBoundsException e) {
+                Log.e(TAG, "index out of bound" + e.getMessage());
+
+            }
+
+        }
+    }
+
+    public void displayMoreVoterList() {
+
+        try {
+            if (votingLists.size() > mResults && votingLists.size() > 0) {
+
+                int iterations;
+                if (votingLists.size() > (mResults + 20)) {
+                    iterations = 20;
+                } else {
+                    iterations = votingLists.size() - mResults;
+                }
+                for (int i = mResults; i < mResults + iterations; i++) {
+                    paginatedVotingList.add(votingLists.get(i));
+
+                }
+                int positionStart =mResults;
+                votesRv.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        voterList.notifyItemRangeInserted(positionStart,iterations);
+                    }
+                });
+
+                mResults = mResults + iterations;
+
+
+            }
+
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Null pointer exception" + e.getMessage());
+
+        } catch (IndexOutOfBoundsException e) {
+            Log.e(TAG, "index out of bound" + e.getMessage());
+
+        }
+
     }
 
 }

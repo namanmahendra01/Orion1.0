@@ -63,7 +63,7 @@ public class JoiningForm extends AppCompatActivity {
 
     private EditText  collegeEt, urlEt;
     private ImageView idIv, submissionIv,backArrow;
-    TextView warn;
+    TextView warn,decline;
     private Button submitBtn, idBtn, mediaBtn;
     boolean isKitKat;
     private String imgurl = "";
@@ -78,9 +78,9 @@ public class JoiningForm extends AppCompatActivity {
     String type = "";
     String p5 = "p5", p6 = "p6";
     public LinearLayout linearLayout;
+    boolean isJuryOrHost=false;
 
     //firebase
-    private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
@@ -117,6 +117,7 @@ public class JoiningForm extends AppCompatActivity {
         mediaLinear = findViewById(R.id.mediaLinearLayout);
         linearLayout = findViewById(R.id.pro);
         backArrow = findViewById(R.id.backarrow);
+        decline = findViewById(R.id.decline);
 
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -361,7 +362,9 @@ public class JoiningForm extends AppCompatActivity {
 
         });
 
-
+if (!isJuryOrHost){
+    decline.setVisibility(View.VISIBLE);
+}
     }
 
     public boolean checkValidity() {

@@ -269,7 +269,7 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
 
 
         getcontestDetails(contestDetail.getUserId(), contestDetail.getContestId(), holder.poster
-                , holder.title, holder.domain);
+                , holder.title, holder.domain,holder.progress);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -301,7 +301,7 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView domain, title;
-        private ImageView poster;
+        private ImageView poster,progress;
         String vote = "No";
         String reg = "No";
         String voteS="";
@@ -314,11 +314,13 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
             title = itemView.findViewById(R.id.title);
 
             poster = itemView.findViewById(R.id.poster);
+            progress = itemView.findViewById(R.id.progress);
+
 
         }
     }
 
-    private void getcontestDetails(String userId, String contestId, ImageView poster, TextView title, TextView domain) {
+    private void getcontestDetails(String userId, String contestId, ImageView poster, TextView title, TextView domain, ImageView progress) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
                 .child(userId)
                 .child(mContext.getString(R.string.created_contest))
@@ -331,7 +333,7 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
                     title.setText(createForm.getTitle());
                     domain.setText(createForm.getDomain().toString());
 
-                    UniversalImageLoader.setImage(createForm.getPoster(), poster, null, mAppend);
+                    UniversalImageLoader.setImage(createForm.getPoster(), poster, progress, mAppend);
                 }
             }
 

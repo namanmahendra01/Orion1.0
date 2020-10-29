@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.Constraints;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -20,7 +19,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.ViewPostActivity;
 import com.orion.orion.models.Comment;
-import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.Photo;
 import com.orion.orion.util.UniversalImageLoader;
 
@@ -56,10 +54,10 @@ public class AdapterGridImage extends RecyclerView.Adapter<AdapterGridImage.View
         Photo photo= photos.get(i);
         Log.d(TAG, "onBindViewHolder: "+photo.getType()+photos.size());
 if (photo.getType().equals("photo")){
-    UniversalImageLoader.setImage(photo.getImage_path(), holder.image, null, "");
+    UniversalImageLoader.setImage(photo.getImage_path(), holder.image, holder.progress, "");
 
 }else{
-    UniversalImageLoader.setImage(photo.getThumbnail(), holder.image, null, "");
+    UniversalImageLoader.setImage(photo.getThumbnail(), holder.image, holder.progress, "");
 
 }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -117,13 +115,14 @@ if (photo.getType().equals("photo")){
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private ImageView image;
+        private ImageView image,progress;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
 
             image = itemView.findViewById(R.id.image);
+            progress = itemView.findViewById(R.id.progress);
 
 
 
