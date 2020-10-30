@@ -401,20 +401,37 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void checkUpdate() {
         Log.d(TAG, "checkUpdate: started");
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assert user != null;
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_user_photos)).child(user.getUid());
+
         Log.d(TAG, "checkUpdate: user" + user.getUid());
-        Query query = reference.child(getString(R.string.dbname_user_photos)).child(user.getUid()).limitToLast(1);
+        Query query = reference.limitToLast(1);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     if (imgURLsList.get(0).getPhoto_id().equals(dataSnapshot.getKey())) {
-                        Log.d(TAG, "onDataChange: photoList" + imgURLsList);
-                        adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
-                        adapterGridImage.setHasStableIds(true);
-                        gridRv.setAdapter(adapterGridImage);
+
+                        reference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.getChildrenCount()==imgURLsList.size()){
+                                    Log.d(TAG, "onDataChange: photoList" + imgURLsList);
+                                    adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
+                                    adapterGridImage.setHasStableIds(true);
+                                    gridRv.setAdapter(adapterGridImage);
+                                }else{
+                                    SetupGridView();
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
                     } else {
                         SetupGridView();
                     }

@@ -92,10 +92,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
     private RecyclerView mRecyclerView;
     private AdapterItemLeaderboard mAdapter;
     private DatabaseReference reference;
-    private ImageView profile;
     //TextView usernameProfile;
-    private TextView ratingProfile;
-    private TextView rankProfile;
     private String time;
     private String locationParameter;
     private String typeParameter;
@@ -1080,10 +1077,6 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                             YoYo.with(Techniques.Landing).duration(ANIMATION_DURATION).playOn(mRecyclerView);
                                             String rankText = "#" + rank;
                                             String ratingText = finalUserRating + "pts";
-                                            rankProfile.setText(rankText);
-                                            ratingProfile.setText(ratingText);
-                                            YoYo.with(Techniques.Tada).duration(ANIMATION_DURATION).playOn(rankProfile);
-                                            YoYo.with(Techniques.Tada).duration(ANIMATION_DURATION).playOn(ratingProfile);
                                             userItemUsername.setText(userUsername);
                                             userItemRank.setText(rankText);
                                             assert userLocation != null;
@@ -1108,10 +1101,6 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                 YoYo.with(Techniques.Landing).duration(ANIMATION_DURATION).playOn(mRecyclerView);
                                 String rankText = "#" + rank;
                                 String ratingText = finalUserRating + "pts";
-                                rankProfile.setText(rankText);
-                                ratingProfile.setText(ratingText);
-                                YoYo.with(Techniques.Tada).duration(ANIMATION_DURATION).playOn(rankProfile);
-                                YoYo.with(Techniques.Tada).duration(ANIMATION_DURATION).playOn(ratingProfile);
                                 userItemUsername.setText(userUsername);
                                 userItemRank.setText(rankText);
                                 swipeRefreshLayout.setRefreshing(false);
@@ -1184,10 +1173,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         YoYo.with(Techniques.BounceIn).duration(ANIMATION_DURATION).playOn(sortedByLocation);
         YoYo.with(Techniques.BounceIn).duration(ANIMATION_DURATION).playOn(sortedByType);
         YoYo.with(Techniques.BounceIn).duration(ANIMATION_DURATION).playOn(sortedByDomain);
-        profile = findViewById(R.id.profile);
 //        usernameProfile=findViewById(R.id.username);
-        ratingProfile = findViewById(R.id.ratingProfile);
-        rankProfile = findViewById(R.id.rank);
 
         mList = new ArrayList<>();
         mAdapter = new AdapterItemLeaderboard(mList, mContext);
@@ -1198,20 +1184,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         assert user != null;
         currentUser = user.getUid();
-        Query query = reference.child(getString(R.string.dbname_user_account_settings)).child(currentUser).child(getString(R.string.profile_photo));
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                dataSnapshot.getValue();
-                UniversalImageLoader.setImage(String.valueOf(dataSnapshot.getValue()), profile, null, "");
-                YoYo.with(Techniques.StandUp).duration(ANIMATION_DURATION).playOn(profile);
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
 
         time = "";
         locationParameter = "";

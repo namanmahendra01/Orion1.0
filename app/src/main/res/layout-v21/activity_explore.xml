@@ -3,22 +3,48 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white">
 
 
     <RelativeLayout
         android:id="@+id/relLayout1"
         android:layout_width="match_parent"
+        android:padding="10dp"
+        android:background="@drawable/pink_round_button"
         android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/explore"
+            android:layout_width="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:text="Explore"
+
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/explore">
         <include layout="@layout/snippet_searchbar" />
+        </RelativeLayout>
 
     </RelativeLayout>
+    <ListView
+        android:id="@+id/listview"
+        android:layout_below="@+id/relLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/relLayout1"
+        android:layout_below="@+id/listview"
         android:nestedScrollingEnabled="false">
 
         <RelativeLayout
@@ -28,11 +54,6 @@
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false">
 
-            <ListView
-                android:id="@+id/listview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
 
             <RelativeLayout
                 android:id="@+id/collapse"
@@ -43,6 +64,29 @@
                 android:layout_alignParentEnd="true">
 
                 <include layout="@layout/layout_constellation" />
+
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_below="@id/collapse">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/up"
+                    android:src="@drawable/ic_arrow_up"/>
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/down"
+                    android:visibility="gone"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_arrow_down"/>
 
             </RelativeLayout>
         </RelativeLayout>
@@ -58,34 +102,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <View
-                    android:id="@+id/scrollDownActive"
-                    android:layout_width="55dp"
-                    android:layout_height="5dp"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/circular_corner_rectangle"
-                    android:backgroundTint="@color/black" />
 
-                <TextView
-                    android:id="@+id/explore"
-                    android:layout_width="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/scrollDownActive"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:gravity="center_horizontal"
-                    android:text="Explore"
-                    android:textAllCaps="true"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+
 
                 <LinearLayout
                     android:id="@+id/domain"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/explore"
                     android:layout_centerHorizontal="true"
                     android:gravity="center_horizontal"
                     android:nestedScrollingEnabled="false"

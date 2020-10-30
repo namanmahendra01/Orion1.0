@@ -829,6 +829,9 @@ public class ViewPostActivity extends AppCompatActivity {
                                                 editor.putString("myMedia", json2);
 
                                                 editor.apply();
+
+
+
                                                 progress.setVisibility(GONE);
                                                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                                 finish();

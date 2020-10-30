@@ -4,77 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/scheme8"
+    android:background="@color/white"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
-    <LinearLayout
-        android:id="@+id/topBar"
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:background="@drawable/gradient"
-        android:orientation="vertical"
-        android:padding="20dp"
-        android:weightSum="100">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="30"
-            android:gravity="center_horizontal|bottom"
-            android:letterSpacing="0.09"
-            android:paddingBottom="10dp"
-            android:textStyle="bold"
-            android:text="Leaderboard"
-            android:textColor="@color/white"
-            android:textSize="24sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="70"
-            android:orientation="horizontal"
-            android:weightSum="100">
-
-            <TextView
-                android:id="@+id/rank"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="35"
-                android:gravity="center"
-                android:text="#"
-                android:textColor="@color/white"
-                android:textSize="28sp" />
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profile"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="30"
-                android:elevation="4dp" />
-
-            <TextView
-                android:id="@+id/ratingProfile"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="35"
-                android:gravity="center"
-                android:text="pts"
-                android:textColor="@color/white"
-                android:textSize="28sp" />
-        </LinearLayout>
-
-    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/userItem"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/topBar"
         android:background="@color/white">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="40dp"
             android:background="@drawable/arrow_item"
             android:orientation="horizontal"
             android:weightSum="10">
@@ -82,12 +26,10 @@
             <TextView
                 android:id="@+id/userItemUsername"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="40dp"
                 android:layout_weight="3"
-                android:text="PRateek"
                 android:gravity="center_vertical|start"
                 android:textSize="24sp"
-                android:textStyle="bold"
                 android:textColor="@color/white"
                 android:paddingStart="25dp"/>
 
@@ -98,8 +40,7 @@
                 android:layout_weight="7"
                 android:gravity="center_vertical|end"
                 android:paddingRight="25dp"
-                android:textSize="32sp"
-                android:textStyle="bold"
+                android:textSize="24sp"
                 android:textColor="@color/scheme8"
                 android:paddingStart="25dp"/>
 
@@ -112,19 +53,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/userItem"
-        android:background="@drawable/circular_corner_rectangle"
+        android:background="@drawable/pink_round_button"
         android:backgroundTint="@color/scheme8"
         android:gravity="center"
         android:paddingTop="10dp"
         android:paddingBottom="5dp">
 
-        <View
-            android:id="@+id/scrollDownActive"
-            android:layout_width="55dp"
-            android:layout_height="5dp"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/circular_corner_rectangle"
-            android:backgroundTint="@color/gray_scale" />
+
+
 
         <LinearLayout
             android:id="@+id/filter"

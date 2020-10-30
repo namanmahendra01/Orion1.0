@@ -28,6 +28,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -125,6 +126,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     private ArrayList<Photo> fieldPhotos;
     private ArrayList<Photo> paginatedPhotos;
     private boolean shuffled = false;
+    private ImageView cross,up,down;
 
     int prevHeight;
     int height, dummyHeight;
@@ -150,18 +152,18 @@ initWidgets();
         initOnClickListeners();
 
 
-        topBox.setOnClickListener(v -> {
-            if (v.getId() != spinner.getId()) exploreRv.post(() -> expand(collapse, 500));
-        });
-        topBox.setOnTouchListener((v, event) -> {
-            if (v.getId() != collapse.getId())
-                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_UP) {
-                    exploreRv.post(() -> expand(collapse, 500));
-                    return true;
-                }
-            return false;
-
-        });
+//        topBox.setOnClickListener(v -> {
+//            if (v.getId() != spinner.getId()) exploreRv.post(() -> expand(collapse, 500));
+//        });
+//        topBox.setOnTouchListener((v, event) -> {
+//            if (v.getId() != collapse.getId())
+//                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_UP) {
+//                    exploreRv.post(() -> expand(collapse, 500));
+//                    return true;
+//                }
+//            return false;
+//
+//        });
 
         exploreRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -170,8 +172,6 @@ initWidgets();
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (paginatedPhotos.size() < fieldPhotos.size()) displayMorePhotos();
-                    else if (collapse.getVisibility() == View.VISIBLE)
-                        exploreRv.post(() -> expand(collapse, 500));
                 } else if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     Log.d(TAG, "onScrollStateChanged: top");
 //                    if(collapse.getVisibility()!=View.VISIBLE) exploreRv.post(() -> expand(collapse, 500));
@@ -232,7 +232,38 @@ initWidgets();
         star8 = findViewById(R.id.circleImageView8);
         spinner = findViewById(R.id.spinnerDo);
         collapse = findViewById(R.id.collapse);
+        cross = findViewById(R.id.cross);
+        up = findViewById(R.id.up);
+        down = findViewById(R.id.down);
 
+
+        cross.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mSearchParam.setText("");
+                mUserList.clear();
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+
+        up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                up.setVisibility(View.GONE);
+                down.setVisibility(View.VISIBLE);
+
+                collapse(collapse,1000,0);
+            }
+        });
+        down.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                up.setVisibility(View.VISIBLE);
+                down.setVisibility(View.GONE);
+                collapse(collapse,1000,dummyHeight);
+
+            }
+        });
         View v = collapse;
         prevHeight = v.getHeight();
 
@@ -244,7 +275,7 @@ initWidgets();
         linearLayoutManager.setItemPrefetchEnabled(true);
         linearLayoutManager.setInitialPrefetchItemCount(20);
 
-        exploreRv.setItemViewCacheSize(9);
+        exploreRv.setItemViewCacheSize(15);
         exploreRv.setDrawingCacheEnabled(true);
         exploreRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
         exploreRv.setLayoutManager(linearLayoutManager);
@@ -309,35 +340,68 @@ initWidgets();
         Log.d(TAG, "initOnClickListeners: completed");
     }
 
-    public void expand(final View v, int duration) {
-        final boolean expand = v.getVisibility() != View.VISIBLE;
+    public void expand( View v, int duration,int targetHeight) {
+        final boolean expand = v.getVisibility() == View.VISIBLE;
         prevHeight = v.getHeight();
         if (x == 0) {
             x++;
             dummyHeight = v.getHeight();
         }
         Log.d(TAG, "expand:" + expand);
+        int prevHeight  = v.getHeight();
+
+        v.setVisibility(View.VISIBLE);
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(prevHeight, targetHeight);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                v.getLayoutParams().height = (int) animation.getAnimatedValue();
+                v.requestLayout();
+            }
+        });
+        valueAnimator.setInterpolator(new DecelerateInterpolator());
+        valueAnimator.setDuration(duration);
+        valueAnimator.start();
+    }
+
+    public  void collapse(final View v, int duration, int targetHeight) {
+        final boolean expand = v.getVisibility() != View.VISIBLE;
+
+        prevHeight = v.getHeight();
+        if (x == 0) {
+            x++;
+            dummyHeight = v.getHeight();
+        }
         if (prevHeight == 0) {
             int measureSpecParams = View.MeasureSpec.getSize(View.MeasureSpec.UNSPECIFIED);
             v.measure(measureSpecParams, measureSpecParams);
             height = dummyHeight;
-        } else height = 0;
+        } else {
+            height = 0;
+        }
         ValueAnimator valueAnimator = ValueAnimator.ofInt(prevHeight, height);
-        valueAnimator.addUpdateListener(animation -> {
-            v.getLayoutParams().height = (int) animation.getAnimatedValue();
-            v.requestLayout();
+        int finalHeight = height;
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                v.getLayoutParams().height = (int) animation.getAnimatedValue();
+                v.requestLayout();
+
+            }
         });
+
         valueAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                if (expand) v.setVisibility(View.VISIBLE);
+                if (expand) {
+                    v.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (!expand) v.setVisibility(View.INVISIBLE);
-                if (expand) {
-                    v.setVisibility(View.VISIBLE);
+                if (!expand) {
+                    v.setVisibility(View.INVISIBLE);
                 }
             }
 
@@ -1194,7 +1258,10 @@ initWidgets();
         Log.d(TAG, "searching for a match" + keyword);
         mUserList.clear();
         if (keyword.length() == 0) {
+            cross.setVisibility(View.GONE);
+
         } else {
+            cross.setVisibility(View.VISIBLE);
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
             Query query = reference.child(getString(R.string.dbname_users)).orderByChild(getString(R.string.field_username)).startAt(keyword).endAt(keyword + "\uf8ff");
             query.addValueEventListener(new ValueEventListener() {
@@ -1223,7 +1290,7 @@ initWidgets();
                 Log.d(TAG, "selected user" + mUserList.get(position).toString());
                 Intent intent = new Intent(Explore.this, profile.class);
                 intent.putExtra(getString(R.string.calling_activity), getString(R.string.search_activity));
-                intent.putExtra(getString(R.string.intent_user), mUserList.get(position));
+                intent.putExtra(getString(R.string.intent_user), mUserList.get(position).getUser_id());
                 startActivity(intent);
             }
         });

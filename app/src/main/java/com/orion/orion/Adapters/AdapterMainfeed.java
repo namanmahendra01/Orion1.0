@@ -1158,28 +1158,66 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                                     public void onSuccess(Void aVoid) {
                                         // File deleted successfully
 
+
                                         String json = sp.getString("pl", null);
+                                        String json2 = sp.getString("myMedia", null);
+
                                         Type type = new TypeToken<ArrayList<Photo>>() {
                                         }.getType();
                                         ArrayList<Photo> photoList = new ArrayList<>();
+                                        ArrayList<Photo> mymediaList = new ArrayList<>();
+
                                         photoList = gson.fromJson(json, type);
+                                        mymediaList = gson.fromJson(json2, type);
+                                        ArrayList<Photo> photoList2 = new ArrayList<>(photoList);
+                                        ArrayList<Photo> mymediaList2 = new ArrayList<>(mymediaList);
+
+
+
                                         if (photoList == null || photoList.size() == 0) {                 //    if no arrayList is present
+
 
                                         } else {
 
-                                            photoList.remove(photo);
-                                            photos.remove(photo);
-                                            //  delete from post list and save updated list
-                                            SharedPreferences.Editor editor = sp.edit();
-                                            json = gson.toJson(photoList);
-                                            editor.putString("pl", json);
-                                            editor.apply();
+                                            for (Photo a : photoList) {
+                                                if (a.getPhoto_id().equals(photo.getPhoto_id()))
+                                                    photoList2.remove(a);
 
+                                            }
+                                        }
+
+
+
+                                        if (mymediaList == null || mymediaList.size() == 0) {                 //    if no arrayList is present
+
+
+                                        } else {
+
+                                            for (Photo a : mymediaList) {
+                                                if (a.getPhoto_id().equals(photo.getPhoto_id()))
+                                                    mymediaList2.remove(a);
+
+                                            }
+                                        }
+
+
+                                        //  delete from post list and save updated list
+                                        SharedPreferences.Editor editor = sp.edit();
+                                        json = gson.toJson(photoList2);
+                                        json2 = gson.toJson(mymediaList2);
+
+                                        editor.putString("pl", json);
+                                        editor.putString("myMedia", json2);
+
+                                        editor.apply();
+
+
+                                        photos.remove(photo);
                                             AdapterMainfeed.this.notifyItemRemoved(i);
 
 
 
-                                        }
+
                                         Log.d(VolleyLog.TAG, "onSuccess: deleted file");
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {

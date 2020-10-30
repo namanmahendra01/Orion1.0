@@ -609,24 +609,26 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        int x=0;
-                        for (int i = 0; i < list.size(); i++) {
-x++;
+                        if (dataSnapshot.exists()) {
+                            int x = 0;
+                            for (int i = 0; i < list.size(); i++) {
+                                x++;
 
-                            if (dataSnapshot.child(list.get(i))
-                                    .child("domain").getValue().equals(domain)) {
-                                mFollowing1.add(list.get(i));
-                            }
-                            if (x==dataSnapshot.getChildrenCount()){
+                                if (dataSnapshot.child(list.get(i))
+                                        .child("domain").getValue().equals(domain)) {
+                                    mFollowing1.add(list.get(i));
+                                }
+                                if (x == dataSnapshot.getChildrenCount()) {
 
 //                        Add newly Created ArrayList to Shared Preferences
-                                SharedPreferences.Editor editor = sp.edit();
-                                String json = gson.toJson(mFollowing1);
-                                editor.putString("ffl", json);
-                                editor.apply();
+                                    SharedPreferences.Editor editor = sp.edit();
+                                    String json = gson.toJson(mFollowing1);
+                                    editor.putString("ffl", json);
+                                    editor.apply();
+                                }
+
+
                             }
-
-
                         }
 
 
@@ -652,17 +654,11 @@ x++;
         }
         Log.d(TAG, "removeFromContestList: 3"+list1.size());
 
-        int z=list1.size();
 
-        if (list1.size() != 0&&list1!=null) {
+        if (list1.size() != 0) {
             for (int i = 0; i < list.size(); i++) {
-                Log.d(TAG, "removeFromContestList: 8 "+list1.size());
                 for (int x=0;x<list1.size();x++){
-                    Log.d(TAG, "removeFromContestList: 8m "+list1.size());
-
-                    Log.d(TAG, "removeFromContestList: 4"+list1.get(x));
                     if (list1.get(x).getUserId().equals(list.get(i))) {
-                        Log.d(TAG, "removeFromContestList: 1");
                         list1.remove(list1.get(x));
                         x--;
                     }
@@ -670,8 +666,6 @@ x++;
 
             }
         }
-
-        Log.d(TAG, "removeFromContestList: 3"+list1.size());
 
 //                        Add newly Created ArrayList to Shared Preferences
         SharedPreferences.Editor editor = sp.edit();
@@ -748,6 +742,14 @@ x++;
                         }
 
 
+                    }else {
+                        contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
+                        contestUpcoming.setHasStableIds(true);
+
+                        contestRv.setAdapter(contestUpcoming);
+
+                        contestUpcoming.notifyDataSetChanged();
+                        flag3 = true;
                     }
                 }
 
@@ -835,66 +837,71 @@ x++;
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    int h = 0;
-                    for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-                        h++;
-                        Photo photo = new Photo();
-                        Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                    if (snapshot.exists()) {
+                        int h = 0;
+                        for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
+                            h++;
+                            Photo photo = new Photo();
+                            Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
-                        photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
+                            photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
 
-                        photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
+                            photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
 
-                        photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+                            photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
 
-                        photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
+                            photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
 
-                        photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
+                            photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
 
-                        photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+                            photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
 
-                        if (objectMap.get(getString(R.string.thumbnail)) != null)
-                            photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
-                        if (objectMap.get(getString(R.string.type)) != null)
-                            photo.setType(objectMap.get(getString(R.string.type)).toString());
-                        ArrayList<Comment> comments = new ArrayList<>();
+                            if (objectMap.get(getString(R.string.thumbnail)) != null)
+                                photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
+                            if (objectMap.get(getString(R.string.type)) != null)
+                                photo.setType(objectMap.get(getString(R.string.type)).toString());
+                            ArrayList<Comment> comments = new ArrayList<>();
 
-                        for (DataSnapshot dSnapshot : singleSnapshot
-                                .child(getString(R.string.field_comment)).getChildren()) {
-                            Comment comment = new Comment();
-                            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                            comments.add(comment);
+                            for (DataSnapshot dSnapshot : singleSnapshot
+                                    .child(getString(R.string.field_comment)).getChildren()) {
+                                Comment comment = new Comment();
+                                comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                                comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                                comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                comments.add(comment);
 
-                        }
-                        photo.setComments(comments);
+                            }
+                            photo.setComments(comments);
 //                    add photo to mPhotos list
-                        mPhotos.add(photo);
+                            mPhotos.add(photo);
 
-                        if (finalL == uid.size() && h == snapshot.getChildrenCount()) {
+                            if (finalL == uid.size() && h == snapshot.getChildrenCount()) {
 
 //                    sort mPhotos
-                            Collections.sort(mPhotos, new Comparator<Photo>() {
-                                @Override
-                                public int compare(Photo o1, Photo o2) {
-                                    return o2.getDate_created().compareTo(o1.getDate_created());
-                                }
-                            });
+                                Collections.sort(mPhotos, new Comparator<Photo>() {
+                                    @Override
+                                    public int compare(Photo o1, Photo o2) {
+                                        return o2.getDate_created().compareTo(o1.getDate_created());
+                                    }
+                                });
 
 //                add updated list to Shared Preference
-                            SharedPreferences.Editor editor = sp.edit();
-                            editor.remove("addfollowing");
-                            String json = gson.toJson(mPhotos);
-                            editor.putString("pl", json);
-                            editor.apply();
+                                SharedPreferences.Editor editor = sp.edit();
+                                editor.remove("addfollowing");
+                                String json = gson.toJson(mPhotos);
+                                editor.putString("pl", json);
+                                editor.apply();
 
-                            displayPhotos();
+                                displayPhotos();
 
+                            }
                         }
+
+
+                    }else{
+                        displayPhotos();
+
                     }
-
-
                 }
 
 

@@ -146,11 +146,15 @@
             app:cardCornerRadius="10dp">
 
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
             <com.google.android.exoplayer2.ui.PlayerView
                 android:id="@+id/player_view"
                 android:layout_width="match_parent"
 
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:backgroundTint="@color/black"
                 android:background="@drawable/square"
@@ -161,10 +165,15 @@
                 app:player_layout_id="@layout/exo_simple_player_view"
                 app:resize_mode="fit"
                 app:rewind_increment="10000"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="W,1:1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:show_timeout="5000"
                 app:surface_type="texture_view"
                 app:use_controller="false" />
-
+            </androidx.constraintlayout.widget.ConstraintLayout>
             <com.orion.orion.util.SquareImageView
                 android:id="@+id/thumbnail"
                 android:layout_width="match_parent"
