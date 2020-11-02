@@ -67,7 +67,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     ArrayList<Photo> imgURLsList;
     ProgressDialog dialog;
     private Context mContext;
-
+    boolean isFollowing=false;
     int rank = 1;
     //firebase
     private FirebaseAuth mAuth;
@@ -181,10 +181,11 @@ public class ViewProfileActivity extends AppCompatActivity {
             getSupportFragmentManager().popBackStack();
             finish();
         });
+
         mFollow.setOnClickListener(v -> {
             YoYo.with(Techniques.FadeIn).duration(500).playOn(mMessage);
-            boolean isFollowing = mFollow.getText().equals("Unfollow");
             if (isFollowing) {
+                isFollowing=false;
 //               remove from following list
                 SharedPreferences sp =getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
                 Gson gson=new Gson();
@@ -214,7 +215,10 @@ public class ViewProfileActivity extends AppCompatActivity {
                     ulist= new ArrayList<String>();
                     ulist.add(mUser);
                 }else{
-                    ulist.add(mUser);
+                    if (!ulist.contains(mUser)){
+                        ulist.add(mUser);
+
+                    }
                 }
 //                save update list
                 editor=sp.edit();
@@ -222,13 +226,37 @@ public class ViewProfileActivity extends AppCompatActivity {
                 editor.putString("removefollowing",json);
                 editor.apply();
 
+
+//              update following list
+                json =sp.getString("addfollowing",null);
+                type= new TypeToken<ArrayList<String>>() {}.getType();
+                ArrayList<String> ulist2= new ArrayList<String>();
+                ulist2=gson.fromJson(json,type);
+                if (ulist2==null){
+
+                }else{
+                    if (ulist2.contains(mUser)){
+                        ulist2.remove(mUser);
+//                save update list
+                        editor=sp.edit();
+                        json =gson.toJson(ulist2);
+                        editor.putString("addfollowing",json);
+                        editor.apply();
+                    }
+                }
+
+
+
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mUser).removeValue();
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_follower)).child(mUser).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_users)).child(mUser).child(getString(R.string.changedFollowers)).setValue("true");
                 mFollow.setText("Follow");
 
             } else {
+
+
 //               addfollowing list
+                isFollowing=true;
                 SharedPreferences sp =getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
                 Gson gson=new Gson();
                 String json =sp.getString("fl",null);
@@ -239,8 +267,11 @@ public class ViewProfileActivity extends AppCompatActivity {
                     list= new ArrayList<String>();
                     list.add(mUser);
                 }else{
-                    list.add(mUser);
+                    if (!list.contains(mUser)) {
+                        list.add(mUser);
+                    }
                 }
+
 //                 save following list
                 SharedPreferences.Editor editor=sp.edit();
                 json =gson.toJson(list);
@@ -256,7 +287,11 @@ public class ViewProfileActivity extends AppCompatActivity {
                     ulist= new ArrayList<String>();
                     ulist.add(mUser);
                 }else{
-                    ulist.add(mUser);
+                    if (!ulist.contains(mUser)){
+                        ulist.add(mUser);
+
+                    }
+
 
                 }
 //                save update list
@@ -264,6 +299,26 @@ public class ViewProfileActivity extends AppCompatActivity {
                 json =gson.toJson(ulist);
                 editor.putString("addfollowing",json);
                 editor.apply();
+
+
+//              update following list
+                json =sp.getString("removefollowing",null);
+                type= new TypeToken<ArrayList<String>>() {}.getType();
+                ArrayList<String> ulist2= new ArrayList<String>();
+                ulist2=gson.fromJson(json,type);
+                if (ulist2==null){
+
+                }else{
+                    if (ulist2.contains(mUser)){
+                        ulist2.remove(mUser);
+//                save update list
+                        editor=sp.edit();
+                        json =gson.toJson(ulist2);
+                        editor.putString("removefollowing",json);
+                        editor.apply();
+                    }
+                }
+
 
                 notify = true;
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mUser).child(getString(R.string.field_user_id)).setValue(mUser);
@@ -615,6 +670,8 @@ public class ViewProfileActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                     mFollow.setText("Unfollow");
+                    isFollowing = mFollow.getText().equals("Unfollow");
+
                 }
             }
             @Override

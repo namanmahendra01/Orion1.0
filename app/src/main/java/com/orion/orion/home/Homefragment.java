@@ -344,7 +344,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         }.getType();
         ArrayList<String> list = new ArrayList<>();
         list = gson.fromJson(json, type);
-        if (list == null) {    //        not followed anyone
+        if (list == null||list.size()==0) {    //        not followed anyone
             c++;
         } else {              //    we followed someone....update everylist
             addToPhotosList(list);
@@ -359,7 +359,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         }.getType();
         ArrayList<String> ulist = new ArrayList<>();
         ulist = gson.fromJson(json, type);
-        if (ulist == null) {    //         not unfollowed anyone
+        if (ulist == null||ulist.size()==0) {    //         not unfollowed anyone
             c++;
         } else {                  //    we unfollowed someone....update everylist
 
@@ -614,6 +614,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                             for (int i = 0; i < list.size(); i++) {
                                 x++;
 
+                                Log.d(TAG, "onDataChange: ooo"+list);
                                 if (dataSnapshot.child(list.get(i))
                                         .child("domain").getValue().equals(domain)) {
                                     mFollowing1.add(list.get(i));

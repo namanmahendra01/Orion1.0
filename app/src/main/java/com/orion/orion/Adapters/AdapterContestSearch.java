@@ -112,6 +112,37 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
 
             }
         });
+        DatabaseReference ref8 = FirebaseDatabase.getInstance().getReference();
+        ref8.child(mContext.getString(R.string.dbname_users))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(mContext.getString(R.string.field_username))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        holder.username = dataSnapshot.getValue().toString();
+
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+        ref8.child(mContext.getString(R.string.dbname_users))
+                .child(mcontest.getUserId())
+                .child(mContext.getString(R.string.field_username))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        holder.hostUsername = dataSnapshot.getValue().toString();
+
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist));
         ref.child(key)
@@ -366,18 +397,60 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                 Log.e(SNTPClient.TAG, ex.getMessage());
             }
         });
+        holder.gp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+                alertDialog.setTitle("GP:GENUINE PERCENTAGE");
+                alertDialog.setMessage("This is the percentage showing how much genuine this host is.");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cool",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+        });
+        holder.info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+                alertDialog.setTitle("GP:GENUINE PERCENTAGE");
+                alertDialog.setMessage("This is the percentage showing how much genuine this host is.");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cool",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+        });
+
         holder.participateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
 
-                Intent i = new Intent(mContext.getApplicationContext(), JoiningForm.class);
-                i.putExtra("userId", mcontest.getUserId());
-                i.putExtra("contestId", mcontest.getContestId());
-                mContext.startActivity(i);
+                if (holder.username.equals(juryusername1)||holder.username.equals(juryusername2)
+                        ||holder.username.equals(juryusername3)||holder.username.equals(holder.hostUsername)) {
+                    Intent i = new Intent(mContext.getApplicationContext(), JoiningForm.class);
+                    i.putExtra("userId", mcontest.getUserId());
+                    i.putExtra("contestId", mcontest.getContestId());
+                    i.putExtra("isJuryOrHost",true);
+                    mContext.startActivity(i);
+                }else{
+                    Intent i = new Intent(mContext.getApplicationContext(), JoiningForm.class);
+                    i.putExtra("userId", mcontest.getUserId());
+                    i.putExtra("contestId", mcontest.getContestId());
+                    i.putExtra("isJuryOrHost",false);
+                    mContext.startActivity(i);
+                }
 
             }
         });
+
 
         holder.voteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -608,8 +681,10 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView domain, title, regEnd, entryFee, host, totalP, gp;
-        private ImageView poster,option,progress;
+        private ImageView poster,option,progress,info;
         private Button voteBtn, participateBtn, regSoonBtn, contestBtn, resultBtn;
+        private String   username="",
+         hostUsername="";
 
         Boolean ok = false;
         int p = 0;
@@ -631,6 +706,8 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
             gp = itemView.findViewById(R.id.gp);
             option = itemView.findViewById(R.id.optionC);
             progress = itemView.findViewById(R.id.progress);
+            info = itemView.findViewById(R.id.info);
+
 
 
 
