@@ -110,7 +110,6 @@
             android:layout_centerHorizontal="true"
             android:textColor="@color/white"
             app:backgroundTint="@color/scheme8"
-            app:icon="@drawable/ic_baseline_photo_library_24"
             app:iconTint="@color/white" />
 
     </RelativeLayout>

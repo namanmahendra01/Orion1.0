@@ -15,6 +15,7 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -78,10 +79,11 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     private AdapterMainFeedContest contestUpcoming;
     private RecyclerView promoteRv;
     private ArrayList<String> promotelist;
+    public ProgressBar bottomProgress;
     private AdapterPromote promote;
     private int c = 0;
     String domain;
-    boolean flag1 = false, flag2 = false, flag3 = false, flag4 = false;
+    boolean flag1 = false, flag2 = false, flag3 = false, flag4 = false,flag5=false;
     private static int RETRY_DURATION = 1000;
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
@@ -120,6 +122,8 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         scrollView = view.findViewById(R.id.parent_scroll);
         postReferesh = view.findViewById(R.id.post_refresh);
         progress = view.findViewById(R.id.pro);
+        bottomProgress = view.findViewById(R.id.pro2);
+
 //          Initialize SharedPreference variables
         sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
@@ -259,16 +263,27 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                         if (scrollView.getChildAt(0).getBottom()
                                 == (scrollView.getHeight() + scrollView.getScrollY()) && c != 0) {
+                            if (mPhotos.size()!=mPaginatedPhotos.size()){
+                                bottomProgress.setVisibility(View.VISIBLE);
+
+                            }
 
                             //scroll view is at bottom
+
                             displayMorePhotos();
+//                            checkLoading();
+
                         } else {
+                            bottomProgress.setVisibility(View.GONE);
 
                             //scroll view is not at bottom
                         }
                         c++;
                     }
+
+
                 });
+
 
         star.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,20 +313,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
     }
 
-    public void ToggleProgressBar() {
-        if (progress.getVisibility() == View.GONE) {
-            progress.setVisibility(View.VISIBLE);
-            getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 
-        } else {
-            progress.setVisibility(View.GONE);
-            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-
-
-        }
-        progress.setVisibility(View.VISIBLE);
-    }
 
     //  fetching FollowerList  from SharedPreferences
     private void getFollowerListFromSP() {
@@ -1430,7 +1432,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     mPaginatedPhotos.add(mPhotos.get(i));
                 }
                 Log.d(TAG, "displayPhotos: sss" + mPaginatedPhotos.size());
-                mAadapter = new AdapterMainfeed(getContext(), mPaginatedPhotos, ListViewRv);
+                mAadapter = new AdapterMainfeed(getContext(), mPaginatedPhotos, ListViewRv,Homefragment.this);
                 mAadapter.setHasStableIds(true);
                 ListViewRv.setAdapter(mAadapter);
 
@@ -1467,6 +1469,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     @Override
                     public void run() {
                         mAadapter.notifyItemRangeInserted(mResults, iterations);
+                        flag5=true;
                     }
                 });
                 mResults = mResults + iterations;

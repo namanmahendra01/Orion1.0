@@ -102,11 +102,24 @@ android:background="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/rel2"
+                android:paddingBottom="50dp"
+                android:clipToPadding="false"
+
 
                 android:nestedScrollingEnabled="false">
 
             </androidx.recyclerview.widget.RecyclerView>
+            <ProgressBar
+                android:id="@+id/pro2"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:visibility="visible"
+                android:background="@android:color/transparent"
+                android:layout_centerHorizontal="true"
+              android:layout_alignParentBottom="true"/>
         </RelativeLayout>
+
     </ScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <LinearLayout
@@ -143,4 +156,5 @@ android:background="@color/white"
                 />
         </RelativeLayout>
     </LinearLayout>
+
 </RelativeLayout>

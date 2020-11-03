@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -67,6 +68,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orion.orion.CommentActivity;
 import com.orion.orion.R;
 import com.orion.orion.ViewPostActivity;
+import com.orion.orion.home.Homefragment;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.Photo;
 import com.orion.orion.models.users;
@@ -117,16 +119,18 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
     //    SP
     Gson gson;
     SharedPreferences sp;
+    Homefragment homefragment;
 
     private FirebaseMethods mFirebaseMethods;
     private boolean notify = false;
 
     private List<Photo> photos;
 
-    public AdapterMainfeed(Context mContext, List<Photo> photos, RecyclerView recyclerView) {
+    public AdapterMainfeed(Context mContext, List<Photo> photos, RecyclerView recyclerView, Homefragment homefragment) {
         this.mContext = mContext;
         this.photos = photos;
         this.recyclerView = recyclerView;
+        this.homefragment = homefragment;
     }
 
 
@@ -149,6 +153,8 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         ifCurrentUserLiked(holder, photo);
         ifCurrentUserPromoted(holder, photo);
         holder.duration.setVisibility(View.GONE);
+        homefragment.bottomProgress.setVisibility(GONE);
+
 //          Initialize SharedPreference variables
         sp = mContext.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
@@ -1145,6 +1151,16 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
                     private void DeleteFurther() {
 
+                       if( !photo.getType().equals("photo")){
+                           StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(photo.getThumbnail());
+                           photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                               @Override
+                               public void onSuccess(Void aVoid) {
+
+                               }
+                           });
+                       }
+
                         DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
                         reference2.child(mContext.getString(R.string.dbname_user_photos))
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -1158,67 +1174,81 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                                     public void onSuccess(Void aVoid) {
                                         // File deleted successfully
 
+                                        DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
+                                        reference2.child("explore_update")
+                                                .child(photo.getPhoto_id())
+                                                .setValue(true)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
 
-                                        String json = sp.getString("pl", null);
-                                        String json2 = sp.getString("myMedia", null);
+                                                        String json = sp.getString("pl", null);
+                                                        String json2 = sp.getString("myMedia", null);
 
-                                        Type type = new TypeToken<ArrayList<Photo>>() {
-                                        }.getType();
-                                        ArrayList<Photo> photoList = new ArrayList<>();
-                                        ArrayList<Photo> mymediaList = new ArrayList<>();
+                                                        Type type = new TypeToken<ArrayList<Photo>>() {
+                                                        }.getType();
+                                                        ArrayList<Photo> photoList = new ArrayList<>();
+                                                        ArrayList<Photo> mymediaList = new ArrayList<>();
 
-                                        photoList = gson.fromJson(json, type);
-                                        mymediaList = gson.fromJson(json2, type);
-                                        ArrayList<Photo> photoList2 = new ArrayList<>(photoList);
-                                        ArrayList<Photo> mymediaList2 = new ArrayList<>(mymediaList);
-
-
-
-                                        if (photoList == null || photoList.size() == 0) {                 //    if no arrayList is present
-
-
-                                        } else {
-
-                                            for (Photo a : photoList) {
-                                                if (a.getPhoto_id().equals(photo.getPhoto_id()))
-                                                    photoList2.remove(a);
-
-                                            }
-                                        }
+                                                        photoList = gson.fromJson(json, type);
+                                                        mymediaList = gson.fromJson(json2, type);
+                                                        ArrayList<Photo> photoList2 = new ArrayList<>(photoList);
+                                                        ArrayList<Photo> mymediaList2 = new ArrayList<>(mymediaList);
 
 
 
-                                        if (mymediaList == null || mymediaList.size() == 0) {                 //    if no arrayList is present
+                                                        if (photoList == null || photoList.size() == 0) {                 //    if no arrayList is present
 
 
-                                        } else {
+                                                        } else {
 
-                                            for (Photo a : mymediaList) {
-                                                if (a.getPhoto_id().equals(photo.getPhoto_id()))
-                                                    mymediaList2.remove(a);
+                                                            for (Photo a : photoList) {
+                                                                if (a.getPhoto_id().equals(photo.getPhoto_id()))
+                                                                    photoList2.remove(a);
 
-                                            }
-                                        }
-
-
-                                        //  delete from post list and save updated list
-                                        SharedPreferences.Editor editor = sp.edit();
-                                        json = gson.toJson(photoList2);
-                                        json2 = gson.toJson(mymediaList2);
-
-                                        editor.putString("pl", json);
-                                        editor.putString("myMedia", json2);
-
-                                        editor.apply();
-
-
-                                        photos.remove(photo);
-                                            AdapterMainfeed.this.notifyItemRemoved(i);
+                                                            }
+                                                        }
 
 
 
+                                                        if (mymediaList == null || mymediaList.size() == 0) {                 //    if no arrayList is present
 
-                                        Log.d(VolleyLog.TAG, "onSuccess: deleted file");
+
+                                                        } else {
+
+                                                            for (Photo a : mymediaList) {
+                                                                if (a.getPhoto_id().equals(photo.getPhoto_id()))
+                                                                    mymediaList2.remove(a);
+
+                                                            }
+                                                        }
+
+
+                                                        //  delete from post list and save updated list
+                                                        SharedPreferences.Editor editor = sp.edit();
+                                                        json = gson.toJson(photoList2);
+                                                        json2 = gson.toJson(mymediaList2);
+
+                                                        editor.putString("pl", json);
+                                                        editor.putString("myMedia", json2);
+
+                                                        editor.apply();
+
+
+                                                        photos.remove(photo);
+                                                        AdapterMainfeed.this.notifyItemRemoved(i);
+
+
+
+
+                                                        Log.d(VolleyLog.TAG, "onSuccess: deleted file");
+                                                    }
+                                                });
+
+
+
+
+
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override

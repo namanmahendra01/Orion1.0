@@ -340,29 +340,6 @@ initWidgets();
         Log.d(TAG, "initOnClickListeners: completed");
     }
 
-    public void expand( View v, int duration,int targetHeight) {
-        final boolean expand = v.getVisibility() == View.VISIBLE;
-        prevHeight = v.getHeight();
-        if (x == 0) {
-            x++;
-            dummyHeight = v.getHeight();
-        }
-        Log.d(TAG, "expand:" + expand);
-        int prevHeight  = v.getHeight();
-
-        v.setVisibility(View.VISIBLE);
-        ValueAnimator valueAnimator = ValueAnimator.ofInt(prevHeight, targetHeight);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                v.getLayoutParams().height = (int) animation.getAnimatedValue();
-                v.requestLayout();
-            }
-        });
-        valueAnimator.setInterpolator(new DecelerateInterpolator());
-        valueAnimator.setDuration(duration);
-        valueAnimator.start();
-    }
 
     public  void collapse(final View v, int duration, int targetHeight) {
         final boolean expand = v.getVisibility() != View.VISIBLE;
