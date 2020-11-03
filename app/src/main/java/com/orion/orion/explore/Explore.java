@@ -22,7 +22,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -94,13 +93,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Explore extends AppCompatActivity implements BottomSheetDomain.BottomSheetListener, AdapterGridImageExplore.OnPostItemClickListner {
     private static final String TAG = "Explore";
     private static final int ACTIVITY_NUM = 1;
-    private static int RETRY_DURATION = 1000;
     private static final Handler handler = new Handler(Looper.getMainLooper());
+    private static int RETRY_DURATION = 1000;
+    int x = 0;
+    int prevHeight;
+    int height, dummyHeight;
     private Context mContext;
     private SharedPreferences mPreferences;
     private SharedPreferences.Editor mEditor;
     private DatabaseReference reference;
-    int x = 0;
     private CircleImageView star1, star2, star3, star4, star5, star6, star7, star8;
     private String user1;
     private String user2;
@@ -119,18 +120,13 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView exploreRv;
     private AdapterGridImageExplore adapterGridImage;
-
     private ArrayList<String> topUser8;
     private List<users> mUserList;
     private UserListAdapter mAdapter;
     private ArrayList<Photo> fieldPhotos;
     private ArrayList<Photo> paginatedPhotos;
     private boolean shuffled = false;
-    private ImageView cross,up,down;
-
-    int prevHeight;
-    int height, dummyHeight;
-
+    private ImageView cross, up, down;
     private FusedLocationProviderClient fusedLocationClient;
 
     @Override
@@ -147,8 +143,8 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate: started.");
-setContentView(R.layout.activity_explore);
-initWidgets();
+        setContentView(R.layout.activity_explore);
+        initWidgets();
         initOnClickListeners();
 
 
@@ -252,7 +248,7 @@ initWidgets();
                 up.setVisibility(View.GONE);
                 down.setVisibility(View.VISIBLE);
 
-                collapse(collapse,1000,0);
+                collapse(collapse, 1000, 0);
             }
         });
         down.setOnClickListener(new View.OnClickListener() {
@@ -260,7 +256,7 @@ initWidgets();
             public void onClick(View view) {
                 up.setVisibility(View.VISIBLE);
                 down.setVisibility(View.GONE);
-                collapse(collapse,1000,dummyHeight);
+                collapse(collapse, 1000, dummyHeight);
 
             }
         });
@@ -341,7 +337,7 @@ initWidgets();
     }
 
 
-    public  void collapse(final View v, int duration, int targetHeight) {
+    public void collapse(final View v, int duration, int targetHeight) {
         final boolean expand = v.getVisibility() != View.VISIBLE;
 
         prevHeight = v.getHeight();
@@ -644,6 +640,7 @@ initWidgets();
         Log.d(TAG, "createTopDatabase: field " + field);
         ArrayList<TopUsers> mList = new ArrayList<>();
         mList.clear();
+        reference.child(getString(R.string.explore_update)).removeValue();
         Query query = reference.child(getString(R.string.dbname_leaderboard));
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -794,7 +791,6 @@ initWidgets();
                                                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                                                 if (snapshot.exists()) {
                                                                                     for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-
                                                                                         String key = singleSnapshot.getKey();
                                                                                         String userID = String.valueOf(singleSnapshot.getValue());
                                                                                         assert key != null;
@@ -820,7 +816,7 @@ initWidgets();
                                                                                             mEditor.putStringSet(firstField + "_TopUsers", set);
                                                                                             mEditor.apply();
                                                                                             Log.d(TAG, "fetchTopUsers: fetch complete for field " + firstField + " staring posts fetch");
-                                                                                            getPosts(firstField, 0);
+//                                                                                            getPosts(firstField, 0);
                                                                                         }
 
                                                                                         @Override
@@ -1027,8 +1023,15 @@ initWidgets();
                                     for (DataSnapshot singleSnapshot : snapshot.getChildren())
                                         if (singleSnapshot.exists()) {
                                             Photo photo = singleSnapshot.getValue(Photo.class);
-                                            if (!fieldPhotos.contains(photo))
-                                                fieldPhotos.add(photo);
+                                            boolean exists = false;
+                                            for (Photo existingPhoto : fieldPhotos) {
+                                                assert photo != null;
+                                                if (existingPhoto.getPhoto_id().equals(photo.getPhoto_id())) {
+                                                    exists = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (!exists) fieldPhotos.add(photo);
                                         }
 //                                Log.d(TAG, "getPosts: currentTimeSTamp" + currentTimeSTamp);
                                 Gson gson = new Gson();
@@ -1148,35 +1151,120 @@ initWidgets();
             } else {
                 Log.d(TAG, "displayPhotos: handler2");
                 handler.removeCallbacks(this::displayPhotos);
-                Type type = new TypeToken<List<Photo>>() {
-                }.getType();
+                Type type = new TypeToken<List<Photo>>() {}.getType();
                 fieldPhotos = gson.fromJson(json, type);
                 Log.d(TAG, "displayPhotos: photos retrieved " + fieldPhotos.size());
-                try {
-                    if (!shuffled) {
-                        Collections.shuffle(fieldPhotos);
-                        shuffled = true;
-                    }
-                    paginatedPhotos = new ArrayList<>();
-                    for (int i = 0; i < fieldPhotos.size(); i++) {
-                        if (i == fieldPhotos.size() - 1 || i == 8) {
-                            Log.d(TAG, "displayPhotos: paginatedPhotos" + paginatedPhotos.size());
-                            adapterGridImage = new AdapterGridImageExplore(mContext, paginatedPhotos, this);
-                            ((SimpleItemAnimator) exploreRv.getItemAnimator()).setSupportsChangeAnimations(false);
-                            swipeRefreshLayout.setRefreshing(false);
-                            adapterGridImage.setHasStableIds(true);
-                            exploreRv.setAdapter(adapterGridImage);
-                            break;
-                        } else paginatedPhotos.add(fieldPhotos.get(i));
+                Query query = reference.child(getString(R.string.explore_update));
+                String finalField = field;
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.child(getString(R.string.field_last_updated)).exists()){
+                            Log.d(TAG, "onDataChange: checking if posts need to be deleted");
+                            String previousTimeStamp = String.valueOf(snapshot.child(getString(R.string.field_last_updated)).getValue());
+                            SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
+                                @Override
+                                public void onTimeReceived(String currentTimeStamp) {
+                                    int currentYear = Integer.parseInt(currentTimeStamp.substring(0, 4));
+                                    int currentMonth = Integer.parseInt(currentTimeStamp.substring(5, 7));
+                                    int currentDate = Integer.parseInt(currentTimeStamp.substring(8, 10));
+                                    String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
+                                    String currentDateFormat = currentDate + "/" + currentMonth + "/" + currentYear;
+                                    Date date = new Date(currentDateFormat);
+                                    int currentDay = date.getDay();
+
+                                    int postedYear = Integer.parseInt(previousTimeStamp.substring(0, 4));
+                                    int postedMonth = Integer.parseInt(previousTimeStamp.substring(5, 7));
+                                    int postedDate = Integer.parseInt(previousTimeStamp.substring(8, 10));
+                                    String postedTime = previousTimeStamp.substring(12, previousTimeStamp.length() - 1);
+                                    String postedDateFormat = postedDate + "/" + postedMonth + "/" + postedYear;
+
+                                    @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
+                                    long elapsedDays = 0;
+                                    try {
+                                        Date date1 = simpleDateFormat.parse(postedDateFormat);
+                                        Date date2 = simpleDateFormat.parse(currentDateFormat);
+//                                    Log.d(TAG, "checkPostsFetched: date1 " + date1);
+//                                    Log.d(TAG, "checkPostsFetched: date1 " + date2);
+                                        assert date1 != null;
+                                        assert date2 != null;
+                                        elapsedDays = (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24);
+//                                    Log.d(TAG, "checkPostsFetched: elapsedDays " + elapsedDays);
+//                                    Log.d(TAG, "checkPostsFetched: currentDay " + currentDay);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                        fetchPhotos();
+                                    }
+
+                                    if (elapsedDays > currentDay) {
+                                        fetchPhotos();
+                                    } else {
+                                        Log.d(TAG, "onDataChange: deleting posts");
+                                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                            for (Photo photo : fieldPhotos)
+                                                if (photo.getPhoto_id().equals(dataSnapshot.getKey())) {
+                                                    fieldPhotos.remove(photo);
+                                                    break;
+                                                }
+                                        }
+                                        Log.d(TAG, "onTimeReceived: "+fieldPhotos.size());
+                                        Gson gson = new Gson();
+                                        String json = gson.toJson(fieldPhotos);
+//                                Log.d(TAG, "onDataChange: " + json);
+                                        mEditor.putString(finalField + "_PostsLastUpdated", currentTimeStamp);
+                                        mEditor.putString(finalField + "_TopPosts", json);
+                                        mEditor.putInt(finalField + "_completed", fieldPhotos.size());
+                                        mEditor.apply();
+                                        Log.d(TAG, "getPosts: uploading after deletion" + fieldPhotos.size() + " photos for " + finalField);
+                                        fetchPhotos();
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Exception ex) {
+                                    Log.d(TAG, "onError: SNTPClient fetching TopUsers from shared Preferences" + ex.getMessage());
+                                    Log.d(TAG, "fetching again");
+                                    fetchPhotos();
+                                }
+                            });
+                        }
+                        else fetchPhotos();
                     }
 
-                } catch (NullPointerException e) {
-                    Log.e(TAG, "Null pointer exception" + e.getMessage());
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                } catch (IndexOutOfBoundsException e) {
-                    Log.e(TAG, "index out of bound" + e.getMessage());
-                }
+                    }
+                });
             }
+        }
+    }
+
+    private void fetchPhotos() {
+        Log.d(TAG, "displayPhotos: field"+fieldPhotos);
+        try {
+            if (!shuffled) {
+                Collections.shuffle(fieldPhotos);
+                shuffled = true;
+            }
+            paginatedPhotos = new ArrayList<>();
+            for (int i = 0; i < fieldPhotos.size(); i++) {
+                if (i == fieldPhotos.size() - 1 || i == 8) {
+                    Log.d(TAG, "displayPhotos: paginatedPhotos" + paginatedPhotos.size());
+                    adapterGridImage = new AdapterGridImageExplore(mContext, paginatedPhotos,this::onItemClick);
+                    ((SimpleItemAnimator) exploreRv.getItemAnimator()).setSupportsChangeAnimations(false);
+                    swipeRefreshLayout.setRefreshing(false);
+                    adapterGridImage.setHasStableIds(true);
+                    exploreRv.post(() -> exploreRv.setAdapter(adapterGridImage));
+                    break;
+                } else paginatedPhotos.add(fieldPhotos.get(i));
+            }
+
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Null pointer exception" + e.getMessage());
+
+        } catch (IndexOutOfBoundsException e) {
+            Log.e(TAG, "index out of bound" + e.getMessage());
         }
     }
 
@@ -1191,13 +1279,10 @@ initWidgets();
                         Log.d(TAG, "displayMorePhotos: paginatedPhotos" + paginatedPhotos.size());
                         int itemCount = (i == fieldPhotos.size() - 1) ? (fieldPhotos.size() - l) : 12;
                         Log.d(TAG, "displayMorePhotos: itemcount" + itemCount);
-                        exploreRv.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                // Notify adapter with appropriate notify methods
-                                adapterGridImage.notifyItemRangeInserted(l - 1, itemCount);
+                        exploreRv.post(() -> {
+                            // Notify adapter with appropriate notify methods
+                            adapterGridImage.notifyItemRangeInserted(l - 1, itemCount);
 
-                            }
                         });
                         break;
                     } else paginatedPhotos.add(fieldPhotos.get(i));
@@ -1283,7 +1368,7 @@ initWidgets();
 
     private void setupBottomNavigationView() {
         Log.d(TAG, "setupBottomNavigationView: started");
-        BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.BottomNavViewBar);
+        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.BottomNavViewBar);
         BottomNaavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         BottomNaavigationViewHelper.enableNavigation(Explore.this, this, bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();

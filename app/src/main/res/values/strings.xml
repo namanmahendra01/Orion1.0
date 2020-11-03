@@ -133,6 +133,7 @@
     <string name="field_twitter">twitter</string>
     <string name="field_whatsapp">whatsapp</string>
     <string name="db_posts_deleted">deleted_posts</string>
+    <string name="explore_update">explore_update</string>
 
     field_post
 

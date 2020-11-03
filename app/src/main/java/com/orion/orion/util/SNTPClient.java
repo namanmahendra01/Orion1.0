@@ -25,6 +25,7 @@ public class SNTPClient {
 
     public interface Listener {
         void onTimeReceived(String rawDate);
+
         void onError(Exception ex);
     }
 
@@ -232,8 +233,7 @@ public class SNTPClient {
 
                     // Log.e(TAG, _timeZone.getID());
 
-    _listener.onTimeReceived(rawDate);
-
+                    _listener.onTimeReceived(rawDate);
 
 
                 }
