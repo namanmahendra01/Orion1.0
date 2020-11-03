@@ -1,6 +1,8 @@
 package com.orion.orion.contest.create;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,8 +28,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.orion.orion.R;
+import com.orion.orion.login.login;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.users;
 import com.orion.orion.util.FirebaseMethods;
@@ -36,33 +39,44 @@ import java.util.HashMap;
 
 public class CheckContest extends AppCompatActivity {
     private static final String TAG = "ViewContestFragment";
-    private static final int ACTIVITY_NUM = 3;
+    private Context mContext;
+    private FirebaseUser mUser;
+
+    public LinearLayout progress;
+    private TextView entryfee;
+    private TextView title;
+    private TextView descrip;
+    private TextView rules;
+    private TextView totalprize;
+    private TextView maxPart;
+    private TextView voteType;
+    private TextView regBegin;
+    private TextView regEnd;
+    private TextView voteBegin;
+    private TextView voteEnd;
+    private TextView domain;
+    private TextView openfor;
+    private TextView juryname1;
+    private TextView juryname2;
+    private TextView juryname3;
+    private TextView jurypl1;
+    private TextView jurypl2;
+    private TextView jurypl3;
+    private TextView hostedby;
+    private TextView filetype;
+    private TextView windate;
+    private TextView p1Tv;
+    private TextView p2Tv;
+    private TextView p3Tv;
+    private ImageView jurypic1;
+    private ImageView jurypic2;
+    private ImageView jurypic3;
+    private String posterlink = "";
 
 
-    private TextView entryfee, title, descrip, rules, totalprize, maxPart, voteType,gp,
-            regBegin, regEnd, voteBegin, voteEnd, domain, openfor, juryname1, juryname2, juryname3, jury, jurypl1, jurypl2, jurypl3, hostedby, filetype, windate, p1Tv, p2Tv, p3Tv;
-    private ImageView poster, jurypic1, jurypic2, jurypic3;
-    private String mAppend = "file:/";
-    private String jpic1 = "", jpic2 = "", jpic3 = "", posterlink = "";
-    private CardView cardView;
-    private Button postContest;
-   public LinearLayout progress;
-   RelativeLayout topLayout1,topLayout2;
-
-    private String newContestKey;
-    private CreateForm mCreateForm;
-    private LinearLayout prizeLinear;
-    private int imageCount = 0;
-    private String p1 = "p1", p2 = "p2", p3 = "p3", p4 = "p4";
-
-
-    //firebase
-    private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private FirebaseMethods mFirebaseMethods;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private DatabaseReference myRef;
-    private FirebaseDatabase mFirebaseDatabase;
 
 
     @Override
@@ -71,9 +85,9 @@ public class CheckContest extends AppCompatActivity {
         setContentView(R.layout.activity_contest_details);
         Log.d(TAG, "onCreate: started.");
         mFirebaseMethods = new FirebaseMethods(CheckContest.this);
+        mContext=CheckContest.this;
         setupFirebaseAuth();
         progress = findViewById(R.id.pro);
-
         entryfee = findViewById(R.id.entryfeeTv);
         title = findViewById(R.id.titleTv);
         descrip = findViewById(R.id.descripTv);
@@ -99,36 +113,26 @@ public class CheckContest extends AppCompatActivity {
         hostedby = findViewById(R.id.hostedbyTv);
         filetype = findViewById(R.id.fileTv);
         windate = findViewById(R.id.winDate);
-        poster = findViewById(R.id.posterIv);
-        jury = findViewById(R.id.jury);
-        cardView = findViewById(R.id.jurydetail);
+        ImageView poster = findViewById(R.id.posterIv);
+        TextView jury = findViewById(R.id.jury);
+        CardView cardView = findViewById(R.id.jurydetail);
         p1Tv = findViewById(R.id.p1Tv);
         p2Tv = findViewById(R.id.p2Tv);
         p3Tv = findViewById(R.id.p3Tv);
-        postContest = findViewById(R.id.postContest);
-        prizeLinear = findViewById(R.id.prizell);
-
-        gp =findViewById(R.id.gp);
-
-        topLayout1 =findViewById(R.id.reLayout1);
-        topLayout2 =findViewById(R.id.reLayout2);
-
+        Button postContest = findViewById(R.id.postContest);
+        LinearLayout prizeLinear = findViewById(R.id.prizell);
+        TextView gp = findViewById(R.id.gp);
+        RelativeLayout topLayout1 = findViewById(R.id.reLayout1);
+        RelativeLayout topLayout2 = findViewById(R.id.reLayout2);
         topLayout1.setVisibility(View.GONE);
         topLayout1.setVisibility(View.VISIBLE);
-
-
-
         postContest.setVisibility(View.VISIBLE);
-
         setgp(FirebaseAuth.getInstance().getCurrentUser().getUid(), gp);
 
 
         Intent intent = getIntent();
-        if (intent.getStringExtra("entryfee").equals("")) {
-            entryfee.setText("Free");
-        } else {
-            entryfee.setText(intent.getStringExtra("entryfee"));
-        }
+        if (intent.getStringExtra("entryfee").equals("")) entryfee.setText("Free");
+        else entryfee.setText(intent.getStringExtra("entryfee"));
         if (intent.getStringExtra("total_prize").equals("")) {
             prizeLinear.setVisibility(View.GONE);
             totalprize.setText("-");
@@ -136,21 +140,12 @@ public class CheckContest extends AppCompatActivity {
             totalprize.setText(intent.getStringExtra("total_prize"));
             prizeLinear.setVisibility(View.VISIBLE);
         }
-        if (intent.getStringExtra("maxLimit").equals("")) {
-            maxPart.setText("Unlimited");
-        } else {
-            maxPart.setText(intent.getStringExtra("maxLimit"));
-        }
-        if (intent.getStringExtra("voteBegin").equals("")) {
-            voteBegin.setText("-");
-        } else {
-            voteBegin.setText(intent.getStringExtra("voteBegin"));
-        }
-        if (intent.getStringExtra("voteEnd").equals("")) {
-            voteEnd.setText("-");
-        } else {
-            voteEnd.setText(intent.getStringExtra("voteEnd"));
-        }
+        if (intent.getStringExtra("maxLimit").equals("")) maxPart.setText("Unlimited");
+        else maxPart.setText(intent.getStringExtra("maxLimit"));
+        if (intent.getStringExtra("voteBegin").equals("")) voteBegin.setText("-");
+        else voteBegin.setText(intent.getStringExtra("voteBegin"));
+        if (intent.getStringExtra("voteEnd").equals("")) voteEnd.setText("-");
+        else voteEnd.setText(intent.getStringExtra("voteEnd"));
         if (intent.getStringExtra("jname_1").equals("")) {
             jury.setVisibility(View.GONE);
             cardView.setVisibility(View.GONE);
@@ -234,11 +229,8 @@ public class CheckContest extends AppCompatActivity {
 
                 }
             });
-
-
         }
-        if (!intent.getStringExtra("jname_1").equals("") && !intent.getStringExtra("jname_2").equals("")
-                && !intent.getStringExtra("jname_3").equals("")) {
+        if (!intent.getStringExtra("jname_1").equals("") && !intent.getStringExtra("jname_2").equals("") && !intent.getStringExtra("jname_3").equals("")) {
             jury.setVisibility(View.VISIBLE);
             cardView.setVisibility(View.VISIBLE);
             jurypic1.setVisibility(View.VISIBLE);
@@ -323,19 +315,22 @@ public class CheckContest extends AppCompatActivity {
         p2Tv.setText(intent.getStringExtra("place_2"));
         p3Tv.setText(intent.getStringExtra("place_3"));
         posterlink = intent.getStringExtra("poster");
+        String mAppend = "file:/";
         UniversalImageLoader.setImage(posterlink, poster, null, mAppend);
         postContest.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Are you sure you want to create this contest? ")
                     .setCancelable(false)
-                    .setPositiveButton("Yes", (dialog, id) -> {
+                    .setPositiveButton(android.R.string.yes, (dialog, id) -> {
                         progress.setVisibility(View.VISIBLE);
-
                         postcontest();
-                        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
 //                        Intent intent1=new Intent(CheckContest.this, contestMainActivity.class);
 //                        startActivity(intent1);
+                    })
+                    .setNegativeButton(android.R.string.no, (dialog, id) -> {
+                        progress.setVisibility(View.INVISIBLE);
+                        dialog.dismiss();
                     })
                     .show();
         });
@@ -345,8 +340,8 @@ public class CheckContest extends AppCompatActivity {
     private void postcontest() {
         String timeStamp = String.valueOf(System.currentTimeMillis());
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-        newContestKey = db.child(getString(R.string.dbname_contests)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().getKey();
-        mCreateForm = new CreateForm();
+        String newContestKey = db.child(getString(R.string.dbname_contests)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().getKey();
+        CreateForm mCreateForm = new CreateForm();
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("entryfee", entryfee.getText().toString());
         hashMap.put("title", title.getText().toString());
@@ -391,9 +386,17 @@ public class CheckContest extends AppCompatActivity {
         db.child(getString(R.string.dbname_contests)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(getString(R.string.created_contest)).child(newContestKey).setValue(hashMap);
         db.child(getString(R.string.dbname_request)).child("Contests").child(newContestKey).setValue(hashMap2);
         Toast.makeText(CheckContest.this, "Form Filled", Toast.LENGTH_SHORT).show();
+        String jpic1 = "";
+        int imageCount = 0;
+        String p1 = "p1";
         mFirebaseMethods.uploadContest(imageCount, jpic1, null, newContestKey, p1, "");
+        String jpic2 = "";
+        String p2 = "p2";
         mFirebaseMethods.uploadContest(imageCount, jpic2, null, newContestKey, p2, "");
+        String jpic3 = "";
+        String p3 = "p3";
         mFirebaseMethods.uploadContest(imageCount, jpic3, null, newContestKey, p3, "");
+        String p4 = "p4";
         mFirebaseMethods.uploadContest(imageCount, posterlink, null, newContestKey, p4, "");
 //        fragment_createContest fragment = new fragment_createContest();
 //        FragmentTransaction transaction= getSupportFragmentManager().beginTransaction();
@@ -405,19 +408,26 @@ public class CheckContest extends AppCompatActivity {
 
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference();
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = mFirebaseDatabase.getReference();
         mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
-                } else {
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-            }
+        mAuthListener = firebaseAuth -> {
+            mUser = firebaseAuth.getCurrentUser();
+            if (mUser == null) {
+                Log.d(TAG, "onAuthStateChanged:signed_out");
+                Log.d(TAG, "onAuthStateChanged: navigating to login");
+                SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                new android.app.AlertDialog.Builder(mContext)
+                        .setTitle("No user logon found")
+                        .setMessage("We will be logging u out. \n Please try to log in again")
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            Intent intent = new Intent(mContext, login.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            settings.edit().clear().apply();
+                            startActivity(intent);
+                        })
+                        .show();
+            } else Log.d(TAG, "onAuthStateChanged: signed_in:" + mUser.getUid());
         };
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -432,6 +442,7 @@ public class CheckContest extends AppCompatActivity {
             }
         });
     }
+
     private void setgp(String userid, TextView gp) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(getString(R.string.dbname_contests))
@@ -452,7 +463,7 @@ public class CheckContest extends AppCompatActivity {
 
                                             if (snapshot.exists()) {
                                                 long x = (long) snapshot.getValue();
-                                                gp.setText(String.valueOf(100 - (((x * 100) / y))) + "%");
+                                                gp.setText((100 - (((x * 100) / y))) + "%");
                                             } else {
                                                 gp.setText("100%");
 

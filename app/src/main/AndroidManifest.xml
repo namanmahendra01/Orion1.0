@@ -1,101 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.orion.orion">
+
+    <!-- User Permmissions needed-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name=".util.MyApplication"
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
-        <activity android:name=".contest.ranking"></activity>
-        <!-- <activity android:name=".MainActivity3"></activity> -->
-        <activity android:name=".profile.Account.SignOut" />
-        <activity android:name=".profile.Account.Contest" />
-        <activity android:name=".profile.Account.Help" />
-        <activity android:name=".profile.Account.Password_Reset" />
-        <activity android:name=".profile.Account.About" />
-        <activity android:name=".profile.Account.EditProfile" />
-        <activity android:name=".Intro.Intro" /> <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN" /> -->
-        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-        <!-- </intent-filter> -->
-        <activity android:name=".CommentActivity" />
-        <activity android:name=".ViewPostActivity" />
+        android:usesCleartextTraffic="true"
+        tools:targetApi="m">
+
+
+        <!--Activities-->
+        <!--Login/Signup Section + Intro part       -->
+        <activity android:name=".Intro.Intro" />
+        <activity
+            android:name=".login.login"
+            android:noHistory="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".login.register" />
+
+        <!--Home Section-->
+        <activity android:name=".home.Message_Request" />
+        <activity
+            android:name=".home.MainActivity"
+            android:hardwareAccelerated="true" />
+        <activity android:name=".home.Chat_Activity" />
         <activity
             android:name=".home.ViewPromoted"
             android:theme="@style/Theme.Transparent" />
-        <activity android:name=".home.Message_Request" />
+
+        <!--Explore Section-->
+        <activity
+            android:name=".explore.Explore"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <!--Contest Section-->
+        <activity android:name=".contest.create.form" />
+        <activity android:name=".contest.create.CheckContest" />
+        <activity android:name=".contest.ViewContestDetails" />
+        <activity android:name=".contest.joined.JoiningForm" />
+        <activity android:name=".contest.joined.joined_contest_overview_activity" />
+        <activity android:name=".contest.ranking" />
+        <activity android:name=".contest.Contest_Evaluation.Participant_Request" />
+        <activity android:name=".contest.Contest_Evaluation.contest_evaluation_activity" />
+        <activity android:name=".contest.Contest_Evaluation.activity_view_media" />
+        <activity android:name=".contest.result.ResultDeclaredActivity" />
+        <activity android:name=".contest.jury_voting_media" />
+        <activity android:name=".contest.public_voting_media" />
+        <activity
+            android:name=".contest.contestMainActivity"
+            android:windowSoftInputMode="adjustNothing" />
+
+        <!--Leaderboard Section-->
+        <activity android:name=".leaderboard.LeaderboardActivity" />
+
+        <!--Profile Section-->
+        <activity android:name=".profile.profile"
+            android:noHistory="true"/>
         <activity android:name=".profile.ProfileActivity" />
+        <activity android:name=".profile.ViewProfileActivity" />
+        <activity android:name=".profile.Account.AccountSettingActivity" />
+        <activity android:name=".profile.Account.EditProfile" />
+        <activity android:name=".profile.Account.Password_Reset" />
+        <activity android:name=".profile.Account.Contest" />
+        <activity android:name=".profile.Account.Help" />
+        <activity android:name=".profile.Account.About" />
+        <activity android:name=".profile.Account.SignOut" />
         <activity
             android:name=".profile.PostVideoActivity"
             android:theme="@style/MyMaterialThemeProfile" />
         <activity
             android:name=".profile.PostPhotoActivity"
             android:theme="@style/MyMaterialThemeProfile" />
-        <activity android:name=".contest.Contest_Evaluation.Participant_Request" />
-        <activity android:name=".contest.result.ResultDeclaredActivity" />
-        <activity android:name=".contest.joined.joined_contest_overview_activity" />
-        <activity android:name=".contest.jury_voting_media" />
-        <activity android:name=".contest.public_voting_media" />
-        <activity android:name=".contest.Contest_Evaluation.activity_view_media" />
-        <activity android:name=".contest.joined.JoiningForm" />
-        <activity android:name=".contest.ViewContestDetails" />
-        <activity android:name=".profile.ViewProfileActivity" />
-        <activity android:name=".contest.create.form" />
-        <activity android:name=".leaderboard.LeaderboardActivity" />
-        <activity
-            android:name=".login.login"
-            android:noHistory="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".contest.contestMainActivity"
-            android:windowSoftInputMode="adjustNothing" />
-        <activity
-            android:name=".explore.Explore"
-            android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustNothing" />
-        <activity
-            android:name=".profile.profile"
-            android:noHistory="true" />
-        <activity android:name=".profile.Account.AccountSettingActivity" />
-        <activity
-            android:name=".home.MainActivity"
-            android:hardwareAccelerated="true" />
-        <activity android:name=".login.register" />
-        <activity android:name=".home.Chat_Activity" />
-        <activity android:name=".contest.create.CheckContest" />
-        <activity android:name=".contest.Contest_Evaluation.contest_evaluation_activity" />
+        <!--Extras-->
+        <activity android:name=".CommentActivity" />
+        <activity android:name=".ViewPostActivity" />
 
+
+        <!--Services-->
         <service
             android:name=".Notifications.FirebaseMessaging"
             android:enabled="true"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <!-- Meta data-->
+        <meta-data
+            android:name="com.google.firebase.messaging.some_id"
+            android:value="some_id" />
+
     </application>
-
-    <meta-data
-        android:name="com.google.firebase.messaging.some_id"
-        android:value="some_id" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-permission android:name="android.permission.CAMERA" />
 
     <dist:module dist:instant="true" />
 

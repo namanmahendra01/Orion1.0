@@ -1,10 +1,14 @@
 package com.orion.orion.contest.joined;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,6 +42,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.orion.orion.R;
 import com.orion.orion.contest.contestMainActivity;
+import com.orion.orion.login.login;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.Permissions;
@@ -60,7 +65,7 @@ import static com.orion.orion.profile.ProfileActivity.VERIFY_PERMISSION_REQUEST;
 
 public class JoiningForm extends AppCompatActivity {
     private static final String TAG = "JoiningForm";
-
+    private final Context mContext = JoiningForm.this;
     private EditText  collegeEt, urlEt;
     private ImageView idIv, submissionIv,backArrow;
     TextView warn,decline;
@@ -83,6 +88,7 @@ public class JoiningForm extends AppCompatActivity {
     //firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseUser mUser;
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
 
@@ -91,7 +97,6 @@ public class JoiningForm extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joining_form);
-
         setupFirebaseAuth();
 
         mFirebaseMethods = new FirebaseMethods(JoiningForm.this);
@@ -620,33 +625,24 @@ if (!isJuryOrHost){
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
-        mAuth = FirebaseAuth.getInstance();
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                if (user != null) {
-                    Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
-                } else {
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-            }
+        mAuthListener = firebaseAuth -> {
+            mUser = firebaseAuth.getCurrentUser();
+            if (mUser == null) {
+                Log.d(TAG, "onAuthStateChanged:signed_out");
+                Log.d(TAG, "onAuthStateChanged: navigating to login");
+                SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                new AlertDialog.Builder(mContext)
+                        .setTitle("No user logon found")
+                        .setMessage("We will be logging u out. \n Please try to log in again")
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            Intent intent = new Intent(mContext, login.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            settings.edit().clear().apply();
+                            startActivity(intent);
+                        })
+                        .show();
+            } else Log.d(TAG, "onAuthStateChanged: signed_in:" + mUser.getUid());
         };
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                //retrieve user information from the database
-                //retrieve image for the user in question
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     @Override

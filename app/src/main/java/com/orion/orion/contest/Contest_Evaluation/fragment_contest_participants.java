@@ -2,7 +2,6 @@ package com.orion.orion.contest.Contest_Evaluation;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -25,8 +24,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,26 +48,23 @@ import java.util.HashMap;
 public class fragment_contest_participants extends Fragment {
 
     private static final String TAG = "Participant FRAGMENT";
-    RecyclerView participantRv;
+    private RecyclerView participantRv;
     private ArrayList<ParticipantList> participantLists;
     private ArrayList<ParticipantList> paginatedparticipantList;
-    private FirebaseAuth fAuth;
-    private TextView request,partNum;
+    private TextView request, partNum;
     private int mResults;
-    String Conteskey;
+    private String Conteskey;
     boolean notify = false;
     private FirebaseMethods mFirebaseMethods;
 
-    SwipeRefreshLayout participantRefresh;
+    private SwipeRefreshLayout participantRefresh;
     boolean flag1 = false;
     private static int RETRY_DURATION = 1000;
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
     //    SP
-    Gson gson;
-    SharedPreferences sp;
-    FloatingActionButton floatbtn;
-
+    private Gson gson;
+    private SharedPreferences sp;
 
     private AdapterParticipantList adapterParticipantList;
 
@@ -96,7 +90,7 @@ public class fragment_contest_participants extends Fragment {
         gson = new Gson();
 
         request = view.findViewById(R.id.request);
-        floatbtn = view.findViewById(R.id.float_btn);
+        FloatingActionButton floatbtn = view.findViewById(R.id.float_btn);
 
         floatbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,14 +116,10 @@ public class fragment_contest_participants extends Fragment {
                     }
                 });
 
-        request.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent i = new Intent(getActivity(), Participant_Request.class);
-                i.putExtra("ContestKey", Conteskey);
-                startActivity(i);
-            }
+        request.setOnClickListener(v -> {
+            Intent i = new Intent(getActivity(), Participant_Request.class);
+            i.putExtra("ContestKey", Conteskey);
+            startActivity(i);
         });
 
 
@@ -140,19 +130,14 @@ public class fragment_contest_participants extends Fragment {
 
         participantLists = new ArrayList<>();
 
-
-        fAuth = FirebaseAuth.getInstance();
+        FirebaseAuth fAuth = FirebaseAuth.getInstance();
 
         participantRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE)
                     displayMoreParticipnat();
-
-                }
             }
         });
 
@@ -161,28 +146,19 @@ public class fragment_contest_participants extends Fragment {
             @Override
             public void onRefresh() {
                 flag1 = false;
-
                 getParticipantListFromSP();
                 checkRefresh();
-
-
             }
 
             private void checkRefresh() {
                 if (participantRefresh.isRefreshing() && flag1) {
                     participantRefresh.setRefreshing(false);
                     handler.removeCallbacks(this::checkRefresh);
-
                     flag1 = false;
-
-                } else {
-                    handler.postDelayed(this::checkRefresh, RETRY_DURATION);
-
-                }
+                } else handler.postDelayed(this::checkRefresh, RETRY_DURATION);
             }
         });
         getParticipantListFromSP();
-
         return view;
     }
 
@@ -197,7 +173,6 @@ public class fragment_contest_participants extends Fragment {
             participantLists = new ArrayList<>();
             Log.d(TAG, "ttt 1");
             fetchParticipants();             //            make new Arraylist
-
         } else {
             Log.d(TAG, "ttt 2" + participantLists);
             checkUpdate();       //         Check if new paricipant is there
@@ -208,8 +183,6 @@ public class fragment_contest_participants extends Fragment {
 
     private void checkUpdate() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-
-
         reference.child(getString(R.string.dbname_participantList))
                 .child(Conteskey)
                 .orderByKey()
@@ -221,24 +194,16 @@ public class fragment_contest_participants extends Fragment {
                             Log.d(TAG, "onDataChange: hjh 1");
                             for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                                 Log.d(TAG, "onDataChange: hjh 2");
-
                                 if (participantLists.get(0).getJoiningKey().equals(snapshot1.getKey())) {
                                     Log.d(TAG, "onDataChange: hjh 3");
-
                                     displayParticipant();
-                                } else {
-
-                                    updateList();
-                                }
+                                } else updateList();
                             }
-                        } else {
-                            updateList();
-                        }
+                        } else updateList();
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
                     }
                 });
     }
@@ -247,7 +212,6 @@ public class fragment_contest_participants extends Fragment {
         Collections.reverse(participantLists);
         DatabaseReference refer = FirebaseDatabase.getInstance().getReference();
         refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-
                 .child(getString(R.string.dbname_participantList))
                 .child(Conteskey)
                 .orderByKey()
@@ -256,33 +220,22 @@ public class fragment_contest_participants extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
-                            int x=0;
+                            int x = 0;
                             for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                                 x++;
                                 ParticipantList participantList = snapshot1.getValue(ParticipantList.class);
-
                                 participantLists.add(participantList);
-
-                                if(x==snapshot.getChildrenCount()){
+                                if (x == snapshot.getChildrenCount()) {
                                     Collections.reverse(participantLists);
-
                                     //    Add newly Created ArrayList to Shared Preferences
                                     SharedPreferences.Editor editor = sp.edit();
                                     String json = gson.toJson(participantLists);
                                     editor.putString(Conteskey, json);
                                     editor.apply();
-
-
                                     displayParticipant();
                                 }
-
                             }
-
-
-
-                        } else {
-                            fetchParticipants();
-                        }
+                        } else fetchParticipants();
                     }
 
                     @Override
@@ -300,27 +253,21 @@ public class fragment_contest_participants extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            int x=0;
+                            int x = 0;
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 x++;
                                 ParticipantList participantList = snapshot.getValue(ParticipantList.class);
-
                                 participantLists.add(participantList);
-
-                                if(x==dataSnapshot.getChildrenCount()){
+                                if (x == dataSnapshot.getChildrenCount()) {
                                     Collections.reverse(participantLists);
-
                                     //    Add newly Created ArrayList to Shared Preferences
                                     SharedPreferences.Editor editor = sp.edit();
                                     String json = gson.toJson(participantLists);
                                     editor.putString(Conteskey, json);
                                     editor.apply();
-
                                     displayParticipant();
                                 }
                             }
-
-
 
                         } else {
                             participantLists.clear();
@@ -328,92 +275,60 @@ public class fragment_contest_participants extends Fragment {
                             String json = gson.toJson(participantLists);
                             editor.putString(Conteskey, json);
                             editor.apply();
-
                             displayParticipant();
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-
                     }
                 });
     }
 
     private void bottomsheet() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
-
-        View bottomSheetView = getActivity().getLayoutInflater()
-                .inflate(R.layout.layout_bottom_sheet_sendupdate, bottomSheetDialog.findViewById(R.id.layout_bottom_sheet_container));
+        View bottomSheetView = getActivity().getLayoutInflater().inflate(R.layout.layout_bottom_sheet_sendupdate, bottomSheetDialog.findViewById(R.id.layout_bottom_sheet_container));
         EditText msg = bottomSheetView.findViewById(R.id.msg);
         TextView send = bottomSheetView.findViewById(R.id.send);
         TextView cancel = bottomSheetView.findViewById(R.id.cancel);
-
-        send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String msg1 = msg.getText().toString();
-                if (msg1.equals("")) {
-                    Toast.makeText(getActivity(), "Write Something", Toast.LENGTH_SHORT).show();
-                } else {
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("Message");
-                    builder.setMessage("Are you sure, you want to send this Message?");
-
+        send.setOnClickListener(v -> {
+            String msg1 = msg.getText().toString();
+            if (msg1.equals(""))
+                Toast.makeText(getActivity(), "Write Something", Toast.LENGTH_SHORT).show();
+            else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Message");
+                builder.setMessage("Are you sure, you want to send this Message?");
 //                set buttons
-                    builder.setPositiveButton("Send", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            notify = true;
-
-                            String noti = "Contest Host send you Message.Click here to see.///" + msg1;
-                            for (int x = 0; x < participantLists.size(); x++) {
-
-                                if (notify) {
-                                    mFirebaseMethods.sendNotification(participantLists.get(x).getUserid(), "", "Contest Host send you a Message.Its important.", "Contest");
-                                }
-
-                                addToHisNotification(participantLists.get(x).getUserid(), noti);
-                                if (x == participantLists.size() - 1) {
-                                    bottomSheetDialog.dismiss();
-                                    Toast.makeText(getContext(), "Message sent!", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                            notify = false;
-
+                builder.setPositiveButton("Send", (dialog, which) -> {
+                    notify = true;
+                    String noti = "Contest Host send you Message.Click here to see.///" + msg1;
+                    for (int x = 0; x < participantLists.size(); x++) {
+                        if (notify)
+                            mFirebaseMethods.sendNotification(participantLists.get(x).getUserid(), "", "Contest Host send you a Message.Its important.", "Contest");
+                        addToHisNotification(participantLists.get(x).getUserid(), noti);
+                        if (x == participantLists.size() - 1) {
+                            bottomSheetDialog.dismiss();
+                            Toast.makeText(getContext(), "Message sent!", Toast.LENGTH_SHORT).show();
                         }
-                    });
-                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    builder.create().show();
+                    }
+                    notify = false;
 
-                }
+                });
+                builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+                builder.create().show();
+
             }
         });
 
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomSheetDialog.dismiss();
-            }
-        });
-
-
+        cancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
     }
 
 
     private void addToHisNotification(String hisUid, String notification) {
-
         String timestamp = "" + System.currentTimeMillis();
-
-
 //        data to put in notification
         HashMap<Object, String> hashMap = new HashMap<>();
         hashMap.put("pId", "false");
@@ -423,19 +338,10 @@ public class fragment_contest_participants extends Fragment {
         hashMap.put("seen", "false");
         hashMap.put("sUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
         ref.child(hisUid).child("Notifications").child(timestamp).setValue(hashMap)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
+                .addOnSuccessListener(aVoid -> {
+                }).addOnFailureListener(e -> {
         });
 
     }
@@ -447,40 +353,28 @@ public class fragment_contest_participants extends Fragment {
         partNum.setText("Participants: " + participantLists.size());
         paginatedparticipantList = new ArrayList<>();
         if (participantLists != null) {
-
             try {
-
-
                 int iteration = participantLists.size();
-                if (iteration > 20) {
-                    iteration = 20;
-                }
+                if (iteration > 20) iteration = 20;
                 mResults = 20;
-                for (int i = 0; i < iteration; i++) {
+                for (int i = 0; i < iteration; i++)
                     paginatedparticipantList.add(participantLists.get(i));
-                }
                 Log.d(TAG, "participant: sss" + paginatedparticipantList.size());
                 adapterParticipantList = new AdapterParticipantList(getContext(), paginatedparticipantList);
                 adapterParticipantList.setHasStableIds(true);
                 participantRv.setAdapter(adapterParticipantList);
-
             } catch (NullPointerException e) {
                 Log.e(TAG, "Null pointer exception" + e.getMessage());
-
             } catch (IndexOutOfBoundsException e) {
                 Log.e(TAG, "index out of bound" + e.getMessage());
-
             }
-
         }
     }
 
     public void displayMoreParticipnat() {
         Log.d(TAG, "display next 20 participant");
-
         try {
             if (participantLists.size() > mResults && participantLists.size() > 0) {
-
                 int iterations;
                 if (participantLists.size() > (mResults + 20)) {
                     Log.d(TAG, "display next 15 participant");
@@ -491,27 +385,15 @@ public class fragment_contest_participants extends Fragment {
                 }
                 for (int i = mResults; i < mResults + iterations; i++) {
                     paginatedparticipantList.add(participantLists.get(i));
-
                 }
-                participantRv.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapterParticipantList.notifyItemRangeInserted(mResults,iterations);
-                    }
-                });
+                participantRv.post(() -> adapterParticipantList.notifyItemRangeInserted(mResults, iterations));
                 mResults = mResults + iterations;
-
-
             }
 
         } catch (NullPointerException e) {
             Log.e(TAG, "Null pointer exception" + e.getMessage());
-
         } catch (IndexOutOfBoundsException e) {
             Log.e(TAG, "index out of bound" + e.getMessage());
-
         }
-
     }
-
 }

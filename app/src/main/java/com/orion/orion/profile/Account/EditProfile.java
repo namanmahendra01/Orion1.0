@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -44,6 +45,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orion.orion.R;
+import com.orion.orion.login.login;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.PostPhotoActivity;
 import com.orion.orion.profile.ProfileActivity;
@@ -64,10 +66,8 @@ public class EditProfile extends AppCompatActivity {
     private static final int VERIFY_PERMISSION_REQUEST = 1;
 
     private DatabaseReference myRef;
-    private FirebaseDatabase mFirebaseDatabase;
     private FirebaseAuth mAuth;
     private String userID;
-    private FirebaseMethods mFirebaseMethods;
     private Context mContext;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -77,7 +77,6 @@ public class EditProfile extends AppCompatActivity {
     private TextView mchangeprofilephoto;
 
     private String imgURL;
-    private String mAppend = "file:/";
     private boolean photoChanged = false;
 
     private EditText mDisplayname;
@@ -100,7 +99,6 @@ public class EditProfile extends AppCompatActivity {
 
     //dialogBoxStuff
     private AlertDialog dialogBuilder;
-    private LayoutInflater inflater;
     private View dialogView;
     private TextView title;
     private EditText editComment;
@@ -143,7 +141,7 @@ public class EditProfile extends AppCompatActivity {
         whatsappNo = "";
 
         dialogBuilder = new AlertDialog.Builder(this).create();
-        inflater = this.getLayoutInflater();
+        LayoutInflater inflater = this.getLayoutInflater();
         dialogView = inflater.inflate(R.layout.dialog_profile_link, null);
 
         title = dialogView.findViewById(R.id.textView);
@@ -151,7 +149,7 @@ public class EditProfile extends AppCompatActivity {
         buttonSubmit = dialogView.findViewById(R.id.buttonSubmit);
         buttonCancel = dialogView.findViewById(R.id.buttonCancel);
 
-        mFirebaseMethods = new FirebaseMethods(this);
+//        FirebaseMethods mFirebaseMethods = new FirebaseMethods(this);
 
         initializeImageLoader();
         setupFirebaseAuth();
@@ -293,6 +291,7 @@ public class EditProfile extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, permissions, VERIFY_PERMISSION_REQUEST);
     }
 
+    @SuppressLint("DefaultLocale")
     private void saveProfileSetting() {
         final String displayName = mDisplayname.getText().toString();
         final String username = mUsername.getText().toString();
@@ -553,6 +552,7 @@ public class EditProfile extends AppCompatActivity {
     private void setImage(String imgPath) {
         Log.d(TAG, "setImage next " + imgPath);
         imgURL = imgPath;
+        String mAppend = "file:/";
         UniversalImageLoader.setImage(imgURL, mProfilephoto, null, mAppend);
         photoChanged = true;
     }
@@ -560,19 +560,28 @@ public class EditProfile extends AppCompatActivity {
 
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
         mAuth = FirebaseAuth.getInstance();
         userID = mAuth.getCurrentUser().getUid();
 
         mAuthListener = firebaseAuth -> {
             FirebaseUser user = firebaseAuth.getCurrentUser();
-
-            if (user != null) {
-                Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
-            } else {
+            if (user == null) {
                 Log.d(TAG, "onAuthStateChanged:signed_out");
-            }
+                Log.d(TAG, "onAuthStateChanged: navigating to login");
+                SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                new AlertDialog.Builder(mContext)
+                        .setTitle("No user logon found")
+                        .setMessage("We will be logging u out. \n Please try to log in again")
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            Intent intent = new Intent(mContext, login.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            settings.edit().clear().apply();
+                            startActivity(intent);
+                        })
+                        .show();
+            } else Log.d(TAG, "onAuthStateChanged: signed_in:" + user.getUid());
         };
         myRef.addValueEventListener(new ValueEventListener() {
             @Override

@@ -1,10 +1,12 @@
 package com.orion.orion.profile;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -35,7 +37,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.orion.orion.R;
+import com.orion.orion.login.login;
 import com.orion.orion.models.Photo;
+import com.orion.orion.profile.Account.Password_Reset;
 import com.orion.orion.util.FilePaths;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.ImageManager;
@@ -63,17 +67,12 @@ public class PostPhotoActivity extends AppCompatActivity {
     private FirebaseMethods mFirebaseMethods;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
-    private FirebaseDatabase mFirebaseDatabase;
 
     private EditText mCaption;
 
-    private String mAppend = "file:/";
-    private ImageView backArrow;
-    private TextView post;
     private ImageView image;
     private int imageCount = 0;
     private String imgURL;
-    private ExtendedFloatingActionButton fab;
 
     public PostPhotoActivity() {
     }
@@ -86,9 +85,9 @@ public class PostPhotoActivity extends AppCompatActivity {
         setupFirebaseAuth();
         mFirebaseMethods = new FirebaseMethods(PostPhotoActivity.this);
 
-        fab = findViewById(R.id.fab);
-        backArrow = findViewById(R.id.backarrow);
-        post = findViewById(R.id.post);
+        ExtendedFloatingActionButton fab = findViewById(R.id.fab);
+        ImageView backArrow = findViewById(R.id.backarrow);
+        TextView post = findViewById(R.id.post);
         mCaption = findViewById(R.id.inputCaption);
         image = findViewById(R.id.imageshare);
 
@@ -114,7 +113,7 @@ public class PostPhotoActivity extends AppCompatActivity {
             Log.d(TAG, "onCreate: imgURL" + imgURL);
             Log.d(TAG, "onCreate: imageCount" + imageCount);
             if (imgURL!=null&&!imgURL.equals("")){
-                uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgURL);
+                uploadNewPhoto(caption, imageCount, imgURL);
 
             }else{
                 Toast.makeText(PostPhotoActivity.this, "Please Select Image First.", Toast.LENGTH_SHORT).show();
@@ -123,7 +122,8 @@ public class PostPhotoActivity extends AppCompatActivity {
         });
     }
 
-    private void uploadNewPhoto(String string, String caption, int imageCount, String imgURL) {
+    @SuppressLint("DefaultLocale")
+    private void uploadNewPhoto(String caption, int imageCount, String imgURL) {
         FilePaths filepaths = new FilePaths();
         String user_id = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(filepaths.FIREBASE_IMAGE_STORAGE + "/" + user_id + "/post" + (imageCount + 1));
@@ -227,7 +227,8 @@ public class PostPhotoActivity extends AppCompatActivity {
                             try {
                                 Integer.valueOf(lastFolder);
                                 isDigit = true;
-                            } catch (NumberFormatException ignored) {
+                            } catch (NumberFormatException | NullPointerException ex) {
+                                Log.e(TAG, "onActivityResult: "+ex.getMessage() );
                             }
                             rawUserId = isDigit ? lastFolder : "";
                             if (TextUtils.isEmpty(rawUserId)) rv.add(rawEmulatedStorageTarget);
@@ -312,19 +313,33 @@ public class PostPhotoActivity extends AppCompatActivity {
     private void setImage(String imgPath) {
         Log.d(TAG, "setImage next " + imgPath);
         imgURL = imgPath;
+        String mAppend = "file:/";
         UniversalImageLoader.setImage(imgURL, image, null, mAppend);
     }
 
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
         mAuth = FirebaseAuth.getInstance();
 
         mAuthListener = firebaseAuth -> {
             FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user != null) Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
-            else Log.d(TAG, "onAuthStateChanged:signed_out");
+            if (user == null) {
+                Log.d(TAG, "onAuthStateChanged:signed_out");
+                Log.d(TAG, "onAuthStateChanged: navigating to login");
+                SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                new android.app.AlertDialog.Builder(mContext)
+                        .setTitle("No user logon found")
+                        .setMessage("We will be logging u out. \n Please try to log in again")
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            Intent intent = new Intent(mContext, login.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            settings.edit().clear().apply();
+                            startActivity(intent);
+                        })
+                        .show();
+            } else Log.d(TAG, "onAuthStateChanged: signed_in:" + user.getUid());
         };
         myRef.addValueEventListener(new ValueEventListener() {
             @Override

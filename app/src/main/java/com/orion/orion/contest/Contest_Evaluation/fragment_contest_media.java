@@ -59,30 +59,20 @@ public class fragment_contest_media extends Fragment {
 //          Initialize SharedPreference variables
         sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
-
-
         gridRv=(RecyclerView) view.findViewById(R.id.gridRv);
-
-
         gridRv.setHasFixedSize(true);
         GridLayoutManager linearLayoutManager=new GridLayoutManager(getContext(),3);
         gridRv.setLayoutManager(linearLayoutManager);
-
         imgURLsList=new ArrayList<>();
         adapterGridImage = new AdapterGridImageSub(getContext(),imgURLsList);
         adapterGridImage.setHasStableIds(true);
         gridRv.setAdapter(adapterGridImage);
-
         getParticipantListFromSP();
-
-
         return view;
-
     }
     //  fetching ParticipantList  from SharedPreferences
     private void getParticipantListFromSP() {
         String json = sp.getString(Conteskey, null);
-
         Type type = new TypeToken<ArrayList<ParticipantList>>() {
         }.getType();
         imgURLsList = gson.fromJson(json, type);
@@ -91,14 +81,10 @@ public class fragment_contest_media extends Fragment {
             adapterGridImage = new AdapterGridImageSub(getContext(),imgURLsList);
             adapterGridImage.setHasStableIds(true);
             gridRv.setAdapter(adapterGridImage);
-
         } else {
-
             adapterGridImage = new AdapterGridImageSub(getContext(),imgURLsList);
             adapterGridImage.setHasStableIds(true);
             gridRv.setAdapter(adapterGridImage);
-
         }
     }
-
 }

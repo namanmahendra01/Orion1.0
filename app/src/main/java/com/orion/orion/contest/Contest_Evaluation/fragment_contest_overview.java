@@ -1,5 +1,6 @@
 package com.orion.orion.contest.Contest_Evaluation;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,7 +24,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.Constraints;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -63,38 +63,25 @@ import static com.android.volley.VolleyLog.TAG;
 public class fragment_contest_overview extends Fragment {
 
     private TableLayout juryTable, juryTable2;
-
-    String joiningKey = "";
-    private int mResults;
-    ScrollView scrollView;
-int c=0;
-    RecyclerView rankRv;
-    private boolean notify = false;
+    private String joiningKey = "";
+    private RecyclerView rankRv;
     private FirebaseMethods mFirebaseMethods;
-
     private ArrayList<ParticipantList> participantLists;
-    private ArrayList<ParticipantList> paginatedParticipantLists;
-
     private ArrayList<ParticipantList> participantLists2;
-
-    private AdapterRankList rankList;
     private RelativeLayout relWinner;
 
     //    SP
-    Gson gson;
-    SharedPreferences sp;
-    users user = new users();
+    private Gson gson;
+    private SharedPreferences sp;
+    private users user = new users();
 
-   public LinearLayout progress;
-    RecyclerView winnerRv;
-    private AdapterWinners winnerList;
+    public LinearLayout progress;
+    private RecyclerView winnerRv;
     private Button pubBtn, pubBtn2;
-    String timestamp = "";
-    TextView seeRank;
-    boolean isPublicAndJuryVote=false;
+    private String timestamp = "";
+    boolean isPublicAndJuryVote = false;
 
-
-    String Conteskey;
+    private String Conteskey;
 
 
     public fragment_contest_overview() {
@@ -110,42 +97,36 @@ int c=0;
         pubBtn = view.findViewById(R.id.pubBtn);
         pubBtn2 = view.findViewById(R.id.pubBtn2);
         relWinner = view.findViewById(R.id.relWin);
-        scrollView = view.findViewById(R.id.scroll);
-        seeRank = view.findViewById(R.id.seeRank);
+        ScrollView scrollView = view.findViewById(R.id.scroll);
+        TextView seeRank = view.findViewById(R.id.seeRank);
         progress = view.findViewById(R.id.pro);
 
         mFirebaseMethods = new FirebaseMethods(getActivity());
-
 
         juryTable.setStretchAllColumns(true);
         juryTable2.setStretchAllColumns(true);
         Bundle b = getActivity().getIntent().getExtras();
         Conteskey = b.getString("contestId");
 
-
         rankRv = view.findViewById(R.id.rankList);
         rankRv.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rankRv.setLayoutManager(linearLayoutManager);
 
-        seeRank.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i=new Intent(getContext(), ranking.class);
-                Bundle args = new Bundle();
-                args.putParcelableArrayList("participant", (ArrayList<? extends Parcelable>) participantLists);
-                i.putExtra("BUNDLE",args);
-                startActivity(i);
-            }
+        seeRank.setOnClickListener((View.OnClickListener) view1 -> {
+            Intent i = new Intent(getContext(), ranking.class);
+            Bundle args = new Bundle();
+            args.putParcelableArrayList("participant", (ArrayList<? extends Parcelable>) participantLists);
+            i.putExtra("BUNDLE", args);
+            startActivity(i);
         });
 
 //          Initialize SharedPreference variables
         sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
 
-        participantLists=new ArrayList<>();
+        participantLists = new ArrayList<>();
         participantLists2 = new ArrayList<>();
-
 
 //        **********************************************************
 
@@ -154,15 +135,13 @@ int c=0;
         LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(getContext());
         winnerRv.setLayoutManager(linearLayoutManager1);
 
-
         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
             @Override
             public void onTimeReceived(String rawDate) {
                 // rawDate -> 2019-11-05T17:51:01+0530
-
                 //*************************************************************************
                 String currentTime = StringManipilation.getTime(rawDate);
-                java.text.DateFormat formatter1 = new SimpleDateFormat("dd-MM-yyyy");
+                @SuppressLint("SimpleDateFormat") java.text.DateFormat formatter1 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date1 = null;
                 try {
                     date1 = (Date) formatter1.parse(currentTime);
@@ -170,6 +149,7 @@ int c=0;
                     e.printStackTrace();
                 }
 
+                assert date1 != null;
                 timestamp = String.valueOf(date1.getTime());
 
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
@@ -180,20 +160,22 @@ int c=0;
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.exists()) {
                                     ContestDetail contestDetail = dataSnapshot.getValue(ContestDetail.class);
+                                    assert contestDetail != null;
                                     String WinDec = contestDetail.getWinDec();
                                     boolean result = contestDetail.getResult();
-                                    if (contestDetail.getVoteType().equals("Jury and Public")){
-                                        isPublicAndJuryVote=true;
+                                    if (contestDetail.getVoteType().equals("Jury and Public")) {
+                                        isPublicAndJuryVote = true;
                                     }
 
 
-                                    java.text.DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+                                    @SuppressLint("SimpleDateFormat") java.text.DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                                     Date date = null;
                                     try {
                                         date = (Date) formatter.parse(WinDec);
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
+                                    assert date != null;
                                     String winD = String.valueOf(date.getTime());
                                     Thread thread = new Thread() {
                                         @Override
@@ -202,42 +184,28 @@ int c=0;
                                                 synchronized (this) {
                                                     wait(1000);
 
-                                                    getActivity().runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            if (result) {
-                                                                pubBtn2.setVisibility(View.VISIBLE);
+                                                    getActivity().runOnUiThread(() -> {
+                                                        if (result) {
+                                                            pubBtn2.setVisibility(View.VISIBLE);
+                                                            relWinner.setVisibility(View.VISIBLE);
+                                                        } else {
+                                                            if ((Long.parseLong(winD) + 172800000) < Long.parseLong(timestamp)) {
+                                                                Log.d(TAG, "run: 1");
+                                                                publishResultAutomatically();
+                                                            } else if (Long.parseLong(winD) <= Long.parseLong(timestamp)) {
+                                                                Log.d(TAG, "run: 2");
+                                                                pubBtn.setVisibility(View.VISIBLE);
                                                                 relWinner.setVisibility(View.VISIBLE);
-
-
                                                             } else {
-                                                                if((Long.parseLong(winD)+172800000) < Long.parseLong(timestamp)){
-                                                                    Log.d(TAG, "run: 1");
-                                                                    publishResultAutomatically();
-
-                                                                }
-                                                               else if (Long.parseLong(winD) <= Long.parseLong(timestamp)) {
-                                                                    Log.d(TAG, "run: 2");
-
-                                                                    pubBtn.setVisibility(View.VISIBLE);
-                                                                    relWinner.setVisibility(View.VISIBLE);
-
-                                                                } else{
-                                                                    Log.d(TAG, "run: 3");
-
-                                                                    relWinner.setVisibility(View.INVISIBLE);
-
-                                                                }
+                                                                Log.d(TAG, "run: 3");
+                                                                relWinner.setVisibility(View.INVISIBLE);
                                                             }
-
                                                         }
                                                     });
-
                                                 }
                                             } catch (InterruptedException e) {
                                                 e.printStackTrace();
                                             }
-
                                         }
 
                                         ;
@@ -258,51 +226,23 @@ int c=0;
 
 
             @Override
-            public void onError(Exception ex) {
-                Log.e(SNTPClient.TAG, ex.getMessage());
+            public void onError(Exception e) {
+                Log.e(SNTPClient.TAG, e.getMessage());
             }
         });
 
-        pubBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Publish Result");
-                builder.setMessage("Are you sure, you want to publish result?");
-
+        pubBtn.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Publish Result");
+            builder.setMessage("Are you sure, you want to publish result?");
 //                set buttons
-                builder.setPositiveButton("Publish", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+            builder.setPositiveButton("Publish", (dialog, which) -> getWinners(participantLists, true));
+            builder.setNegativeButton("Not now", (dialog, which) -> dialog.dismiss());
+            builder.create().show();
 
-                        getWinners(participantLists,true);
-
-
-                    }
-                });
-
-
-                builder.setNegativeButton("Not now", new DialogInterface.OnClickListener() {
-
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-
-                });
-                builder.create().show();
-
-            }
         });
-
-
         getParticipantListFromSP();
-
-
         return view;
-
     }
 
     private void publishResultAutomatically() {
@@ -314,46 +254,34 @@ int c=0;
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                        int x=0;
-                        ArrayList<ParticipantList> participantLists=new ArrayList<>();
-                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        int x = 0;
+                        ArrayList<ParticipantList> participantLists = new ArrayList<>();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             x++;
                             participantLists.add(snapshot.getValue(ParticipantList.class));
-                            if (x==dataSnapshot.getChildrenCount()){
-                                getWinners(participantLists,false);
-
-
-
+                            if (x == dataSnapshot.getChildrenCount()) {
+                                getWinners(participantLists, false);
                             }
-
-
                         }
                     }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-                    });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
     }
 
-    private void getWinners(ArrayList<ParticipantList> participantLists,boolean manual) {
-        Collections.sort(participantLists, new Comparator<ParticipantList>() {
-            @Override
-            public int compare(ParticipantList o1, ParticipantList o2) {
-                return Integer.compare(o1.getTotalScore(), o2.getTotalScore());
-            }
-        });
+    private void getWinners(ArrayList<ParticipantList> participantLists, boolean manual) {
+        Collections.sort(participantLists, (o1, o2) -> Integer.compare(o1.getTotalScore(), o2.getTotalScore()));
         Collections.reverse(participantLists);
         try {
             for (int x = 0; x < 3; x++) {
                 participantLists2.add(participantLists.get(x));
-
             }
         } catch (IndexOutOfBoundsException e) {
             Log.e(TAG, "onDataChange: " + e.getMessage());
         }
-
         mFirebaseMethods.publishResut(manual, Conteskey, participantLists, progress, getActivity(), participantLists2);
         pubBtn2.setVisibility(View.VISIBLE);
         relWinner.setVisibility(View.VISIBLE);
@@ -367,10 +295,10 @@ int c=0;
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             ParticipantList participantList = new ParticipantList();
                             participantList = snapshot.getValue(ParticipantList.class);
+                            assert participantList != null;
                             Log.d(TAG, "onDataChange: " + participantList.toString());
                             joiningKey = participantList.getJoiningKey().toString();
                             Log.d(TAG, "onDataChange: " + joiningKey);
@@ -390,45 +318,34 @@ int c=0;
                                             tbrow.setWeightSum(5);
                                             TextView t1v = new TextView(getActivity());
                                             getUsername(finalParticipantList.getUserid(), t1v);
-                                            t1v.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-
-                                                    Query userquery = ref
-                                                            .child(getString(R.string.dbname_users))
-                                                            .orderByChild(getString(R.string.field_username))
-                                                            .equalTo(t1v.getText().toString());
-                                                    userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                                                                user = singleSnapshot.getValue(users.class);
-                                                                Intent i = new Intent(getActivity(), profile.class);
-                                                                i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                                                                i.putExtra(getString(R.string.intent_user), user);
-                                                                startActivity(i);
-                                                            }
-
-
+                                            t1v.setOnClickListener(v -> {
+                                                DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference();
+                                                Query userquery = ref1
+                                                        .child(getString(R.string.dbname_users))
+                                                        .orderByChild(getString(R.string.field_username))
+                                                        .equalTo(t1v.getText().toString());
+                                                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
+                                                        for (DataSnapshot singleSnapshot : dataSnapshot1.getChildren()) {
+                                                            user = singleSnapshot.getValue(users.class);
+                                                            Intent i = new Intent(getActivity(), profile.class);
+                                                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
+                                                            i.putExtra(getString(R.string.intent_user), user);
+                                                            startActivity(i);
                                                         }
-
-
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                                                            Log.d(TAG, "Query Cancelled");
-                                                        }
-                                                    });
-
-
-                                                }
+                                                    }
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                        Log.d(TAG, "Query Cancelled");
+                                                    }
+                                                });
                                             });
                                             t1v.setTextColor(Color.RED);
                                             t1v.setGravity(Gravity.CENTER);
                                             tbrow.addView(t1v);
                                             TextView t2v = new TextView(getActivity());
+                                            assert juryMarks != null;
                                             t2v.setText(juryMarks.getJury1());
                                             t2v.setTextColor(Color.BLACK);
                                             t2v.setGravity(Gravity.CENTER);
@@ -445,24 +362,12 @@ int c=0;
                                             tbrow.addView(t4v);
                                             TextView t5v = new TextView(getActivity());
                                             long x = 0, y = 0, z = 0;
-                                            if (juryMarks.getJury1().equals("")) {
-                                                x = 0;
-                                            } else {
-                                                x = Long.parseLong(juryMarks.getJury1());
-
-                                            }
-                                            if (juryMarks.getJury2().equals("")) {
-                                                y = 0;
-                                            } else {
-                                                y = Long.parseLong(juryMarks.getJury2());
-
-                                            }
-                                            if (juryMarks.getJury3().equals("")) {
-                                                z = 0;
-                                            } else {
-                                                z = Long.parseLong(juryMarks.getJury3());
-
-                                            }
+                                            if (juryMarks.getJury1().equals("")) x = 0;
+                                            else x = Long.parseLong(juryMarks.getJury1());
+                                            if (juryMarks.getJury2().equals("")) y = 0;
+                                            else y = Long.parseLong(juryMarks.getJury2());
+                                            if (juryMarks.getJury3().equals("")) z = 0;
+                                            else z = Long.parseLong(juryMarks.getJury3());
                                             long total = x + y + z;
                                             t5v.setText(String.valueOf(total));
                                             t5v.setTextColor(Color.BLACK);
@@ -478,7 +383,101 @@ int c=0;
 
                                         }
                                     });
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+    }
+
+    private void juryAndPublicMarksTable(String contestkey) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child(getString(R.string.dbname_participantList))
+                .child(contestkey)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            ParticipantList participantList = new ParticipantList();
+                            participantList = snapshot.getValue(ParticipantList.class);
+                            assert participantList != null;
+                            Log.d(TAG, "onDataChange: " + participantList.toString());
+                            joiningKey = participantList.getJoiningKey().toString();
+                            Log.d(TAG, "onDataChange: " + joiningKey);
+                            DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
+                            ParticipantList finalParticipantList = participantList;
+                            ref2.child(getString(R.string.dbname_participantList))
+                                    .child(contestkey)
+                                    .child(joiningKey)
+                                    .child(getString(R.string.juryMarks))
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            juryMarks juryMarks = new juryMarks();
+                                            juryMarks = dataSnapshot.getValue(juryMarks.class);
+                                            TableRow tbrow = new TableRow(getActivity());
+                                            tbrow.setLayoutParams(new TableLayout.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+                                            tbrow.setWeightSum(5);
+                                            TextView t1v = new TextView(getActivity());
+                                            getUsername(finalParticipantList.getUserid(), t1v);
+                                            t1v.setOnClickListener(v -> {
+                                                DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference();
+                                                Query userquery = ref1
+                                                        .child(getString(R.string.dbname_users))
+                                                        .orderByChild(getString(R.string.field_username))
+                                                        .equalTo(t1v.getText().toString());
+                                                userquery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
+                                                        for (DataSnapshot singleSnapshot : dataSnapshot1.getChildren()) {
+                                                            user = singleSnapshot.getValue(users.class);
+                                                            Intent i = new Intent(getActivity(), profile.class);
+                                                            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
+                                                            i.putExtra(getString(R.string.intent_user), user);
+                                                            startActivity(i);
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                        Log.d(TAG, "Query Cancelled");
+                                                    }
+                                                });
+                                            });
+                                            t1v.setTextColor(Color.RED);
+                                            t1v.setGravity(Gravity.CENTER);
+                                            tbrow.addView(t1v);
+                                            TextView t2v = new TextView(getActivity());
+                                            long t = 0, o = 0, p = 0;
+                                            if (juryMarks.getJury1().equals("")) t = 0;
+                                            else t = Long.parseLong(juryMarks.getJury1());
+                                            if (juryMarks.getJury2().equals("")) o = 0;
+                                            else o = Long.parseLong(juryMarks.getJury2());
+                                            if (juryMarks.getJury3().equals("")) p = 0;
+                                            else p = Long.parseLong(juryMarks.getJury3());
+                                            long total = t + o + p;
+                                            t2v.setText(String.valueOf(total));
+                                            t2v.setTextColor(Color.BLACK);
+                                            t2v.setGravity(Gravity.CENTER);
+                                            tbrow.addView(t2v);
+                                            TextView t3v = new TextView(getActivity());
+                                            t3v.setTextColor(Color.BLACK);
+                                            t3v.setGravity(Gravity.CENTER);
+                                            tbrow.addView(t3v);
+                                            TextView t4v = new TextView(getActivity());
+                                            t4v.setTextColor(Color.BLACK);
+                                            t4v.setGravity(Gravity.CENTER);
+                                            getVoteCount(finalParticipantList.getJoiningKey(), t3v, contestkey, t4v, t2v);
+                                            tbrow.addView(t4v);
+                                            juryTable2.addView(tbrow);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                        }
+                                    });
 
                         }
 
@@ -491,152 +490,13 @@ int c=0;
                 });
     }
 
-    private void juryAndPublicMarksTable(String contestkey) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        ref.child(getString(R.string.dbname_participantList))
-                .child(contestkey)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                ParticipantList participantList = new ParticipantList();
-                                participantList = snapshot.getValue(ParticipantList.class);
-                                Log.d(TAG, "onDataChange: " + participantList.toString());
-                                joiningKey = participantList.getJoiningKey().toString();
-                                Log.d(TAG, "onDataChange: " + joiningKey);
-                                DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
-                                ParticipantList finalParticipantList = participantList;
-                                ref2.child(getString(R.string.dbname_participantList))
-                                        .child(contestkey)
-                                        .child(joiningKey)
-                                        .child(getString(R.string.juryMarks))
-                                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                juryMarks juryMarks = new juryMarks();
-                                                juryMarks = dataSnapshot.getValue(juryMarks.class);
-                                                TableRow tbrow = new TableRow(getActivity());
-                                                tbrow.setLayoutParams(new TableLayout.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
-                                                tbrow.setWeightSum(5);
-                                                TextView t1v = new TextView(getActivity());
-                                                getUsername(finalParticipantList.getUserid(), t1v);
-                                                t1v.setOnClickListener(new View.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(View v) {
-                                                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-
-                                                        Query userquery = ref
-                                                                .child(getString(R.string.dbname_users))
-                                                                .orderByChild(getString(R.string.field_username))
-                                                                .equalTo(t1v.getText().toString());
-                                                        userquery.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                            @Override
-                                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
-                                                                    user = singleSnapshot.getValue(users.class);
-                                                                    Intent i = new Intent(getActivity(), profile.class);
-                                                                    i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
-                                                                    i.putExtra(getString(R.string.intent_user), user);
-                                                                    startActivity(i);
-                                                                }
-
-
-                                                            }
-
-
-                                                            @Override
-                                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                                                                Log.d(TAG, "Query Cancelled");
-                                                            }
-                                                        });
-
-
-                                                    }
-                                                });
-                                                t1v.setTextColor(Color.RED);
-                                                t1v.setGravity(Gravity.CENTER);
-                                                tbrow.addView(t1v);
-                                                TextView t2v = new TextView(getActivity());
-                                                long t = 0, o = 0, p = 0;
-                                                if (juryMarks.getJury1().equals("")) {
-                                                    t = 0;
-                                                } else {
-                                                    t = Long.parseLong(juryMarks.getJury1());
-
-                                                }
-                                                if (juryMarks.getJury2().equals("")) {
-                                                    o = 0;
-                                                } else {
-                                                    o = Long.parseLong(juryMarks.getJury2());
-
-                                                }
-                                                if (juryMarks.getJury3().equals("")) {
-                                                    p = 0;
-                                                } else {
-                                                    p = Long.parseLong(juryMarks.getJury3());
-
-                                                }
-
-//
-
-                                                long total = t + o + p;
-                                                t2v.setText(String.valueOf(total));
-                                                t2v.setTextColor(Color.BLACK);
-                                                t2v.setGravity(Gravity.CENTER);
-                                                tbrow.addView(t2v);
-                                                TextView t3v = new TextView(getActivity());
-//
-
-
-                                                t3v.setTextColor(Color.BLACK);
-                                                t3v.setGravity(Gravity.CENTER);
-                                                tbrow.addView(t3v);
-
-                                                TextView t4v = new TextView(getActivity());
-
-
-                                                t4v.setTextColor(Color.BLACK);
-                                                t4v.setGravity(Gravity.CENTER);
-                                                getVoteCount(finalParticipantList.getJoiningKey(), t3v, contestkey, t4v, t2v);
-                                                tbrow.addView(t4v);
-                                                juryTable2.addView(tbrow);
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                            }
-                                        });
-
-                            }
-                        
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-
-    }
-
     private void getTotal(TextView t2v, TextView t3v, TextView t4v, String contestkey, String Joiningkey) {
         try {
             long a = Long.parseLong(t2v.getText().toString());
             long b = Long.parseLong(t3v.getText().toString());
             long c;
-            if (isPublicAndJuryVote){
-                 c = (a + b) / 2;
-
-            }else{
-                 c = (a + b);
-
-            }
+            if (isPublicAndJuryVote) c = (a + b) / 2;
+            else c = (a + b);
             t4v.setText(String.valueOf(c));
             DatabaseReference ref4 = FirebaseDatabase.getInstance().getReference();
             ref4.child(getString(R.string.dbname_participantList))
@@ -644,7 +504,7 @@ int c=0;
                     .child(Joiningkey)
                     .child("totalScore")
                     .setValue((int) c);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignored) {
 
         }
 
@@ -660,11 +520,8 @@ int c=0;
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         long i = dataSnapshot.getChildrenCount();
-//
                         t3v.setText(String.valueOf(i));
                         getTotal(t2v, t3v, t4v, contestkey, joiningKey);
-
-
                     }
 
                     @Override
@@ -672,8 +529,6 @@ int c=0;
 
                     }
                 });
-
-
     }
 
     private void getUsername(String userid, TextView textView) {
@@ -684,9 +539,8 @@ int c=0;
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
-
-
                             users user = ds.getValue(users.class);
+                            assert user != null;
                             textView.setText(user.getUsername());
                         }
                     }
@@ -702,25 +556,17 @@ int c=0;
 
     private void getRank() {
         participantLists2.clear();
-        Collections.sort(participantLists, new Comparator<ParticipantList>() {
-            @Override
-            public int compare(ParticipantList o1, ParticipantList o2) {
-                return Integer.compare(o1.getTotalScore(), o2.getTotalScore());
-            }
-        });
+        Collections.sort(participantLists, (o1, o2) -> Integer.compare(o1.getTotalScore(), o2.getTotalScore()));
         Collections.reverse(participantLists);
         try {
-            for (int x = 0; x < 3; x++) {
-                participantLists2.add(participantLists.get(x));
-
-            }
+            for (int x = 0; x < 3; x++) participantLists2.add(participantLists.get(x));
         } catch (IndexOutOfBoundsException e) {
             Log.e(TAG, "onDataChange: " + e.getMessage());
         }
 
         displayParticipantRank();
 
-        winnerList = new AdapterWinners(getContext(), participantLists2);
+        AdapterWinners winnerList = new AdapterWinners(getContext(), participantLists2);
         winnerList.setHasStableIds(true);
 
         winnerRv.setAdapter(winnerList);
@@ -735,42 +581,25 @@ int c=0;
         participantLists = gson.fromJson(json, type);
         if (participantLists == null) {    //        if no arrayList is present
             participantLists = new ArrayList<>();
-
-
-            getRank();
-            juryMarksTable(Conteskey);
-            juryAndPublicMarksTable(Conteskey);
-
-        } else {
-
-            getRank();
-            juryMarksTable(Conteskey);
-            juryAndPublicMarksTable(Conteskey);
-
         }
+        getRank();
+        juryMarksTable(Conteskey);
+        juryAndPublicMarksTable(Conteskey);
 
     }
 
     private void displayParticipantRank() {
         Log.d(TAG, "display first 10 contest");
-        paginatedParticipantLists = new ArrayList<>();
+        ArrayList<ParticipantList> paginatedParticipantLists = new ArrayList<>();
         if (participantLists != null) {
-
             try {
-
-
-
-
                 int iteration = participantLists.size();
-                if (iteration > 10) {
-                    iteration = 10;
-                }
-                mResults = 10;
-                for (int i = 0; i < iteration; i++) {
+                if (iteration > 10) iteration = 10;
+                int mResults = 10;
+                for (int i = 0; i < iteration; i++)
                     paginatedParticipantLists.add(participantLists.get(i));
-                }
                 Log.d(TAG, "contest: sss" + paginatedParticipantLists.size());
-                rankList = new AdapterRankList(getContext(), paginatedParticipantLists);
+                AdapterRankList rankList = new AdapterRankList(getContext(), paginatedParticipantLists);
                 rankList.setHasStableIds(true);
                 rankRv.setAdapter(rankList);
 

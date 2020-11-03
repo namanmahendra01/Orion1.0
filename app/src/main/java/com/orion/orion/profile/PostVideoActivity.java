@@ -8,8 +8,8 @@ import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -72,6 +72,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.orion.orion.R;
+import com.orion.orion.login.login;
 import com.orion.orion.models.Photo;
 import com.orion.orion.util.FilePaths;
 import com.orion.orion.util.FirebaseMethods;
@@ -79,11 +80,17 @@ import com.orion.orion.util.ImageManager;
 import com.orion.orion.util.SquareImageView;
 import com.orion.orion.util.StringManipilation;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public class PostVideoActivity extends AppCompatActivity {
@@ -98,7 +105,6 @@ public class PostVideoActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseMethods mFirebaseMethods;
-    private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
 
     private final Context mContext = PostVideoActivity.this;
@@ -128,6 +134,20 @@ public class PostVideoActivity extends AppCompatActivity {
     private Uri imageUri;
 
     public PostVideoActivity() {
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        simpleExoPlayer.release();
+        videoBox.setVisibility(View.INVISIBLE);
+        VideoCompressor.cancel();
+        progress.setVisibility(View.INVISIBLE);
+        if(videoUri!=null){
+            File file = new File(Objects.requireNonNull(videoUri.getPath()));
+            if (file.exists()) file.delete();
+        }
     }
 
     @Override
@@ -238,14 +258,14 @@ public class PostVideoActivity extends AppCompatActivity {
             uploadVideo();
         } else {
 
-             if (videoUri == null)
+            if (videoUri == null)
                 Toast.makeText(mContext, "No video to upload :(", Toast.LENGTH_SHORT).show();
             else if(caption.length()>=150)
                 Toast.makeText(mContext, "Caption size must be less then 150 letters //0‑0\\\\", Toast.LENGTH_SHORT).show();
             else if(imageUri==null)
                 Toast.makeText(mContext, "Please add a thumbnail also ༼ つ ◕_◕ ༽つdt", Toast.LENGTH_SHORT).show();
-             else
-                 Toast.makeText(mContext, "Please wait for some more time", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(mContext, "Please wait for some more time", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -283,19 +303,17 @@ public class PostVideoActivity extends AppCompatActivity {
                                 progressDialog.dismiss();
                                 Toast.makeText(PostVideoActivity.this, "Video Uploaded", Toast.LENGTH_SHORT).show();
                                 storageReferencePhoto.getDownloadUrl()
-                                        .addOnSuccessListener(uriThumbnail -> {
-                                            storageReferenceVideo.getDownloadUrl()
-                                                    .addOnSuccessListener(uriVideo -> {
-                                                        progressDialog.dismiss();
-                                                        Toast.makeText(PostVideoActivity.this, "Video Uploaded", Toast.LENGTH_SHORT).show();
-                                                        addVideoToDatabase(caption, uriThumbnail.toString(), uriVideo.toString());
-                                                        startActivity(new Intent(mContext, ProfileActivity.class));
-                                                    })
-                                                    .addOnFailureListener(e -> {
-                                                        Toast.makeText(PostVideoActivity.this, "Failed to retrieve thumbnail url " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                        startActivity(new Intent(mContext, ProfileActivity.class));
-                                                    });
-                                        })
+                                        .addOnSuccessListener(uriThumbnail -> storageReferenceVideo.getDownloadUrl()
+                                                .addOnSuccessListener(uriVideo -> {
+                                                    progressDialog.dismiss();
+                                                    Toast.makeText(PostVideoActivity.this, "Video Uploaded", Toast.LENGTH_SHORT).show();
+                                                    addVideoToDatabase(caption, uriThumbnail.toString(), uriVideo.toString());
+                                                    startActivity(new Intent(mContext, ProfileActivity.class));
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    Toast.makeText(PostVideoActivity.this, "Failed to retrieve thumbnail url " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    startActivity(new Intent(mContext, ProfileActivity.class));
+                                                }))
                                         .addOnFailureListener(e -> Toast.makeText(PostVideoActivity.this, "Failed to retrieve thumbnail url " + e.getMessage(), Toast.LENGTH_SHORT).show());
                             })
                             .addOnFailureListener(e -> {
@@ -324,11 +342,13 @@ public class PostVideoActivity extends AppCompatActivity {
         Log.d(TAG, "addVideoToDatabase: caption" + caption);
         Log.d(TAG, "addVideoToDatabase: uriThumbnail" + uriThumbnail);
         Log.d(TAG, "addVideoToDatabase: uriVideo" + uriVideo);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
         String tags = StringManipilation.getTags(caption);
         String newPhotoKey = myRef.child(mContext.getString(R.string.dbname_user_photos)).push().getKey();
         Photo photo = new Photo();
         photo.setCaption(caption);
-        photo.setDate_created(mFirebaseMethods.getTimeStamp());
+        photo.setDate_created(sdf.format(new Date()));
         photo.setImage_path(uriVideo);
         photo.setThumbnail(uriThumbnail);
         photo.setTags(tags);
@@ -668,11 +688,10 @@ public class PostVideoActivity extends AppCompatActivity {
                             Toast.makeText(mContext, String.format("%.2f", size / 1024 / 1024) + " MB, " + timeInMillisec / 1000 + "s o_O", Toast.LENGTH_LONG).show();
                             new AlertDialog.Builder(mContext)
                                     .setTitle("File too large!")
-                                    .setMessage("You are required to select a video file of less then 50MB and less than 1 minute of duration." + System.getProperty("line.separator") + "Either one of those 2 conditions are not met")
-                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            // Continue with delete operation
-                                        }
+                                    .setMessage("You are required to select a video file of " + System.getProperty("line.separator") + "1. Less then 100MB" + System.getProperty("line.separator") + "2. Less than 1 minute of duration." + System.getProperty("line.separator") + "Either one of those 2 conditions are not met")
+                                    .setPositiveButton("Ok", (dialog, which) -> {
+                                        dialog.dismiss();
+                                        // Continue with delete operation
                                     })
                                     .show();
                         } else {
@@ -713,7 +732,6 @@ public class PostVideoActivity extends AppCompatActivity {
                                 final File desFile = savevideoUri(path);
                                 assert desFile != null;
                                 Log.d(TAG, "onActivityResult: desFile " + desFile.getPath());
-                                assert path != null;
                                 final float finalSize = size;
                                 final String finalStandard = standard;
                                 Log.d(TAG, "onActivityResult: size of file selected: " + finalSize + " " + finalStandard);
@@ -747,7 +765,7 @@ public class PostVideoActivity extends AppCompatActivity {
                                     }
 
                                     @Override
-                                    public void onFailure(String failureMessage) {
+                                    public void onFailure(@NotNull String failureMessage) {
                                         progress.setText(failureMessage);
                                         Log.d(TAG, "onFailure: " + failureMessage);
                                         if (desFile.exists())
@@ -794,14 +812,27 @@ public class PostVideoActivity extends AppCompatActivity {
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
         mFirebaseMethods = new FirebaseMethods(mContext);
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
         mStorageReference = FirebaseStorage.getInstance().getReference();
         myRef = mFirebaseDatabase.getReference();
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = firebaseAuth -> {
             FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user != null) Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
-            else Log.d(TAG, "onAuthStateChanged:signed_out");
+            if (user == null) {
+                Log.d(TAG, "onAuthStateChanged:signed_out");
+                Log.d(TAG, "onAuthStateChanged: navigating to login");
+                SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                new AlertDialog.Builder(mContext)
+                        .setTitle("No user logon found")
+                        .setMessage("We will be logging u out. \n Please try to log in again")
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            Intent intent = new Intent(mContext, login.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            settings.edit().clear().apply();
+                            startActivity(intent);
+                        })
+                        .show();
+            } else Log.d(TAG, "onAuthStateChanged: signed_in:" + user.getUid());
         };
         myRef.addValueEventListener(new ValueEventListener() {
             @Override

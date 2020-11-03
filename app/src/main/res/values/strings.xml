@@ -132,6 +132,7 @@
     <string name="field_facebook">facebook</string>
     <string name="field_twitter">twitter</string>
     <string name="field_whatsapp">whatsapp</string>
+    <string name="db_posts_deleted">deleted_posts</string>
 
     field_post
 

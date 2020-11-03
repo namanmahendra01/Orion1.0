@@ -63,12 +63,19 @@
                 android:layout_height="250dp"
                 android:background="#8A8D92">
 
+                <ImageView
+                    android:id="@+id/poster"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+
                 <LinearLayout
                     android:id="@+id/selectPoster"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
+                    android:gravity="end|top"
                     android:background="@drawable/circular_corner_rectangle_white_border"
                     android:orientation="horizontal"
                     android:padding="5dp">
@@ -79,6 +86,7 @@
                         android:background="@drawable/ic_add_photo" />
 
                     <TextView
+                        android:id="@+id/selectPosterText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingStart="5dp"
@@ -88,12 +96,6 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
                 </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/poster"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone" />
 
             </RelativeLayout>
 
@@ -237,7 +239,7 @@
                 android:id="@+id/selectDomain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:padding="10dp"
                 android:background="@drawable/white_round_button"
@@ -767,7 +769,7 @@
                     android:textColor="@color/black"
                     android:textColorHint="@color/grey" />
 
-                <Switch
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/toggleNoOfPartictipants"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -830,7 +832,7 @@
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey" />
 
-                    <Switch
+                    <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/toggleEntryFees"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -853,7 +855,7 @@
                         android:textColor="@color/black"
                         android:textSize="18sp" />
 
-                    <Switch
+                    <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/togglePrize"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

@@ -31,7 +31,6 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
         this.mContext = mContext;
         this.photos = photos;
         this.onPostItemClickListner=onPostItemClickListner;
-
     }
 
 

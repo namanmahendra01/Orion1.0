@@ -1,9 +1,6 @@
 
 package com.orion.orion.contest;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +22,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,19 +36,12 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.orion.orion.R;
 import com.orion.orion.contest.Contest_Evaluation.activity_view_media;
-import com.orion.orion.models.CreateForm;
-import com.orion.orion.models.ParticipantList;
-import com.orion.orion.models.juryMarks;
-
-import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static com.orion.orion.util.SNTPClient.TAG;
 
 
 public class jury_voting_media extends AppCompatActivity {
@@ -87,7 +80,7 @@ public class jury_voting_media extends AppCompatActivity {
         jury = i.getStringExtra("jury");
         comment = i.getStringExtra("comment");
 
-        backArrrow= findViewById(R.id.backarrow);
+        backArrrow = findViewById(R.id.backarrow);
 
         backArrrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,26 +121,25 @@ public class jury_voting_media extends AppCompatActivity {
 
                     DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
 
-                    if (text.equals("") || tex2t.equals("")||(Integer.parseInt(text)>10||Integer.parseInt(text)<=0)) {
+                    if (text.equals("") || tex2t.equals("") || (Integer.parseInt(text) > 10 || Integer.parseInt(text) <= 0)) {
                         progress.setVisibility(View.GONE);
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                        if (text.equals("")){
+                        if (text.equals("")) {
                             et.setError("please fill");
 
                         }
-                        if (tex2t.equals("")){
+                        if (tex2t.equals("")) {
                             et2.setError("please fill");
 
                         }
-                        if ((Integer.parseInt(text)>10||Integer.parseInt(text)<=0)){
+                        if ((Integer.parseInt(text) > 10 || Integer.parseInt(text) <= 0)) {
                             et.setError("marks must be between 1-10 range");
 
                         }
 
-                    }
-                    else{
+                    } else {
                         markList = new ArrayList<>(Collections.nCopies(4, "0"));
-                        addUsernameAndMediaLinktoSP(joiningKey,text,tex2t);
+                        addUsernameAndMediaLinktoSP(joiningKey, text, tex2t);
 
                         ref2.child(getString(R.string.dbname_participantList))
                                 .child(contestkey)
@@ -166,7 +158,7 @@ public class jury_voting_media extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         i[0]++;
-                                        if (i[0]==participantlist.size()){
+                                        if (i[0] == participantlist.size()) {
                                             progress.setVisibility(View.GONE);
                                             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                             Toast.makeText(jury_voting_media.this, "Marks Submitted!", Toast.LENGTH_SHORT).show();
@@ -201,7 +193,7 @@ public class jury_voting_media extends AppCompatActivity {
     }
 
     private void addUsernameAndMediaLinktoSP(String joiningKey, String text, String tex2t) {
-ArrayList<String> list= new ArrayList<>(Collections.nCopies(4,"0"));
+        ArrayList<String> list = new ArrayList<>(Collections.nCopies(4, "0"));
 
         DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
         ArrayList<String> finalList = list;
@@ -232,8 +224,8 @@ ArrayList<String> list= new ArrayList<>(Collections.nCopies(4,"0"));
 
                                                         String link = dataSnapshot1.getValue().toString();
                                                         finalList.set(1, link);
-                                                        finalList.set(2,text);
-                                                        finalList.set(3,tex2t);
+                                                        finalList.set(2, text);
+                                                        finalList.set(3, tex2t);
 
                                                         //    Add newly Created ArrayList to Shared Preferences
                                                         SharedPreferences.Editor editor = sp.edit();
@@ -397,9 +389,9 @@ ArrayList<String> list= new ArrayList<>(Collections.nCopies(4,"0"));
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                                         link[0] = dataSnapshot.getValue().toString();
-                                        boolean ok= link[0].length() > 23;
-                                        if (ok){
-                                            if (link[0].substring(8,23).equals("firebasestorage")) {
+                                        boolean ok = link[0].length() > 23;
+                                        if (ok) {
+                                            if (link[0].substring(8, 23).equals("firebasestorage")) {
                                                 Intent i = new Intent(jury_voting_media.this, activity_view_media.class);
                                                 i.putExtra("imageLink", link[0]);
                                                 i.putExtra("contestkey", contestkey);
@@ -407,7 +399,7 @@ ArrayList<String> list= new ArrayList<>(Collections.nCopies(4,"0"));
                                                 i.putExtra("view", "No");
 
                                                 startActivity(i);
-                                            }else{
+                                            } else {
                                                 try {
                                                     Uri uri = Uri.parse(link[0]);
                                                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -418,7 +410,7 @@ ArrayList<String> list= new ArrayList<>(Collections.nCopies(4,"0"));
                                                     Log.e(TAG, "onClick: " + e.getMessage());
                                                 }
                                             }
-                                        }else{
+                                        } else {
                                             try {
                                                 Uri uri = Uri.parse(link[0]);
                                                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -437,7 +429,6 @@ ArrayList<String> list= new ArrayList<>(Collections.nCopies(4,"0"));
 
                                     }
                                 });
-
 
 
                     }
@@ -531,9 +522,9 @@ ArrayList<String> list= new ArrayList<>(Collections.nCopies(4,"0"));
                 t2v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        boolean ok= markList.get(1).length() > 23;
-                        if (ok){
-                            if (markList.get(1).substring(8,23).equals("firebasestorage")) {
+                        boolean ok = markList.get(1).length() > 23;
+                        if (ok) {
+                            if (markList.get(1).substring(8, 23).equals("firebasestorage")) {
                                 Intent i = new Intent(jury_voting_media.this, activity_view_media.class);
                                 i.putExtra("imageLink", markList.get(1));
                                 i.putExtra("contestkey", contestkey);
@@ -541,7 +532,7 @@ ArrayList<String> list= new ArrayList<>(Collections.nCopies(4,"0"));
                                 i.putExtra("view", "No");
 
                                 startActivity(i);
-                            }else{
+                            } else {
                                 try {
                                     Uri uri = Uri.parse(markList.get(1));
                                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -552,7 +543,7 @@ ArrayList<String> list= new ArrayList<>(Collections.nCopies(4,"0"));
                                     Log.e(TAG, "onClick: " + e.getMessage());
                                 }
                             }
-                        }else{
+                        } else {
                             try {
                                 Uri uri = Uri.parse(markList.get(1));
                                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -611,49 +602,49 @@ ArrayList<String> list= new ArrayList<>(Collections.nCopies(4,"0"));
 
     }
 
-protected   void  onPause() {
+    protected void onPause() {
 
-    super.onPause();
+        super.onPause();
 
-    Log.d(TAG, "onPause: qwe");
-    for (String joiningKey : participantlist) {
+        Log.d(TAG, "onPause: qwe");
+        for (String joiningKey : participantlist) {
 
-        String json = sp.getString(joiningKey, null);
+            String json = sp.getString(joiningKey, null);
 
-        Type type = new TypeToken<ArrayList<String>>() {
-        }.getType();
-        markList = gson.fromJson(json, type);
+            Type type = new TypeToken<ArrayList<String>>() {
+            }.getType();
+            markList = gson.fromJson(json, type);
 
-        TableRow row = (TableRow) juryTable.getChildAt(x);
-        EditText et = (EditText) row.getChildAt(2);
-        EditText et2 = (EditText) row.getChildAt(3);
-        text = et.getText().toString();
-        tex2t = et2.getText().toString();
+            TableRow row = (TableRow) juryTable.getChildAt(x);
+            EditText et = (EditText) row.getChildAt(2);
+            EditText et2 = (EditText) row.getChildAt(3);
+            text = et.getText().toString();
+            tex2t = et2.getText().toString();
 
-        if (text.equals("") || tex2t.equals("")) {
-         continue;
-        } else {
-            markList = new ArrayList<>(Collections.nCopies(4, "0"));
-            addUsernameAndMediaLinktoSP(joiningKey,text,tex2t);
-            x++;
+            if (text.equals("") || tex2t.equals("")) {
+                continue;
+            } else {
+                markList = new ArrayList<>(Collections.nCopies(4, "0"));
+                addUsernameAndMediaLinktoSP(joiningKey, text, tex2t);
+                x++;
 
+            }
+
+
+        }
+        x = 1;
+        int tableChild = juryTable.getChildCount();
+        for (int x = 1; x < tableChild; x++) {
+            TableRow row = (TableRow) juryTable.getChildAt(x);
+            EditText et = (EditText) row.getChildAt(2);
+            EditText et2 = (EditText) row.getChildAt(3);
+            String text = et.getText().toString();
+            String tex2t = et2.getText().toString();
+            Log.d(TAG, "onClick: " + text + " " + tex2t);
         }
 
 
     }
-    x = 1;
-    int tableChild = juryTable.getChildCount();
-    for (int x = 1; x < tableChild; x++) {
-        TableRow row = (TableRow) juryTable.getChildAt(x);
-        EditText et = (EditText) row.getChildAt(2);
-        EditText et2 = (EditText) row.getChildAt(3);
-        String text = et.getText().toString();
-        String tex2t = et2.getText().toString();
-        Log.d(TAG, "onClick: " + text + " " + tex2t);
-    }
-
-
-}
 
 }
 

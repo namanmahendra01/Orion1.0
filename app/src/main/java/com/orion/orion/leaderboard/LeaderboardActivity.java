@@ -20,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -57,7 +56,6 @@ import com.orion.orion.models.ItemLeaderboard;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.SNTPClient;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -159,7 +157,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                 int currentYear = Integer.parseInt(currentTimeStamp.substring(0, 4));
                 int currentMonth = Integer.parseInt(currentTimeStamp.substring(5, 7));
                 int currentDate = Integer.parseInt(currentTimeStamp.substring(8, 10));
-                String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
+//                String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
                 String currentDateFormat = currentDate + "/" + currentMonth + "/" + currentYear;
                 Date date = new Date(currentDateFormat);
                 int currentDay = date.getDay();
@@ -194,12 +192,12 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                             boolean changedFollowers = false;
                             boolean changedJoinedContest = false;
                             boolean changedCreateContest = false;
-                            if (singleSnapshot.child(getString(R.string.changedFollowers)).getValue() != null && singleSnapshot.child(getString(R.string.changedFollowers)).equals("true"))
+                            if (singleSnapshot.child(getString(R.string.changedFollowers)).getValue() != null && Objects.equals(singleSnapshot.child(getString(R.string.changedFollowers)).getValue(), "true"))
                                 changedFollowers = true;
-                            if (singleSnapshot.child(getString(R.string.changedJoinedContest)).getValue() != null && singleSnapshot.child(getString(R.string.changedJoinedContest)).equals("true"))
+                            if (singleSnapshot.child(getString(R.string.changedJoinedContest)).getValue() != null && Objects.equals(singleSnapshot.child(getString(R.string.changedJoinedContest)).getValue(), "true"))
                                 changedJoinedContest = true;
-                            if (singleSnapshot.child(getString(R.string.changedCreatedContest)).getValue() != null && singleSnapshot.child(getString(R.string.changedCreatedContest)).equals("true"))
-                                changedJoinedContest = true;
+                            if (singleSnapshot.child(getString(R.string.changedCreatedContest)).getValue() != null && Objects.equals(singleSnapshot.child(getString(R.string.changedCreatedContest)).getValue(), "true"))
+                                changedCreateContest = true;
 
                             //location update
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -255,11 +253,11 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                         int postedYear = Integer.parseInt(postedTimestamp.substring(0, 4));
                                         int postedMonth = Integer.parseInt(postedTimestamp.substring(5, 7));
                                         int postedDate = Integer.parseInt(postedTimestamp.substring(8, 10));
-                                        String postedTime = postedTimestamp.substring(12, postedTimestamp.length() - 1);
+//                                        String postedTime = postedTimestamp.substring(12, postedTimestamp.length() - 1);
                                         String postedDateFormat = postedDate + "/" + postedMonth + "/" + postedYear;
 
                                         //calculating difference of dates in post and current one
-                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
+                                        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
                                         long elapsedDays = 0;
                                         try {
                                             Date date1 = simpleDateFormat.parse(postedDateFormat);
@@ -353,7 +351,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                                 int finalLastUpdatedMonth = lastUpdatedMonth;
 
                                                 //calculating difference of dates in post and current one
-                                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
+                                                @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
                                                 long elapsedDays = 0;
                                                 try {
                                                     Date date1 = simpleDateFormat.parse(lastUpdatedDateFormat);
@@ -430,7 +428,8 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                                 //calculating rating for joined
                                                 int rating = currentNoOfFollowers - previousNoOfFollowers;
                                                 //updating current instance of increasing followers list
-                                                int all_time = currentNoOfFollowers;
+                                                int all_time;
+                                                all_time = currentNoOfFollowers;
                                                 if (finalLastUpdatedYear == currentYear) {
                                                     yearly += rating;
                                                     if (finalLastUpdatedMonth == currentYear)
@@ -507,7 +506,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                                 int finalLastUpdatedMonth = lastUpdatedMonth;
 
                                                 //calculating difference of dates in post and current one
-                                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
+                                                @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
                                                 long elapsedDays = 0;
                                                 try {
                                                     Date date1 = simpleDateFormat.parse(lastUpdatedDateFormat);
@@ -1025,7 +1024,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                 else
                     userRating = (int) (long) dataSnapshot.child(finalTime).child(finalTypeParameter).getValue();
                 int finalUserRating = userRating;
-                String userDomain = (String) dataSnapshot.child(getString(R.string.field_domain)).getValue();
+//                String userDomain = (String) dataSnapshot.child(getString(R.string.field_domain)).getValue();
                 String userUsername = (String) dataSnapshot.child(getString(R.string.field_username)).getValue();
 
 
@@ -1076,7 +1075,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                             mAdapter.notifyDataSetChanged();
                                             YoYo.with(Techniques.Landing).duration(ANIMATION_DURATION).playOn(mRecyclerView);
                                             String rankText = "#" + rank;
-                                            String ratingText = finalUserRating + "pts";
+//                                            String ratingText = finalUserRating + "pts";
                                             userItemUsername.setText(userUsername);
                                             userItemRank.setText(rankText);
                                             assert userLocation != null;
@@ -1100,7 +1099,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                 mAdapter.notifyDataSetChanged();
                                 YoYo.with(Techniques.Landing).duration(ANIMATION_DURATION).playOn(mRecyclerView);
                                 String rankText = "#" + rank;
-                                String ratingText = finalUserRating + "pts";
+//                                String ratingText = finalUserRating + "pts";
                                 userItemUsername.setText(userUsername);
                                 userItemRank.setText(rankText);
                                 swipeRefreshLayout.setRefreshing(false);

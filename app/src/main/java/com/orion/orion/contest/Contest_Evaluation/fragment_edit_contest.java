@@ -1,6 +1,5 @@
 package com.orion.orion.contest.Contest_Evaluation;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -31,164 +30,162 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.orion.orion.R;
-import com.orion.orion.contest.ViewContestDetails;
-import com.orion.orion.contest.joined.JoiningForm;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
-import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.UniversalImageLoader;
 
 import static com.android.volley.VolleyLog.TAG;
 
 public class fragment_edit_contest extends Fragment {
-    public fragment_edit_contest(){}
+    public fragment_edit_contest() {
+    }
 
-
-    private TextView entryfee,title,totalprize,maxPart,voteType,gp,notice,descripTv,rulesTv,
-            regBegin,regEnd,voteBegin,voteEnd,domain,openfor,juryname1,juryname2,juryname3,jury
-            ,jurypl1,jurypl2,jurypl3,hostedby,filetype,windate,p1Tv,p2Tv,p3Tv;
-    private ImageView poster,jurypic1,jurypic2,jurypic3;
-    private String mAppend = "";
-
-    private String posterlink="";
+    private TextView entryfee;
+    private TextView title;
+    private TextView totalprize;
+    private TextView maxPart;
+    private TextView voteType;
+    private TextView regBegin;
+    private TextView regEnd;
+    private TextView voteBegin;
+    private TextView voteEnd;
+    private TextView domain;
+    private TextView openfor;
+    private TextView juryname1;
+    private TextView juryname2;
+    private TextView juryname3;
+    private TextView jury;
+    private TextView jurypl1;
+    private TextView jurypl2;
+    private TextView jurypl3;
+    private TextView hostedby;
+    private TextView filetype;
+    private TextView windate;
+    private TextView p1Tv;
+    private TextView p2Tv;
+    private TextView p3Tv;
+    private ImageView poster;
+    private ImageView jurypic1;
+    private ImageView jurypic2;
+    private ImageView jurypic3;
     private CardView cardView;
-    private Button saveBtn;
-    private EditText descrip,rules;
-    String descrip2="",rule2="",username="";
-    private Context context=getContext();
-    users user = new users();
-
-
+    private EditText descrip;
+    private EditText rules;
     private LinearLayout prizeLinear;
-    String userid,Contestkey;
-    RelativeLayout topLayout;
 
-    //firebase
-    private FirebaseFirestore db;
+    private String mAppend = "";
+    private String posterlink = "";
+    private String descrip2 = "";
+    private String rule2 = "";
+    private String username = "";
+
+
+    private String userid;
+    private String Contestkey;
+
     private FirebaseAuth mAuth;
-    private  FirebaseAuth.AuthStateListener mAuthListener;
-    private DatabaseReference myRef;
-    private FirebaseDatabase mFirebaseDatabase;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_contest_details, container, false);
-
-
-
         setupFirebaseAuth();
-
-        entryfee=view.findViewById(R.id.entryfeeTv);
-        title=view.findViewById(R.id.titleTv);
-        descrip=view.findViewById(R.id.descripEv);
-        rules=view.findViewById(R.id.ruleEv);
-        descripTv=view.findViewById(R.id.descripTv);
-        rulesTv=view.findViewById(R.id.ruleTv);
-        totalprize=view.findViewById(R.id.totalprizeTv);
-        maxPart=view.findViewById(R.id.maxPartTv);
-        voteType=view.findViewById(R.id.voteTypeTv);
-        regBegin=view.findViewById(R.id.regB);
-        regEnd=view.findViewById(R.id.regE);
-        voteBegin=view.findViewById(R.id.votB);
-        voteEnd=view.findViewById(R.id.votE);
-        domain=view.findViewById(R.id.domainTV);
-        openfor=view.findViewById(R.id.openForTv);
-        juryname1=view.findViewById(R.id.jname1Tv);
-        juryname2=view.findViewById(R.id.jname2Tv);
-        juryname3=view.findViewById(R.id.jname3Tv);
-        jurypl1=view.findViewById(R.id.jpl1Tv);
-        jurypl2=view.findViewById(R.id.jpl2Tv);
-        jurypl3=view.findViewById(R.id.jpl3Tv);
-        jurypic1=view.findViewById(R.id.jpic1);
-        jurypic2=view.findViewById(R.id.jpic2);
-        jurypic3=view.findViewById(R.id.jpic3);
-        hostedby=view.findViewById(R.id.hostedbyTv);
-        filetype=view.findViewById(R.id.fileTv);
-        windate=view.findViewById(R.id.winDate);
-        poster=view.findViewById(R.id.posterIv);
-        jury=view.findViewById(R.id.jury);
-        cardView=view.findViewById(R.id.jurydetail);
-        p1Tv=view.findViewById(R.id.p1Tv);
-        p2Tv=view.findViewById(R.id.p2Tv);
-        p3Tv=view.findViewById(R.id.p3Tv);
-        prizeLinear=view.findViewById(R.id.prizell);
-        saveBtn=view.findViewById(R.id.save);
-        gp = view.findViewById(R.id.gp);
-        notice = view.findViewById(R.id.text);
-        topLayout = view.findViewById(R.id.reLayout1);
-
+        entryfee = view.findViewById(R.id.entryfeeTv);
+        title = view.findViewById(R.id.titleTv);
+        descrip = view.findViewById(R.id.descripEv);
+        rules = view.findViewById(R.id.ruleEv);
+        TextView descripTv = view.findViewById(R.id.descripTv);
+        TextView rulesTv = view.findViewById(R.id.ruleTv);
+        totalprize = view.findViewById(R.id.totalprizeTv);
+        maxPart = view.findViewById(R.id.maxPartTv);
+        voteType = view.findViewById(R.id.voteTypeTv);
+        regBegin = view.findViewById(R.id.regB);
+        regEnd = view.findViewById(R.id.regE);
+        voteBegin = view.findViewById(R.id.votB);
+        voteEnd = view.findViewById(R.id.votE);
+        domain = view.findViewById(R.id.domainTV);
+        openfor = view.findViewById(R.id.openForTv);
+        juryname1 = view.findViewById(R.id.jname1Tv);
+        juryname2 = view.findViewById(R.id.jname2Tv);
+        juryname3 = view.findViewById(R.id.jname3Tv);
+        jurypl1 = view.findViewById(R.id.jpl1Tv);
+        jurypl2 = view.findViewById(R.id.jpl2Tv);
+        jurypl3 = view.findViewById(R.id.jpl3Tv);
+        jurypic1 = view.findViewById(R.id.jpic1);
+        jurypic2 = view.findViewById(R.id.jpic2);
+        jurypic3 = view.findViewById(R.id.jpic3);
+        hostedby = view.findViewById(R.id.hostedbyTv);
+        filetype = view.findViewById(R.id.fileTv);
+        windate = view.findViewById(R.id.winDate);
+        poster = view.findViewById(R.id.posterIv);
+        jury = view.findViewById(R.id.jury);
+        cardView = view.findViewById(R.id.jurydetail);
+        p1Tv = view.findViewById(R.id.p1Tv);
+        p2Tv = view.findViewById(R.id.p2Tv);
+        p3Tv = view.findViewById(R.id.p3Tv);
+        prizeLinear = view.findViewById(R.id.prizell);
+        Button saveBtn = view.findViewById(R.id.save);
+        TextView gp = view.findViewById(R.id.gp);
+        TextView notice = view.findViewById(R.id.text);
+        RelativeLayout topLayout = view.findViewById(R.id.reLayout1);
         topLayout.setVisibility(View.GONE);
-
-
         saveBtn.setVisibility(View.VISIBLE);
         notice.setVisibility(View.VISIBLE);
-
         descrip.setVisibility(View.VISIBLE);
         rules.setVisibility(View.VISIBLE);
-
         descripTv.setVisibility(View.GONE);
         rulesTv.setVisibility(View.GONE);
-
-
-
-        Bundle b1=getActivity().getIntent().getExtras();
-        Contestkey=b1.getString("contestId");
-         userid=b1.getString("userid");
-
+        Bundle b1 = getActivity().getIntent().getExtras();
+        Contestkey = b1.getString("contestId");
+        userid = b1.getString("userid");
         setgp(userid, gp);
-
-        DatabaseReference ref= FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests))
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests))
                 .child(userid)
                 .child(getString(R.string.created_contest))
                 .child(Contestkey);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                CreateForm mCreateForm=dataSnapshot.getValue(CreateForm.class);
-                if (mCreateForm.getEntryfee().equals("")){
+                CreateForm mCreateForm = dataSnapshot.getValue(CreateForm.class);
+                if (mCreateForm.getEntryfee().equals("")) {
                     entryfee.setText("Free");
-                }else{
+                } else {
                     entryfee.setText(mCreateForm.getEntryfee());
                 }
-                if (mCreateForm.getTotal_prize().equals("")){
+                if (mCreateForm.getTotal_prize().equals("")) {
                     prizeLinear.setVisibility(View.GONE);
                     totalprize.setText("-");
 
-                }else{
+                } else {
                     totalprize.setText(mCreateForm.getTotal_prize());
                     prizeLinear.setVisibility(View.VISIBLE);
-
                 }
-                if (mCreateForm.getMaxLimit().equals("")){
+                if (mCreateForm.getMaxLimit().equals("")) {
                     maxPart.setText("Unlimited");
 
-                }else{
+                } else {
                     maxPart.setText(mCreateForm.getMaxLimit());
-
                 }
-                if (mCreateForm.getVoteBegin().equals("")){
+                if (mCreateForm.getVoteBegin().equals("")) {
                     voteBegin.setText("-");
 
-                }else{
+                } else {
                     voteBegin.setText(mCreateForm.getVoteBegin());
 
                 }
-                if (mCreateForm.getVoteEnd().equals("")){
+                if (mCreateForm.getVoteEnd().equals("")) {
                     voteEnd.setText("-");
-
-                }else{
+                } else {
                     voteEnd.setText(mCreateForm.getVoteEnd());
-
                 }
-                if (mCreateForm.getJname_1().equals("") ){
+                if (mCreateForm.getJname_1().equals("")) {
                     jury.setVisibility(View.GONE);
                     cardView.setVisibility(View.GONE);
                 }
-                if (!mCreateForm.getJname_1().equals("") &&  mCreateForm.getJname_2().equals("")){
+                if (!mCreateForm.getJname_1().equals("") && mCreateForm.getJname_2().equals("")) {
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -209,16 +206,11 @@ public class fragment_edit_contest extends Fragment {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
                                         users user = snapshot.getValue(users.class);
-
-
                                         juryname1.setText(user.getDisplay_name());
                                         jurypl1.setText(user.getUsername());
                                         Log.d(TAG, "onDataChange: " + user.getDisplay_name());
-
                                         UniversalImageLoader.setImage(user.getProfile_photo(), jurypic1, null, "");
-
                                     }
                                 }
 
@@ -229,10 +221,9 @@ public class fragment_edit_contest extends Fragment {
                             });
 
 
-
                 }
-                if(!mCreateForm.getJname_1().equals("") &&  !mCreateForm.getJname_2().equals("")
-                        && mCreateForm.getJname_3().equals("")){
+                if (!mCreateForm.getJname_1().equals("") && !mCreateForm.getJname_2().equals("")
+                        && mCreateForm.getJname_3().equals("")) {
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -252,18 +243,11 @@ public class fragment_edit_contest extends Fragment {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
                                         users user = snapshot.getValue(users.class);
-
-
                                         juryname1.setText(user.getDisplay_name());
                                         jurypl1.setText(user.getUsername());
                                         UniversalImageLoader.setImage(user.getProfile_photo(), jurypic1, null, "");
-
-
                                     }
-
-
                                 }
 
                                 @Override
@@ -271,8 +255,6 @@ public class fragment_edit_contest extends Fragment {
 
                                 }
                             });
-
-
                     DatabaseReference db2 = FirebaseDatabase.getInstance().getReference();
                     db2.child(getString(R.string.dbname_user_account_settings))
                             .orderByChild(getString(R.string.field_username))
@@ -281,10 +263,8 @@ public class fragment_edit_contest extends Fragment {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
                                         users user = snapshot.getValue(users.class);
-
-
+                                        assert user != null;
                                         juryname2.setText(user.getDisplay_name());
                                         jurypl2.setText(user.getUsername());
                                         UniversalImageLoader.setImage(user.getProfile_photo(), jurypic2, null, "");
@@ -297,8 +277,8 @@ public class fragment_edit_contest extends Fragment {
                                 }
                             });
                 }
-                if(!mCreateForm.getJname_1().equals("") &&  !mCreateForm.getJname_2().equals("")
-                        && !mCreateForm.getJname_3().equals("")){
+                if (!mCreateForm.getJname_1().equals("") && !mCreateForm.getJname_2().equals("")
+                        && !mCreateForm.getJname_3().equals("")) {
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -310,8 +290,6 @@ public class fragment_edit_contest extends Fragment {
                     jurypic3.setVisibility(View.VISIBLE);
                     juryname3.setVisibility(View.VISIBLE);
                     jurypl3.setVisibility(View.VISIBLE);
-
-
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                     db.child(getString(R.string.dbname_user_account_settings))
                             .orderByChild(getString(R.string.field_username))
@@ -321,17 +299,13 @@ public class fragment_edit_contest extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                         if (snapshot.exists()) {
-
                                             users user = snapshot.getValue(users.class);
-
-
+                                            assert user != null;
                                             juryname1.setText(user.getDisplay_name());
                                             jurypl1.setText(user.getUsername());
                                             UniversalImageLoader.setImage(user.getProfile_photo(), jurypic1, null, "");
-
                                         }
                                     }
-
                                 }
 
                                 @Override
@@ -349,11 +323,9 @@ public class fragment_edit_contest extends Fragment {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
                                         if (snapshot.exists()) {
                                             users user = snapshot.getValue(users.class);
-
-
+                                            assert user != null;
                                             juryname2.setText(user.getDisplay_name());
                                             jurypl2.setText(user.getUsername());
                                             UniversalImageLoader.setImage(user.getProfile_photo(), jurypic2, null, "");
@@ -377,9 +349,6 @@ public class fragment_edit_contest extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                         if (snapshot.exists()) {
-
-
-
                                             juryname3.setText(snapshot.child(getString(R.string.field_display)).getValue().toString());
                                             jurypl3.setText(snapshot.child(getString(R.string.field_username)).getValue().toString());
                                             UniversalImageLoader.setImage(snapshot.child(getString(R.string.profile_photo)).getValue().toString(), jurypic3, null, "");
@@ -394,10 +363,8 @@ public class fragment_edit_contest extends Fragment {
                             });
                 }
 
-                posterlink=mCreateForm.getPoster();
-
-                UniversalImageLoader.setImage(posterlink,poster,null,mAppend);
-
+                posterlink = mCreateForm.getPoster();
+                UniversalImageLoader.setImage(posterlink, poster, null, mAppend);
                 title.setText(mCreateForm.getTitle());
                 descrip.setText(mCreateForm.getDescrip());
                 rules.setText(mCreateForm.getRule());
@@ -406,19 +373,12 @@ public class fragment_edit_contest extends Fragment {
                 regEnd.setText(mCreateForm.getRegEnd());
                 domain.setText(mCreateForm.getDomain());
                 openfor.setText(mCreateForm.getOpenFor());
-
-
                 hostedby.setText(mCreateForm.getHost());
                 filetype.setText(mCreateForm.getFiletype());
                 windate.setText(mCreateForm.getWinDeclare());
                 p1Tv.setText(mCreateForm.getPlace_1());
-
                 p2Tv.setText(mCreateForm.getPlace_2());
-
                 p3Tv.setText(mCreateForm.getPlace_3());
-
-
-
             }
 
             @Override
@@ -427,176 +387,67 @@ public class fragment_edit_contest extends Fragment {
             }
         });
 
-        jurypic1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl1.getText().toString());
-
-
-            }
-        });
-        juryname1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl1.getText().toString());
-
-
-            }
-        });
-        jurypl1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl1.getText().toString());
-
-
-
-            }
-        });
-
-        jurypic2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl2.getText().toString());
-
-
-
-            }
-        });
-        juryname2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl2.getText().toString());
-
-
-
-            }
-        });
-        jurypl2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl2.getText().toString());
-
-
-
-            }
-        });
-
-        jurypic3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl3.getText().toString());
-
-
-
-            }
-        });
-        juryname3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl3.getText().toString());
-
-
-            }
-        });
-        jurypl3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl3.getText().toString());
-
-
-
-            }
-        });
-
+        jurypic1.setOnClickListener(v -> juryProfile(jurypl1.getText().toString()));
+        juryname1.setOnClickListener(v -> juryProfile(jurypl1.getText().toString()));
+        jurypl1.setOnClickListener(v -> juryProfile(jurypl1.getText().toString()));
+        jurypic2.setOnClickListener(v -> juryProfile(jurypl2.getText().toString()));
+        juryname2.setOnClickListener(v -> juryProfile(jurypl2.getText().toString()));
+        jurypl2.setOnClickListener(v -> juryProfile(jurypl2.getText().toString()));
+        jurypic3.setOnClickListener(v -> juryProfile(jurypl3.getText().toString()));
+        juryname3.setOnClickListener(v -> juryProfile(jurypl3.getText().toString()));
+        jurypl3.setOnClickListener(v -> juryProfile(jurypl3.getText().toString()));
         descrip.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                descrip2=descrip.getText().toString();
-                Log.d(TAG, "afterTextChanged: "+descrip2);
-
-
+                descrip2 = descrip.getText().toString();
+                Log.d(TAG, "afterTextChanged: " + descrip2);
             }
         });
         rules.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                rule2=rules.getText().toString();
-                Log.d(TAG, "afterTextChanged: "+descrip2);
-
-
+                rule2 = rules.getText().toString();
+                Log.d(TAG, "afterTextChanged: " + descrip2);
             }
         });
 
 
-
-
-
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                DatabaseReference ref1= FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
-                       ref1 .child(userid)
-                        .child(getString(R.string.created_contest))
-                        .child(Contestkey)
-                        .child("descrip")
-                       .setValue(descrip2).addOnSuccessListener(new OnSuccessListener<Void>() {
-                           @Override
-                           public void onSuccess(Void aVoid) {
-                               DatabaseReference ref2= FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
-                               ref2.child(userid)
-                                       .child(getString(R.string.created_contest))
-                                       .child(Contestkey)
-                                       .child("rule")
-                                       .setValue(rule2).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                   @Override
-                                   public void onSuccess(Void aVoid) {
-
-                                       Toast.makeText(getContext(), "Your changes are saved!", Toast.LENGTH_SHORT).show();
-                                   }
-                               }) ;
-                           }
-                       });
-
-
-
-
-            }
+        saveBtn.setOnClickListener(v -> {
+            DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
+            ref1.child(userid)
+                    .child(getString(R.string.created_contest))
+                    .child(Contestkey)
+                    .child("descrip")
+                    .setValue(descrip2).addOnSuccessListener(aVoid -> {
+                        DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
+                        ref2.child(userid)
+                                .child(getString(R.string.created_contest))
+                                .child(Contestkey)
+                                .child("rule")
+                                .setValue(rule2).addOnSuccessListener(aVoid1 -> Toast.makeText(getContext(), "Your changes are saved!", Toast.LENGTH_SHORT).show());
+                    });
         });
         return view;
     }
 
     private void juryProfile(String toString) {
-        DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
         Query userquery = ref
                 .child(getString(R.string.dbname_users))
@@ -606,21 +457,13 @@ public class fragment_edit_contest extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
                     username = singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString();
-
                     Intent i = new Intent(getContext(), profile.class);
                     i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
                     i.putExtra(getString(R.string.intent_user), username);
                     startActivity(i);
-
                 }
-
-
             }
-
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.d(TAG, "Query Cancelled");
@@ -628,22 +471,18 @@ public class fragment_edit_contest extends Fragment {
         });
 
     }
+
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
-        mFirebaseDatabase= FirebaseDatabase.getInstance();
-        myRef=mFirebaseDatabase.getReference();
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = mFirebaseDatabase.getReference();
         mAuth = FirebaseAuth.getInstance();
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                if (user != null) {
-                    Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
-                } else {
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
+        mAuthListener = firebaseAuth -> {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
+            } else {
+                Log.d(TAG, "onAuthStateChanged:signed_out");
             }
         };
         myRef.addValueEventListener(new ValueEventListener() {
@@ -661,6 +500,7 @@ public class fragment_edit_contest extends Fragment {
             }
         });
     }
+
     private void setgp(String userid, TextView gp) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(getString(R.string.dbname_contests))
@@ -713,8 +553,8 @@ public class fragment_edit_contest extends Fragment {
         mAuth.addAuthStateListener(mAuthListener);
 
 
-
     }
+
     @Override
     public void onStop() {
         super.onStop();

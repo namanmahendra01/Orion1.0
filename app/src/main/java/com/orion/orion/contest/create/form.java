@@ -7,12 +7,12 @@ import android.app.DatePickerDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -38,6 +39,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 
 import com.daimajia.androidanimations.library.Techniques;
@@ -52,6 +54,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.dialogs.BottomSheetDomain;
+import com.orion.orion.login.login;
 import com.orion.orion.util.Permissions;
 import com.orion.orion.util.UniversalImageLoader;
 
@@ -73,6 +76,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
     private static final int ANIMATION_DURATION = 100;
     boolean isKitKat;
     int layoutActive = 1;
+
 
 
     //Widgets
@@ -136,11 +140,11 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
     private ImageView j3Checked;
 
     //layout3 widgets
-    private Switch toggleLimitedNoOfParticipants;
+    private SwitchCompat toggleLimitedNoOfParticipants;
     private EditText mLimitedNoOfParticipants;
-    private Switch toggleEntryFees;
+    private SwitchCompat toggleEntryFees;
     private EditText mEntryFees;
-    private Switch togglePrize;
+    private SwitchCompat togglePrize;
     private LinearLayout PH;
     private LinearLayout P1;
     private LinearLayout P2;
@@ -157,7 +161,6 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
     private int selectedImage;
     private String imgurl = "";
     private String posterLink = "";
-    private String mAppend = "file:/";
     private String title;
     private String hosted;
     private String des;
@@ -187,16 +190,15 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
 
 
     //firebase
+    private Context mContext;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private DatabaseReference myRef;
-    private FirebaseDatabase mFirebaseDatabase;
-    private Context mContext;
+    private FirebaseUser mUser;
 
     public static boolean isDateAfter(String startDate, String endDate) {
         try {
             String myFormatString = "dd-M-yyyy"; // for example
-            SimpleDateFormat df = new SimpleDateFormat(myFormatString);
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat(myFormatString);
             Date date1 = df.parse(endDate);
             Date startingDate = df.parse(startDate);
             assert date1 != null;
@@ -211,17 +213,6 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
-    }
 
     @Override
     public void onButtonClicked(String text) {
@@ -263,31 +254,18 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
         selectPoster.setOnClickListener(v -> {
             selectedImage = 1;
             if (checkPermissionArray(Permissions.PERMISSIONS)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    isKitKat = true;
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("image/*");
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
-                } else {
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
-                }
-            } else {
-                verifyPermission(Permissions.PERMISSIONS);
-            }
+                isKitKat = true;
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+            } else verifyPermission(Permissions.PERMISSIONS);
         });
         AllStudents.setOnCheckedChangeListener((group, checkedId) -> {
             hideKeyboardFrom(mContext, AllStudents);
             for (int i = 0; i < group.getChildCount(); i++) {
-                if (all.getId() == checkedId) {
-                    openFor = all.getText().toString();
-                }
-                if (students.getId() == checkedId) {
-                    openFor = students.getText().toString();
-                }
+                if (all.getId() == checkedId) openFor = all.getText().toString();
+                if (students.getId() == checkedId) openFor = students.getText().toString();
             }
         });
         PictureVideoDocument.setOnCheckedChangeListener((group, checkedId) -> {
@@ -319,10 +297,10 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                         YoYo.with(Techniques.FadeOutLeft).duration(ANIMATION_DURATION).playOn(jury3Container);
                         new Handler()
                                 .postDelayed(() -> {
-                            jury1Container.setVisibility(View.GONE);
-                            jury2Container.setVisibility(View.GONE);
-                            jury3Container.setVisibility(View.GONE);
-                        }, ANIMATION_DURATION);
+                                    jury1Container.setVisibility(View.GONE);
+                                    jury2Container.setVisibility(View.GONE);
+                                    jury3Container.setVisibility(View.GONE);
+                                }, ANIMATION_DURATION);
                     }
                     if (publicVotingContainer.getVisibility() == View.GONE) {
                         publicVotingContainer.setVisibility(View.VISIBLE);
@@ -764,8 +742,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                 prizeMoney = "No";
             }
         });
-        if (firstPrize.getVisibility() == View.VISIBLE || secondPrize.getVisibility() == View.VISIBLE || thirdPrize.getVisibility() == View.VISIBLE)
-        {
+        if (firstPrize.getVisibility() == View.VISIBLE || secondPrize.getVisibility() == View.VISIBLE || thirdPrize.getVisibility() == View.VISIBLE) {
             firstPrize.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -785,13 +762,13 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                             int c = 0;
                             if (!firstPrize.getText().toString().equals("")) {
                                 a = Integer.parseInt(firstPrize.getText().toString());
-                                prizeFirst=s.toString();
+                                prizeFirst = s.toString();
                             }
                             if (!secondPrize.getText().toString().equals(""))
                                 b = Integer.parseInt(secondPrize.getText().toString());
                             if (!thirdPrize.getText().toString().equals(""))
                                 c = Integer.parseInt(thirdPrize.getText().toString());
-                            prizeTotal= String.valueOf(a + b + c);
+                            prizeTotal = String.valueOf(a + b + c);
                             Log.d(TAG, "afterTextChanged: a" + a);
                             Log.d(TAG, "afterTextChanged: b" + b);
                             Log.d(TAG, "afterTextChanged: c" + c);
@@ -824,11 +801,11 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                                 a = Integer.parseInt(firstPrize.getText().toString());
                             if (!secondPrize.getText().toString().equals("")) {
                                 b = Integer.parseInt(secondPrize.getText().toString());
-                                prizeSecond=s.toString();
+                                prizeSecond = s.toString();
                             }
                             if (!thirdPrize.getText().toString().equals(""))
                                 c = Integer.parseInt(thirdPrize.getText().toString());
-                            prizeTotal= String.valueOf(a + b + c);
+                            prizeTotal = String.valueOf(a + b + c);
                             Log.d(TAG, "afterTextChanged: a" + a);
                             Log.d(TAG, "afterTextChanged: b" + b);
                             Log.d(TAG, "afterTextChanged: c" + c);
@@ -863,9 +840,9 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                                 b = Integer.parseInt(secondPrize.getText().toString());
                             if (!thirdPrize.getText().toString().equals("")) {
                                 c = Integer.parseInt(thirdPrize.getText().toString());
-                                prizeThird=s.toString();
+                                prizeThird = s.toString();
                             }
-                            prizeTotal= String.valueOf(a + b + c);
+                            prizeTotal = String.valueOf(a + b + c);
                             Log.d(TAG, "afterTextChanged: a" + a);
                             Log.d(TAG, "afterTextChanged: b" + b);
                             Log.d(TAG, "afterTextChanged: c" + c);
@@ -897,8 +874,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
             }
         });
         nextButton.setOnClickListener(v -> {
-            if (layoutActive == 1)
-            {
+            if (layoutActive == 1) {
                 title = eventTitle.getText().toString();
                 hosted = hostedBy.getText().toString();
                 des = description.getText().toString();
@@ -947,9 +923,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                     active1.setVisibility(View.INVISIBLE);
                     active2.setVisibility(View.VISIBLE);
                 }
-            }
-            else if (layoutActive == 2)
-            {
+            } else if (layoutActive == 2) {
                 if (votingType.equals("") || date1.equals("") || date2.equals("") || date5.equals("")) {
                     if (votingType.equals("")) {
                         YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(VotingType);
@@ -987,14 +961,12 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                             YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(jurySelectionContainer);
                             Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
                             jurySelectionContainer.requestFocus();
-                        }
-                        else if (noOfJury.equals("1") && juryName1.getCurrentTextColor() != (Color.GREEN)) {
+                        } else if (noOfJury.equals("1") && juryName1.getCurrentTextColor() != (Color.GREEN)) {
                             Log.d(TAG, "onCreate: outer1");
                             YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
                             juryName1.setError("Please enter a valid username");
                             juryName1.requestFocus();
-                        }
-                        else if (noOfJury.equals("2") && (juryName1.getCurrentTextColor() != (Color.GREEN) || juryName2.getCurrentTextColor() != (Color.GREEN))) {
+                        } else if (noOfJury.equals("2") && (juryName1.getCurrentTextColor() != (Color.GREEN) || juryName2.getCurrentTextColor() != (Color.GREEN))) {
                             Log.d(TAG, "onCreate: outer2");
                             if (JuryName1.equals("")) {
                                 YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
@@ -1002,8 +974,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                             if (JuryName2.equals("")) {
                                 YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
                             }
-                        }
-                        else if (noOfJury.equals("3") && (juryName1.getCurrentTextColor() != (Color.GREEN) || juryName2.getCurrentTextColor() != (Color.GREEN) || juryName3.getCurrentTextColor() != (Color.GREEN))) {
+                        } else if (noOfJury.equals("3") && (juryName1.getCurrentTextColor() != (Color.GREEN) || juryName2.getCurrentTextColor() != (Color.GREEN) || juryName3.getCurrentTextColor() != (Color.GREEN))) {
                             Log.d(TAG, "onCreate: outer3");
                             if (JuryName1.equals("")) {
                                 YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
@@ -1028,14 +999,12 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                             YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(jurySelectionContainer);
                             Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
                             jurySelectionContainer.requestFocus();
-                        }
-                        else if (noOfJury.equals("1") && juryName1.getCurrentTextColor() != (Color.GREEN)) {
+                        } else if (noOfJury.equals("1") && juryName1.getCurrentTextColor() != (Color.GREEN)) {
                             Log.d(TAG, "onCreate: outer1");
                             YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
                             juryName1.setError("Please enter a valid username");
                             juryName1.requestFocus();
-                        }
-                        else if (noOfJury.equals("2") && (juryName1.getCurrentTextColor() != (Color.GREEN) || juryName2.getCurrentTextColor() != (Color.GREEN))) {
+                        } else if (noOfJury.equals("2") && (juryName1.getCurrentTextColor() != (Color.GREEN) || juryName2.getCurrentTextColor() != (Color.GREEN))) {
                             Log.d(TAG, "onCreate: outer2");
                             if (JuryName1.equals("")) {
                                 YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
@@ -1043,8 +1012,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                             if (JuryName2.equals("")) {
                                 YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
                             }
-                        }
-                        else if (noOfJury.equals("3") && (juryName1.getCurrentTextColor() != (Color.GREEN) || juryName2.getCurrentTextColor() != (Color.GREEN) || juryName3.getCurrentTextColor() != (Color.GREEN))) {
+                        } else if (noOfJury.equals("3") && (juryName1.getCurrentTextColor() != (Color.GREEN) || juryName2.getCurrentTextColor() != (Color.GREEN) || juryName3.getCurrentTextColor() != (Color.GREEN))) {
                             Log.d(TAG, "onCreate: outer3");
                             if (JuryName1.equals("")) {
                                 YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
@@ -1055,8 +1023,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                             if (JuryName3.equals("")) {
                                 YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
                             }
-                        }
-                        else {
+                        } else {
                             if (date3.equals("") || date4.equals("")) {
                                 if (date3.equals("")) {
                                     YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateVB);
@@ -1078,66 +1045,59 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                         }
                     }
                 }
-            }
-            else if (layoutActive == 3) {
+            } else if (layoutActive == 3) {
 
                 if (mLimitedNoOfParticipants.getVisibility() == View.VISIBLE)
                     noOfParticipants = mLimitedNoOfParticipants.getText().toString();
                 if (mEntryFees.getVisibility() == View.VISIBLE)
                     fees = mEntryFees.getText().toString();
-                extraRule=extraRules.getText().toString();
+                extraRule = extraRules.getText().toString();
                 query = extraQuery.getText().toString();
 
-                Log.d(TAG, "onCreate: "+prizeFirst);
-                Log.d(TAG, "onCreate: "+prizeSecond);
-                Log.d(TAG, "onCreate: "+prizeThird);
-                if (toggleLimitedNoOfParticipants.isChecked() && noOfParticipants.equals(""))
-                {
+                Log.d(TAG, "onCreate: " + prizeFirst);
+                Log.d(TAG, "onCreate: " + prizeSecond);
+                Log.d(TAG, "onCreate: " + prizeThird);
+                if (toggleLimitedNoOfParticipants.isChecked() && noOfParticipants.equals("")) {
                     YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mLimitedNoOfParticipants);
                     mLimitedNoOfParticipants.setError("Please enter a number");
                     mLimitedNoOfParticipants.requestFocus();
-                }
-                else if (toggleEntryFees.isChecked() && fees.equals(""))
-                {
+                } else if (toggleEntryFees.isChecked() && fees.equals("")) {
                     YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mEntryFees);
                     mEntryFees.setError("Please enter a number");
                     mEntryFees.requestFocus();
-                }
-                else if (togglePrize.isChecked() && (prizeFirst.equals("") || prizeSecond.equals("") || prizeThird.equals("") || prizeFirst.equals("0") || prizeSecond.equals("0") || prizeThird.equals("0") || Integer.parseInt(prizeSecond) >= Integer.parseInt(prizeFirst) || Integer.parseInt(prizeThird) >= Integer.parseInt(prizeSecond)))
-                {
-                        if (prizeFirst.equals("") || prizeFirst.equals("0")) {
-                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(firstPrize);
-                            firstPrize.setError("Please enter some prize");
-                            firstPrize.requestFocus();
-                        }
-                        if (prizeSecond.equals("") || prizeSecond.equals("0")) {
-                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(secondPrize);
-                            secondPrize.setError("Please enter some prize");
-                            secondPrize.requestFocus();
-                        }
-                        if (prizeThird.equals("") || prizeThird.equals("0")) {
-                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(thirdPrize);
-                            thirdPrize.setError("Please enter some prize");
-                            thirdPrize.requestFocus();
-                        }
-                        if (Integer.parseInt(prizeSecond) >= Integer.parseInt(prizeFirst)) {
-                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(firstPrize);
-                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(secondPrize);
-                            firstPrize.setError("2nd prize cannot be more than 1st");
-                            secondPrize.setError("2nd prize cannot be more than 1st");
-                            firstPrize.requestFocus();
-                            secondPrize.requestFocus();
-                        }
-                        if (Integer.parseInt(prizeThird) >= Integer.parseInt(prizeSecond)) {
-                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(secondPrize);
-                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(thirdPrize);
-                            secondPrize.setError("3nd prize cannot be more than 2nd");
-                            thirdPrize.setError("3rd prize cannot be more than 2nd");
-                            secondPrize.requestFocus();
-                            thirdPrize.requestFocus();
-                        }
-                }
-                else
+                } else if (togglePrize.isChecked() && (prizeFirst.equals("") || prizeSecond.equals("") || prizeThird.equals("") || prizeFirst.equals("0") || prizeSecond.equals("0") || prizeThird.equals("0") || Integer.parseInt(prizeSecond) >= Integer.parseInt(prizeFirst) || Integer.parseInt(prizeThird) >= Integer.parseInt(prizeSecond))) {
+                    if (prizeFirst.equals("") || prizeFirst.equals("0")) {
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(firstPrize);
+                        firstPrize.setError("Please enter some prize");
+                        firstPrize.requestFocus();
+                    }
+                    if (prizeSecond.equals("") || prizeSecond.equals("0")) {
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(secondPrize);
+                        secondPrize.setError("Please enter some prize");
+                        secondPrize.requestFocus();
+                    }
+                    if (prizeThird.equals("") || prizeThird.equals("0")) {
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(thirdPrize);
+                        thirdPrize.setError("Please enter some prize");
+                        thirdPrize.requestFocus();
+                    }
+                    if (Integer.parseInt(prizeSecond) >= Integer.parseInt(prizeFirst)) {
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(firstPrize);
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(secondPrize);
+                        firstPrize.setError("2nd prize cannot be more than 1st");
+                        secondPrize.setError("2nd prize cannot be more than 1st");
+                        firstPrize.requestFocus();
+                        secondPrize.requestFocus();
+                    }
+                    if (Integer.parseInt(prizeThird) >= Integer.parseInt(prizeSecond)) {
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(secondPrize);
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(thirdPrize);
+                        secondPrize.setError("3nd prize cannot be more than 2nd");
+                        thirdPrize.setError("3rd prize cannot be more than 2nd");
+                        secondPrize.requestFocus();
+                        thirdPrize.requestFocus();
+                    }
+                } else
                     submit();
             }
         });
@@ -1192,6 +1152,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                 })
                 .show();
     }
+
     private void updateTotal() {
         try {
             int a = 0;
@@ -1203,7 +1164,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                 b = Integer.parseInt(secondPrize.getText().toString());
             if (!thirdPrize.getText().toString().equals(""))
                 c = Integer.parseInt(thirdPrize.getText().toString());
-            prizeTotal= String.valueOf(a + b + c);
+            prizeTotal = String.valueOf(a + b + c);
             Log.d(TAG, "afterTextChanged: a" + a);
             Log.d(TAG, "afterTextChanged: b" + b);
             Log.d(TAG, "afterTextChanged: c" + c);
@@ -1311,7 +1272,6 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         String imgPath = "";
         if (data != null && data.getData() != null && resultCode == RESULT_OK) {
-            boolean isImageFromGoogleDrive = false;
             Uri uri = data.getData();
             if (isKitKat && DocumentsContract.isDocumentUri(form.this, uri)) {
                 if ("com.android.externalstorage.documents".equals(uri.getAuthority())) {
@@ -1334,31 +1294,25 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                             }
                         } else {
                             String rawUserId;
-                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                                rawUserId = "";
-                            } else {
-                                String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-                                String[] folders = DIR_SEPORATOR.split(path);
-                                String lastFolder = folders[folders.length - 1];
-                                boolean isDigit = false;
-                                try {
-                                    Integer.valueOf(lastFolder);
-                                    isDigit = true;
-                                } catch (NumberFormatException ignored) {
-                                }
-                                rawUserId = isDigit ? lastFolder : "";
+                            String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+                            String[] folders = DIR_SEPORATOR.split(path);
+                            String lastFolder = folders[folders.length - 1];
+                            boolean isDigit = false;
+                            try {
+                                Integer.valueOf(lastFolder);
+                                isDigit = true;
+                            } catch (NumberFormatException ex) {
+                                Log.e(TAG, "onActivityResult: " + ex.getMessage());
                             }
-                            if (TextUtils.isEmpty(rawUserId)) {
-                                rv.add(rawEmulatedStorageTarget);
-                            } else {
-                                rv.add(rawEmulatedStorageTarget + File.separator + rawUserId);
-                            }
+                            rawUserId = isDigit ? lastFolder : "";
+                            if (TextUtils.isEmpty(rawUserId)) rv.add(rawEmulatedStorageTarget);
+                            else rv.add(rawEmulatedStorageTarget + File.separator + rawUserId);
                         }
                         if (!TextUtils.isEmpty(rawSecondaryStoragesStr)) {
                             String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
                             Collections.addAll(rv, rawSecondaryStorages);
                         }
-                        String[] temp = rv.toArray(new String[rv.size()]);
+                        String[] temp = rv.toArray(new String[0]);
                         for (String s : temp) {
                             File tempf = new File(s + "/" + split[1]);
                             if (tempf.exists()) {
@@ -1407,12 +1361,9 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                             imgPath = cursor.getString(column_index);
                         }
                     } finally {
-                        if (cursor != null)
-                            cursor.close();
+                        if (cursor != null) cursor.close();
                     }
-                } else if ("com.google.android.apps.docs.storage".equals(uri.getAuthority())) {
-                    isImageFromGoogleDrive = true;
-                }
+                } else uri.getAuthority();
             } else if ("content".equalsIgnoreCase(uri.getScheme())) {
                 Cursor cursor = null;
                 String column = "_data";
@@ -1441,40 +1392,21 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
         if (selectedImage == 1) {
             posterLink = imgurl;
             Log.d(TAG, "setImage: posterLink" + posterLink);
+            String mAppend = "file:/";
             Log.d(TAG, "setImage: mAppend" + mAppend);
-            if(!posterLink.equals("")) {
-                selectPoster.setVisibility(View.GONE);
+            if (!posterLink.equals("")) {
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)selectPoster.getLayoutParams();
+                params.addRule(RelativeLayout.ALIGN_PARENT_END,RelativeLayout.TRUE);
+                params.addRule(RelativeLayout.ALIGN_PARENT_TOP,RelativeLayout.TRUE);
+                selectPoster.setLayoutParams(params);
+                selectPoster.setAlpha(0.5f);
+                ((TextView) findViewById(R.id.selectPosterText)).setText("Change Poster");
+                selectPoster.setBackgroundTintList(mContext.getResources().getColorStateList(R.color.black));
                 poster.setVisibility(View.VISIBLE);
                 poster.setBackgroundColor(Color.rgb(0, 0, 0));
                 UniversalImageLoader.setImage(posterLink, poster, null, mAppend);
             }
         }
-    }
-
-    private void setupFirebaseAuth() {
-        Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference();
-        mAuth = FirebaseAuth.getInstance();
-        mAuthListener = firebaseAuth -> {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user != null) {
-                Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
-            } else {
-                Log.d(TAG, "onAuthStateChanged:signed_out");
-            }
-        };
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     public void verifyPermission(String[] permissions) {
@@ -1493,6 +1425,40 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
 
     private void usernameExist(EditText juryname) {
         juryname.setTextColor(Color.GREEN);
+    }
+    private void setupFirebaseAuth() {
+        Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = firebaseAuth -> {
+            mUser = firebaseAuth.getCurrentUser();
+            if (mUser == null) {
+                Log.d(TAG, "onAuthStateChanged:signed_out");
+                Log.d(TAG, "onAuthStateChanged: navigating to login");
+                SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                new android.app.AlertDialog.Builder(mContext)
+                        .setTitle("No user logon found")
+                        .setMessage("We will be logging u out. \n Please try to log in again")
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            Intent intent = new Intent(mContext, login.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            settings.edit().clear().apply();
+                            startActivity(intent);
+                        })
+                        .show();
+            } else Log.d(TAG, "onAuthStateChanged: signed_in:" + mUser.getUid());
+        };
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
     }
 
 }

@@ -281,7 +281,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
         holder.type = photo.getType();
         Log.d(TAG, "onBindViewHolder: lll"+photo);
-        if (holder.type.equals("photo")) {
+        if (holder.type!= null &&  holder.type.equals("photo")) {
             holder.image.setVisibility(View.VISIBLE);
             holder.play2.setVisibility(View.GONE);
             ImageLoader imageloader = ImageLoader.getInstance();

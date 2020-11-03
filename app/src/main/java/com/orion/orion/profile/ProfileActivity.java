@@ -77,8 +77,6 @@ public class ProfileActivity extends AppCompatActivity {
     public static final int VERIFY_PERMISSION_REQUEST = 1;
     private static final String TAG = "ProfileFragment";
     private static final int ACTIVITY_NUM = 4;
-    private static final int NUM_GRID_COLUMNS = 3;
-    private static final int PICK_IMAGE = 100;
     FirebaseUser user;
     int rank = 1;
     private Context mContext;
@@ -86,7 +84,7 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
 
-    ArrayList<Photo> imgURLsList;
+    private ArrayList<Photo> imgURLsList;
     Uri imageUri;
     boolean isKitKat;
     //    Profile Widgets
@@ -129,7 +127,6 @@ public class ProfileActivity extends AppCompatActivity {
     //firebase
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    @Nullable
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -224,7 +221,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
         mTwitterLink.setOnClickListener(v -> {
-            Intent intent = null;
+            Intent intent;
             try {
                 this.getPackageManager().getPackageInfo("com.twitter.android", 0);
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=" + twitterProfile));
@@ -402,6 +399,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void checkUpdate() {
         Log.d(TAG, "checkUpdate: started");
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        assert user != null;
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_user_photos)).child(user.getUid());
 
         Log.d(TAG, "checkUpdate: user" + user.getUid());
@@ -507,10 +505,11 @@ public class ProfileActivity extends AppCompatActivity {
                             }
                         }
                         if (!TextUtils.isEmpty(rawSecondaryStoragesStr)) {
+                            assert rawSecondaryStoragesStr != null;
                             String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
                             Collections.addAll(rv, rawSecondaryStorages);
                         }
-                        String[] temp = rv.toArray(new String[rv.size()]);
+                        String[] temp = rv.toArray(new String[0]);
                         for (String s : temp) {
                             File tempf = new File(s + "/" + split[1]);
                             if (tempf.exists()) {
@@ -523,7 +522,7 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
                     String id = DocumentsContract.getDocumentId(uri);
-                    Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                    Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
                     Cursor cursor = null;
                     String column = "_data";
                     String[] projection = {column};
@@ -560,6 +559,7 @@ public class ProfileActivity extends AppCompatActivity {
                     String[] projection = {column};
 
                     try {
+                        assert contentUri != null;
                         cursor = this.getContentResolver().query(contentUri, projection, selection, selectionArgs, null);
                         if (cursor != null && cursor.moveToFirst()) {
                             int column_index = cursor.getColumnIndexOrThrow(column);

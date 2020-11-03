@@ -38,8 +38,6 @@ import com.orion.orion.models.Notification;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
-
-
 public class fragment_createContest extends Fragment {
 
     private static final String TAG = "JOINED FRAGMENT";
@@ -48,7 +46,6 @@ public class fragment_createContest extends Fragment {
     private ArrayList<CreateForm> contestlist;
     private ArrayList<CreateForm> paginatedContestlist;
     private int mResults;
-    private FirebaseAuth fAuth;
     private AdapterContestCreated contestCreated;
 
     SwipeRefreshLayout contestRefresh;
@@ -71,7 +68,6 @@ public class fragment_createContest extends Fragment {
 
         contestRefresh=view.findViewById(R.id.contest_refresh);
 
-
 //          Initialize SharedPreference variables
         sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
@@ -80,7 +76,6 @@ public class fragment_createContest extends Fragment {
             Intent i = new Intent(getActivity(), form.class);
             startActivity(i);
         });
-
 
         createdContestRv = view.findViewById(R.id.recycler_view3);
         createdContestRv.setHasFixedSize(true);
@@ -110,7 +105,7 @@ public class fragment_createContest extends Fragment {
         });
 
 
-        fAuth = FirebaseAuth.getInstance();
+        FirebaseAuth fAuth = FirebaseAuth.getInstance();
         getCreateListFromSP();
         contestRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -240,16 +235,10 @@ public class fragment_createContest extends Fragment {
 
                     }
                 });
-
-
-
-
-
     }
 
     private void checkNewContesUpdate() {
         DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
-
         refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(getString(R.string.field_created_contest))
                 .orderByKey()
@@ -259,10 +248,8 @@ public class fragment_createContest extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot snapshot1:snapshot.getChildren()){
                             if (contestlist.get(0).getContestkey().equals(snapshot1.getKey())){
-
                                 displaycontest();
                             }else{
-
                                 updateCreateList();
                             }
                         }
