@@ -489,7 +489,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                 juryName1.setTextColor(Color.BLACK);
                 String username = juryName1.getText().toString();
                 DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-                Query query = db.child(getString(R.string.dbname_users)).orderByChild(getString(R.string.field_username)).equalTo(username);
+                Query query = db.child(getString(R.string.dbname_username)).child(username);
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -526,7 +526,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                 juryName2.setTextColor(Color.BLACK);
                 String username = juryName2.getText().toString();
                 DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-                Query query = db.child(getString(R.string.dbname_users)).orderByChild(getString(R.string.field_username)).equalTo(username);
+                Query query = db.child(getString(R.string.dbname_username)).child(username);
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -563,7 +563,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                 juryName3.setTextColor(Color.BLACK);
                 String username = juryName3.getText().toString();
                 DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-                Query query = db.child(getString(R.string.dbname_users)).orderByChild(getString(R.string.field_username)).equalTo(username);
+                Query query = db.child(getString(R.string.dbname_username)).child(username);
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

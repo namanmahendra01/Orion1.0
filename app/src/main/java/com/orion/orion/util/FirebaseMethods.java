@@ -568,16 +568,14 @@ public class FirebaseMethods {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (!snapshot.child("jname_1").getValue().toString().equals("")){
-                            ref.child(mContext.getString(R.string.dbname_users))
-                                    .orderByChild(mContext.getString(R.string.field_username))
-                                    .equalTo(snapshot.child("jname_1").getValue().toString())
+                            ref.child(mContext.getString(R.string.dbname_username))
+                                    .child(snapshot.child("jname_1").getValue().toString())
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if (snapshot.exists()){
-                                                for (DataSnapshot snapshot1:snapshot.getChildren()){
                                                     DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
-                                                            .child(snapshot1.getKey())
+                                                            .child(snapshot.getKey())
                                                             .child("judged");
 
                                                           ref2.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -599,7 +597,7 @@ public class FirebaseMethods {
                                                             });
 
                                                 }
-                                            }
+
 
                                         }
 
@@ -610,16 +608,14 @@ public class FirebaseMethods {
                                     });
                         }
                         if (!snapshot.child("jname_2").getValue().toString().equals("")){
-                            ref.child(mContext.getString(R.string.dbname_users))
-                                    .orderByChild(mContext.getString(R.string.field_username))
-                                    .equalTo(snapshot.child("jname_2").getValue().toString())
+                            ref.child(mContext.getString(R.string.dbname_username))
+                                    .child(snapshot.child("jname_2").getValue().toString())
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if (snapshot.exists()){
-                                                for (DataSnapshot snapshot1:snapshot.getChildren()){
                                                     DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
-                                                            .child(snapshot1.getKey())
+                                                            .child(snapshot.getKey())
                                                             .child("judged");
 
                                                     ref2.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -641,7 +637,7 @@ public class FirebaseMethods {
                                                     });
 
                                                 }
-                                            }
+
                                         }
 
                                         @Override
@@ -651,16 +647,14 @@ public class FirebaseMethods {
                                     });
                         }
                         if (!snapshot.child("jname_3").getValue().toString().equals("")){
-                            ref.child(mContext.getString(R.string.dbname_users))
-                                    .orderByChild(mContext.getString(R.string.field_username))
-                                    .equalTo(snapshot.child("jname_3").getValue().toString())
+                            ref.child(mContext.getString(R.string.dbname_username))
+                                    .child(snapshot.child("jname_3").getValue().toString())
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if (snapshot.exists()){
-                                                for (DataSnapshot snapshot1:snapshot.getChildren()){
                                                     DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
-                                                            .child(snapshot1.getKey())
+                                                            .child(snapshot.getKey())
                                                             .child("judged");
 
                                                     ref2.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -682,7 +676,7 @@ public class FirebaseMethods {
                                                     });
 
                                                 }
-                                            }
+
                                         }
 
                                         @Override

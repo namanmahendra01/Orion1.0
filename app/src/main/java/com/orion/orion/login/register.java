@@ -71,7 +71,6 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
     private TextView mPleasewait;
     private Button btnregister;
     private TextView linkLogin;
-    private ImageView showPasswordToggle;
     private FusedLocationProviderClient fusedLocationClient;
     //variables
     private String username;
@@ -121,7 +120,6 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
         linkLogin = findViewById(R.id.link_login);
         mContext = register.this;
         mProgressBar.setVisibility(View.GONE);
-        showPasswordToggle = findViewById(R.id.show_pass_btn);
         domain = "";
 
     }
@@ -133,6 +131,14 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
             YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mUsername);
             Toast.makeText(mContext, "Empty username field", Toast.LENGTH_SHORT).show();
             mUsername.setError("Please enter a username");
+            mUsername.requestFocus();
+            return false;
+        }
+
+        if (username.length()>15) {
+            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mUsername);
+            Toast.makeText(mContext,"Username should be less than 15 characters", Toast.LENGTH_SHORT).show();
+            mUsername.setError("Username should be less than 15 characters");
             mUsername.requestFocus();
             return false;
         }
@@ -212,15 +218,7 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
             bottomSheetDomain.show(getSupportFragmentManager(), "Domain Selection");
         });
 
-        showPasswordToggle.setOnClickListener(v -> {
-            if (mPassword.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())) {
-                showPasswordToggle.setImageResource(R.drawable.ic_visibility_on);
-                mPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-            } else {
-                showPasswordToggle.setImageResource(R.drawable.ic_visibility_off);
-                mPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            }
-        });
+
 
         //registration button
         btnregister.setOnClickListener(v -> {
@@ -234,7 +232,6 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
                     if (password.equals(confirmPassword)) {
                         mProgressBar.setVisibility(View.VISIBLE);
                         checkifuserexist(username);
-//                        RegisterNewEmail(email, password,mProgressBar,mEmail,mUsername,mPassword,mConfirmPassword,domainSelection);
                     } else {
                         YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mPassword);
                         YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mConfirmPassword);
@@ -292,27 +289,34 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
     }
 
     private void checkifuserexist(final String username) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbname_users)).orderByChild(getString(R.string.field_username)).equalTo(username);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()) {
-                    RegisterNewEmail(email, password, mProgressBar, mEmail, mUsername, mPassword, mConfirmPassword, domainSelection);
+        if (username.contains(" ")){
+            Toast.makeText(mContext, "No space should be there.", Toast.LENGTH_SHORT).show();
+            register.this.mUsername.setError("No space should be there.");
+            register.this.mProgressBar.setVisibility(View.GONE);
+        }else{
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            Query query = reference.child(getString(R.string.dbname_username)).child(username);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (!dataSnapshot.exists()) {
+                        RegisterNewEmail(email, password, mProgressBar, mEmail, mUsername, mPassword, mConfirmPassword, domainSelection);
 
-                } else {
-                    Toast.makeText(mContext, "please try different username", Toast.LENGTH_SHORT).show();
-                    register.this.mUsername.setError("username already exist");
-                    register.this.mProgressBar.setVisibility(View.GONE);
+                    } else {
+                        Toast.makeText(mContext, "please try different username", Toast.LENGTH_SHORT).show();
+                        register.this.mUsername.setError("username already exist");
+                        register.this.mProgressBar.setVisibility(View.GONE);
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
-            }
+            });
+        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     public void RegisterNewEmail(final String email, String password, ProgressBar mProgressBar, EditText mEmail, EditText mUsername, EditText mPassword, EditText mConfirmPassword, TextView domainSelection) {
@@ -378,70 +382,81 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
 
     public void addNewUser(String email, String username, String domain) {
         users user = new users(userID, email, StringManipilation.condenseUsername(username), "", "", "", domain,"false","false","false");
+      String username2=StringManipilation.condenseUsername(username);
         myRef.child(mContext.getString(R.string.dbname_users))
                 .child(userID)
                 .setValue(user)
                 .addOnSuccessListener(aVoid -> {
-                    Leaderboard leaderboard = new Leaderboard();
-                    leaderboard.setUsername(StringManipilation.condenseUsername(username));
-                    leaderboard.setDomain(domain);
-                    leaderboard.setProfile_photo("");
-                    myRef.child(mContext.getString(R.string.dbname_leaderboard))
-                            .child(userID)
-                            .setValue(leaderboard)
+
+                    myRef.child("username")
+                            .child(username2)
+                            .setValue(userID)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
-                                        @Override
-                                        public void onTimeReceived(String currentTimeStamp) {
-                                            leaderboard.setLast_updated(currentTimeStamp);
-                                            //domain parameter left
-                                            myRef.child(mContext.getString(R.string.dbname_leaderboard))
-                                                    .child(userID)
-                                                    .setValue(leaderboard)
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            sendverification();
-                                                        }
-                                                    }).addOnFailureListener(new OnFailureListener() {
+                                    Leaderboard leaderboard = new Leaderboard();
+                                    leaderboard.setUsername(StringManipilation.condenseUsername(username));
+                                    leaderboard.setDomain(domain);
+                                    leaderboard.setProfile_photo("");
+                                    myRef.child(mContext.getString(R.string.dbname_leaderboard))
+                                            .child(userID)
+                                            .setValue(leaderboard)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
-
-                                                }
-                                            });
-
-                                        }
-
-                                        @Override
-                                        public void onError(Exception ex) {
-                                            myRef.child(mContext.getString(R.string.dbname_leaderboard))
-                                                    .child(userID)
-                                                    .setValue(leaderboard)
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                public void onSuccess(Void aVoid) {
+                                                    SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
                                                         @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            sendverification();
-                                                        }
-                                                    }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
+                                                        public void onTimeReceived(String currentTimeStamp) {
+                                                            leaderboard.setLast_updated(currentTimeStamp);
+                                                            //domain parameter left
+                                                            myRef.child(mContext.getString(R.string.dbname_leaderboard))
+                                                                    .child(userID)
+                                                                    .setValue(leaderboard)
+                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                        @Override
+                                                                        public void onSuccess(Void aVoid) {
+                                                                            sendverification();
+                                                                        }
+                                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
 
+                                                                }
+                                                            });
+
+                                                        }
+
+                                                        @Override
+                                                        public void onError(Exception ex) {
+                                                            myRef.child(mContext.getString(R.string.dbname_leaderboard))
+                                                                    .child(userID)
+                                                                    .setValue(leaderboard)
+                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                        @Override
+                                                                        public void onSuccess(Void aVoid) {
+                                                                            sendverification();
+                                                                        }
+                                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
+
+                                                                }
+                                                            });
+                                                        }
+                                                    });
                                                 }
-                                            });
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
+
                                         }
                                     });
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
 
-                        }
-                    });
+                                }
+                            });
 
 
                 }).addOnFailureListener(new OnFailureListener() {

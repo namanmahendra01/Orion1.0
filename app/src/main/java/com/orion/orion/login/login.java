@@ -220,28 +220,34 @@ public class login extends AppCompatActivity {
                             (dialog, id) -> {
                                 // get user input and set it to result
                                 // edit text
-                                FirebaseAuth.getInstance().setLanguageCode("en"); // Set to English
-                                FirebaseAuth.getInstance().getInstance().sendPasswordResetEmail(String.valueOf(userInput.getText()))
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
+                                if (userInput.getText()!=null && userInput.getText().length()!=0){
+                                    FirebaseAuth.getInstance().setLanguageCode("en"); // Set to English
+                                    FirebaseAuth.getInstance().getInstance().sendPasswordResetEmail(String.valueOf(userInput.getText()))
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
 
-                                            }
-                                        })
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Toast.makeText(mContext, "We have sent and email to " + userInput.getText() + " please confirm to reset password", Toast.LENGTH_LONG).show();
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(mContext, "Reset password request is failed with an exception", Toast.LENGTH_LONG).show();
+                                                }
+                                            })
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Toast.makeText(mContext, "We have sent and email to " + userInput.getText() + " please confirm to reset password", Toast.LENGTH_LONG).show();
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(mContext, "Reset password request is failed", Toast.LENGTH_LONG).show();
 
 
-                                            }
-                                        });
+                                                }
+                                            });
+                                }else{
+                                    Toast.makeText(mContext, "Please enter Something!", Toast.LENGTH_LONG).show();
+
+                                }
+
 
                             });
 

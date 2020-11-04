@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootView"
     android:layout_width="match_parent"
@@ -9,14 +10,13 @@
 
     <ImageView
         android:id="@+id/appIcon"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_marginTop="80dp"
         android:layout_centerHorizontal="true"
         android:contentDescription="@null"
-        android:src="@drawable/o"
-        android:tint="@color/primaryTop"
-        />
+        android:src="@drawable/orion_login"
+         />
 
     <ProgressBar
         android:id="@+id/loginrequestloadingprogressbar"
@@ -55,11 +55,11 @@
                 android:layout_marginTop="15dp"
                 android:inputType="textFilter"
                 android:hint="E-mail"
-                android:background="@drawable/white_round_button"
+                android:background="@drawable/rectangular_border"
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890.@"
                 android:textColorHint="@color/grey"
                 android:textColor="@color/black"
-                android:backgroundTint="@color/white"
+                android:padding="10dp"
                 android:textSize="18sp"
                 android:imeOptions="actionNext"/>
 
@@ -67,21 +67,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginTop="15dp"
+
                 android:weightSum="10">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/input_password"
                     android:layout_width="match_parent"
                     android:layout_weight="1"
+                    android:background="@drawable/rectangular_border"
+
                     android:layout_height="60dp"
-                    android:layout_marginTop="15dp"
+                    android:padding="10dp"
                     android:inputType="textPassword"
                     android:hint="Password"
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890{}()[];:#^,.?!_`@$%\/=+-*'"
                     android:maxLength="16"
                     android:textColorHint="@color/grey"
                     android:textColor="@color/black"
-                    android:backgroundTint="@color/white"
                     android:textSize="18sp"
                     android:imeOptions="actionDone"/>
                 <ImageView
@@ -103,11 +106,13 @@
                 android:layout_alignParentBottom="true"
                 android:layout_below="@+id/input_password"
                 android:text="Login"
+
                 android:id="@+id/btn_login"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
+                android:textStyle="bold"
 
-                android:textColor="@color/primaryBackground"
+                android:textColor="@color/scheme8"
                 android:textSize="16sp"
                 android:background="@drawable/white_round_button"/>
             <LinearLayout
@@ -135,7 +140,7 @@
                     android:layout_below="@+id/btn_login"
                     android:maxLines="2"
                     android:text=" Click here"
-                    android:textColor="@color/primaryTop"
+                    android:textColor="@color/scheme8"
                     android:textSize="16sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -170,7 +175,7 @@
                 android:maxLines="2"
                 android:minLines="2"
                 android:text= " Sign up here"
-                android:textColor="@color/primaryTop"
+                android:textColor="@color/scheme8"
                 android:layout_toRightOf="@+id/link_signup1"
                 android:textSize="16sp"
                 android:gravity="bottom|center_horizontal"

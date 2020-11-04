@@ -354,7 +354,8 @@ public class EditProfile extends AppCompatActivity {
 
     private void checkifuserexist(final String username) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbname_users)).orderByChild(getString(R.string.field_username)).equalTo(username);
+        Query query = reference.child(getString(R.string.dbname_users))
+                .child(username);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

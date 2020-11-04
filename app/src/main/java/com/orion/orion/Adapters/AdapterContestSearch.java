@@ -67,10 +67,9 @@ import static com.android.volley.VolleyLog.TAG;
 
 public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSearch.ViewHolder> {
     private String mAppend = "";
-    String voteS = "0";
-    String voteE = "0";
-    String vote = "No";
-    String reg = "No";
+
+    String timestamp="";
+
 
     private String juryusername1 = "", juryusername2 = "", juryusername3 = "";
 
@@ -254,14 +253,21 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
 
                     }
                 });
+        holder.resultBtn.setVisibility(View.GONE);
+        holder.participateBtn.setVisibility(View.GONE);
+        holder.regSoonBtn.setVisibility(View.GONE);
+        holder.voteBtn.setVisibility(View.GONE);
+        holder.contestBtn.setVisibility(View.GONE);
+        holder.limitBtn.setVisibility(View.GONE);
 
         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
             @Override
             public void onTimeReceived(String rawDate) {
                 // rawDate -> 2019-11-05T17:51:01+0530
 
-//                *************************************************************************
+                //*************************************************************************
                 String currentTime = StringManipilation.getTime(rawDate);
+                Log.d(TAG, "onTimeReceived: current time" + currentTime);
                 java.text.DateFormat formatter1 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date1 = null;
                 try {
@@ -269,9 +275,10 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                String timestamp = String.valueOf(date1.getTime());
+
+                timestamp = String.valueOf(date1.getTime());
+
                 Log.d(TAG, "onTimeReceived: 1  " + timestamp);
-                //*************************************************************************
 
 
                 String regStart = mcontest.getRegBegin();
@@ -283,6 +290,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                     e.printStackTrace();
                 }
                 String regS = String.valueOf(date2.getTime());
+
                 //*************************************************************************
 
                 String voteStart = mcontest.getVoteBegin();
@@ -295,10 +303,9 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    voteS = String.valueOf(date3.getTime());
 
+                    holder.voteS = String.valueOf(date3.getTime());
                 }
-
 
                 //*************************************************************************
 
@@ -311,9 +318,9 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    voteE = String.valueOf(date4.getTime());
-                }
 
+                    holder.voteE = String.valueOf(date4.getTime());
+                }
 
 
                 //*************************************************************************
@@ -328,10 +335,9 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                 }
                 String regE = String.valueOf(date5.getTime());
 
+                Log.d(TAG, "onTimeReceived: rege  " + regE);
+
                 //*************************************************************************
-
-
-//                     run the on new UI thread
 
                 Thread thread = new Thread() {
                     @Override
@@ -345,34 +351,66 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                                     public void run() {
 
 
-//                   compare all dates
+//                compare all dates
 
                                         Log.d(TAG, "run: timeeeee" + timestamp);
 
-                                        if (Long.parseLong(regS) > Long.parseLong(timestamp)) {
-                                            holder.regSoonBtn.setVisibility(View.VISIBLE);
-                                        }
-                                        if (Long.parseLong(regS) == Long.parseLong(timestamp)) {
-                                            holder.participateBtn.setVisibility(View.VISIBLE);
-                                            reg = "yes";
-                                            holder.regSoonBtn.setVisibility(View.GONE);
-                                        }
-                                        if (Long.parseLong(voteS) == Long.parseLong(timestamp)) {
-                                            holder.voteBtn.setVisibility(View.VISIBLE);
-                                            vote = "yes";
-                                        }
-                                        if (Long.parseLong(regE) == Long.parseLong(timestamp)) {
-                                            holder.participateBtn.setVisibility(View.GONE);
-                                            reg = "No";
-                                        }
-                                        if (Long.parseLong(voteE) == Long.parseLong(timestamp)) {
-                                            holder.voteBtn.setVisibility(View.GONE);
-                                            vote = "No";
-                                        }
-                                        if (Long.parseLong(voteE) <= Long.parseLong(timestamp) && Long.parseLong(regE) <= Long.parseLong(timestamp)) {
-                                            holder.contestBtn.setVisibility(View.VISIBLE);
-                                        }
+                                        if (mcontest.getResult()) {
+                                            holder.resultBtn.setVisibility(View.VISIBLE);
 
+                                        } else {
+
+                                            if (Long.parseLong(regS) > Long.parseLong(timestamp)) {
+                                                holder.regSoonBtn.setVisibility(View.VISIBLE);
+                                            }
+                                            if (Long.parseLong(regS) <= Long.parseLong(timestamp) && Long.parseLong(regE) >= Long.parseLong(timestamp)) {
+                                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_participantList));
+                                                ref.child(mcontest.getContestId())
+                                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                                long i = dataSnapshot.getChildrenCount();
+                                                                if (!mcontest.getMaxLimit().equals("Unlimited")) {
+                                                                    if (!String.valueOf(i).equals(mcontest.getMaxLimit())) {
+
+                                                                        holder.participateBtn.setVisibility(View.VISIBLE);
+                                                                        holder.reg = "yes";
+                                                                    } else {
+
+                                                                        holder.limitBtn.setVisibility(View.VISIBLE);
+                                                                        holder.reg = "No";
+                                                                    }
+
+                                                                } else {
+                                                                    holder.participateBtn.setVisibility(View.VISIBLE);
+                                                                    holder.reg = "yes";
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                            }
+                                                        });
+                                            }
+
+
+                                            if (!voteStart.equals("-")) {
+                                                if (Long.parseLong(holder.voteS) <= Long.parseLong(timestamp) && Long.parseLong(holder.voteE) >= Long.parseLong(timestamp)) {
+                                                    holder.voteBtn.setVisibility(View.VISIBLE);
+                                                    holder.vote = "yes";
+                                                }
+                                                if (Long.parseLong(holder.voteE) < Long.parseLong(timestamp) && Long.parseLong(regE) < Long.parseLong(timestamp)) {
+//
+                                                    holder.contestBtn.setVisibility(View.VISIBLE);
+                                                }
+                                            } else {
+                                                if (Long.parseLong(regE) < Long.parseLong(timestamp)) {
+//
+                                                    holder.contestBtn.setVisibility(View.VISIBLE);
+                                                }
+                                            }
+                                        }
 
                                     }
                                 });
@@ -387,16 +425,22 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                     ;
                 };
                 thread.start();
+                //*************************************************************************
+
 
                 Log.e(SNTPClient.TAG, rawDate);
 
             }
+
 
             @Override
             public void onError(Exception ex) {
                 Log.e(SNTPClient.TAG, ex.getMessage());
             }
         });
+
+
+
         holder.gp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -528,8 +572,8 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                     Intent i = new Intent(mContext.getApplicationContext(), ViewContestDetails.class);
                     i.putExtra("userId", mcontest.getUserId());
                     i.putExtra("contestId", mcontest.getContestId());
-                    i.putExtra("Vote",vote);
-                    i.putExtra("reg", reg);
+                    i.putExtra("Vote",holder.vote);
+                    i.putExtra("reg", holder.reg);
                     mContext.startActivity(i);
                 }
             }
@@ -682,11 +726,16 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
 
         private TextView domain, title, regEnd, entryFee, host, totalP, gp;
         private ImageView poster,option,progress,info;
-        private Button voteBtn, participateBtn, regSoonBtn, contestBtn, resultBtn;
+        private Button voteBtn, participateBtn, regSoonBtn, contestBtn, resultBtn,limitBtn;
         private String   username="",
          hostUsername="";
-
+        String vote="No";
+        String reg="No";
+        String voteS="";
+        String voteE="";
         Boolean ok = false;
+
+
         int p = 0;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -707,6 +756,8 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
             option = itemView.findViewById(R.id.optionC);
             progress = itemView.findViewById(R.id.progress);
             info = itemView.findViewById(R.id.info);
+            limitBtn = itemView.findViewById(R.id.limitBtn);
+
 
 
 

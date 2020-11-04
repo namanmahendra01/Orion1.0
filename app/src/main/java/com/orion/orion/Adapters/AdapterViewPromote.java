@@ -100,13 +100,19 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (!snapshot.getValue().toString().equals("")){
-                            myHolder.image=snapshot.getValue().toString();
-                        }else{
-                            myHolder.image=promote.getPhotoLink();
+                        if (snapshot.exists()) {
+                            if (!snapshot.getValue().toString().equals("")) {
+                                myHolder.image = snapshot.getValue().toString();
+                            } else {
+                                myHolder.image = promote.getPhotoLink();
 
-                        }
-                        setWidgets(promote.getUserid(),myHolder.image,myHolder.username,myHolder.post,myHolder.progress);
+                            }
+                            setWidgets(promote.getUserid(), myHolder.image, myHolder.username, myHolder.post, myHolder.progress);
+
+                        }else{
+
+
+                    }
 
                     }
 

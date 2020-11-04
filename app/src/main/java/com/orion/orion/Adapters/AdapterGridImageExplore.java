@@ -62,7 +62,10 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
         else
             UniversalImageLoader.setImage(photo.getImage_path(), holder.image, holder.progress, "");
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-        db.child(mContext.getString(R.string.dbname_users)).child(photo.getUser_id()).child(mContext.getString(R.string.field_username)).addListenerForSingleValueEvent(new ValueEventListener() {
+        db.child(mContext.getString(R.string.dbname_users))
+                .child(photo.getUser_id())
+                .child(mContext.getString(R.string.field_username))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 holder.username.setText("@" + snapshot.getValue().toString());

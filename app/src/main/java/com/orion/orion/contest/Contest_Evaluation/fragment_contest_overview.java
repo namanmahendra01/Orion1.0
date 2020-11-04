@@ -39,6 +39,7 @@ import com.google.gson.reflect.TypeToken;
 import com.orion.orion.Adapters.AdapterRankList;
 import com.orion.orion.Adapters.AdapterWinners;
 import com.orion.orion.R;
+import com.orion.orion.contest.ViewContestDetails;
 import com.orion.orion.contest.ranking;
 import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.ParticipantList;
@@ -319,22 +320,30 @@ public class fragment_contest_overview extends Fragment {
                                             TextView t1v = new TextView(getActivity());
                                             getUsername(finalParticipantList.getUserid(), t1v);
                                             t1v.setOnClickListener(v -> {
-                                                DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference();
-                                                Query userquery = ref1
-                                                        .child(getString(R.string.dbname_users))
-                                                        .orderByChild(getString(R.string.field_username))
-                                                        .equalTo(t1v.getText().toString());
+                                                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+
+                                                Query userquery = ref
+                                                        .child(getString(R.string.field_username))
+                                                        .child(t1v.getText().toString());
                                                 userquery.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
-                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
-                                                        for (DataSnapshot singleSnapshot : dataSnapshot1.getChildren()) {
-                                                            user = singleSnapshot.getValue(users.class);
-                                                            Intent i = new Intent(getActivity(), profile.class);
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                                        if (dataSnapshot.exists()) {
+                                                           String username = dataSnapshot.getValue().toString();
+
+                                                            Intent i = new Intent(getContext(), profile.class);
                                                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-                                                            i.putExtra(getString(R.string.intent_user), user);
+
+                                                            i.putExtra(getString(R.string.intent_user), username);
                                                             startActivity(i);
+
+
                                                         }
+
                                                     }
+
+
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError databaseError) {
                                                         Log.d(TAG, "Query Cancelled");
@@ -423,22 +432,29 @@ public class fragment_contest_overview extends Fragment {
                                             TextView t1v = new TextView(getActivity());
                                             getUsername(finalParticipantList.getUserid(), t1v);
                                             t1v.setOnClickListener(v -> {
-                                                DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference();
-                                                Query userquery = ref1
-                                                        .child(getString(R.string.dbname_users))
-                                                        .orderByChild(getString(R.string.field_username))
-                                                        .equalTo(t1v.getText().toString());
+                                                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+
+                                                Query userquery = ref
+                                                        .child(getString(R.string.field_username))
+                                                        .child(t1v.getText().toString());
                                                 userquery.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
-                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
-                                                        for (DataSnapshot singleSnapshot : dataSnapshot1.getChildren()) {
-                                                            user = singleSnapshot.getValue(users.class);
-                                                            Intent i = new Intent(getActivity(), profile.class);
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                                        if (dataSnapshot.exists()) {
+                                                            String username = dataSnapshot.getValue().toString();
+
+                                                            Intent i = new Intent(getContext(), profile.class);
                                                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-                                                            i.putExtra(getString(R.string.intent_user), user);
+
+                                                            i.putExtra(getString(R.string.intent_user), username);
                                                             startActivity(i);
+
+
                                                         }
+
                                                     }
+
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError databaseError) {

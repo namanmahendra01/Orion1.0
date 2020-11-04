@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1b1e3d"
+    android:background="@color/white"
     android:id="@+id/rootView">
 
     <ProgressBar
@@ -24,27 +24,37 @@
         android:orientation="vertical"
         android:paddingLeft="25dp"
         android:paddingRight="25dp">
-
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Get on Board"
-            android:textSize="36dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="25dp"
-            android:textColor="@color/white"
+            android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+           android:background="@drawable/orion_login"
+            android:id="@+id/logo"
+            android:textColor="@color/scheme8"
             android:gravity="center|start"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SIGN UP"
+            android:textSize="22sp"
+            android:layout_below="@+id/logo"
+            android:textColor="@color/black"/>
+        </RelativeLayout>
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:layout_marginTop="15dp"
             android:inputType="textFilter"
-            android:hint="Name"
+            android:background="@drawable/rectangular_border"
+            android:hint="Username"
             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890_."
             android:textColorHint="@color/grey"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:padding="10dp"
             android:id="@+id/username"
             android:textSize="18sp"
             android:imeOptions="actionNext">
@@ -52,14 +62,15 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:layout_marginTop="15dp"
-            android:hint="E-mail / Phone Number"
+            android:hint="E-mail"
+            android:padding="10dp"
+            android:background="@drawable/rectangular_border"
             android:inputType="textFilter"
             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890_.@"
             android:textColorHint="@color/grey"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
             android:id="@+id/input_email"
             android:textSize="18sp"
             android:imeOptions="actionNext"/>
@@ -74,53 +85,50 @@
                 android:id="@+id/input_password"
                 android:layout_width="match_parent"
                 android:layout_weight="1"
-                android:layout_height="60dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="15dp"
                 android:inputType="textPassword"
                 android:hint="Password"
+                android:padding="10dp"
+                android:background="@drawable/rectangular_border"
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890{}()[];:#^,.?!_`@$%\/=+-*'"
                 android:maxLength="16"
                 android:textColorHint="@color/grey"
-                android:textColor="@color/white"
-                android:backgroundTint="@color/white"
+                android:textColor="@color/black"
                 android:textSize="18sp"
                 android:imeOptions="actionDone"/>
-            <ImageView
-                android:id="@+id/show_pass_btn"
-                android:tag="0"
-                android:layout_width="match_parent"
-                android:layout_weight="9"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|bottom"
-                android:layout_marginBottom="15dp"
-                android:src="@drawable/ic_visibility_off"/>
+
 
         </LinearLayout>
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:layout_marginTop="15dp"
             android:hint="Confirm Password"
+            android:padding="10dp"
+            android:background="@drawable/rectangular_border"
             android:inputType="textPassword"
             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890{}()[];:#^,.?!_`@$%\/=+-*'"
             android:maxLength="16"
             android:textColorHint="@color/grey"
-            android:textColor="@color/white"
-            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
             android:id="@+id/confirm_password"
             android:textSize="18sp"
             android:imeOptions="actionDone"/>
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="15dp"
-            android:text="Select your Domain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="Select Your Domain"
+            android:background="@drawable/white_round_button"
             android:gravity="center"
-            android:textColor="@color/white"
+            android:textColor="@color/grey"
+            android:layout_gravity="center"
+            android:padding="10dp"
             android:id="@+id/domain_selection"
-            android:textSize="24sp"
+            android:textSize="18sp"
             />
 
     </LinearLayout>
@@ -139,12 +147,25 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
-            android:text="By creating an account, you agree to the Terms and Use and Privacy Policy"
+            android:text="By creating this account, you agree to our Terms and Use and Privacy Policy"
             android:minLines="2"
             android:gravity="center_horizontal"
             android:textColor="@color/grey"
             android:textSize="12sp"/>
 
+        <TextView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:text="See Terms and Policy"
+            android:id="@+id/policy"
+
+            android:minLines="1"
+            android:gravity="center_horizontal"
+            android:textColor="#03A9F4"
+            android:textSize="12sp"/>
         <androidx.appcompat.widget.AppCompatButton
             android:layout_width="match_parent"
             android:layout_height="60dp"
@@ -152,7 +173,8 @@
             android:layout_marginBottom="15dp"
             android:text="Register"
             android:id="@+id/btn_register"
-            android:textColor="#1b1e3d"
+            android:textColor="@color/scheme8"
+            android:textStyle="bold"
             android:textSize="16sp"
             android:background="@drawable/white_round_button">
 

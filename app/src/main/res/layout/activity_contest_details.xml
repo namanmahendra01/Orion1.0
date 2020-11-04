@@ -8,15 +8,6 @@
     tools:context=".contest.create.CheckContest">
 
     <RelativeLayout
-        android:id="@+id/reLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone">
-
-        <include layout="@layout/snippet_top_check_form_bar" />
-    </RelativeLayout>
-
-    <RelativeLayout
         android:id="@+id/reLayout1"
         android:layout_width="match_parent"
 
@@ -25,11 +16,9 @@
         <include layout="@layout/snippet_top_contest_bar" />
     </RelativeLayout>
 
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:layout_below="@id/reLayout1">
 
         <RelativeLayout
@@ -44,9 +33,9 @@
                 android:id="@+id/posterIv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
+                android:layout_centerHorizontal="true"
                 android:src="@drawable/load" />
 
             <LinearLayout
@@ -70,9 +59,9 @@
                     android:layout_height="wrap_content"
                     android:text="Naman"
                     android:textColor="@color/black"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                     />
             </LinearLayout>
-
             <LinearLayout
                 android:id="@+id/createdBy"
                 android:layout_width="match_parent"
@@ -93,7 +82,8 @@
                     android:layout_height="wrap_content"
                     android:text="Naman"
                     android:textColor="@color/black"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -136,7 +126,8 @@
                     android:layout_weight="1"
                     android:text="1st prize:"
                     android:textColor="@color/black"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                     />
 
                 <TextView
                     android:id="@+id/p1Tv"
@@ -146,7 +137,6 @@
                     android:layout_weight="1"
                     android:background="@drawable/white_border"
                     android:hint="150"
-                    android:text=""
 
                     android:textColor="@color/black" />
 
@@ -156,17 +146,18 @@
                     android:layout_weight="1"
                     android:text="2nd prize:"
                     android:textColor="@color/black"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                   />
 
                 <TextView
                     android:id="@+id/p2Tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="15dp"
+
                     android:layout_weight="1"
                     android:background="@drawable/white_border"
                     android:hint="100"
-                    android:text=""
 
 
                     android:textColor="@color/black" />
@@ -177,7 +168,8 @@
                     android:layout_weight="1"
                     android:text="3rd prize:"
                     android:textColor="@color/black"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                   />
 
                 <TextView
                     android:id="@+id/p3Tv"
@@ -187,29 +179,30 @@
                     android:layout_weight="1"
                     android:background="@drawable/white_border"
                     android:hint="50"
+
+
                     android:textColor="@color/black" />
 
 
             </LinearLayout>
-
             <TextView
-                android:id="@+id/text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/prizell"
-                android:layout_marginBottom="5dp"
+                android:id="@+id/text"
                 android:gravity="center"
-                android:text="You can edit only Description and Rules of this Contest."
+                android:textSize="14sp"
                 android:textAlignment="center"
                 android:textColor="#F44336"
-                android:textSize="14sp"
-                android:visibility="gone" />
-
+                android:visibility="gone"
+                android:layout_marginBottom="5dp"
+                android:text="You can edit only Description and Rules of this Contest."
+                android:layout_below="@+id/prizell"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/jurydetail"
                 android:gravity="center_horizontal"
+
                 android:orientation="horizontal">
 
                 <Button
@@ -217,54 +210,54 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
+
                     android:layout_margin="10dp"
+                    android:visibility="gone"
+
                     android:layout_marginBottom="15dp"
                     android:background="@drawable/rectangular_border"
-                    android:text="Prticipate"
-                    android:textAlignment="gravity"
                     android:textColor="@color/scheme8"
-                    android:visibility="gone" />
+                    android:text="Prticipate"
+                    android:textAlignment="gravity" />
 
                 <Button
                     android:id="@+id/voteBtn"
                     android:layout_width="wrap_content"
+android:visibility="gone"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_margin="10dp"
                     android:layout_marginBottom="15dp"
+                    android:textColor="@color/scheme8"
                     android:background="@drawable/rectangular_border"
                     android:text="Vote"
-                    android:textAlignment="gravity"
-                    android:textColor="@color/scheme8"
-                    android:visibility="gone" />
-
+                    android:textAlignment="gravity" />
                 <Button
                     android:id="@+id/postContest"
                     android:layout_width="wrap_content"
+                    android:visibility="gone"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_margin="10dp"
                     android:layout_marginBottom="15dp"
-                    android:background="@drawable/rectangular_border"
-                    android:padding="5dp"
-                    android:text="Submit Contest"
-                    android:textAlignment="gravity"
                     android:textColor="@color/scheme8"
-                    android:visibility="gone" />
-
+                    android:padding="5dp"
+                    android:background="@drawable/rectangular_border"
+                    android:text="Submit Contest"
+                    android:textAlignment="gravity" />
                 <Button
                     android:id="@+id/save"
                     android:layout_width="wrap_content"
+                    android:visibility="gone"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_margin="10dp"
                     android:layout_marginBottom="15dp"
-                    android:background="@drawable/rectangular_border"
-                    android:padding="5dp"
-                    android:text="Save Edit"
-                    android:textAlignment="gravity"
                     android:textColor="@color/scheme8"
-                    android:visibility="gone" />
+                    android:background="@drawable/rectangular_border"
+                    android:text="Save Edit"
+                    android:padding="5dp"
+                    android:textAlignment="gravity" />
             </LinearLayout>
 
 
@@ -278,80 +271,80 @@
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-
             <RelativeLayout
-                android:id="@+id/desRelative"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/text">
+                android:layout_below="@+id/text"
 
-                <TextView
-                    android:id="@+id/description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Descritpion:"
-                    android:textColor="@color/black"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/descripEv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/description"
-                    android:layout_marginBottom="15dp"
-                    android:background="@drawable/rectangular_border"
-                    android:padding="5dp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/descripTv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/description"
-                    android:layout_marginBottom="15dp"
-                    android:background="@drawable/rectangular_border"
-                    android:padding="5dp"
-                    android:text="@string/descrip" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/ruleRelative"
+                android:id="@+id/desRelative">
+            <TextView
+                android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/desRelative">
+                android:text="Descritpion:"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/rule"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Rules: "
-                    android:textColor="@color/black"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+            <EditText
 
-                <EditText
-                    android:id="@+id/ruleEv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/rule"
-                    android:layout_marginBottom="15dp"
-                    android:background="@drawable/rectangular_border"
-                    android:padding="5dp"
-                    android:text=""
-                    android:visibility="gone" />
+                android:id="@+id/descripEv"
+                android:visibility="gone"
+                android:layout_width="match_parent"
 
-                <TextView
-                    android:id="@+id/ruleTv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/rule"
-                    android:layout_marginBottom="15dp"
-                    android:background="@drawable/rectangular_border"
-                    android:padding="5dp"
-                    android:text="@string/rule" />
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/description"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/rectangular_border"
+                android:padding="5dp"
+                />
+
+            <TextView
+
+                android:id="@+id/descripTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/description"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/rectangular_border"
+                android:padding="5dp"
+                android:text="@string/descrip" />
             </RelativeLayout>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/desRelative"
+
+            android:id="@+id/ruleRelative">
+            <TextView
+                android:id="@+id/rule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rules: "
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+            <EditText
+                android:id="@+id/ruleEv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rule"
+                android:visibility="gone"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/rectangular_border"
+                android:padding="5dp"
+                />
+            <TextView
+                android:id="@+id/ruleTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rule"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/rectangular_border"
+                android:padding="5dp"
+                android:text="@string/rule" />
+        </RelativeLayout>
             <TextView
                 android:id="@+id/details"
                 android:layout_width="match_parent"
@@ -408,6 +401,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_horizontal"
+
                             android:text="Total Prize"
                             android:textColor="@color/grey" />
 
@@ -436,6 +430,7 @@
                             android:layout_weight="1"
                             android:gravity="center_horizontal"
                             android:text="₹100"
+
                             android:textColor="@color/black" />
 
                     </TableRow>
@@ -458,6 +453,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_horizontal"
+
                             android:text="Voting Type"
                             android:textColor="@color/grey" />
 
@@ -476,6 +472,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_horizontal"
+
                             android:text="15"
                             android:textColor="@color/black" />
 
@@ -485,7 +482,9 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_horizontal"
+
                             android:text="public"
+
                             android:textColor="@color/black" />
 
                     </TableRow>
@@ -508,6 +507,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_horizontal"
+
                             android:text="Registration End"
                             android:textColor="@color/grey" />
 
@@ -558,6 +558,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_horizontal"
+
                             android:text="Open for"
                             android:textColor="@color/grey" />
 
@@ -608,6 +609,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_horizontal"
+
                             android:text="Public Voting End"
                             android:textColor="@color/grey" />
 
@@ -625,6 +627,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+
                             android:gravity="center_horizontal"
                             android:text="5/3/2020"
                             android:textColor="@color/black" />
@@ -634,6 +637,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+
                             android:gravity="center_horizontal"
                             android:text="7/3/2020"
                             android:textColor="@color/black" />
@@ -657,6 +661,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_horizontal"
+
                             android:text="File Type Allowed"
                             android:textColor="@color/grey" />
 
@@ -674,6 +679,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+
                             android:gravity="center_horizontal"
                             android:text="5/3/2020"
                             android:textColor="@color/black" />
@@ -683,6 +689,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+
                             android:gravity="center_horizontal"
                             android:text="Picture"
                             android:textColor="@color/black" />
@@ -715,6 +722,7 @@
 
                         <ImageView
                             android:id="@+id/jpic1"
+
                             android:layout_width="100dp"
                             android:layout_height="100dp"
                             android:layout_margin="10dp"
@@ -725,8 +733,10 @@
 
                         <ImageView
                             android:id="@+id/jpic2"
+
                             android:layout_width="100dp"
                             android:layout_height="100dp"
+
                             android:layout_margin="10dp"
                             android:layout_weight="1"
                             android:adjustViewBounds="true"
@@ -745,6 +755,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+
                             android:gravity="center_horizontal"
                             android:text="Naman"
                             android:textAlignment="center"
@@ -755,9 +766,11 @@
 
                         <TextView
                             android:id="@+id/jname2Tv"
+
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+
                             android:gravity="center_horizontal"
                             android:text="Naman"
                             android:textAlignment="center"
@@ -775,6 +788,7 @@
 
                         <TextView
                             android:id="@+id/jpl1Tv"
+
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -788,6 +802,7 @@
                         <TextView
                             android:id="@+id/jpl2Tv"
                             android:layout_width="match_parent"
+
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:autoLink="all"
@@ -814,6 +829,7 @@
                             android:scaleType="centerInside"
                             android:visibility="gone" />
 
+
                     </TableRow>
 
                     <TableRow
@@ -826,6 +842,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+
                             android:gravity="center_horizontal"
                             android:text="Naman"
                             android:textAlignment="center"
@@ -843,6 +860,7 @@
 
                         <TextView
                             android:id="@+id/jpl3Tv"
+
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -851,6 +869,7 @@
                             android:textAlignment="center"
                             android:textColor="#03A9F4"
                             android:textSize="15sp"
+
                             android:visibility="gone" />
 
 

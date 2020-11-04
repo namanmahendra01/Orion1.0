@@ -1200,22 +1200,23 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                         fetchPhotos();
                                     } else {
                                         Log.d(TAG, "onDataChange: deleting posts");
+                                        ArrayList<Photo> fieldPhotos2=new ArrayList<>(fieldPhotos);
                                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                             for (Photo photo : fieldPhotos)
                                                 if (photo.getPhoto_id().equals(dataSnapshot.getKey())) {
-                                                    fieldPhotos.remove(photo);
+                                                    fieldPhotos2.remove(photo);
                                                     break;
                                                 }
                                         }
-                                        Log.d(TAG, "onTimeReceived: "+fieldPhotos.size());
+                                        Log.d(TAG, "onTimeReceived: "+fieldPhotos2.size());
                                         Gson gson = new Gson();
-                                        String json = gson.toJson(fieldPhotos);
+                                        String json = gson.toJson(fieldPhotos2);
 //                                Log.d(TAG, "onDataChange: " + json);
                                         mEditor.putString(finalField + "_PostsLastUpdated", currentTimeStamp);
                                         mEditor.putString(finalField + "_TopPosts", json);
-                                        mEditor.putInt(finalField + "_completed", fieldPhotos.size());
+                                        mEditor.putInt(finalField + "_completed", fieldPhotos2.size());
                                         mEditor.apply();
-                                        Log.d(TAG, "getPosts: uploading after deletion" + fieldPhotos.size() + " photos for " + finalField);
+                                        Log.d(TAG, "getPosts: uploading after deletion" + fieldPhotos2.size() + " photos for " + finalField);
                                         fetchPhotos();
                                     }
                                 }
@@ -1325,13 +1326,27 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         } else {
             cross.setVisibility(View.VISIBLE);
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-            Query query = reference.child(getString(R.string.dbname_users)).orderByChild(getString(R.string.field_username)).startAt(keyword).endAt(keyword + "\uf8ff");
+            Query query = reference.child(getString(R.string.dbname_username))
+                    .startAt(keyword).endAt(keyword + "\uf8ff");
             query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                        mUserList.add(singleSnapshot.getValue(users.class));
-                        updateUserList();
+                        reference.child(getString(R.string.dbname_users))
+                                .child(singleSnapshot.getValue().toString())
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        mUserList.add(snapshot.getValue(users.class));
+                                        updateUserList();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+
                     }
                 }
 

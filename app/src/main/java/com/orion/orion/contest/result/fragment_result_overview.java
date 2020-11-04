@@ -175,25 +175,26 @@ public class fragment_result_overview extends Fragment {
                                             t1v.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                                                    DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
 
                                                     Query userquery = ref
-                                                            .child(getString(R.string.dbname_users))
-                                                            .orderByChild(getString(R.string.field_username))
-                                                            .equalTo(t1v.getText().toString());
+                                                            .child(getString(R.string.field_username))
+                                                            .child(t1v.getText().toString());
                                                     userquery.addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                                                                user = singleSnapshot.getValue(users.class);
-                                                                Intent i = new Intent(getActivity(), profile.class);
+                                                            if (dataSnapshot.exists()) {
+                                                                String username = dataSnapshot.getValue().toString();
+
+                                                                Intent i = new Intent(getContext(), profile.class);
                                                                 i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                                                                i.putExtra(getString(R.string.intent_user), user);
+                                                                i.putExtra(getString(R.string.intent_user), username);
                                                                 startActivity(i);
-                                                            }
 
+
+                                                            }
 
                                                         }
 
@@ -306,25 +307,26 @@ public class fragment_result_overview extends Fragment {
                                             t1v.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                                                    DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
 
                                                     Query userquery = ref
-                                                            .child(getString(R.string.dbname_users))
-                                                            .orderByChild(getString(R.string.field_username))
-                                                            .equalTo(t1v.getText().toString());
+                                                            .child(getString(R.string.field_username))
+                                                            .child(t1v.getText().toString());
                                                     userquery.addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                                                                user = singleSnapshot.getValue(users.class);
-                                                                Intent i = new Intent(getActivity(), profile.class);
+                                                            if (dataSnapshot.exists()) {
+                                                                String username = dataSnapshot.getValue().toString();
+
+                                                                Intent i = new Intent(getContext(), profile.class);
                                                                 i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
 
-                                                                i.putExtra(getString(R.string.intent_user), user);
+                                                                i.putExtra(getString(R.string.intent_user), username);
                                                                 startActivity(i);
-                                                            }
 
+
+                                                            }
 
                                                         }
 
@@ -334,8 +336,6 @@ public class fragment_result_overview extends Fragment {
                                                             Log.d(TAG, "Query Cancelled");
                                                         }
                                                     });
-
-
                                                 }
                                             });
                                             t1v.setTextColor(Color.RED);
