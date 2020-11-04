@@ -381,7 +381,7 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
 
 
     public void addNewUser(String email, String username, String domain) {
-        users user = new users(userID, email, StringManipilation.condenseUsername(username), "", "", "", domain,"false","false","false");
+        users user = new users(userID, email,domain, StringManipilation.condenseUsername(username), "", "", "","false","false","false");
       String username2=StringManipilation.condenseUsername(username);
         myRef.child(mContext.getString(R.string.dbname_users))
                 .child(userID)

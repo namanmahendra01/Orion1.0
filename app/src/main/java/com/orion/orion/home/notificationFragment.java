@@ -91,20 +91,24 @@ public class notificationFragment extends Fragment {
         getNotifcationFromSP();
         clearNotification.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
-            builder.setMessage("Uou want to delete all the notification")
-                    .setTitle("Are u sure?")
+            builder.setMessage("You want to delete all the notification")
+                    .setTitle("Are you sure?")
                     .setCancelable(false)
                     .setPositiveButton("Yes", (dialog, id) -> {
                         notifyList.clear();
-                        paginatedNotifications.clear();
+                        if (paginatedNotifications!=null) {
+                            paginatedNotifications.clear();
+                        }
                         SharedPreferences.Editor editor = sp.edit().remove("nl");
                         editor.apply();
 
+                        if (adapterNotification2!=null) {
 
-                        adapterNotification2.notifyDataSetChanged();
+                            adapterNotification2.notifyDataSetChanged();
+                        }
                         FirebaseUser user = fAuth.getCurrentUser();
                         DatabaseReference reference =FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("Notifications");
-                        reference.setValue(null);
+                        reference.removeValue();
                         //delete from database here then refresh for u naman
                         displayMoreNotification();
                     })

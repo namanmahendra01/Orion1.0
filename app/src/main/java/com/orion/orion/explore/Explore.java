@@ -1082,7 +1082,9 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-                    topUser8.add(singleSnapshot.getValue().toString());
+                    if(!singleSnapshot.getValue().toString().equals("")) {
+                        topUser8.add(singleSnapshot.getValue().toString());
+                    }
                     Log.d(TAG, "getTop8: topUser" + topUser8);
                 }
                 getStarImage(topUser8);
