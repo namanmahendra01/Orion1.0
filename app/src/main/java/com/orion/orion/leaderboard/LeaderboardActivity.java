@@ -7,10 +7,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,7 +39,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -52,6 +51,7 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Adapters.AdapterItemLeaderboard;
 import com.orion.orion.R;
 import com.orion.orion.dialogs.BottomSheetFilter;
+import com.orion.orion.login.login;
 import com.orion.orion.models.ItemLeaderboard;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 import com.orion.orion.util.FirebaseMethods;
@@ -72,7 +72,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
     private static final String TAG = "LeaderboardActivity";
     private static final int ACTIVITY_NUM = 3;
     private static final int ANIMATION_DURATION = 500;
-    private static final int LEADERBOAD_SIZE=20;
+    private static final int LEADERBOAD_SIZE = 20;
     private Context mContext;
     FirebaseMethods firebaseMethods;
     //initializing widgets
@@ -99,6 +99,10 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
     private ArrayList<ItemLeaderboard> mList;
     private FusedLocationProviderClient fusedLocationClient;
     private String currentUser;
+    //firebase
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseUser mUser;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -202,30 +206,8 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                             //location update
                             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             assert user != null;
-                            if (user.getUid().equals(user_id)) {
-                                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                                    ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 10);
-                                else {
-                                    fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-                                    fusedLocationClient.getLastLocation().addOnCompleteListener(task -> {
-                                        Location location = task.getResult();
-                                        if (location != null) try {
-                                            Geocoder geocoder = new Geocoder(LeaderboardActivity.this, Locale.getDefault());
-                                            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                                            Log.d(TAG, "onDataChange: " + addresses);
-                                            String country = addresses.get(0).getCountryName();
-                                            String city = addresses.get(0).getSubAdminArea();
-                                            String area = addresses.get(0).getLocality();
-                                            Log.d(TAG, "onDataChange: " + addresses);
-                                            reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_known_location)).child("city").setValue(city);
-                                            reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_known_location)).child("country").setValue(country);
-                                            reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_known_location)).child("area").setValue(area);
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-                                    });
-                                }
-                            }
+
+//                            if (user.getUid().equals(user_id)) checkOrGetLocation();
 
                             //for posts parameters of leaders according the photos
                             Query query1 = reference.child(getString(R.string.dbname_user_photos)).child(user_id);
@@ -652,6 +634,46 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         });
     }
 
+    private void checkOrGetLocation() {
+        Log.d(TAG, "checkOrGetLocation: started");
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 10);
+        else {
+            Log.d(TAG, "checkOrGetLocation: permission checked");
+            LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                Log.d(TAG, "checkOrGetLocation: gps provider unavailable");
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", (dialog, id) -> startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                        .setNegativeButton("No", (dialog, id) -> dialog.cancel());
+                final AlertDialog alert = builder.create();
+                alert.show();
+            } else {
+                Log.d(TAG, "checkOrGetLocation: gps provider available");
+                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, location -> {
+                    try {
+                        Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
+                        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                        Log.d(TAG, "checkOrGetLocation: addresses" + addresses);
+                        String country = addresses.get(0).getCountryName();
+                        String city = addresses.get(0).getSubAdminArea();
+                        String area = addresses.get(0).getLocality();
+                        Log.d(TAG, "checkOrGetLocation: addresse" + addresses.get(0));
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        assert user != null;
+                        reference.child(getString(R.string.dbname_leaderboard)).child(mAuth.getCurrentUser().getUid()).child(getString(R.string.field_last_known_location)).child("city").setValue(city);
+                        reference.child(getString(R.string.dbname_leaderboard)).child(mAuth.getCurrentUser().getUid()).child(getString(R.string.field_last_known_location)).child("country").setValue(country);
+                        reference.child(getString(R.string.dbname_leaderboard)).child(mAuth.getCurrentUser().getUid()).child(getString(R.string.field_last_known_location)).child("area").setValue(area);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }
+    }
+
 
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -662,7 +684,9 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         setContentView(R.layout.activity_leaderboard);
         Log.d(TAG, "onCreate: started.");
         setupBottomNavigationView();
+        setupFirebaseAuth();
         initializeWidgets();
+        checkOrGetLocation();
         updateLeaderboard();
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -734,8 +758,8 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 //            }
 //        });
         filterBox.setOnClickListener(v -> {
-            Log.d(TAG, "onCreate: v.getId()"+v.getId());
-            Log.d(TAG, "onCreate: filterParams.getId()"+filterParams.getId());
+            Log.d(TAG, "onCreate: v.getId()" + v.getId());
+            Log.d(TAG, "onCreate: filterParams.getId()" + filterParams.getId());
             if (v.getId() != filterParams.getId()) {
                 if (topBar.getVisibility() == View.GONE) {
                     topBar.animate()
@@ -869,42 +893,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                 sortedByLocation.setBackgroundResource(R.drawable.circular_gradient_background);
                 sortedByLocation.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
                 YoYo.with(Techniques.ZoomIn).duration(ANIMATION_DURATION).playOn(sortedByLocation);
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-                    ActivityCompat.requestPermissions((Activity) mContext, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 10);
-                else {
-                    final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                    if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
-                                .setCancelable(false)
-                                .setPositiveButton("Yes", (dialog, id) -> startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
-                                .setNegativeButton("No", (dialog, id) -> dialog.cancel());
-                        final AlertDialog alert = builder.create();
-                        alert.show();
-                    }
-
-                    fusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-                    fusedLocationClient.getLastLocation().addOnCompleteListener(task -> {
-                        Location location = task.getResult();
-
-                        if (location != null) try {
-                            Geocoder geocoder = new Geocoder(LeaderboardActivity.this, Locale.getDefault());
-                            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                            Log.d(TAG, "onDataChange: " + addresses);
-                            String country = addresses.get(0).getCountryName();
-                            String city = addresses.get(0).getSubAdminArea();
-                            String area = addresses.get(0).getLocality();
-                            Log.d(TAG, "onDataChange: " + addresses);
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            assert user != null;
-                            reference.child(getString(R.string.dbname_leaderboard)).child(user.getUid()).child(getString(R.string.field_last_known_location)).child("city").setValue(city);
-                            reference.child(getString(R.string.dbname_leaderboard)).child(user.getUid()).child(getString(R.string.field_last_known_location)).child("country").setValue(country);
-                            reference.child(getString(R.string.dbname_leaderboard)).child(user.getUid()).child(getString(R.string.field_last_known_location)).child("area").setValue(area);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
-                }
+//                checkOrGetLocation();
                 break;
             case "Overall":
             case "Posts":
@@ -1032,6 +1021,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                 Query query1 = reference.child(getString(R.string.dbname_leaderboard));
                 query1.addListenerForSingleValueEvent(new ValueEventListener() {
                     int rank = 1;
+
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
@@ -1145,7 +1135,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
             }
         }
         //removing extra nodes
-        if (mList.size() == LEADERBOAD_SIZE+1) mList.remove(LEADERBOAD_SIZE);
+        if (mList.size() == LEADERBOAD_SIZE + 1) mList.remove(LEADERBOAD_SIZE);
         return rank;
     }
 
@@ -1188,6 +1178,41 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         time = "";
         locationParameter = "";
         typeParameter = "";
+    }
+
+    private void setupFirebaseAuth() {
+        Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = firebaseAuth -> {
+            mUser = firebaseAuth.getCurrentUser();
+            if (mUser == null) {
+                Log.d(TAG, "onAuthStateChanged:signed_out");
+                Log.d(TAG, "onAuthStateChanged: navigating to login");
+                SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                new android.app.AlertDialog.Builder(mContext)
+                        .setTitle("No user logon found")
+                        .setMessage("We will be logging u out. \n Please try to log in again")
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            Intent intent = new Intent(mContext, login.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            settings.edit().clear().apply();
+                            startActivity(intent);
+                        })
+                        .show();
+            } else Log.d(TAG, "onAuthStateChanged: signed_in:" + mUser.getUid());
+        };
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
     }
 
     private void setupBottomNavigationView() {
