@@ -101,6 +101,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     private TextView mCreations;
     private TextView mParticipation;
 
+    private TextView mDisplayName;
     private TextView mDescription;
     private TextView mWebsite;
     private TextView mRank;
@@ -124,7 +125,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         mFirebaseMethods = new FirebaseMethods(mContext);
         backButton = findViewById(R.id.back);
 
-        mUsername = findViewById(R.id.display_name);
+        mUsername = findViewById(R.id.username);
         mDomain = findViewById(R.id.domain);
         mProfilePhoto = findViewById(R.id.profile_photo);
 
@@ -146,6 +147,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         mParticipation = findViewById(R.id.participations);
         mRank = findViewById(R.id.rank);
 
+        mDisplayName = findViewById(R.id.display_name);
         mDescription = findViewById(R.id.description);
         mWebsite = findViewById(R.id.website);
 
@@ -687,6 +689,11 @@ public class ViewProfileActivity extends AppCompatActivity {
         mUsername.setText(userSetting.getUsername());
         mDomain.setText(userSetting.getDomain());
 
+        if(userSetting.getDisplay_name() ==null || userSetting.getDisplay_name().equals(""))
+            mDisplayName.setVisibility(View.GONE);
+        else {
+            mDisplayName.setText(userSetting.getDisplay_name());
+        }
         if (userSetting.getDescription() == null || userSetting.getDescription().equals(""))
             mDescription.setVisibility(View.GONE);
         else {
@@ -695,12 +702,12 @@ public class ViewProfileActivity extends AppCompatActivity {
         }
 
         if (userSetting.getEmail() == null || userSetting.getEmail().equals("")) {
-            mWebsite.setVisibility(View.GONE);
+//            mWebsite.setVisibility(View.GONE);
             mGmailLink.setClickable(false);
             mGmailLink.setAlpha(0.5f);
         } else {
-            mWebsite.setVisibility(View.VISIBLE);
-            mWebsite.setText(userSetting.getEmail());
+//            mWebsite.setVisibility(View.VISIBLE);
+//            mWebsite.setText(userSetting.getEmail());
             gmail = userSetting.getEmail();
         }
 

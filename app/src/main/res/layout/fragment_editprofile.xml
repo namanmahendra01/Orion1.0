@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -45,9 +45,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="5dp"
-                            android:layout_centerHorizontal="true"
                             android:text="Edit Profile"
                             android:textColor="#000000" />
 
@@ -120,8 +120,7 @@
                         android:gravity="start"
                         android:text="Personal Info"
                         android:textColor="@color/black"
-                        android:textSize="22dp"
-                        />
+                        android:textSize="22dp" />
                     <!--    username-->
                     <RelativeLayout
                         android:id="@+id/relLayout1"
@@ -131,18 +130,17 @@
                         android:background="@color/white">
 
 
-
                         <EditText
                             android:id="@+id/username"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_centerVertical="true"
-                            android:padding="10dp"
-
                             android:background="@drawable/rectangular_border"
-                            android:hint="Username"
 
-                            android:inputType="textNoSuggestions" />
+                            android:hint="Username"
+                            android:inputType="textNoSuggestions"
+
+                            android:padding="10dp" />
 
                     </RelativeLayout>
                     <!--    display name-->
@@ -160,10 +158,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_centerVertical="true"
-                         android:padding="10dp"
                             android:background="@drawable/rectangular_border"
                             android:hint="Display name"
-                            android:inputType="textNoSuggestions" />
+                            android:inputType="textNoSuggestions"
+                            android:padding="10dp" />
 
                     </RelativeLayout>
                     <!--    website-->
@@ -172,23 +170,22 @@
                     <RelativeLayout
                         android:id="@+id/relLayout3"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="wrap_content"
                         android:layout_below="@+id/relLayout2"
                         android:layout_marginTop="15dp"
-
                         android:background="@color/white">
-
 
                         <EditText
                             android:id="@+id/description"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_centerVertical="true"
-                         android:padding="10dp"
+                            android:layout_alignParentEnd="true"
                             android:background="@drawable/rectangular_border"
-
                             android:hint="description"
-                            android:inputType="textNoSuggestions" />
+                            android:maxLines="5"
+                            android:inputType="textNoSuggestions"
+                            android:padding="10dp" />
 
                     </RelativeLayout>
 
@@ -203,8 +200,7 @@
                         android:gravity="start"
                         android:text="Connections"
                         android:textColor="@color/black"
-                        android:textSize="22dp"
-                         />
+                        android:textSize="22dp" />
 
                     <RelativeLayout
                         android:id="@+id/profileLinks"

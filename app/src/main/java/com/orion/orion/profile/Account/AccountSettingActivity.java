@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -76,7 +78,22 @@ public class AccountSettingActivity extends AppCompatActivity {
                     break;
                 case 4: startActivity(new Intent(mcontext, About.class));
                     break;
-                case 5: startActivity(new Intent(mcontext, SignOut.class));
+                case 5: new AlertDialog.Builder(mcontext)
+                        .setTitle("Log Out but why?")
+                        .setMessage("Are u sure u want to do this?.")
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                            SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                            settings.edit().clear().apply();
+                            PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().clear().apply();
+                            Intent intent = new Intent(mcontext, login.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            mAuth.signOut();
+                            startActivity(intent);
+                        })
+                        .setNegativeButton(android.R.string.no, (dialog, which) -> {
+                            dialog.dismiss();
+                        })
+                        .show();
                     break;
             }
         });

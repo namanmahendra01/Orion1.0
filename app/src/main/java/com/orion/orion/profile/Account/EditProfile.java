@@ -50,7 +50,6 @@ import com.orion.orion.models.users;
 import com.orion.orion.profile.PostPhotoActivity;
 import com.orion.orion.profile.ProfileActivity;
 import com.orion.orion.util.FilePaths;
-import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.ImageManager;
 import com.orion.orion.util.Permissions;
 import com.orion.orion.util.UniversalImageLoader;
@@ -88,8 +87,6 @@ public class EditProfile extends AppCompatActivity {
     private LinearLayout mFacebookLink;
     private LinearLayout mTwitterLink;
     private LinearLayout mWhatsappLink;
-
-
 
     private String gmail;
     private String instagramProfile;
@@ -133,7 +130,6 @@ public class EditProfile extends AppCompatActivity {
         mWhatsappLink = findViewById(R.id.whatsapp_link);
 
 
-
         gmail = "";
         instagramProfile = "";
         facebookProfile = "";
@@ -163,7 +159,6 @@ public class EditProfile extends AppCompatActivity {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
-//
             } else verifyPermission(Permissions.PERMISSIONS);
 
         });
@@ -405,35 +400,25 @@ public class EditProfile extends AppCompatActivity {
         mUsername.setText(setting.getUsername());
         mdescription.setText(setting.getDescription());
 
-        if (userSetting.getEmail() == null || userSetting.getEmail().equals("")) {
+        if (userSetting.getEmail() == null || userSetting.getEmail().equals(""))
             mGmailLink.setAlpha(0.5f);
-        } else {
-            gmail = userSetting.getEmail();
-        }
+        else gmail = userSetting.getEmail();
 
         if (userSetting.getInstagram() == null || userSetting.getInstagram().equals(""))
             mInstagramLink.setAlpha(0.5f);
-        else {
-            instagramProfile = userSetting.getInstagram();
-        }
+        else instagramProfile = userSetting.getInstagram();
 
-        if (userSetting.getFacebook() == null || userSetting.getFacebook().equals("")) {
+        if (userSetting.getFacebook() == null || userSetting.getFacebook().equals(""))
             mFacebookLink.setAlpha(0.5f);
-        } else {
-            facebookProfile = userSetting.getFacebook();
+        else facebookProfile = userSetting.getFacebook();
 
-        }
-        if (userSetting.getTwitter() == null || userSetting.getTwitter().equals("")) {
+        if (userSetting.getTwitter() == null || userSetting.getTwitter().equals(""))
             mTwitterLink.setAlpha(0.5f);
-        } else {
-            twitterProfile = userSetting.getTwitter();
-        }
+        else twitterProfile = userSetting.getTwitter();
 
-        if (userSetting.getWhatsapp() == null || userSetting.getWhatsapp().equals("")) {
+        if (userSetting.getWhatsapp() == null || userSetting.getWhatsapp().equals(""))
             mWhatsappLink.setAlpha(0.5f);
-        } else {
-            whatsappNo = userSetting.getWhatsapp();
-        }
+        else whatsappNo = userSetting.getWhatsapp();
     }
 
     @TargetApi(19)

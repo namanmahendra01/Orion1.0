@@ -289,6 +289,24 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
             for (int i = 0; i < group.getChildCount(); i++) {
                 if (Public.getId() == checkedId) {
                     votingType = Public.getText().toString();
+
+                    Public.setClickable(false);
+                    Jury.setClickable(true);
+                    PublicAndJury.setClickable(true);
+                    Jury.setChecked(false);
+                    PublicAndJury.setChecked(false);
+                    one.setChecked(false);
+                    two.setChecked(false);
+                    three.setChecked(false);
+
+                    noOfJury ="";
+                    juryName1.setText("");
+                    JuryName1="";
+                    juryName2.setText("");
+                    JuryName2="";
+                    juryName3.setText("");
+                    JuryName3="";
+
                     if (jurySelectionContainer.getVisibility() == View.VISIBLE) {
                         YoYo.with(Techniques.FadeOutUp).duration(ANIMATION_DURATION).playOn(jurySelectionContainer);
                         jurySelectionContainer.setVisibility(View.GONE);
@@ -308,8 +326,35 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                         YoYo.with(Techniques.FadeInDown).duration(ANIMATION_DURATION).playOn(publicVotingContainer);
                         YoYo.with(Techniques.FadeInDown).duration(ANIMATION_DURATION).playOn(publicVotingContainerDates);
                     }
-                } else if (Jury.getId() == checkedId) {
+                }
+                else if (Jury.getId() == checkedId) {
                     votingType = Jury.getText().toString();
+
+                    Public.setClickable(true);
+                    Jury.setClickable(false);
+                    PublicAndJury.setClickable(true);
+                    Public.setChecked(false);
+                    PublicAndJury.setChecked(false);
+                    one.setChecked(false);
+                    two.setChecked(false);
+                    three.setChecked(false);
+
+                    noOfJury ="";
+                    juryName1.setText("");
+                    JuryName1="";
+                    juryName2.setText("");
+                    JuryName2="";
+                    juryName3.setText("");
+                    JuryName3="";
+                    mDisplayDateVB.setText("");
+                    mDisplayDateVE.setText("");
+                    date3="";
+                    date4="";
+
+                    jury1Container.setVisibility(View.GONE);
+                    jury2Container.setVisibility(View.GONE);
+                    jury3Container.setVisibility(View.GONE);
+
                     if (jurySelectionContainer.getVisibility() == View.GONE) {
                         jurySelectionContainer.setVisibility(View.VISIBLE);
                         YoYo.with(Techniques.FadeInDown).duration(ANIMATION_DURATION).playOn(jurySelectionContainer);
@@ -324,6 +369,8 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                     }
                     if (noOfJury.equals("1")) {
                         noOfJury = one.getText().toString();
+                        JuryName2="";
+                        JuryName3="";
                         if (jury1Container.getVisibility() == View.GONE) {
                             jury1Container.setVisibility(View.VISIBLE);
                             YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(jury1Container);
@@ -339,6 +386,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                     }
                     if (noOfJury.equals("2")) {
                         noOfJury = two.getText().toString();
+                        JuryName3="";
                         if (jury1Container.getVisibility() == View.GONE) {
                             jury1Container.setVisibility(View.VISIBLE);
                             YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(jury1Container);
@@ -367,8 +415,31 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                             YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(jury3Container);
                         }
                     }
-                } else {
+                }
+                else {
                     votingType = PublicAndJury.getText().toString();
+
+                    Public.setClickable(true);
+                    Jury.setClickable(true);
+                    PublicAndJury.setClickable(false);
+                    Jury.setChecked(false);
+                    Public.setChecked(false);
+                    one.setChecked(false);
+                    two.setChecked(false);
+                    three.setChecked(false);
+
+                    noOfJury ="";
+                    juryName1.setText("");
+                    JuryName1="";
+                    juryName2.setText("");
+                    JuryName2="";
+                    juryName3.setText("");
+                    JuryName3="";
+
+                    jury1Container.setVisibility(View.GONE);
+                    jury2Container.setVisibility(View.GONE);
+                    jury3Container.setVisibility(View.GONE);
+
                     if (jurySelectionContainer.getVisibility() == View.GONE) {
                         jurySelectionContainer.setVisibility(View.VISIBLE);
                         YoYo.with(Techniques.FadeInDown).duration(ANIMATION_DURATION).playOn(jurySelectionContainer);
@@ -381,6 +452,10 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                     }
                     if (noOfJury.equals("1")) {
                         noOfJury = one.getText().toString();
+                        juryName2.setText("");
+                        juryName3.setText("");
+                        JuryName2="";
+                        JuryName3="";
                         if (jury1Container.getVisibility() == View.GONE) {
                             jury1Container.setVisibility(View.VISIBLE);
                             YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(jury1Container);
@@ -396,6 +471,8 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                     }
                     if (noOfJury.equals("2")) {
                         noOfJury = two.getText().toString();
+                        juryName3.setText("");
+                        JuryName3="";
                         if (jury1Container.getVisibility() == View.GONE) {
                             jury1Container.setVisibility(View.VISIBLE);
                             YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(jury1Container);
@@ -431,7 +508,10 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
             for (int i = 0; i < group.getChildCount(); i++) {
                 if (one.getId() == checkedId) {
                     noOfJury = one.getText().toString();
-                    noOfJury = one.getText().toString();
+                    juryName2.setText("");
+                    juryName3.setText("");
+                    JuryName2="";
+                    JuryName3="";
                     if (jury1Container.getVisibility() == View.GONE) {
                         jury1Container.setVisibility(View.VISIBLE);
                         YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(jury1Container);
@@ -446,6 +526,8 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                     }
                 } else if (two.getId() == checkedId) {
                     noOfJury = two.getText().toString();
+                    juryName3.setText("");
+                    JuryName3="";
                     if (jury1Container.getVisibility() == View.GONE) {
                         jury1Container.setVisibility(View.VISIBLE);
                         YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(jury1Container);
@@ -695,6 +777,8 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                 YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(mLimitedNoOfParticipants);
             } else {
                 participantType = "Unlimited";
+                mLimitedNoOfParticipants.setText("");
+                noOfParticipants="";
                 YoYo.with(Techniques.FadeOutLeft).duration(ANIMATION_DURATION).playOn(mLimitedNoOfParticipants);
                 new Handler().postDelayed(() -> mLimitedNoOfParticipants.setVisibility(View.GONE), ANIMATION_DURATION);
             }
@@ -718,6 +802,8 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                 YoYo.with(Techniques.FadeOutLeft).duration(ANIMATION_DURATION).playOn(mEntryFees);
                 mLimitedNoOfParticipants.setVisibility(View.GONE);
                 new Handler().postDelayed(() -> mEntryFees.setVisibility(View.GONE), ANIMATION_DURATION);
+                mEntryFees.setText("");
+                fees="";
                 togglePrize.setClickable(true);
             }
         });
@@ -740,6 +826,12 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                     P3.setVisibility(View.GONE);
                 }, ANIMATION_DURATION);
                 prizeMoney = "No";
+                firstPrize.setText("");
+                secondPrize.setText("");
+                thirdPrize.setText("");
+                prizeFirst="";
+                prizeSecond="";
+                prizeThird="";
             }
         });
         if (firstPrize.getVisibility() == View.VISIBLE || secondPrize.getVisibility() == View.VISIBLE || thirdPrize.getVisibility() == View.VISIBLE) {

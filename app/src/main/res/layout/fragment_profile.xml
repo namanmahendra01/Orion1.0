@@ -40,7 +40,7 @@
 
 
                     <TextView
-                        android:id="@+id/display_name"
+                        android:id="@+id/username"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -457,15 +457,6 @@
 
             </RelativeLayout>
 
-            <!--            <View-->
-            <!--            android:id="@+id/line2"-->
-            <!--            android:layout_width="match_parent"-->
-            <!--            android:layout_height="3dp"-->
-            <!--            android:layout_below="@id/profile_info"-->
-            <!--            android:layout_alignParentStart="true"-->
-            <!--            android:layout_alignParentEnd="true"-->
-            <!--            android:background="@color/white" />-->
-
             <!--        About               -->
             <LinearLayout
                 android:id="@id/linearLayout2"
@@ -488,19 +479,19 @@
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/display_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <TextView
                     android:id="@+id/description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:lineHeight="20sp"
                     android:maxLines="2" />
-
-                <TextView
-                    android:id="@+id/website"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:textColor="#00BCD4"
-                    android:textSize="16sp" />
 
                 <LinearLayout
                     android:id="@+id/share_skill_btn"
@@ -528,17 +519,6 @@
 
 
             </LinearLayout>
-
-            <!--            <View-->
-            <!--                android:id="@+id/line3"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="3dp"-->
-            <!--                android:layout_below="@id/linearLayout2"-->
-            <!--                android:layout_alignParentStart="true"-->
-            <!--                android:layout_alignParentEnd="true"-->
-            <!--                android:layout_marginTop="15dp"-->
-            <!--                android:layout_marginBottom="15dp"-->
-            <!--                android:background="@color/scheme8" />-->
 
             <!--        Image Grid          -->
             <androidx.recyclerview.widget.RecyclerView

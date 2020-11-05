@@ -114,8 +114,9 @@ public class ProfileActivity extends AppCompatActivity {
 
     private TextView noPost;
 
+    private TextView mDisplayName;
     private TextView mDescription;
-    private TextView mWebsite;
+//    private TextView mWebsite;
     private String whatsappNo;
     private LinearLayout share_btn;
     private RecyclerView gridRv;
@@ -139,7 +140,7 @@ public class ProfileActivity extends AppCompatActivity {
         noPost = findViewById(R.id.noPost);
 
         menu = findViewById(R.id.menu);
-        mUsername = findViewById(R.id.display_name);
+        mUsername = findViewById(R.id.username);
         mDomain = findViewById(R.id.domain);
         mProfilePhoto = findViewById(R.id.profile_photo);
 
@@ -157,8 +158,9 @@ public class ProfileActivity extends AppCompatActivity {
         mParticipation = findViewById(R.id.participations);
         mRank = findViewById(R.id.rank);
 
+        mDisplayName = findViewById(R.id.display_name);
         mDescription = findViewById(R.id.description);
-        mWebsite = findViewById(R.id.website);
+//        mWebsite = findViewById(R.id.website);
 
         share_btn = findViewById(R.id.share_skill_btn);
 
@@ -696,6 +698,11 @@ public class ProfileActivity extends AppCompatActivity {
         mUsername.setText(userSetting.getUsername());
         mDomain.setText(userSetting.getDomain());
 
+        if(userSetting.getDisplay_name() ==null || userSetting.getDisplay_name().equals(""))
+            mDisplayName.setVisibility(View.GONE);
+        else {
+            mDisplayName.setText(userSetting.getDisplay_name());
+        }
         if (userSetting.getDescription() == null || userSetting.getDescription().equals(""))
             mDescription.setVisibility(View.GONE);
         else {
@@ -704,12 +711,13 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         if (userSetting.getEmail() == null || userSetting.getEmail().equals("")) {
-            mWebsite.setVisibility(View.GONE);
+//            mWebsite.setVisibility(View.GONE);
             mGmailLink.setClickable(false);
             mGmailLink.setAlpha(0.5f);
         } else {
-            mWebsite.setVisibility(View.VISIBLE);
-            mWebsite.setText(userSetting.getEmail());
+//            mWebsite.setVisibility(View.VISIBLE);
+//            mWebsite.setText(userSetting.getEmail());
+            gmail = userSetting.getEmail();
         }
 
         if (userSetting.getInstagram() == null || userSetting.getInstagram().equals("")) {

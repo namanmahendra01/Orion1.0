@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,8 +44,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.common.reflect.TypeToken;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -151,7 +148,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         setupFirebaseAuth();
         initWidgets();
         initOnClickListeners();
-
 
 
 //        topBox.setOnClickListener(v -> {
@@ -478,7 +474,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                             String postedTime = previousTimeStamp.substring(12, previousTimeStamp.length() - 1);
                             String postedDateFormat = postedDate + "/" + postedMonth + "/" + postedYear;
 
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
+                            @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
                             long elapsedDays = 0;
                             try {
                                 Date date1 = simpleDateFormat.parse(postedDateFormat);
@@ -598,7 +594,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                         String postedTime = previousTimeStamp.substring(12, previousTimeStamp.length() - 1);
                         String postedDateFormat = postedDate + "/" + postedMonth + "/" + postedYear;
 
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
+                        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
                         long elapsedDays = 0;
                         try {
                             Date date1 = simpleDateFormat.parse(postedDateFormat);
@@ -931,9 +927,9 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 handler.postDelayed(this::checkPostsFetched, RETRY_DURATION);
                 RETRY_DURATION *= 2;
             } else {
-                if (json == null || previousTimeStamp == null || previousTimeStamp.equals("")) {
+                if (json == null || previousTimeStamp == null || previousTimeStamp.equals(""))
                     getPosts(field, completed);
-                } else {
+                else {
 //                Type type = new TypeToken<List<Photo>>() {}.getType();
 //                ArrayList<Photo> fieldPhotos = gson.fromJson(json, type);
                     if (completed < set.size()) {
@@ -956,7 +952,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                 String postedTime = previousTimeStamp.substring(12, previousTimeStamp.length() - 1);
                                 String postedDateFormat = postedDate + "/" + postedMonth + "/" + postedYear;
 
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
+                                @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
                                 long elapsedDays = 0;
                                 try {
                                     Date date1 = simpleDateFormat.parse(postedDateFormat);
@@ -1082,7 +1078,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-                    if(!singleSnapshot.getValue().toString().equals("")) {
+                    if (!singleSnapshot.getValue().toString().equals("")) {
                         topUser8.add(singleSnapshot.getValue().toString());
                     }
                     Log.d(TAG, "getTop8: topUser" + topUser8);
@@ -1144,23 +1140,23 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     }
 
     private void displayPhotos() {
+        findViewById(R.id.noPost).setVisibility(View.GONE);
         if (swipeRefreshLayout.isRefreshing()) {
-            Log.d(TAG, "displayPhotos: started");
             String field = spinner.getText().toString();
-            if (field.equals("All")) field = "Overall";
             Log.d(TAG, "displayPhotos: started" + field);
+            if (field.equals("All")) field = "Overall";
             paginatedPhotos.clear();
             fieldPhotos.clear();
             if (adapterGridImage != null) adapterGridImage.notifyDataSetChanged();
             Gson gson = new Gson();
             String json = mPreferences.getString(field + "_TopPosts", null);
             if (json == null || json.equals("")) {
-                Log.d(TAG, "displayPhotos: handler1");
                 handler.postDelayed(this::displayPhotos, RETRY_DURATION);
+                RETRY_DURATION*=2;
             } else {
-                Log.d(TAG, "displayPhotos: handler2");
                 handler.removeCallbacks(this::displayPhotos);
-                Type type = new TypeToken<List<Photo>>() {}.getType();
+                Type type = new TypeToken<List<Photo>>() {
+                }.getType();
                 fieldPhotos = gson.fromJson(json, type);
                 Log.d(TAG, "displayPhotos: photos retrieved " + fieldPhotos.size());
                 Query query = reference.child(getString(R.string.explore_update));
@@ -1168,8 +1164,8 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.child(getString(R.string.field_last_updated)).exists()){
-                            Log.d(TAG, "onDataChange: checking if posts need to be deleted");
+                        if (snapshot.child(getString(R.string.field_last_updated)).exists()) {
+                            Log.d(TAG, "displayPhotos: checking if posts need to be deleted");
                             String previousTimeStamp = String.valueOf(snapshot.child(getString(R.string.field_last_updated)).getValue());
                             SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
                                 @Override
@@ -1205,11 +1201,9 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                         fetchPhotos();
                                     }
 
-                                    if (elapsedDays > currentDay) {
-                                        fetchPhotos();
-                                    } else {
-                                        Log.d(TAG, "onDataChange: deleting posts");
-                                        ArrayList<Photo> fieldPhotos2=new ArrayList<>(fieldPhotos);
+                                    if (elapsedDays <= currentDay) {
+                                        Log.d(TAG, "displayPhotos: deleting posts");
+                                        ArrayList<Photo> fieldPhotos2 = new ArrayList<>(fieldPhotos);
                                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                             for (Photo photo : fieldPhotos)
                                                 if (photo.getPhoto_id().equals(dataSnapshot.getKey())) {
@@ -1217,7 +1211,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                                     break;
                                                 }
                                         }
-                                        Log.d(TAG, "onTimeReceived: "+fieldPhotos2.size());
+                                        Log.d(TAG, "displayPhotos: " + fieldPhotos2.size());
                                         Gson gson = new Gson();
                                         String json = gson.toJson(fieldPhotos2);
 //                                Log.d(TAG, "onDataChange: " + json);
@@ -1225,9 +1219,9 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                         mEditor.putString(finalField + "_TopPosts", json);
                                         mEditor.putInt(finalField + "_completed", fieldPhotos2.size());
                                         mEditor.apply();
-                                        Log.d(TAG, "getPosts: uploading after deletion" + fieldPhotos2.size() + " photos for " + finalField);
-                                        fetchPhotos();
+                                        Log.d(TAG, "displayPhotos: uploading after deletion" + fieldPhotos2.size() + " photos for " + finalField);
                                     }
+                                    fetchPhotos();
                                 }
 
                                 @Override
@@ -1237,8 +1231,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                     fetchPhotos();
                                 }
                             });
-                        }
-                        else fetchPhotos();
+                        } else fetchPhotos();
                     }
 
                     @Override
@@ -1251,24 +1244,31 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     }
 
     private void fetchPhotos() {
-        Log.d(TAG, "displayPhotos: field"+fieldPhotos);
+        Log.d(TAG, "displayPhotos: field" + fieldPhotos);
         try {
-            if (!shuffled) {
-                Collections.shuffle(fieldPhotos);
-                shuffled = true;
+            if(fieldPhotos.size()!=0) {
+                runOnUiThread(() -> findViewById(R.id.noPost).setVisibility(View.GONE));
+                if (!shuffled) {
+                    Collections.shuffle(fieldPhotos);
+                    shuffled = true;
+                }
+                paginatedPhotos = new ArrayList<>();
+                for (int i = 0; i < fieldPhotos.size(); i++) {
+                    if (i == fieldPhotos.size() - 1 || i == 8) {
+                        Log.d(TAG, "displayPhotos: paginatedPhotos" + paginatedPhotos.size());
+                        adapterGridImage = new AdapterGridImageExplore(mContext, paginatedPhotos, this::onItemClick);
+                        ((SimpleItemAnimator) exploreRv.getItemAnimator()).setSupportsChangeAnimations(false);
+                        swipeRefreshLayout.setRefreshing(false);
+                        adapterGridImage.setHasStableIds(true);
+                        exploreRv.post(() -> exploreRv.setAdapter(adapterGridImage));
+                        break;
+                    } else paginatedPhotos.add(fieldPhotos.get(i));
+                }
             }
-            paginatedPhotos = new ArrayList<>();
-            for (int i = 0; i < fieldPhotos.size(); i++) {
-                if (i == fieldPhotos.size() - 1 || i == 8) {
-                    Log.d(TAG, "displayPhotos: paginatedPhotos" + paginatedPhotos.size());
-                    adapterGridImage = new AdapterGridImageExplore(mContext, paginatedPhotos,this::onItemClick);
-                    ((SimpleItemAnimator) exploreRv.getItemAnimator()).setSupportsChangeAnimations(false);
-                    swipeRefreshLayout.setRefreshing(false);
-                    adapterGridImage.setHasStableIds(true);
-                    exploreRv.post(() -> exploreRv.setAdapter(adapterGridImage));
-                    break;
-                } else paginatedPhotos.add(fieldPhotos.get(i));
-            }
+            else runOnUiThread(() -> {
+                swipeRefreshLayout.setRefreshing(false);
+                findViewById(R.id.noPost).setVisibility(View.VISIBLE);
+            });
 
         } catch (NullPointerException e) {
             Log.e(TAG, "Null pointer exception" + e.getMessage());
@@ -1429,6 +1429,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             }
         });
     }
+
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
         mAuth = FirebaseAuth.getInstance();

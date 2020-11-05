@@ -1,8 +1,6 @@
 package com.orion.orion.leaderboard;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -18,7 +16,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -38,7 +35,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -75,14 +71,9 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
     private static final int LEADERBOAD_SIZE = 20;
     private Context mContext;
     FirebaseMethods firebaseMethods;
-    //initializing widgets
-    private LinearLayout topBar;
-    private RelativeLayout userItem;
     private TextView userItemUsername;
     private TextView userItemRank;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private RelativeLayout filterBox;
-    private LinearLayout filterParams;
     private TextView sortedByTime;
     private TextView sortedByLocation;
     private TextView sortedByType;
@@ -97,7 +88,6 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
     private String domainParameter;
     //variables
     private ArrayList<ItemLeaderboard> mList;
-    private FusedLocationProviderClient fusedLocationClient;
     private String currentUser;
     //firebase
     private FirebaseAuth mAuth;
@@ -719,146 +709,6 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
             BottomSheetFilter bottomSheet = new BottomSheetFilter(locationList);
             bottomSheet.show(getSupportFragmentManager(), "Type Filter");
         });
-//        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-//                super.onScrollStateChanged(recyclerView, newState);
-//                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-//                    topBar.animate()
-//                            .alpha(0.0f)
-//                            .setDuration(500)
-//                            .setListener(new AnimatorListenerAdapter() {
-//                                @Override
-//                                public void onAnimationEnd(Animator animation) {
-//                                    super.onAnimationEnd(animation);
-//                                    topBar.setVisibility(View.GONE);
-//                                    scrollDownActive.setVisibility(View.VISIBLE);
-//                                }
-//                            });
-//                }
-//            }
-//
-//            @Override
-//            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                Log.d(TAG, "onScrolled: "+dy);
-//                if(dy>0 && !recyclerView.canScrollVertically(1)){
-//                    topBar.animate()
-//                            .alpha(0.0f)
-//                            .setDuration(500)
-//                            .setListener(new AnimatorListenerAdapter() {
-//                                @Override
-//                                public void onAnimationEnd(Animator animation) {
-//                                    super.onAnimationEnd(animation);
-//                                    topBar.setVisibility(View.GONE);
-//                                    scrollDownActive.setVisibility(View.VISIBLE);
-//                                }
-//                            });
-//                }
-//            }
-//        });
-        filterBox.setOnClickListener(v -> {
-            Log.d(TAG, "onCreate: v.getId()" + v.getId());
-            Log.d(TAG, "onCreate: filterParams.getId()" + filterParams.getId());
-            if (v.getId() != filterParams.getId()) {
-                if (topBar.getVisibility() == View.GONE) {
-                    topBar.animate()
-                            .alpha(1.0f)
-                            .setDuration(500)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    super.onAnimationEnd(animation);
-                                    topBar.setVisibility(View.VISIBLE);
-                                }
-                            });
-                    userItem.animate()
-                            .alpha(0.0f)
-                            .setDuration(500)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    super.onAnimationEnd(animation);
-                                    userItem.setVisibility(View.GONE);
-                                }
-                            });
-                } else if (topBar.getVisibility() == View.VISIBLE) {
-                    topBar.animate()
-                            .alpha(0.0f)
-                            .setDuration(500)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    super.onAnimationEnd(animation);
-                                    topBar.setVisibility(View.GONE);
-                                }
-                            });
-                    userItem.animate()
-                            .alpha(1.0f)
-                            .setDuration(500)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    super.onAnimationEnd(animation);
-                                    userItem.setVisibility(View.VISIBLE);
-                                }
-                            });
-                }
-            }
-        });
-        filterBox.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (v.getId() != filterParams.getId()) {
-                    if (event.getAction() == MotionEvent.ACTION_UP && topBar.getVisibility() == View.VISIBLE) {
-                        topBar.animate()
-                                .alpha(0.0f)
-                                .setDuration(500)
-                                .setListener(new AnimatorListenerAdapter() {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        super.onAnimationEnd(animation);
-                                        topBar.setVisibility(View.GONE);
-                                    }
-                                });
-                        userItem.animate()
-                                .alpha(1.0f)
-                                .setDuration(500)
-                                .setListener(new AnimatorListenerAdapter() {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        super.onAnimationEnd(animation);
-                                        userItem.setVisibility(View.VISIBLE);
-                                    }
-                                });
-                        return true;
-                    } else if (event.getAction() == MotionEvent.ACTION_DOWN && topBar.getVisibility() == View.GONE) {
-                        topBar.animate()
-                                .alpha(1.0f)
-                                .setDuration(500)
-                                .setListener(new AnimatorListenerAdapter() {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        super.onAnimationEnd(animation);
-                                        topBar.setVisibility(View.VISIBLE);
-                                    }
-                                });
-                        userItem.animate()
-                                .alpha(0.0f)
-                                .setDuration(500)
-                                .setListener(new AnimatorListenerAdapter() {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        super.onAnimationEnd(animation);
-                                        userItem.setVisibility(View.GONE);
-                                    }
-                                });
-                    }
-                }
-                return false;
-
-            }
-        });
         swipeRefreshLayout.setOnRefreshListener(() -> {
             mRecyclerView.setVisibility(View.GONE);
             filter();
@@ -1147,16 +997,13 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         firebaseMethods = new FirebaseMethods(mContext);
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(LeaderboardActivity.this));
-        userItem = findViewById(R.id.userItem);
+        //initializing widgets
         userItemUsername = findViewById(R.id.userItemUsername);
         userItemRank = findViewById(R.id.userItemRank);
         sortedByTime = findViewById(R.id.sortedByTime);
         sortedByLocation = findViewById(R.id.sortedByLocation);
         sortedByType = findViewById(R.id.sortedByType);
         sortedByDomain = findViewById(R.id.sortedByDomain);
-        topBar = findViewById(R.id.topBar);
-        filterBox = findViewById(R.id.filterBox);
-        filterParams = findViewById(R.id.filter);
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
         YoYo.with(Techniques.BounceIn).duration(ANIMATION_DURATION).playOn(sortedByTime);
         YoYo.with(Techniques.BounceIn).duration(ANIMATION_DURATION).playOn(sortedByLocation);
