@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -58,6 +59,7 @@ public class fragment_upcomingContest extends Fragment {
     private EditText searchBox;
     int prevHeight;
     int height, dummyHeight;
+    TextView noPost;
     LinearLayout blurBg;
     int x=0;
     private int mResults;
@@ -109,6 +111,7 @@ public class fragment_upcomingContest extends Fragment {
         blurBg=view.findViewById(R.id.pro);
         cross=view.findViewById(R.id.cross);
 
+        noPost=view.findViewById(R.id.noPost);
 
 
 //**************************************************************************************
@@ -158,7 +161,7 @@ public class fragment_upcomingContest extends Fragment {
                 filterY.setVisibility(View.VISIBLE);
                 filterB.setVisibility(View.GONE);
 
-                expand(relativeLayout,2000);
+                expand(relativeLayout,1000);
 
             }
         });
@@ -167,7 +170,7 @@ public class fragment_upcomingContest extends Fragment {
             public void onClick(View v) {
                 filterY.setVisibility(View.GONE);
                 filterB.setVisibility(View.VISIBLE);
-                expand(relativeLayout,2000);
+                expand(relativeLayout,1000);
 
 
             }
@@ -522,10 +525,10 @@ public class fragment_upcomingContest extends Fragment {
     }
     private void displaycontest() {
         Log.d(TAG, "display first 10 contest");
-
+noPost.setVisibility(View.GONE);
         flag1=true;
         paginatedcontestlist = new ArrayList<>();
-        if (contestlist != null) {
+        if (contestlist != null&&contestlist.size()!=0) {
 
             try {
 
@@ -561,6 +564,9 @@ public class fragment_upcomingContest extends Fragment {
                 Log.e(TAG, "index out of bound" + e.getMessage());
 
             }
+
+        }else{
+            noPost.setVisibility(View.VISIBLE);
 
         }
     }

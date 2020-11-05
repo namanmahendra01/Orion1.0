@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,7 +52,7 @@ public class fragment_joinedContest extends Fragment {
     RecyclerView joinedContestRv;
     private ArrayList<JoinForm> contestlist;
     private ArrayList<JoinForm> paginatedContestlist;
-
+TextView noPost;
     SwipeRefreshLayout contestRefresh;
     boolean flag1 = false;
     private static int RETRY_DURATION = 1000;
@@ -81,6 +82,7 @@ public class fragment_joinedContest extends Fragment {
         gson = new Gson();
 
         contestRefresh=view.findViewById(R.id.contest_refresh);
+        noPost=view.findViewById(R.id.noPost);
 
         joinedContestRv=view.findViewById(R.id.recycler_view2);
         joinedContestRv.setHasFixedSize(true);
@@ -326,9 +328,11 @@ public class fragment_joinedContest extends Fragment {
 
     private void displaycontest() {
         Log.d(TAG, "display first 10 contest");
+        noPost.setVisibility(View.GONE);
+
         flag1=true;
         paginatedContestlist = new ArrayList<>();
-        if (contestlist != null) {
+        if (contestlist != null && contestlist.size()!=0) {
 
             try {
 
@@ -356,6 +360,8 @@ public class fragment_joinedContest extends Fragment {
 
             }
 
+        }else {
+            noPost.setVisibility(View.VISIBLE);
         }
     }
 

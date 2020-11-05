@@ -112,6 +112,8 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView mParticipation;
     private TextView mRank;
 
+    private TextView noPost;
+
     private TextView mDescription;
     private TextView mWebsite;
     private String whatsappNo;
@@ -134,6 +136,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         dialog = ProgressDialog.show(this, "", "Loading Profile...", true);
         mContext = ProfileActivity.this;
+        noPost = findViewById(R.id.noPost);
 
         menu = findViewById(R.id.menu);
         mUsername = findViewById(R.id.display_name);
@@ -389,14 +392,19 @@ public class ProfileActivity extends AppCompatActivity {
         imgURLsList = gson.fromJson(json, type);
 //        Log.d(TAG, "fetchPhotosFromSp: "+imgURLsList.size());
         if (imgURLsList == null || imgURLsList.size() == 0) {
+            Log.d(TAG, "fetchPhotosFromSp: 1");
             imgURLsList = new ArrayList<>();
             SetupGridView();
         } else {
+            Log.d(TAG, "fetchPhotosFromSp: 2");
+
             checkUpdate();
         }
     }
 
     private void checkUpdate() {
+        noPost.setVisibility(View.GONE);
+
         Log.d(TAG, "checkUpdate: started");
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         assert user != null;
@@ -415,9 +423,14 @@ public class ProfileActivity extends AppCompatActivity {
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.getChildrenCount()==imgURLsList.size()){
                                     Log.d(TAG, "onDataChange: photoList" + imgURLsList);
-                                    adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
-                                    adapterGridImage.setHasStableIds(true);
-                                    gridRv.setAdapter(adapterGridImage);
+
+                                    if (imgURLsList!=null&&imgURLsList.size()!=0) {
+                                        adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
+                                        adapterGridImage.setHasStableIds(true);
+                                        gridRv.setAdapter(adapterGridImage);
+                                    }else {
+                                        noPost.setVisibility(View.VISIBLE);
+                                    }
                                 }else{
                                     SetupGridView();
 
@@ -606,6 +619,8 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void SetupGridView() {
+        noPost.setVisibility(View.GONE);
+
         final ArrayList<Photo> photos = new ArrayList<>();
        imgURLsList = new ArrayList<>();
 
@@ -658,9 +673,14 @@ public class ProfileActivity extends AppCompatActivity {
                 String json = gson.toJson(imgURLsList);
                 editor.putString("myMedia", json);
                 editor.apply();
-                adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
-                adapterGridImage.setHasStableIds(true);
-                gridRv.setAdapter(adapterGridImage);//
+
+                if (imgURLsList!=null&&imgURLsList.size()!=0) {
+                    adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
+                    adapterGridImage.setHasStableIds(true);
+                    gridRv.setAdapter(adapterGridImage);//
+                }else{
+                    noPost.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override

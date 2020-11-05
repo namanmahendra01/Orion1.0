@@ -546,7 +546,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/linearLayout2"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="70dp"
                 android:background="@color/white"
                 android:gravity="center"
                 android:horizontalSpacing="1dp"
@@ -556,6 +556,20 @@
                 app:spanCount="3">
 
             </androidx.recyclerview.widget.RecyclerView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NO POST SHARED"
+                android:layout_marginBottom="70dp"
+
+                android:id="@+id/noPost"
+                android:visibility="gone"
+                android:layout_below="@+id/linearLayout2"
+
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:textSize="18sp"/>
 
 
         </RelativeLayout>

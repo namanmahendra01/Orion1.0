@@ -1192,12 +1192,17 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
                                                         photoList = gson.fromJson(json, type);
                                                         mymediaList = gson.fromJson(json2, type);
-                                                        ArrayList<Photo> photoList2 = new ArrayList<>(photoList);
-                                                        ArrayList<Photo> mymediaList2 = new ArrayList<>(mymediaList);
+                                                        ArrayList<Photo> photoList2 =new ArrayList<>();
+                                                        ArrayList<Photo> mymediaList2= new ArrayList<>();
+                                                        if( photoList != null) {
+                                                            photoList2 = new ArrayList<>(photoList);
+                                                        }
+                                                        if (mymediaList != null){
+                                                            mymediaList2 = new ArrayList<>(mymediaList);
+                                                        }
 
 
-
-                                                        if (photoList == null || photoList.size() == 0) {                 //    if no arrayList is present
+                                                        if (photoList2.size() == 0) {                 //    if no arrayList is present
 
 
                                                         } else {
@@ -1210,9 +1215,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                                                         }
 
 
-
-                                                        if (mymediaList == null || mymediaList.size() == 0) {                 //    if no arrayList is present
-
+                                                        if (mymediaList2.size() == 0) {
 
                                                         } else {
 

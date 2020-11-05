@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,6 +37,7 @@ public class SignOut extends AppCompatActivity {
         btnConfirmSignOut.setOnClickListener(v -> {
             SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
             settings.edit().clear().apply();
+            PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().clear().apply();
             mAuth.signOut();
             mProgressbar.setVisibility(View.VISIBLE);
             finish();

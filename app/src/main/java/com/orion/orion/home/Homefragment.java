@@ -89,7 +89,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
     LinearLayout promo;
     private ImageView star, starFill;
-    TextView domaintv, footer;
+    TextView domaintv, footer,noPost;
     SwipeRefreshLayout postReferesh;
     ScrollView scrollView;
     private RecyclerView ListViewRv;
@@ -123,6 +123,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         postReferesh = view.findViewById(R.id.post_refresh);
         progress = view.findViewById(R.id.pro);
         bottomProgress = view.findViewById(R.id.pro2);
+        noPost = view.findViewById(R.id.noPost);
 
 //          Initialize SharedPreference variables
         sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
@@ -1234,20 +1235,38 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                    mFollowing.add(singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString());
-                }
-
+                if (dataSnapshot.exists()) {
+                    int x=0;
+                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                        x++;
+                        mFollowing.add(singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString());
+                        if (x==dataSnapshot.getChildrenCount()){
 
 //                        Add newly Created ArrayList to Shared Preferences
-                SharedPreferences.Editor editor = sp.edit();
-                String json = gson.toJson(mFollowing);
-                editor.putString("fl", json);
-                editor.apply();
+                            SharedPreferences.Editor editor = sp.edit();
+                            String json = gson.toJson(mFollowing);
+                            editor.putString("fl", json);
+                            editor.apply();
 
-                getPostListFromSP();
-                getcontest();
-                getStory();
+                            getPostListFromSP();
+                            getcontest();
+                            getStory();
+                        }
+                    }
+
+
+                }else{
+
+//                        Add newly Created ArrayList to Shared Preferences
+                    SharedPreferences.Editor editor = sp.edit();
+                    String json = gson.toJson(mFollowing);
+                    editor.putString("fl", json);
+                    editor.apply();
+
+                    getPostListFromSP();
+                    getcontest();
+                    getStory();
+                }
 
             }
 
@@ -1332,73 +1351,72 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                 Query query = reference
                         .child(getString(R.string.dbname_user_photos))
-                        .child(mFollowing.get(i))
-                        .orderByChild(getString(R.string.field_user_id))
-                        .equalTo(mFollowing.get(i));
+                        .child(mFollowing.get(i));
+
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        long x = 0;
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                            x++;
+                            long x = 0;
+                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                x++;
 
-                            Photo photo = new Photo();
-                            Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-                            photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
+                                Photo photo = new Photo();
+                                Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                                photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
 
-                            photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
+                                photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
 
-                            photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+                                photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
 
-                            photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
+                                photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
 
-                            photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
+                                photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
 
-                            photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+                                photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
 
 
-                            if (objectMap.get(getString(R.string.thumbnail)) != null) {
-                                photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
+                                if (objectMap.get(getString(R.string.thumbnail)) != null) {
+                                    photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
 
-                            }
-                            photo.setType(objectMap.get(getString(R.string.type)).toString());
-
-                            ArrayList<Comment> comments = new ArrayList<>();
-
-                            for (DataSnapshot dSnapshot : singleSnapshot
-                                    .child(getString(R.string.field_comment)).getChildren()) {
-                                Comment comment = new Comment();
-                                comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                                comments.add(comment);
-
-                            }
-                            photo.setComments(comments);
-                            mPhotos.add(photo);
-//                        sort array List
-                            Collections.sort(mPhotos, new Comparator<Photo>() {
-                                @Override
-                                public int compare(Photo o1, Photo o2) {
-                                    return o2.getDate_created().compareTo(o1.getDate_created());
                                 }
-                            });
+                                photo.setType(objectMap.get(getString(R.string.type)).toString());
+
+                                ArrayList<Comment> comments = new ArrayList<>();
+
+                                for (DataSnapshot dSnapshot : singleSnapshot
+                                        .child(getString(R.string.field_comment)).getChildren()) {
+                                    Comment comment = new Comment();
+                                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                    comments.add(comment);
+
+                                }
+                                photo.setComments(comments);
+                                mPhotos.add(photo);
+//                        sort array List
+                                Collections.sort(mPhotos, new Comparator<Photo>() {
+                                    @Override
+                                    public int compare(Photo o1, Photo o2) {
+                                        return o2.getDate_created().compareTo(o1.getDate_created());
+                                    }
+                                });
 
 //                        Add newly Created ArrayList to Shared Preferences
-                            SharedPreferences.Editor editor = sp.edit();
-                            String json = gson.toJson(mPhotos);
-                            editor.putString("pl", json);
-                            editor.apply();
+                                SharedPreferences.Editor editor = sp.edit();
+                                String json = gson.toJson(mPhotos);
+                                editor.putString("pl", json);
+                                editor.apply();
 
-                        }
-                        if (count >= mFollowing.size() - 1) {
+                            }
+                            if (count >= mFollowing.size() - 1) {
 //                        call display photos
-                            displayPhotos();
+                                displayPhotos();
+
+                            }
 
                         }
 
-
-                    }
 
 
                     @Override
@@ -1409,6 +1427,10 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
 
             }
+            if (mFollowing.size()==0){
+                //                        call display photos
+                displayPhotos();
+            }
         } else {
             checkPostUpdate();
         }
@@ -1416,6 +1438,8 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     }
 
     private void displayPhotos() {
+        noPost.setVisibility(View.GONE);
+
         Log.d(TAG, "display first 10 photo");
         flag1 = true;
         mPaginatedPhotos = new ArrayList<>();
@@ -1444,6 +1468,10 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
             }
 
+        }else{
+            noPost.setVisibility(View.VISIBLE);
+            bottomProgress.setVisibility(View.GONE);
+
         }
     }
 
@@ -1470,10 +1498,14 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     public void run() {
                         mAadapter.notifyItemRangeInserted(mResults, iterations);
                         flag5=true;
+
                     }
                 });
                 mResults = mResults + iterations;
 
+
+            }else {
+                bottomProgress.setVisibility(View.GONE);
 
             }
 

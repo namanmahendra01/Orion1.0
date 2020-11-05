@@ -16,5 +16,14 @@ android:layout_height="match_parent">
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NO CONTEST JOINED"
+        android:id="@+id/noPost"
+        android:visibility="gone"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textSize="18sp"/>
 </RelativeLayout>
