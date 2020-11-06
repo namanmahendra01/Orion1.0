@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -63,6 +64,8 @@ public class fragment_upcomingContest extends Fragment {
     LinearLayout blurBg;
     int x=0;
     private int mResults;
+    ProgressBar bottomProgress;
+
     private int mResults2;
     RelativeLayout relativeLayout;
     ImageView gridB,gridY,colY,colB,filterB,filterY,cross;
@@ -110,6 +113,7 @@ public class fragment_upcomingContest extends Fragment {
         contesRefresh=view.findViewById(R.id.contest_refresh);
         blurBg=view.findViewById(R.id.pro);
         cross=view.findViewById(R.id.cross);
+        bottomProgress=view.findViewById(R.id.pro2);
 
         noPost=view.findViewById(R.id.noPost);
 
@@ -222,8 +226,14 @@ public class fragment_upcomingContest extends Fragment {
                 super.onScrollStateChanged(recyclerView, newState);
 
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (contestlist.size()!=paginatedcontestlist.size()){
+                        bottomProgress.setVisibility(View.VISIBLE);
 
+                    }
                     displayMoreContest();
+
+                }else{
+                    bottomProgress.setVisibility(View.GONE);
 
                 }
             }
@@ -526,8 +536,11 @@ public class fragment_upcomingContest extends Fragment {
     private void displaycontest() {
         Log.d(TAG, "display first 10 contest");
 noPost.setVisibility(View.GONE);
+        bottomProgress.setVisibility(View.GONE);
+
         flag1=true;
         paginatedcontestlist = new ArrayList<>();
+
         if (contestlist != null&&contestlist.size()!=0) {
 
             try {
@@ -545,12 +558,14 @@ noPost.setVisibility(View.GONE);
                 }
                 Log.d(TAG, "contest: sss" + paginatedcontestlist.size());
                 if ( upcomingContestRv.getAdapter().getClass().equals( contestUpcoming.getClass())) {
+
                     contestUpcoming = new AdapterContestUpcoming(getContext(), paginatedcontestlist);
                     contestUpcoming.setHasStableIds(true);
 
                     upcomingContestRv.setAdapter(contestUpcoming);
 
                 }else{
+
                     adapterContestUpcomingGrid = new AdapterContestUpcomingGrid(getContext(), paginatedcontestlist);
                     adapterContestUpcomingGrid.setHasStableIds(true);
 
@@ -566,6 +581,8 @@ noPost.setVisibility(View.GONE);
             }
 
         }else{
+            bottomProgress.setVisibility(View.GONE);
+
             noPost.setVisibility(View.VISIBLE);
 
         }
@@ -603,6 +620,9 @@ noPost.setVisibility(View.GONE);
                 });
                 mResults = mResults + iterations;
 
+
+            }else{
+                bottomProgress.setVisibility(View.GONE);
 
             }
 

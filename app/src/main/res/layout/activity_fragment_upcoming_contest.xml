@@ -194,6 +194,15 @@
         android:id="@+id/recycler_view1">
 
     </androidx.recyclerview.widget.RecyclerView>
+        <ProgressBar
+            android:id="@+id/pro2"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/transparent"
+            android:visibility="visible" />
     </RelativeLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <LinearLayout

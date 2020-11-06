@@ -240,7 +240,9 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             public void onClick(View view) {
                 mSearchParam.setText("");
                 mUserList.clear();
-                mAdapter.notifyDataSetChanged();
+                if(mAdapter!=null) {
+                    mAdapter.notifyDataSetChanged();
+                }
             }
         });
 
@@ -1068,7 +1070,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     public void onButtonClicked(String text) {
         spinner.setText(text);
         swipeRefreshLayout.setRefreshing(true);
-        Log.d(TAG, "onItemSelected: qwer" + text);
         displayPhotos();
     }
 
@@ -1335,17 +1336,19 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         } else {
             cross.setVisibility(View.VISIBLE);
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-            Query query = reference.child(getString(R.string.dbname_username))
+            Query query = reference.child(getString(R.string.dbname_username)).orderByKey()
                     .startAt(keyword).endAt(keyword + "\uf8ff");
             query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+
                         reference.child(getString(R.string.dbname_users))
                                 .child(singleSnapshot.getValue().toString())
                                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                                         mUserList.add(snapshot.getValue(users.class));
                                         updateUserList();
                                     }

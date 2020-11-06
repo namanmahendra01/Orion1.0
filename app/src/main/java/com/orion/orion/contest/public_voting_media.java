@@ -57,13 +57,6 @@ public class public_voting_media extends AppCompatActivity {
         });
 
 
-        gridRv.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
-        gridRv.setDrawingCacheEnabled(true);
-        gridRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
-        linearLayoutManager.setItemPrefetchEnabled(true);
-        linearLayoutManager.setInitialPrefetchItemCount(20);
-        gridRv.setLayoutManager(linearLayoutManager);
 
         imgURLsList=new ArrayList<>();
 
@@ -100,6 +93,27 @@ public class public_voting_media extends AppCompatActivity {
                             isImage= imgURLsList.get(0).getMediaLink().substring(8,23).equals("firebasestorage");
 
                         }
+                        if (isImage){
+
+                            gridRv.setHasFixedSize(true);
+                            GridLayoutManager linearLayoutManager=new GridLayoutManager(public_voting_media.this,2);
+                            gridRv.setDrawingCacheEnabled(true);
+                            gridRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+                            linearLayoutManager.setItemPrefetchEnabled(true);
+                            linearLayoutManager.setInitialPrefetchItemCount(20);
+                            gridRv.setLayoutManager(linearLayoutManager);
+                        }else{
+
+                            gridRv.setHasFixedSize(true);
+                            LinearLayoutManager linearLayoutManager=new LinearLayoutManager(public_voting_media.this);
+                            gridRv.setDrawingCacheEnabled(true);
+                            gridRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+                            linearLayoutManager.setItemPrefetchEnabled(true);
+                            linearLayoutManager.setInitialPrefetchItemCount(20);
+                            gridRv.setLayoutManager(linearLayoutManager);
+                        }
+
+
                         adapterGridImage = new AdapterGridImageContest(public_voting_media.this,imgURLsList,isImage);
                         adapterGridImage.setHasStableIds(true);
                         gridRv.setAdapter(adapterGridImage);

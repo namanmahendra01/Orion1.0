@@ -46,12 +46,14 @@ public class activity_view_media extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_media);
+
         ImageView mediaIv = findViewById(R.id.mediaIv);
         voteNo = findViewById(R.id.noVote);
         voteYes = findViewById(R.id.yesVote);
         RelativeLayout relativeLayout = findViewById(R.id.relLayout2);
         votingNumber = findViewById(R.id.votingNumber);
         ImageView progress = findViewById(R.id.progress);
+
         Intent i = getIntent();
         String imagelink = i.getStringExtra("imageLink");
         contestKey = i.getStringExtra("contestkey");
@@ -93,12 +95,12 @@ public class activity_view_media extends AppCompatActivity {
                 .child(contestKey)
                 .child(joiningKey)
                 .child(getString(R.string.voting_list))
-                .child(mUser.getUid())
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .removeValue();
         reference.child(getString(R.string.dbname_contestlist))
                 .child(contestKey)
                 .child("voterlist")
-                .child(mUser.getUid())
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .removeValue();
         NumberofVotes();
         voted=false;
@@ -111,12 +113,12 @@ public class activity_view_media extends AppCompatActivity {
                 .child(contestKey)
                 .child(joiningKey)
                 .child(getString(R.string.voting_list))
-                .child(mUser.getUid())
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .setValue(true);
         reference.child(getString(R.string.dbname_contestlist))
                 .child(contestKey)
                 .child("voterlist")
-                .child(mUser.getUid())
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .setValue(true);
         NumberofVotes();
     }
@@ -128,7 +130,7 @@ public class activity_view_media extends AppCompatActivity {
                 .child(contestKey)
                 .child(joiningKey)
                 .child(getString(R.string.voting_list))
-                .child(mUser.getUid())
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
@@ -152,7 +154,7 @@ public class activity_view_media extends AppCompatActivity {
         reference.child(getString(R.string.dbname_contestlist))
                 .child(contestKey)
                 .child("voterlist")
-                .child(mUser.getUid())
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -57,6 +58,7 @@ TextView noPost;
     boolean flag1 = false;
     private static int RETRY_DURATION = 1000;
     private static final Handler handler = new Handler(Looper.getMainLooper());
+    ProgressBar bottomProgress;
 
     //    SP
     Gson gson;
@@ -83,7 +85,7 @@ TextView noPost;
 
         contestRefresh=view.findViewById(R.id.contest_refresh);
         noPost=view.findViewById(R.id.noPost);
-
+        bottomProgress=view.findViewById(R.id.pro2);
         joinedContestRv=view.findViewById(R.id.recycler_view2);
         joinedContestRv.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getContext());
@@ -105,8 +107,14 @@ TextView noPost;
                 super.onScrollStateChanged(recyclerView, newState);
 
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (contestlist.size()!=paginatedContestlist.size()){
+                        bottomProgress.setVisibility(View.VISIBLE);
 
+                    }
                     displayMoreContest();
+
+                }else{
+                    bottomProgress.setVisibility(View.GONE);
 
                 }
             }
@@ -330,6 +338,7 @@ TextView noPost;
         Log.d(TAG, "display first 10 contest");
         noPost.setVisibility(View.GONE);
 
+
         flag1=true;
         paginatedContestlist = new ArrayList<>();
         if (contestlist != null && contestlist.size()!=0) {
@@ -362,11 +371,14 @@ TextView noPost;
 
         }else {
             noPost.setVisibility(View.VISIBLE);
+            bottomProgress.setVisibility(View.GONE);
+
         }
     }
 
     public void displayMoreContest() {
         Log.d(TAG, "display next 10 contest");
+        bottomProgress.setVisibility(View.GONE);
 
         try {
             if (contestlist.size() > mResults && contestlist.size() > 0) {
@@ -391,6 +403,9 @@ TextView noPost;
                 });
                 mResults = mResults + iterations;
 
+
+            }else{
+                bottomProgress.setVisibility(View.GONE);
 
             }
 

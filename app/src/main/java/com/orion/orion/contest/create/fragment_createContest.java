@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -48,6 +49,8 @@ public class fragment_createContest extends Fragment {
     private ArrayList<CreateForm> paginatedContestlist;
     private int mResults;
     private AdapterContestCreated contestCreated;
+    ProgressBar bottomProgress;
+
 
     TextView noPost;
     SwipeRefreshLayout contestRefresh;
@@ -70,6 +73,8 @@ public class fragment_createContest extends Fragment {
 
         contestRefresh=view.findViewById(R.id.contest_refresh);
         noPost=view.findViewById(R.id.noPost);
+        bottomProgress=view.findViewById(R.id.pro2);
+
 
 //          Initialize SharedPreference variables
         sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
@@ -100,8 +105,14 @@ public class fragment_createContest extends Fragment {
                 super.onScrollStateChanged(recyclerView, newState);
 
                 if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (contestlist.size()!=paginatedContestlist.size()){
+                        bottomProgress.setVisibility(View.VISIBLE);
 
+                    }
                     displayMoreContest();
+
+                }else {
+                    bottomProgress.setVisibility(View.GONE);
 
                 }
             }
@@ -244,17 +255,36 @@ public class fragment_createContest extends Fragment {
         DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
         refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(getString(R.string.field_created_contest))
-                .orderByKey()
-                .limitToLast(1)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot snapshot1:snapshot.getChildren()){
-                            if (contestlist.get(0).getContestkey().equals(snapshot1.getKey())){
-                                displaycontest();
-                            }else{
-                                updateCreateList();
-                            }
+                        if (snapshot.getChildrenCount()!=contestlist.size()){
+                            updateCreateList();
+
+                        }else{
+                            refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .child(getString(R.string.field_created_contest))
+                                    .orderByKey()
+                                    .limitToLast(1)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if (snapshot.exists()) {
+                                                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                                    if (contestlist.get(0).getContestkey().equals(snapshot1.getKey())) {
+                                                        displaycontest();
+                                                    } else {
+                                                        updateCreateList();
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
                         }
                     }
 
@@ -263,6 +293,7 @@ public class fragment_createContest extends Fragment {
 
                     }
                 });
+
     }
 
     private void updateCreateList() {
@@ -305,6 +336,8 @@ public class fragment_createContest extends Fragment {
     private void displaycontest() {
         Log.d(TAG, "display first 10 contest");
         noPost.setVisibility(View.GONE);
+        bottomProgress.setVisibility(View.GONE);
+
 
         flag1=true;
         paginatedContestlist = new ArrayList<>();
@@ -336,6 +369,8 @@ public class fragment_createContest extends Fragment {
 
         }else {
             noPost.setVisibility(View.VISIBLE);
+            bottomProgress.setVisibility(View.GONE);
+
         }
     }
 
@@ -365,6 +400,9 @@ public class fragment_createContest extends Fragment {
                 });
                 mResults = mResults + iterations;
 
+
+            }else{
+                bottomProgress.setVisibility(View.GONE);
 
             }
 

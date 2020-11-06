@@ -152,18 +152,54 @@
     </string-array>
 
     <string-array name="domain">
-        <item>Select here</item>
-        <item>Film Maker</item>
-        <item>Photography</item>
-        <item>Painter</item>
+        <item>All</item>
+        <item>Speaker</item>
+        <item>Chef</item>
+        <item>Cinematographer</item>
+        <item>Dancer</item>
+        <item>Instrument Player</item>
+        <item>Editor</item>
+        <item>Fashion Designer</item>
+        <item>Actor</item>
+        <item>Film maker</item>
+        <item>Gamer</item>
+        <item>Makeup Artist</item>
+        <item>Model</item>
+        <item>Singer</item>
+        <item>Musician</item>
+        <item>Sketch Artist</item>
+        <item>Poet</item>
+        <item>Photographer</item>
+        <item>Rapper</item>
+        <item>Sports</item>
+        <item>Writer</item>
+        <item>Digital Art</item>
+
 
     </string-array>
-
     <string-array name="domain2">
         <item>All</item>
-        <item>Film Maker</item>
-        <item>Photography</item>
-        <item>Painter</item>
+        <item>Speaker</item>
+        <item>Chef</item>
+        <item>Cinematographer</item>
+        <item>Dancer</item>
+        <item>Instrument Player</item>
+        <item>Editor</item>
+        <item>Fashion Designer</item>
+        <item>Actor</item>
+        <item>Film maker</item>
+        <item>Gamer</item>
+        <item>Makeup Artist</item>
+        <item>Model</item>
+        <item>Singer</item>
+        <item>Musician</item>
+        <item>Sketch Artist</item>
+        <item>Poet</item>
+        <item>Photographer</item>
+        <item>Rapper</item>
+        <item>Sports</item>
+        <item>Writer</item>
+        <item>Digital Art</item>
 
     </string-array>
 

@@ -49,30 +49,38 @@
         android:padding="10dp"
         android:id="@+id/collegeLinear"
 
-        android:weightSum="1"
         android:layout_marginBottom="10dp"
-        android:orientation="horizontal">
-
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="College/School:"
-            android:layout_weight=".28"
+            android:id="@+id/col"
             android:textColor="@color/black"/>
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Kiet"
+            android:layout_toRightOf="@+id/col"
+            android:layout_marginLeft="5dp"
+            android:textAlignment="center"
+
+            android:text="Kietnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn"
             android:id="@+id/collegeBs"
-            android:layout_weight="0.6"
-            android:textColor="@color/black"/>
+           />
+</RelativeLayout>
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="see ID card"
-            android:layout_weight="0.2"
             android:gravity="right"
             android:id="@+id/idBs"
+            android:layout_marginTop="15dp"
+            android:textSize="12sp"
             android:textColor="#03A9F4"/>
     </LinearLayout>
 

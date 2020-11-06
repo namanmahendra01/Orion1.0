@@ -126,50 +126,52 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
                 }
             });
 
+
+            holder.voteNo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                    reference.child(mContext.getString(R.string.dbname_contestlist))
+                            .child(participantList.getContestkey())
+                            .child("voterlist")
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        Toast.makeText(mContext, "You have already voted for this contest.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        holder.voteNo.setVisibility(View.GONE);
+                                        holder.voteYes.setVisibility(View.VISIBLE);
+                                        addVote(holder, participantList.getJoiningKey(), participantList.getContestkey());
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+
+                }
+            });
+            holder.voteYes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    holder.voteNo.setVisibility(View.VISIBLE);
+                    holder.voteYes.setVisibility(View.GONE);
+                    removeVote(holder, participantList.getJoiningKey(), participantList.getContestkey());
+
+
+                }
+            });
+
+
+
         }
 //
-
-
-        holder.voteNo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                reference.child(mContext.getString(R.string.dbname_contestlist))
-                        .child(participantList.getContestkey())
-                        .child("voterlist")
-                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.exists()) {
-                                    Toast.makeText(mContext, "You have already voted for this contest.", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    holder.voteNo.setVisibility(View.GONE);
-                                    holder.voteYes.setVisibility(View.VISIBLE);
-                                    addVote(holder, participantList.getJoiningKey(), participantList.getContestkey());
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-
-
-            }
-        });
-        holder.voteYes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                holder.voteNo.setVisibility(View.VISIBLE);
-                holder.voteYes.setVisibility(View.GONE);
-                removeVote(holder, participantList.getJoiningKey(), participantList.getContestkey());
-
-
-            }
-        });
 
 
     }
