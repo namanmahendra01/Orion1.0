@@ -57,8 +57,8 @@ Chat_Activity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ImageView mprofileImage;
-    TextView mUsername, accept, decline;
-    EditText mMessages;
+    TextView mUsername, accept, decline,sendReqBtn,cancelReqBtn;
+    EditText mMessages,reqMessage;
     int x = 0;
     private int mResults;
     private LinearLayout reqLayout, chatLayout;
@@ -85,6 +85,7 @@ Chat_Activity extends AppCompatActivity {
     DatabaseReference userRefForSeen;
     DatabaseReference DbRef;
     private Query queryr1, queryr2;
+    LinearLayout sendRequestLayout;
 
     List<Chat> chatlist;
     List<Chat> chatList2;
@@ -108,6 +109,13 @@ Chat_Activity extends AppCompatActivity {
         decline = findViewById(R.id.decline);
         reqLayout = findViewById(R.id.requestLayout);
         chatLayout = findViewById(R.id.chatLayout);
+
+
+        sendRequestLayout = findViewById(R.id.pro);
+        reqMessage = findViewById(R.id.msgReq);
+        sendReqBtn = findViewById(R.id.sendReq);
+        cancelReqBtn = findViewById(R.id.cancelReq);
+
 
 
         mSendBtn = findViewById(R.id.sendBtn);
@@ -155,7 +163,39 @@ Chat_Activity extends AppCompatActivity {
         hisUID = intent.getStringExtra(getString(R.string.his_UID));
         request = intent.getStringExtra("request");
 
+        DatabaseReference refer1 = FirebaseDatabase.getInstance().getReference();
 
+        refer1.child(getString(R.string.dbname_Chats))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(hisUID)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (!snapshot.exists()) {
+                            sendRequestLayout.setVisibility(View.VISIBLE);
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+
+                });
+
+        cancelReqBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+        sendReqBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendRequestMessage(reqMessage.getText().toString());
+            }
+        });
         mSendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -256,13 +296,13 @@ Chat_Activity extends AppCompatActivity {
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         ArrayList<Chat> chat1 = new ArrayList<>((int) dataSnapshot.getChildrenCount());
 
-                                        int x=0;
+                                        int x = 0;
                                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
                                             x++;
                                             Chat chat = ds.getValue(Chat.class);
                                             chat1.add(chat);
-                                            if (x==dataSnapshot.getChildrenCount()){
+                                            if (x == dataSnapshot.getChildrenCount()) {
                                                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
                                                 for (Chat c : chat1) {
@@ -329,6 +369,70 @@ Chat_Activity extends AppCompatActivity {
         seenMessage();
     }
 
+    private void sendRequestMessage(String message) {
+        if (message==null||message.equals("")){
+            Toast.makeText(context, "Type Something!", Toast.LENGTH_SHORT).show();
+        }else {
+
+
+            SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
+                @Override
+                public void onTimeReceived(String rawDate) {
+                    // rawDate -> 2019-11-05T17:51:01+0530
+
+
+                    String str_date = rawDate;
+                    java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+                    Date date = null;
+                    try {
+                        date = formatter.parse(str_date);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    timeStamp = String.valueOf(date.getTime());
+
+
+                    DatabaseReference refer1 = FirebaseDatabase.getInstance().getReference();
+                    newMessageKey = refer1.child(getString(R.string.dbname_Chats)).push().getKey();
+                    HashMap<String, Object> hashMap = new HashMap<>();
+                    hashMap.put("sender", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    hashMap.put("receiver", hisUID);
+                    hashMap.put("message", message);
+                    hashMap.put("timestamp", timeStamp);
+                    hashMap.put("ifseen", false);
+                    hashMap.put("messageid", newMessageKey);
+
+                    DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+                    db.child(getString(R.string.dbname_request))
+                            .child(getString(R.string.dbname_Chats))
+                            .child(hisUID)
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .child(newMessageKey)
+                            .setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            reqMessage.setText("");
+                            Toast.makeText(context, "Message Request Sent!", Toast.LENGTH_SHORT).show();
+                            finish();
+
+                        }
+                    });
+
+
+
+                    Log.e(SNTPClient.TAG, rawDate);
+
+                }
+
+                @Override
+                public void onError(Exception ex) {
+                    Log.e(SNTPClient.TAG, ex.getMessage());
+                }
+            });
+        }
+
+    }
+
     private void readRequestMessage() {
 
 
@@ -345,7 +449,7 @@ Chat_Activity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 chatlist.clear();
-                int x=0;
+                int x = 0;
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     x++;
                     Chat chat = ds.getValue(Chat.class);
@@ -353,7 +457,7 @@ Chat_Activity extends AppCompatActivity {
 
                     assert chat != null;
                     chatlist.add(chat);
-                    if(x==dataSnapshot.getChildrenCount()){
+                    if (x == dataSnapshot.getChildrenCount()) {
                         Collections.sort(chatlist);
                         Collections.reverse(chatlist);
                         displayChat();
@@ -361,7 +465,6 @@ Chat_Activity extends AppCompatActivity {
 
 
                 }
-
 
 
             }
@@ -403,7 +506,7 @@ Chat_Activity extends AppCompatActivity {
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                                             if (dataSnapshot.exists()) {
-int p=0;
+                                                int p = 0;
 
                                                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                                     p++;
@@ -424,7 +527,7 @@ int p=0;
                                                                     });
                                                         }
                                                     }
-                                                    if (p==dataSnapshot.getChildrenCount()){
+                                                    if (p == dataSnapshot.getChildrenCount()) {
 
                                                     }
                                                 }
@@ -446,7 +549,6 @@ int p=0;
 
                     }
                 });
-
 
 
     }
@@ -482,9 +584,9 @@ int p=0;
                                     }
 
                                     long current = date.getTime();
-                                    Log.d(TAG, "onDataChange: timestamp"+timeStamp+"  "+current);
+                                    Log.d(TAG, "onDataChange: timestamp" + timeStamp + "  " + current);
 
-                                    long sevenDayEarlier = current-604800000;
+                                    long sevenDayEarlier = current - 604800000;
                                     recievelistener = queryr1.addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -508,7 +610,7 @@ int p=0;
                                                         Collections.reverse(chatlist);
 
                                                         displayChat();
-                                                    }else if(x==dataSnapshot.getChildrenCount()){
+                                                    } else if (x == dataSnapshot.getChildrenCount()) {
                                                         Collections.sort(chatlist);
 
                                                         Collections.reverse(chatlist);
@@ -517,9 +619,6 @@ int p=0;
                                                     }
                                                 }
                                             }
-
-
-
 
 
                                         }
@@ -575,7 +674,6 @@ int p=0;
                 timeStamp = String.valueOf(date.getTime());
 
 
-
                 DatabaseReference refer1 = FirebaseDatabase.getInstance().getReference();
                 newMessageKey = refer1.child(getString(R.string.dbname_Chats)).push().getKey();
                 HashMap<String, Object> hashMap = new HashMap<>();
@@ -594,7 +692,6 @@ int p=0;
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
                                     String key = snapshot.getValue().toString();
-
 
 
                                     DatabaseReference refer = FirebaseDatabase.getInstance().getReference();
@@ -718,7 +815,7 @@ int p=0;
                 recyclerView.post(new Runnable() {
                     @Override
                     public void run() {
-                        adapterchat1.notifyItemRangeInserted(mResults,iterations);
+                        adapterchat1.notifyItemRangeInserted(mResults, iterations);
                     }
                 });
                 mResults = mResults + iterations;

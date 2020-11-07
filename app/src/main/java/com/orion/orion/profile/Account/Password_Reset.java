@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,6 +29,8 @@ import com.orion.orion.profile.ProfileActivity;
 public class Password_Reset extends AppCompatActivity {
     private static final String TAG = "Password_Reset";
     private FirebaseAuth mAuth;
+    ImageView backArrow;
+    ProgressBar progressBar;
     private  FirebaseAuth.AuthStateListener mAuthListener;
     private String oldP = "", newP = "", confirmP = "", email = "";
     private TextInputEditText oldE, newE, confirmE;
@@ -45,6 +49,15 @@ public class Password_Reset extends AppCompatActivity {
         oldE = findViewById(R.id.oldpswrd2);
         newE = findViewById(R.id.newpswrd2);
         confirmE = findViewById(R.id.confirm_password2);
+        backArrow = findViewById(R.id.backarrow);
+        progressBar = findViewById(R.id.pro);
+
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         Button confirm = findViewById(R.id.confirm);
         Button cancel = findViewById(R.id.cancel);
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -59,15 +72,28 @@ public class Password_Reset extends AppCompatActivity {
         cancel.setOnClickListener(v -> finish());
     }
     private void updatePassword() {
+        progressBar.setVisibility(View.VISIBLE);
         AuthCredential credential = EmailAuthProvider.getCredential(email, oldP);
         Log.d(TAG, "updatePassword: " + oldP);
         user.reauthenticate(credential).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 user.updatePassword(newP).addOnCompleteListener(task1 -> {
-                    if (!task1.isSuccessful()) Toast.makeText(Password_Reset.this, "failed", Toast.LENGTH_SHORT).show();
-                    else Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
+                    if (!task1.isSuccessful()) {
+                        progressBar.setVisibility(View.GONE);
+
+                        Toast.makeText(Password_Reset.this, "failed", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        progressBar.setVisibility(View.GONE);
+
+                        Toast.makeText(mContext, "Password Reset Succesful", Toast.LENGTH_SHORT).show();
+                    }
                 });
-            } else Toast.makeText(mContext, "Wrong Credential", Toast.LENGTH_SHORT).show();
+            } else{
+                progressBar.setVisibility(View.GONE);
+
+                Toast.makeText(mContext, "Wrong Credential", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -81,6 +107,9 @@ public class Password_Reset extends AppCompatActivity {
         } else if (newP.equals(oldP)) {
             Toast.makeText(this, "Please enter different password from old password", Toast.LENGTH_SHORT).show();
             return false;
+        }else if (newP.length() < 6){
+            Toast.makeText(this, "Password is too short!", Toast.LENGTH_SHORT).show();
+
         }
         return true;
     }

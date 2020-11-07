@@ -11,6 +11,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -50,11 +52,13 @@ import com.orion.orion.models.users;
 import com.orion.orion.profile.PostPhotoActivity;
 import com.orion.orion.profile.ProfileActivity;
 import com.orion.orion.util.FilePaths;
+import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.ImageManager;
 import com.orion.orion.util.Permissions;
 import com.orion.orion.util.UniversalImageLoader;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -69,6 +73,7 @@ public class EditProfile extends AppCompatActivity {
     private String userID;
     private Context mContext;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseMethods mFirebaseMethods;
 
     private ImageView backarrow;
     private ImageView checkmark;
@@ -112,6 +117,7 @@ public class EditProfile extends AppCompatActivity {
         setContentView(R.layout.fragment_editprofile);
         mContext = EditProfile.this;
 
+        mFirebaseMethods=new FirebaseMethods(mContext);
 
         backarrow = findViewById(R.id.backarrow);
         checkmark = findViewById(R.id.saveChanges);
@@ -317,14 +323,18 @@ public class EditProfile extends AppCompatActivity {
             FilePaths filepaths = new FilePaths();
             String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
             final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(filepaths.FIREBASE_IMAGE_STORAGE + "/" + user_id + "/profile_photo");
-            Bitmap bm = ImageManager.getBitmap(imgURL);
-            File file = new File(imgURL);
-            long length = file.length() / 1024;
+
+
+            String imgUrl2= mFirebaseMethods.compressImage(imgURL);
+
+            Bitmap bm = ImageManager.getBitmap(imgUrl2);
+
+
             byte[] bytes;
-            if (length < 200) bytes = ImageManager.getBytesFromBitmap(bm, 100);
-            else if (length < 500) bytes = ImageManager.getBytesFromBitmap(bm, 65);
-            else if (length < 800) bytes = ImageManager.getBytesFromBitmap(bm, 45);
-            else bytes = ImageManager.getBytesFromBitmap(bm, 25);
+
+            bytes = ImageManager.getBytesFromBitmap(bm, 100);
+
+
             UploadTask uploadTask = storageReference.putBytes(bytes);
             uploadTask.addOnSuccessListener(taskSnapshot -> {
                 dialog.dismiss();

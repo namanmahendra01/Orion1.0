@@ -9,6 +9,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BlurMaskFilter;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -47,6 +54,9 @@ import com.orion.orion.util.StringManipilation;
 import com.orion.orion.util.UniversalImageLoader;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -67,6 +77,7 @@ public class PostPhotoActivity extends AppCompatActivity {
     private FirebaseMethods mFirebaseMethods;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
+
 
     private EditText mCaption;
 
@@ -127,18 +138,20 @@ public class PostPhotoActivity extends AppCompatActivity {
         FilePaths filepaths = new FilePaths();
         String user_id = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(filepaths.FIREBASE_IMAGE_STORAGE + "/" + user_id + "/post" + (imageCount + 1));
-        Bitmap bm = ImageManager.getBitmap(imgURL);
-        File file = new File(imgURL);
-        long length = file.length() / 1024;
+
+
+        String imgUrl2= mFirebaseMethods.compressImage(imgURL);
+
+        Bitmap bm = ImageManager.getBitmap(imgUrl2);
+
 
         byte[] bytes;
-        if (length < 200) bytes = ImageManager.getBytesFromBitmap(bm, 100);
-        else if (length < 500) bytes = ImageManager.getBytesFromBitmap(bm, 65);
-        else if (length < 800) bytes = ImageManager.getBytesFromBitmap(bm, 45);
-        else bytes = ImageManager.getBytesFromBitmap(bm, 25);
+
+    bytes = ImageManager.getBytesFromBitmap(bm, 100);
+
         UploadTask uploadTask;
         uploadTask = storageReference.putBytes(bytes);
-        ProgressDialog dialog = ProgressDialog.show(mContext, "", "Uploading... - ", true);
+        ProgressDialog dialog = ProgressDialog.show(mContext, "", "Uploading...  ", true);
 
 
         Log.d(TAG, "uploadNewPhoto: uploadTask" + uploadTask);
@@ -162,6 +175,7 @@ public class PostPhotoActivity extends AppCompatActivity {
             Log.d(TAG, "onProgress: upload progress" + progress + "% done");
         });
     }
+
 
     private void addPhotoToDatabase(String caption, String url) {
         Log.d(TAG, "addPhtotto database: adding photo to database");

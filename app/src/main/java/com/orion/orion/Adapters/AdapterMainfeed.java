@@ -284,7 +284,8 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         if (holder.type!= null &&  holder.type.equals("photo")) {
             holder.image.setVisibility(View.VISIBLE);
             holder.play2.setVisibility(View.GONE);
-            ImageLoader imageloader = ImageLoader.getInstance();
+            holder.playerView.setVisibility(GONE);
+
             UniversalImageLoader.setImage(photo.getImage_path(), holder.image,holder.progress,"");
 
         } else {
@@ -293,6 +294,8 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             holder.unmute.setVisibility(View.VISIBLE);
             holder.play2.setVisibility(View.VISIBLE);
             holder.image.setVisibility(View.GONE);
+            holder.playerView.setVisibility(View.VISIBLE);
+
         }
 
 

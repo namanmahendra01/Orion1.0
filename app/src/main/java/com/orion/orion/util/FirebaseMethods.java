@@ -5,7 +5,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -51,6 +57,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -73,7 +82,8 @@ public class FirebaseMethods {
     private double mPhotoUploadProgress = 0;
     private RequestQueue requestQueue;
     boolean flag1=true,flag2=true,flag3=true,flag4=true,flag5=true,flag6=true;
-
+    private static final float maxHeight = 1280.0f;
+    private static final float maxWidth = 1280.0f;
 
     public FirebaseMethods(Context context) {
         mContext = context;
@@ -89,107 +99,6 @@ public class FirebaseMethods {
         }
 
     }
-
-    @SuppressLint("DefaultLocale")
-    public void uploadNewPhoto(String photoType, final String caption, final int count, final String imgURL, Bitmap bm) {
-        FilePaths filepaths = new FilePaths();
-        if (photoType.equals(mContext.getString(R.string.new_photo))) {
-            String user_id = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-            final StorageReference storageReference = mStorageReference.child(filepaths.FIREBASE_IMAGE_STORAGE + "/" + user_id + "/post" + (count + 1));
-            if (bm == null) bm = ImageManager.getBitmap(imgURL);
-            File file=new File(imgURL);
-            long length=file.length()/1024;
-
-            byte[] bytes;
-            if(length<200){
-                bytes = ImageManager.getBytesFromBitmap(bm, 100);
-
-            }else if(length<500){
-                bytes = ImageManager.getBytesFromBitmap(bm, 65);
-
-            }else if(length<800){
-                bytes = ImageManager.getBytesFromBitmap(bm, 45);
-
-            }else{
-                bytes = ImageManager.getBytesFromBitmap(bm, 25);
-
-            }            UploadTask uploadTask;
-            uploadTask = storageReference.putBytes(bytes);
-            ProgressDialog dialog=ProgressDialog.show(mContext,"", "Uploading... - ",true);
-
-//            Log.d(TAG, "uploadNewPhoto: photoType"+photoType);
-//            Log.d(TAG, "uploadNewPhoto: caption"+caption);
-//            Log.d(TAG, "uploadNewPhoto: count"+count);
-//            Log.d(TAG, "uploadNewPhoto: imgURL"+imgURL);
-//            Log.d(TAG, "uploadNewPhoto: filepaths"+filepaths);
-//            Log.d(TAG, "uploadNewPhoto: user_id"+user_id);
-//            Log.d(TAG, "uploadNewPhoto: StorageReference"+storageReference);
-//            Log.d(TAG, "uploadNewPhoto: bm"+bm);
-//            Log.d(TAG, "uploadNewPhoto: bytes"+ Arrays.toString(bytes));
-            Log.d(TAG, "uploadNewPhoto: uploadTask"+uploadTask);
-
-            uploadTask.addOnSuccessListener(taskSnapshot -> {
-                dialog.dismiss();
-                storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
-                    Toast.makeText(mContext, "Photo Upload success", Toast.LENGTH_SHORT).show();
-                    addPhotoToDatabase(caption, uri.toString());
-                });
-                mContext.startActivity(new Intent(mContext, ProfileActivity.class));
-            }).addOnFailureListener(e -> {
-                dialog.dismiss();
-                Log.d(TAG, "onFailure: Photo Upload Failed");
-                Toast.makeText(mContext, "Photo Upload failed", Toast.LENGTH_SHORT).show();
-                mContext.startActivity(new Intent(mContext, PostPhotoActivity.class));
-            }).addOnProgressListener(taskSnapshot -> {
-                double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                ProgressDialog.show(mContext,"", "Uploading... - "+String.format("%.0f", progress)+"%",true);
-                if (progress - 15 > mPhotoUploadProgress) {
-                    Toast.makeText(mContext, "Photo Upload Progress" + String.format("%.0f", progress) + "%", Toast.LENGTH_SHORT).show();
-                }
-                Log.d(TAG, "onProgress: upload progress" + progress + "% done");
-            });
-        } else if (photoType.equals(mContext.getString(R.string.profile_photo))) {
-            Log.d(TAG, "uploadNewPhoto: uploading new PROFILE photo" + (mContext.getString(R.string.profile_photo)));
-            String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            final StorageReference storageReference = mStorageReference.child(filepaths.FIREBASE_IMAGE_STORAGE + "/" + user_id + "/profile_photo");
-            if (bm == null) bm = ImageManager.getBitmap(imgURL);
-            File file=new File(imgURL);
-            long length=file.length()/1024;
-
-            byte[] bytes;
-            if(length<200){
-                bytes = ImageManager.getBytesFromBitmap(bm, 100);
-
-            }else if(length<500){
-                bytes = ImageManager.getBytesFromBitmap(bm, 65);
-
-            }else if(length<800){
-                bytes = ImageManager.getBytesFromBitmap(bm, 45);
-
-            }else{
-                bytes = ImageManager.getBytesFromBitmap(bm, 25);
-
-            }            UploadTask uploadTask = null;
-            uploadTask = storageReference.putBytes(bytes);
-            uploadTask.addOnSuccessListener(taskSnapshot -> storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    setProfilePhoto(uri.toString());
-                    Toast.makeText(mContext, "Photo Upload success", Toast.LENGTH_SHORT).show();
-                }
-            })).addOnFailureListener(e -> {
-                Log.d(TAG, "onFailure: Photo Upload Failed");
-                Toast.makeText(mContext, "Photo Upload failed", Toast.LENGTH_SHORT).show();
-            }).addOnProgressListener(taskSnapshot -> {
-                double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                if (progress - 15 > mPhotoUploadProgress) {
-                    Toast.makeText(mContext, "Photo Upload Progress" + String.format("%.0f", progress) + "%", Toast.LENGTH_SHORT).show();
-                }
-                Log.d(TAG, "onProgress: upload progress" + progress + "% done");
-            });
-        }
-    }
-
     public void uploadContest(final int count, final String imgURL, Bitmap bm, String contestKey, String p, String joiningkey) {
         FilePaths filepaths = new FilePaths();
 
@@ -204,23 +113,20 @@ public class FirebaseMethods {
             if (bm == null) {
                 bm = ImageManager.getBitmap(imgURL);
             }
-            File file=new File(imgURL);
-            long length=file.length()/1024;
+
+
+            String imgUrl2= compressImage(imgURL);
+
+             bm = ImageManager.getBitmap(imgUrl2);
+
 
             byte[] bytes;
-            if(length<200){
-                bytes = ImageManager.getBytesFromBitmap(bm, 100);
 
-            }else if(length<500){
-                bytes = ImageManager.getBytesFromBitmap(bm, 65);
 
-            }else if(length<800){
-                bytes = ImageManager.getBytesFromBitmap(bm, 45);
 
-            }else{
-                bytes = ImageManager.getBytesFromBitmap(bm, 25);
+           bytes = ImageManager.getBytesFromBitmap(bm, 100);
 
-            }
+
             UploadTask uploadTask = null;
             uploadTask = storageReference.putBytes(bytes);
 
@@ -406,6 +312,7 @@ public class FirebaseMethods {
         }
 
     }
+
     public void sendNotification(final String hisUID, final String username,final String message,final String tittle) {
         final  DatabaseReference allToken = FirebaseDatabase.getInstance().getReference("Tokens");
         Query query= allToken.orderByKey().equalTo(hisUID);
@@ -467,17 +374,6 @@ public class FirebaseMethods {
     }
 
 
-    private void setProfilePhoto(String url) {
-
-        myRef.child(mContext.getString(R.string.dbname_users))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child(mContext.getString(R.string.profile_photo))
-                .setValue(url);
-        myRef.child(mContext.getString(R.string.dbname_users))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child(mContext.getString(R.string.profile_photo))
-                .setValue(url);
-    }
 
     public String getTimeStamp() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
@@ -485,33 +381,138 @@ public class FirebaseMethods {
         return sdf.format(new Date());
     }
 
-    private void addPhotoToDatabase(String caption, String url) {
-        Log.d(TAG, "addPhtotto database: adding photo to database");
-        String tags = StringManipilation.getTags(caption);
-        String newPhotoKey = myRef.child(mContext.getString(R.string.dbname_user_photos)).push().getKey();
-        Photo photo = new Photo();
-        photo.setCaption(caption);
-        photo.setDate_created(getTimeStamp());
-        photo.setImage_path(url);
-        photo.setTags(tags);
-        photo.setUser_id(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-        photo.setPhoto_id(newPhotoKey);
-        photo.setThumbnail("");
-        photo.setType("photo");
-        assert newPhotoKey != null;
-        myRef.child(mContext.getString(R.string.dbname_user_photos)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(newPhotoKey).setValue(photo);
-        myRef.child(mContext.getString(R.string.dbname_follower)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot snapshot1 : snapshot.getChildren())
-                    myRef.child(mContext.getString(R.string.dbname_users)).child(Objects.requireNonNull(snapshot1.getKey())).child(mContext.getString(R.string.post_updates)).child(newPhotoKey).setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+    public String compressImage(String imagePath) {
+        Bitmap scaledBitmap = null;
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        Bitmap bmp = BitmapFactory.decodeFile(imagePath, options);
+
+        int actualHeight = options.outHeight;
+        int actualWidth = options.outWidth;
+
+        float imgRatio = (float) actualWidth / (float) actualHeight;
+        float maxRatio = maxWidth / maxHeight;
+
+        if (actualHeight > maxHeight || actualWidth > maxWidth) {
+            if (imgRatio < maxRatio) {
+                imgRatio = maxHeight / actualHeight;
+                actualWidth = (int) (imgRatio * actualWidth);
+                actualHeight = (int) maxHeight;
+            } else if (imgRatio > maxRatio) {
+                imgRatio = maxWidth / actualWidth;
+                actualHeight = (int) (imgRatio * actualHeight);
+                actualWidth = (int) maxWidth;
+            } else {
+                actualHeight = (int) maxHeight;
+                actualWidth = (int) maxWidth;
 
             }
-        });
+        }
+
+        options.inSampleSize = calculateInSampleSize(options, actualWidth, actualHeight);
+        options.inJustDecodeBounds = false;
+        options.inDither = false;
+        options.inPurgeable = true;
+        options.inInputShareable = true;
+        options.inTempStorage = new byte[16 * 1024];
+
+        try {
+            bmp = BitmapFactory.decodeFile(imagePath, options);
+        } catch (OutOfMemoryError exception) {
+            exception.printStackTrace();
+
+        }
+        try {
+            scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight, Bitmap.Config.RGB_565);
+        } catch (OutOfMemoryError exception) {
+            exception.printStackTrace();
+        }
+
+        float ratioX = actualWidth / (float) options.outWidth;
+        float ratioY = actualHeight / (float) options.outHeight;
+        float middleX = actualWidth / 2.0f;
+        float middleY = actualHeight / 2.0f;
+
+        Matrix scaleMatrix = new Matrix();
+        scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
+
+        Canvas canvas = new Canvas(scaledBitmap);
+        canvas.setMatrix(scaleMatrix);
+        canvas.drawBitmap(bmp, middleX - bmp.getWidth() / 2, middleY - bmp.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
+
+        if(bmp!=null)
+        {
+            bmp.recycle();
+        }
+
+        ExifInterface exif;
+        try {
+            exif = new ExifInterface(imagePath);
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
+            Matrix matrix = new Matrix();
+            if (orientation == 6) {
+                matrix.postRotate(90);
+            } else if (orientation == 3) {
+                matrix.postRotate(180);
+            } else if (orientation == 8) {
+                matrix.postRotate(270);
+            }
+            scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        FileOutputStream out = null;
+        String filepath = getFilename();
+        try {
+            out = new FileOutputStream(filepath);
+
+            //write the compressed bitmap at the destination specified by filename.
+            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 80, out);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return filepath;
+    }
+
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+        final float totalPixels = width * height;
+        final float totalReqPixelsCap = reqWidth * reqHeight * 2;
+
+        while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
+            inSampleSize++;
+        }
+
+        return inSampleSize;
+    }
+
+    public String getFilename() {
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
+                + "/Android/data/"
+                + mContext.getApplicationContext().getPackageName()
+                + "/Files/Compressed");
+
+        // Create the storage directory if it does not exist
+        if (! mediaStorageDir.exists()){
+            mediaStorageDir.mkdirs();
+        }
+
+        String mImageName="IMG_"+ String.valueOf(System.currentTimeMillis()) +".jpg";
+        String uriString = (mediaStorageDir.getAbsolutePath() + "/"+ mImageName);;
+        return uriString;
+
     }
 
 
@@ -836,145 +837,6 @@ public class FirebaseMethods {
 
     }
 
-    public void updateUserAccountsettings(String displayname, String description, String domain) {
-        if (displayname != null) {
-
-            myRef.child(mContext.getString(R.string.dbname_user_account_settings))
-                    .child(userID)
-                    .child(mContext.getString(R.string.field_display))
-                    .setValue(displayname);
-        }
-        if (description != null) {
-            myRef.child(mContext.getString(R.string.dbname_user_account_settings))
-                    .child(userID)
-                    .child(mContext.getString(R.string.field_description))
-                    .setValue(description);
-        }
-
-        if (domain != null) {
-
-
-            myRef.child(mContext.getString(R.string.dbname_user_account_settings))
-                    .child(userID)
-                    .child("domain")
-                    .setValue(domain);
-        }
-
-
-    }
-
-    public void updateUsername(String username) {
-
-        myRef.child(mContext.getString(R.string.dbname_users))
-                .child(userID)
-                .child(mContext.getString(R.string.field_username))
-                .setValue(username);
-        myRef.child(mContext.getString(R.string.dbname_user_account_settings))
-                .child(userID)
-                .child(mContext.getString(R.string.field_username))
-                .setValue(username);
-    }
-
-    public void updateemail(String email) {
-
-        myRef.child(mContext.getString(R.string.dbname_users))
-                .child(userID)
-                .child(mContext.getString(R.string.field_email))
-                .setValue(email);
-
-    }
-
-
-
-
-//    public void updateTopUsers() {
-//        ArrayList<TopUsers> mListOverall = new ArrayList<>();
-//        ArrayList<TopUsers> mListFollower = new ArrayList<>();
-//        mListOverall.clear();
-//        mListFollower.clear();
-//
-//        Log.d(TAG, "updateTopUsers" + mContext);
-//        Query query = myRef.child(mContext.getString(R.string.dbname_leaderboard));
-//        query.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-//
-//                    //getting user ids, username and profile photos
-//                    String user_id = singleSnapshot.getKey();
-//                    String domain = (String) singleSnapshot.child(mContext.getString(R.string.field_domain)).getValue();
-//                    int followers = (int) (long) singleSnapshot.child(mContext.getString(R.string.field_followers)).getValue();
-//                    int rating = (int) (long) singleSnapshot.child(mContext.getString(R.string.field_all_time)).child(mContext.getString(R.string.field_post)).getValue()
-//                            + (int) (long) singleSnapshot.child(mContext.getString(R.string.field_all_time)).child(mContext.getString(R.string.field_followers)).getValue()
-//                            + (int) (long) singleSnapshot.child(mContext.getString(R.string.field_all_time)).child(mContext.getString(R.string.field_contest)).getValue();
-//
-//                    TopUsers emptyItem = new TopUsers("", 0, "");
-//                    TopUsers dataItemOverall = new TopUsers(user_id, rating, domain);
-//                    TopUsers dataItemFollower = new TopUsers(user_id, followers, domain);
-//
-//
-//                    if (mListOverall.size() == 0 || mListFollower.size() == 0) {
-//                        mListOverall.add(dataItemOverall);
-//                        mListFollower.add(dataItemFollower);
-//                    } else {
-//                        int l = mListOverall.size();
-//
-//                        //loop to push in between and next one further away for overall
-//                        for (int i = 0; i < l; i++) {
-//                            int r = mListOverall.get(i).getRating();
-//                            if (rating >= r) {
-//                                mListOverall.add(emptyItem);
-//                                for (int j = mListOverall.size() - 1; j > i; j--)
-//                                    mListOverall.set(j, mListOverall.get(j - 1));
-//                                mListOverall.set(i, dataItemOverall);
-//                                break;
-//                            }
-//                            //pushing at the end
-//                            else if (i == l - 1)
-//                                mListOverall.add(dataItemOverall);
-//                        }
-//
-//                        //loop to push in between and next one further away for follower
-//                        for (int i = 0; i < l; i++) {
-//                            int r = mListFollower.get(i).getRating();
-//                            if (rating >= r) {
-//                                mListFollower.add(emptyItem);
-//                                for (int j = mListFollower.size() - 1; j > i; j--)
-//                                    mListFollower.set(j, mListFollower.get(j - 1));
-//                                mListFollower.set(i, dataItemFollower);
-//                                break;
-//                            }
-//                            //pushing at the end
-//                            else if (i == l - 1)
-//                                mListFollower.add(dataItemFollower);
-//                        }
-//                    }
-//
-//
-//                    //removing extra nodes
-//                    if (mListOverall.size() == 101 || mListFollower.size() == 101) {
-//                        mListOverall.remove(100);
-//                        mListFollower.remove(100);
-//
-//                    }
-//                }
-//
-//                for (int i = 0; i < mListOverall.size(); i++) {
-////                    myRef.child("top_users").child("overall").child(String.valueOf(i + 1)).setValue(mListOverall.get(i));
-////                    myRef.child("top_users").child("follower").child(String.valueOf(i + 1)).setValue(mListFollower.get(i));
-//                    myRef.child("top_users").child("overall").child(String.valueOf(i + 1)).child(mContext.getString(R.string.field_user_id)).setValue(mListOverall.get(i).getUser_id());
-//                    myRef.child("top_users").child("overall").child(String.valueOf(i + 1)).child(mContext.getString(R.string.field_domain)).setValue(mListOverall.get(i).getDomain());
-//                    myRef.child("top_users").child("follower").child(String.valueOf(i + 1)).child(mContext.getString(R.string.field_user_id)).setValue(mListFollower.get(i).getUser_id());
-//                    myRef.child("top_users").child("follower").child(String.valueOf(i + 1)).child(mContext.getString(R.string.field_domain)).setValue(mListFollower.get(i).getDomain());
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//    }
 
 }
 

@@ -262,11 +262,14 @@ public class ViewPostActivity extends AppCompatActivity {
             mPostImage.setVisibility(View.VISIBLE);
             play2.setVisibility(View.GONE);
             UniversalImageLoader.setImage(mphoto.getImage_path(), mPostImage, progress2, "");
+            playerView.setVisibility(GONE);
 
         } else {
             unmute.setVisibility(View.VISIBLE);
             play2.setVisibility(View.VISIBLE);
             mPostImage.setVisibility(View.GONE);
+            playerView.setVisibility(View.VISIBLE);
+
         }
 
 //                   ***********get Video***********

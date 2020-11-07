@@ -13,7 +13,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.media.AudioManager;
+import android.media.ExifInterface;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
@@ -140,7 +142,9 @@ public class PostVideoActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        simpleExoPlayer.release();
+        if (simpleExoPlayer!=null) {
+            simpleExoPlayer.release();
+        }
         videoBox.setVisibility(View.INVISIBLE);
         VideoCompressor.cancel();
         progress.setVisibility(View.INVISIBLE);
@@ -279,14 +283,16 @@ public class PostVideoActivity extends AppCompatActivity {
         progressDialog.setTitle("Uploading Thumbnail...");
         progressDialog.show();
 
-        Bitmap bm = ImageManager.getBitmap(getPathFromUri(mContext, imageUri));
-        File file = new File(Objects.requireNonNull(getPathFromUri(mContext, imageUri)));
-        long length = file.length() / 1024; // Size in KB
+
+
+        String imgUrl2= mFirebaseMethods.compressImage(getPathFromUri(mContext,imageUri));
+
+        Bitmap bm = ImageManager.getBitmap(imgUrl2);
+
+
         byte[] bytes;
-        if (length < 400) bytes = ImageManager.getBytesFromBitmap(bm, 100);
-        else if (length < 600) bytes = ImageManager.getBytesFromBitmap(bm, 75);
-        else if (length < 800) bytes = ImageManager.getBytesFromBitmap(bm, 50);
-        else bytes = ImageManager.getBytesFromBitmap(bm, 25);
+
+        bytes = ImageManager.getBytesFromBitmap(bm, 100);
 
         storageReferencePhoto.putBytes(bytes)
                 .addOnSuccessListener(taskSnapshot -> {
@@ -370,6 +376,7 @@ public class PostVideoActivity extends AppCompatActivity {
             }
         });
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initializePlayer() {

@@ -290,54 +290,47 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             bottomSheetDomain.show(getSupportFragmentManager(), "Domain Selection");
         });
         star1.setOnClickListener(v -> {
-            Intent i = new Intent(Explore.this, profile.class);
-            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-            i.putExtra(getString(R.string.intent_user), user1);
-            startActivity(i);
+            jumpToUser(user1);
+
         });
         star2.setOnClickListener(v -> {
-            Intent i = new Intent(Explore.this, profile.class);
-            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-            i.putExtra(getString(R.string.intent_user), user2);
-            startActivity(i);
+            jumpToUser(user2);
+
         });
         star3.setOnClickListener(v -> {
-            Intent i = new Intent(Explore.this, profile.class);
-            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-            i.putExtra(getString(R.string.intent_user), user3);
-            startActivity(i);
+            jumpToUser(user3);
+
         });
         star4.setOnClickListener(v -> {
-            Intent i = new Intent(Explore.this, profile.class);
-            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-            i.putExtra(getString(R.string.intent_user), user4);
-            startActivity(i);
+            jumpToUser(user4);
+
         });
         star5.setOnClickListener(v -> {
-            Intent i = new Intent(Explore.this, profile.class);
-            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-            i.putExtra(getString(R.string.intent_user), user5);
-            startActivity(i);
+            jumpToUser(user5);
+
         });
         star6.setOnClickListener(v -> {
-            Intent i = new Intent(Explore.this, profile.class);
-            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-            i.putExtra(getString(R.string.intent_user), user6);
-            startActivity(i);
+            jumpToUser(user6);
+
         });
         star7.setOnClickListener(v -> {
-            Intent i = new Intent(Explore.this, profile.class);
-            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-            i.putExtra(getString(R.string.intent_user), user7);
-            startActivity(i);
+            jumpToUser(user7);
+
         });
         star8.setOnClickListener(v -> {
-            Intent i = new Intent(Explore.this, profile.class);
-            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-            i.putExtra(getString(R.string.intent_user), user8);
-            startActivity(i);
+            jumpToUser(user8);
+
         });
         Log.d(TAG, "initOnClickListeners: completed");
+    }
+
+    private void jumpToUser(String toUser) {
+        if(toUser!=null&&!toUser.equals("")) {
+            Intent i = new Intent(Explore.this, profile.class);
+            i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
+            i.putExtra(getString(R.string.intent_user), toUser);
+            startActivity(i);
+        }
     }
 
 
