@@ -510,30 +510,29 @@
                     android:lineHeight="20sp"
                     android:maxLines="2" />
 
-                <LinearLayout
-                    android:id="@+id/share_skill_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/circular_button"
-                    android:backgroundTint="@color/white"
-                    android:elevation="5dp"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
+                <TextView
+                    android:id="@+id/link1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:textColor="#00BCD4"
+                    android:textSize="16sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:paddingRight="15dp"
-                        android:text="Share Skill +"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/link2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:textColor="#00BCD4"
+                    android:textSize="16sp" />
 
-
-                </LinearLayout>
-
+                <TextView
+                    android:id="@+id/link3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:textColor="#00BCD4"
+                    android:textSize="16sp" />
 
             </LinearLayout>
 

@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -85,7 +86,6 @@ public class ProfileActivity extends AppCompatActivity {
     private DatabaseReference myRef;
 
     private ArrayList<Photo> imgURLsList;
-    Uri imageUri;
     boolean isKitKat;
     //    Profile Widgets
     private ImageView menu;
@@ -116,7 +116,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     private TextView mDisplayName;
     private TextView mDescription;
-//    private TextView mWebsite;
+    private TextView mLink1;
+    private TextView mLink2;
+    private TextView mLink3;
+    //    private TextView mWebsite;
     private String whatsappNo;
     private LinearLayout share_btn;
     private RecyclerView gridRv;
@@ -160,7 +163,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         mDisplayName = findViewById(R.id.display_name);
         mDescription = findViewById(R.id.description);
-//        mWebsite = findViewById(R.id.website);
+        mLink1 = findViewById(R.id.link1);
+        mLink2 = findViewById(R.id.link2);
+        mLink3 = findViewById(R.id.link3);
 
         share_btn = findViewById(R.id.share_skill_btn);
 
@@ -242,6 +247,52 @@ public class ProfileActivity extends AppCompatActivity {
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);
+            }
+        });
+
+        mLink1.setOnClickListener(v -> {
+            try {
+                Uri uri = Uri.parse(String.valueOf(mLink1.getText()));
+                if (!URLUtil.isValidUrl(String.valueOf(mLink1.getText()))) {
+                    Toast.makeText(mContext, " This is not a valid link", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(uri);
+                    mContext.startActivity(intent);
+                }
+            }
+            catch (ActivityNotFoundException e){
+                Toast.makeText(mContext, " You don't have any browser to open web page", Toast.LENGTH_LONG).show();
+            }
+        });
+        mLink2.setOnClickListener(v -> {
+            try {
+                Uri uri = Uri.parse(String.valueOf(mLink2.getText()));
+                if (!URLUtil.isValidUrl(String.valueOf(mLink2.getText()))) {
+                    Toast.makeText(mContext, " This is not a valid link", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(uri);
+                    mContext.startActivity(intent);
+                }
+            }
+            catch (ActivityNotFoundException e){
+                Toast.makeText(mContext, " You don't have any browser to open web page", Toast.LENGTH_LONG).show();
+            }
+        });
+        mLink3.setOnClickListener(v -> {
+            try {
+                Uri uri = Uri.parse(String.valueOf(mLink3.getText()));
+                if (!URLUtil.isValidUrl(String.valueOf(mLink3.getText()))) {
+                    Toast.makeText(mContext, " This is not a valid link", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(uri);
+                    mContext.startActivity(intent);
+                }
+            }
+            catch (ActivityNotFoundException e){
+                Toast.makeText(mContext, " You don't have any browser to open web page", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -423,17 +474,17 @@ public class ProfileActivity extends AppCompatActivity {
                         reference.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.getChildrenCount()==imgURLsList.size()){
+                                if (snapshot.getChildrenCount() == imgURLsList.size()) {
                                     Log.d(TAG, "onDataChange: photoList" + imgURLsList);
 
-                                    if (imgURLsList!=null&&imgURLsList.size()!=0) {
+                                    if (imgURLsList != null && imgURLsList.size() != 0) {
                                         adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
                                         adapterGridImage.setHasStableIds(true);
                                         gridRv.setAdapter(adapterGridImage);
-                                    }else {
+                                    } else {
                                         noPost.setVisibility(View.VISIBLE);
                                     }
-                                }else{
+                                } else {
                                     SetupGridView();
 
                                 }
@@ -624,7 +675,7 @@ public class ProfileActivity extends AppCompatActivity {
         noPost.setVisibility(View.GONE);
 
         final ArrayList<Photo> photos = new ArrayList<>();
-       imgURLsList = new ArrayList<>();
+        imgURLsList = new ArrayList<>();
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(getString(R.string.dbname_user_photos)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -676,11 +727,11 @@ public class ProfileActivity extends AppCompatActivity {
                 editor.putString("myMedia", json);
                 editor.apply();
 
-                if (imgURLsList!=null&&imgURLsList.size()!=0) {
+                if (imgURLsList != null && imgURLsList.size() != 0) {
                     adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
                     adapterGridImage.setHasStableIds(true);
                     gridRv.setAdapter(adapterGridImage);//
-                }else{
+                } else {
                     noPost.setVisibility(View.VISIBLE);
                 }
             }
@@ -698,7 +749,7 @@ public class ProfileActivity extends AppCompatActivity {
         mUsername.setText(userSetting.getUsername());
         mDomain.setText(userSetting.getDomain());
 
-        if(userSetting.getDisplay_name() ==null || userSetting.getDisplay_name().equals(""))
+        if (userSetting.getDisplay_name() == null || userSetting.getDisplay_name().equals(""))
             mDisplayName.setVisibility(View.GONE);
         else {
             mDisplayName.setText(userSetting.getDisplay_name());
@@ -709,6 +760,16 @@ public class ProfileActivity extends AppCompatActivity {
             mDescription.setVisibility(View.VISIBLE);
             mDescription.setText(userSetting.getDescription());
         }
+
+        if (userSetting.getLink1() == null || userSetting.getLink1().equals(""))
+            mLink1.setVisibility(View.GONE);
+        else mLink1.setText(userSetting.getLink1());
+        if (userSetting.getLink2() == null || userSetting.getLink2().equals(""))
+            mLink2.setVisibility(View.GONE);
+        else mLink2.setText(userSetting.getLink2());
+        if (userSetting.getLink3() == null || userSetting.getLink3().equals(""))
+            mLink3.setVisibility(View.GONE);
+        else mLink3.setText(userSetting.getLink3());
 
         if (userSetting.getEmail() == null || userSetting.getEmail().equals("")) {
 //            mWebsite.setVisibility(View.GONE);

@@ -77,6 +77,7 @@ import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -110,7 +111,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     private String user7;
     private String user8;
     private int c = 0;
-    private RelativeLayout topBox;
     private RelativeLayout collapse;
     private TextView spinner;
     private EditText mSearchParam;
@@ -148,20 +148,11 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         setupFirebaseAuth();
         initWidgets();
         initOnClickListeners();
-
-
-//        topBox.setOnClickListener(v -> {
-//            if (v.getId() != spinner.getId()) exploreRv.post(() -> expand(collapse, 500));
-//        });
-//        topBox.setOnTouchListener((v, event) -> {
-//            if (v.getId() != collapse.getId())
-//                if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_UP) {
-//                    exploreRv.post(() -> expand(collapse, 500));
-//                    return true;
-//                }
-//            return false;
-//
-//        });
+        setupBottomNavigationView();
+        hideSoftKeyboard();
+        initTextListener();
+        getTop8();
+        checkTopDatabase();
 
         exploreRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -188,22 +179,9 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         });
         swipeRefreshLayout.setOnRefreshListener(this::displayPhotos);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
-
-
-        setupBottomNavigationView();
-        hideSoftKeyboard();
-        initTextListener();
-        getTop8();
-        checkTopDatabase();
-//        checkLastFetched();
-//        checkPostsFetched();
-//        displayPhotos();
-//        handler.postDelayed(this::checkLastFetched, RETRY_DURATION);
-//        handler.postDelayed(this::checkPostsFetched, RETRY_DURATION);
-//        handler.postDelayed(this::displayPhotos, RETRY_DURATION);
-//
     }
 
+    @SuppressLint("CommitPrefEdits")
     private void initWidgets() {
         Log.d(TAG, "initWidgets: started");
         mContext = Explore.this;
@@ -216,7 +194,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         paginatedPhotos = new ArrayList<>();
         mSearchParam = findViewById(R.id.search);
         mListView = findViewById(R.id.listview);
-        topBox = findViewById(R.id.topBox);
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setRefreshing(true);
         exploreRv = findViewById(R.id.exploreRv);
@@ -234,53 +211,33 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         up = findViewById(R.id.up);
         down = findViewById(R.id.down);
 
-
-        cross.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mSearchParam.setText("");
-                mUserList.clear();
-                if(mAdapter!=null) {
-                    mAdapter.notifyDataSetChanged();
-                }
-            }
+        cross.setOnClickListener(view -> {
+            mSearchParam.setText("");
+            mUserList.clear();
+            if (mAdapter != null) mAdapter.notifyDataSetChanged();
+        });
+        up.setOnClickListener(view -> {
+            up.setVisibility(View.GONE);
+            down.setVisibility(View.VISIBLE);
+            collapse(collapse, 1000, 0);
+        });
+        down.setOnClickListener(view -> {
+            up.setVisibility(View.VISIBLE);
+            down.setVisibility(View.GONE);
+            collapse(collapse, 1000, dummyHeight);
         });
 
-        up.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                up.setVisibility(View.GONE);
-                down.setVisibility(View.VISIBLE);
-
-                collapse(collapse, 1000, 0);
-            }
-        });
-        down.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                up.setVisibility(View.VISIBLE);
-                down.setVisibility(View.GONE);
-                collapse(collapse, 1000, dummyHeight);
-
-            }
-        });
         View v = collapse;
         prevHeight = v.getHeight();
-
         Log.d(TAG, "initWidgets: " + prevHeight + "  " + dummyHeight);
         height = 0;
-
-
         GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 2);
         linearLayoutManager.setItemPrefetchEnabled(true);
         linearLayoutManager.setInitialPrefetchItemCount(20);
-
         exploreRv.setItemViewCacheSize(15);
         exploreRv.setDrawingCacheEnabled(true);
         exploreRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
         exploreRv.setLayoutManager(linearLayoutManager);
-
-
     }
 
     private void initOnClickListeners() {
@@ -289,43 +246,19 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             BottomSheetDomain bottomSheetDomain = new BottomSheetDomain();
             bottomSheetDomain.show(getSupportFragmentManager(), "Domain Selection");
         });
-        star1.setOnClickListener(v -> {
-            jumpToUser(user1);
-
-        });
-        star2.setOnClickListener(v -> {
-            jumpToUser(user2);
-
-        });
-        star3.setOnClickListener(v -> {
-            jumpToUser(user3);
-
-        });
-        star4.setOnClickListener(v -> {
-            jumpToUser(user4);
-
-        });
-        star5.setOnClickListener(v -> {
-            jumpToUser(user5);
-
-        });
-        star6.setOnClickListener(v -> {
-            jumpToUser(user6);
-
-        });
-        star7.setOnClickListener(v -> {
-            jumpToUser(user7);
-
-        });
-        star8.setOnClickListener(v -> {
-            jumpToUser(user8);
-
-        });
+        star1.setOnClickListener(v -> jumpToUser(user1));
+        star2.setOnClickListener(v -> jumpToUser(user2));
+        star3.setOnClickListener(v -> jumpToUser(user3));
+        star4.setOnClickListener(v -> jumpToUser(user4));
+        star5.setOnClickListener(v -> jumpToUser(user5));
+        star6.setOnClickListener(v -> jumpToUser(user6));
+        star7.setOnClickListener(v -> jumpToUser(user7));
+        star8.setOnClickListener(v -> jumpToUser(user8));
         Log.d(TAG, "initOnClickListeners: completed");
     }
 
     private void jumpToUser(String toUser) {
-        if(toUser!=null&&!toUser.equals("")) {
+        if (toUser != null && !toUser.equals("")) {
             Intent i = new Intent(Explore.this, profile.class);
             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
             i.putExtra(getString(R.string.intent_user), toUser);
@@ -336,7 +269,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
 
     public void collapse(final View v, int duration, int targetHeight) {
         final boolean expand = v.getVisibility() != View.VISIBLE;
-
         prevHeight = v.getHeight();
         if (x == 0) {
             x++;
@@ -350,29 +282,20 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             height = 0;
         }
         ValueAnimator valueAnimator = ValueAnimator.ofInt(prevHeight, height);
-        int finalHeight = height;
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                v.getLayoutParams().height = (int) animation.getAnimatedValue();
-                v.requestLayout();
-
-            }
+        valueAnimator.addUpdateListener(animation -> {
+            v.getLayoutParams().height = (int) animation.getAnimatedValue();
+            v.requestLayout();
         });
 
         valueAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                if (expand) {
-                    v.setVisibility(View.VISIBLE);
-                }
+                if (expand) v.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (!expand) {
-                    v.setVisibility(View.INVISIBLE);
-                }
+                if (!expand) v.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -432,13 +355,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
 
     private void checkTopDatabase() {
         Log.d(TAG, "checkTopDatabase: started");
-        ArrayList<String> fields = new ArrayList<>();
-        fields.add("Photography");
-        fields.add("Film Maker");
-        fields.add("Musician");
-        fields.add("Sketch Artist");
-        fields.add("Writer");
-        fields.add("Others");
+        String[] fields = getResources().getStringArray(R.array.domain2);
         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
             @Override
             public void onTimeReceived(String currentTimeStamp) {
@@ -458,7 +375,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                             int currentYear = Integer.parseInt(currentTimeStamp.substring(0, 4));
                             int currentMonth = Integer.parseInt(currentTimeStamp.substring(5, 7));
                             int currentDate = Integer.parseInt(currentTimeStamp.substring(8, 10));
-                            String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
+//                            String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
                             String currentDateFormat = currentDate + "/" + currentMonth + "/" + currentYear;
                             Date date = new Date(currentDateFormat);
                             int currentDay = date.getDay();
@@ -508,7 +425,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                                     createTopDatabase(field, completed);
                                                 }
                                             }
-
                                         }
                                     }
                                 }
@@ -521,13 +437,11 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                     else {
                                         if (!str.equals("300/300")) {
                                             int index = str.indexOf("/");
-                                            if (index != -1)
-                                                createTopDatabase(getString(R.string.field_overall), 0);
+                                            if (index != -1) createTopDatabase(getString(R.string.field_overall), 0);
                                             else {
                                                 int completed = Integer.parseInt(str.substring(0, index));
                                                 createTopDatabase(getString(R.string.field_overall), completed);
                                             }
-
                                         }
                                     }
                                 }
@@ -543,7 +457,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                     }
                 });
             }
-
             @Override
             public void onError(Exception ex) {
                 Log.e(SNTPClient.TAG, Objects.requireNonNull(ex.getMessage()));
@@ -554,15 +467,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
 
     private void checkLastFetched() {
         Log.d(TAG, "checkLastFetched: started");
-        ArrayList<String> fields = new ArrayList<>();
-        fields.add("Photography");
-        fields.add("Film Maker");
-        fields.add("Musician");
-        fields.add("Sketch Artist");
-        fields.add("Writer");
-        fields.add("Others");
-        fields.add("Overall");
-
+        String[] fields = getResources().getStringArray(R.array.domain2);
         for (String field : fields) {
             String previousTimeStamp = mPreferences.getString(field + "_fieldLastFetched", null);
             Log.d(TAG, "checkLastFetched: field " + field);
@@ -578,17 +483,15 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                         int currentYear = Integer.parseInt(currentTimeStamp.substring(0, 4));
                         int currentMonth = Integer.parseInt(currentTimeStamp.substring(5, 7));
                         int currentDate = Integer.parseInt(currentTimeStamp.substring(8, 10));
-                        String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
+//                        String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
                         String currentDateFormat = currentDate + "/" + currentMonth + "/" + currentYear;
                         Date date = new Date(currentDateFormat);
                         int currentDay = date.getDay();
-
                         int postedYear = Integer.parseInt(previousTimeStamp.substring(0, 4));
                         int postedMonth = Integer.parseInt(previousTimeStamp.substring(5, 7));
                         int postedDate = Integer.parseInt(previousTimeStamp.substring(8, 10));
-                        String postedTime = previousTimeStamp.substring(12, previousTimeStamp.length() - 1);
+//                        String postedTime = previousTimeStamp.substring(12, previousTimeStamp.length() - 1);
                         String postedDateFormat = postedDate + "/" + postedMonth + "/" + postedYear;
-
                         @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
                         long elapsedDays = 0;
                         try {
@@ -608,7 +511,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                             if (field.equals("Overall"))
                                 fetchTopUsers(field, "");
                         }
-
                         if (elapsedDays > currentDay) {
                             String firstField = getString(R.string.field_overall);
                             fetchTopUsers(field, firstField);
@@ -616,7 +518,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                 fetchTopUsers(field, "");
                         }
                     }
-
                     @Override
                     public void onError(Exception ex) {
                         Log.d(TAG, "onError: SNTPClient fetching TopUsers from shared Preferences" + ex.getMessage());
@@ -897,14 +798,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
 
     private void checkPostsFetched() {
         Log.d(TAG, "checkPostsFetched: started");
-        ArrayList<String> fields = new ArrayList<>();
-        fields.add("Photography");
-        fields.add("Film Maker");
-        fields.add("Musician");
-        fields.add("Sketch Artist");
-        fields.add("Writer");
-        fields.add("Others");
-        fields.add("Overall");
+        String[] fields = getResources().getStringArray(R.array.domain2);
         for (String field : fields) {
             Log.d(TAG, "checkPostsFetched: field " + field);
             Gson gson = new Gson();
@@ -919,34 +813,31 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             if (set == null) {
 //                if (field.equals("Overall")) fetchTopUsers(field, "");
 //                else fetchTopUsers(field, "Overall");
-                handler.postDelayed(this::checkPostsFetched, RETRY_DURATION);
-                RETRY_DURATION *= 2;
+//                handler.postDelayed(this::checkPostsFetched, RETRY_DURATION);
+//                RETRY_DURATION *= 2;
             } else {
                 if (json == null || previousTimeStamp == null || previousTimeStamp.equals(""))
                     getPosts(field, completed);
                 else {
 //                Type type = new TypeToken<List<Photo>>() {}.getType();
 //                ArrayList<Photo> fieldPhotos = gson.fromJson(json, type);
-                    if (completed < set.size()) {
-                        getPosts(field, completed);
-                    } else {
+                    if (completed < set.size()) getPosts(field, completed);
+                    else {
                         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
                             @Override
                             public void onTimeReceived(String currentTimeStamp) {
                                 int currentYear = Integer.parseInt(currentTimeStamp.substring(0, 4));
                                 int currentMonth = Integer.parseInt(currentTimeStamp.substring(5, 7));
                                 int currentDate = Integer.parseInt(currentTimeStamp.substring(8, 10));
-                                String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
+//                                String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
                                 String currentDateFormat = currentDate + "/" + currentMonth + "/" + currentYear;
                                 Date date = new Date(currentDateFormat);
                                 int currentDay = date.getDay();
-
                                 int postedYear = Integer.parseInt(previousTimeStamp.substring(0, 4));
                                 int postedMonth = Integer.parseInt(previousTimeStamp.substring(5, 7));
                                 int postedDate = Integer.parseInt(previousTimeStamp.substring(8, 10));
-                                String postedTime = previousTimeStamp.substring(12, previousTimeStamp.length() - 1);
+//                                String postedTime = previousTimeStamp.substring(12, previousTimeStamp.length() - 1);
                                 String postedDateFormat = postedDate + "/" + postedMonth + "/" + postedYear;
-
                                 @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
                                 long elapsedDays = 0;
                                 try {
@@ -963,10 +854,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                     e.printStackTrace();
                                     getPosts(field, completed);
                                 }
-
-                                if (elapsedDays > currentDay) {
-                                    getPosts(field, completed);
-                                }
+                                if (elapsedDays > currentDay) getPosts(field, completed);
                             }
 
                             @Override
@@ -991,16 +879,15 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         if (set == null) {
 //            if (field.equals("Overall")) fetchTopUsers(field, "");
 //            else fetchTopUsers(field, "Overall");
-            handler.postDelayed(() -> getPosts(field, startingIndex), RETRY_DURATION);
-            RETRY_DURATION *= 2;
+//            handler.postDelayed(() -> getPosts(field, startingIndex), RETRY_DURATION);
+//            RETRY_DURATION *= 2;
         } else {
             ArrayList<String> mTopUsersList = new ArrayList<>(set);
             Gson gson = new Gson();
             String json = mPreferences.getString(field + "_TopPosts", null);
             ArrayList<Photo> fieldPhotos;
-            if (json == null) {
-                fieldPhotos = new ArrayList<>();
-            } else {
+            if (json == null) fieldPhotos = new ArrayList<>();
+            else {
                 Type type = new TypeToken<List<Photo>>() {
                 }.getType();
                 fieldPhotos = gson.fromJson(json, type);
@@ -1145,8 +1032,8 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             Gson gson = new Gson();
             String json = mPreferences.getString(field + "_TopPosts", null);
             if (json == null || json.equals("")) {
-                handler.postDelayed(this::displayPhotos, RETRY_DURATION);
-                RETRY_DURATION*=2;
+//                handler.postDelayed(this::displayPhotos, RETRY_DURATION);
+//                RETRY_DURATION *= 2;
             } else {
                 handler.removeCallbacks(this::displayPhotos);
                 Type type = new TypeToken<List<Photo>>() {
@@ -1240,7 +1127,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     private void fetchPhotos() {
         Log.d(TAG, "displayPhotos: field" + fieldPhotos);
         try {
-            if(fieldPhotos.size()!=0) {
+            if (fieldPhotos.size() != 0) {
                 runOnUiThread(() -> findViewById(R.id.noPost).setVisibility(View.GONE));
                 if (!shuffled) {
                     Collections.shuffle(fieldPhotos);
@@ -1258,8 +1145,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                         break;
                     } else paginatedPhotos.add(fieldPhotos.get(i));
                 }
-            }
-            else runOnUiThread(() -> {
+            } else runOnUiThread(() -> {
                 swipeRefreshLayout.setRefreshing(false);
                 findViewById(R.id.noPost).setVisibility(View.VISIBLE);
             });

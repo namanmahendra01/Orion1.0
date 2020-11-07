@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -86,6 +87,17 @@ public class EditProfile extends AppCompatActivity {
     private EditText mDisplayname;
     private EditText mUsername;
     private EditText mdescription;
+    private EditText mExternalLinks;
+    private ImageView mAddLink;
+    private RelativeLayout link1Container;
+    private RelativeLayout link2Container;
+    private RelativeLayout link3Container;
+    private TextView mLink1;
+    private ImageView mLink1delete;
+    private TextView mLink2;
+    private ImageView mLink2delete;
+    private TextView mLink3;
+    private ImageView mLink3delete;
 
     private LinearLayout mGmailLink;
     private LinearLayout mInstagramLink;
@@ -98,6 +110,9 @@ public class EditProfile extends AppCompatActivity {
     private String facebookProfile;
     private String twitterProfile;
     private String whatsappNo;
+    private String externalLink1;
+    private String externalLink2;
+    private String externalLink3;
 
     //dialogBoxStuff
     private AlertDialog dialogBuilder;
@@ -128,6 +143,17 @@ public class EditProfile extends AppCompatActivity {
         mDisplayname = findViewById(R.id.display_name);
         mdescription = findViewById(R.id.description);
         mUsername = findViewById(R.id.username);
+        mExternalLinks = findViewById(R.id.externalLinks);
+        mAddLink = findViewById(R.id.addLink);
+        link1Container = findViewById(R.id.relLayout5);
+        link2Container = findViewById(R.id.relLayout6);
+        link3Container = findViewById(R.id.relLayout7);
+        mLink1 = findViewById(R.id.link1);
+        mLink1delete = findViewById(R.id.link1delete);
+        mLink2 = findViewById(R.id.link2);
+        mLink2delete = findViewById(R.id.link2delete);
+        mLink3 = findViewById(R.id.link3);
+        mLink3delete = findViewById(R.id.link3delete);
 
         mGmailLink = findViewById(R.id.gmail_link);
         mInstagramLink = findViewById(R.id.instagram_link);
@@ -141,6 +167,9 @@ public class EditProfile extends AppCompatActivity {
         facebookProfile = "";
         twitterProfile = "";
         whatsappNo = "";
+        externalLink1 = "";
+        externalLink2 = "";
+        externalLink3 = "";
 
         dialogBuilder = new AlertDialog.Builder(this).create();
         LayoutInflater inflater = this.getLayoutInflater();
@@ -268,6 +297,70 @@ public class EditProfile extends AppCompatActivity {
             dialogBuilder.setView(dialogView);
             dialogBuilder.show();
         });
+        mAddLink.setOnClickListener(v -> {
+            String link = String.valueOf(mExternalLinks.getText());
+            if (!link.equals("")) {
+                if (link1Container.getVisibility() == View.VISIBLE && link2Container.getVisibility() == View.VISIBLE && link3Container.getVisibility() == View.VISIBLE) {
+                    Toast.makeText(mContext, "You can add at the most 3 links", Toast.LENGTH_LONG).show();
+                } else if (link1Container.getVisibility() == View.VISIBLE && link2Container.getVisibility() == View.VISIBLE && link3Container.getVisibility() != View.VISIBLE) {
+                    link3Container.setVisibility(View.VISIBLE);
+                    mLink3.setText(link);
+                    externalLink3 = link;
+                    mExternalLinks.setText("");
+                } else if (link1Container.getVisibility() == View.VISIBLE && link2Container.getVisibility() != View.VISIBLE && link3Container.getVisibility() != View.VISIBLE) {
+                    link2Container.setVisibility(View.VISIBLE);
+                    mLink2.setText(link);
+                    externalLink2 = link;
+                    mExternalLinks.setText("");
+                } else {
+                    link1Container.setVisibility(View.VISIBLE);
+                    mLink1.setText(link);
+                    externalLink1 = link;
+                    mExternalLinks.setText("");
+                }
+            }
+        });
+        mLink1delete.setOnClickListener(v -> {
+            if (link1Container.getVisibility() == View.VISIBLE && link2Container.getVisibility() == View.VISIBLE) {
+                mLink1.setText(mLink2.getText());
+                mLink2.setText(mLink3.getText());
+                externalLink1 = externalLink2;
+                externalLink2 = externalLink3;
+                externalLink3 = "";
+                mLink3.setText("");
+                link3Container.setVisibility(View.GONE);
+            } else if (link2Container.getVisibility() == View.VISIBLE && link3Container.getVisibility() != View.VISIBLE) {
+                mLink1.setText(mLink2.getText());
+                externalLink1 = externalLink2;
+                externalLink2 = "";
+                mLink2.setText("");
+                link2Container.setVisibility(View.GONE);
+            } else if (link2Container.getVisibility() != View.VISIBLE && link3Container.getVisibility() == View.VISIBLE) {
+
+            } else {
+                externalLink1 = "";
+                mLink1.setText("");
+                link1Container.setVisibility(View.GONE);
+            }
+        });
+        mLink2delete.setOnClickListener(v -> {
+            if (link3Container.getVisibility() == View.VISIBLE) {
+                mLink2.setText(mLink3.getText());
+                externalLink2 = externalLink3;
+                externalLink3 = "";
+                mLink3.setText("");
+                link3Container.setVisibility(View.GONE);
+            } else {
+                externalLink1 = "";
+                mLink2.setText("");
+                link2Container.setVisibility(View.GONE);
+            }
+        });
+        mLink3delete.setOnClickListener(v -> {
+            externalLink3 = "";
+            mLink3.setText("");
+            link3Container.setVisibility(View.GONE);
+        });
         backarrow.setOnClickListener(v -> {
             androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
             builder.setTitle("Are you sure")
@@ -280,7 +373,7 @@ public class EditProfile extends AppCompatActivity {
         checkmark.setOnClickListener(v -> {
             androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
             builder.setTitle("Are you sure")
-                    .setMessage("Would u like to check all the changes u made once again?")
+                    .setMessage("Would you not like to check changes once again?")
                     .setCancelable(false)
                     .setPositiveButton("Yes", (dialog, id) -> dialog.cancel())
                     .setNegativeButton("No", (dialog, id) -> saveProfileSetting())
@@ -306,16 +399,20 @@ public class EditProfile extends AppCompatActivity {
         if (!setting.getDescription().equals(description))
             myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_description)).setValue(description);
 
-        if (gmail != null && !gmail.equals("") && (setting.getEmail() == null || !setting.getEmail().equals(gmail)))
+        if (!gmail.equals("") && (setting.getEmail() == null || !setting.getEmail().equals(gmail)))
             myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_email)).setValue(gmail);
-        if (instagramProfile != null && !instagramProfile.equals("") && (setting.getInstagram() == null || !setting.getInstagram().equals(instagramProfile)))
+        if (!instagramProfile.equals("") && (setting.getInstagram() == null || !setting.getInstagram().equals(instagramProfile)))
             myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_instagram)).setValue(instagramProfile);
-        if (facebookProfile != null && !facebookProfile.equals("") && (setting.getFacebook() == null || !setting.getFacebook().equals(facebookProfile)))
+        if (!facebookProfile.equals("") && (setting.getFacebook() == null || !setting.getFacebook().equals(facebookProfile)))
             myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_facebook)).setValue(facebookProfile);
-        if (twitterProfile != null && !twitterProfile.equals("") && (setting.getTwitter() == null || !setting.getTwitter().equals(twitterProfile)))
+        if (!twitterProfile.equals("") && (setting.getTwitter() == null || !setting.getTwitter().equals(twitterProfile)))
             myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_twitter)).setValue(twitterProfile);
-        if (whatsappNo != null && !whatsappNo.equals("") && (setting.getWhatsapp() == null || !setting.getWhatsapp().equals(whatsappNo)))
+        if (!whatsappNo.equals("") && (setting.getWhatsapp() == null || !setting.getWhatsapp().equals(whatsappNo)))
             myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_whatsapp)).setValue(whatsappNo);
+
+        myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_link1)).setValue(externalLink1);
+        myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_link2)).setValue(externalLink2);
+        myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_link3)).setValue(externalLink3);
 
         if (photoChanged) {
             Log.d(TAG, "uploadNewPhoto: uploading new PROFILE photo" + (mContext.getString(R.string.profile_photo)));
@@ -409,6 +506,16 @@ public class EditProfile extends AppCompatActivity {
         mDisplayname.setText(setting.getDisplay_name());
         mUsername.setText(setting.getUsername());
         mdescription.setText(setting.getDescription());
+
+        if (userSetting.getLink1() == null || userSetting.getLink1().equals(""))
+            link1Container.setVisibility(View.GONE);
+        else mLink1.setText(userSetting.getLink1());
+        if (userSetting.getLink2() == null || userSetting.getLink2().equals(""))
+            link2Container.setVisibility(View.GONE);
+        else mLink2.setText(userSetting.getLink2());
+        if (userSetting.getLink3() == null || userSetting.getLink3().equals(""))
+            link3Container.setVisibility(View.GONE);
+        else mLink3.setText(userSetting.getLink3());
 
         if (userSetting.getEmail() == null || userSetting.getEmail().equals(""))
             mGmailLink.setAlpha(0.5f);

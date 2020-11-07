@@ -301,8 +301,6 @@ public class PostVideoActivity extends AppCompatActivity {
                     final StorageReference storageReferenceVideo = mStorageReference.child(filepaths.FIREBASE_VIDEO_STORAGE + "/" + user_id + "/post" + (postCount + 1));
                     progressDialog.setTitle("Uploading Video...");
                     progressDialog.show();
-
-
                     Log.d(TAG, "uploadVideo: " + new File(Objects.requireNonNull(videoUri.getPath())));
                     storageReferenceVideo.putFile(videoUri)
                             .addOnSuccessListener(taskSnapshot1 -> {

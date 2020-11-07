@@ -78,7 +78,7 @@
 
             <TextView
                 android:id="@+id/sortedByTime"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:maxLines="1"
                 android:layout_weight="1"
@@ -91,7 +91,7 @@
 
             <TextView
                 android:id="@+id/sortedByLocation"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
@@ -104,7 +104,7 @@
 
             <TextView
                 android:id="@+id/sortedByType"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:maxLines="1"
                 android:layout_weight="1"
@@ -117,7 +117,7 @@
 
             <TextView
                 android:id="@+id/sortedByDomain"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:maxLines="1"
                 android:layout_weight="1"

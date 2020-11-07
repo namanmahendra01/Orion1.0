@@ -2,11 +2,14 @@ package com.orion.orion.dialogs;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,16 +19,19 @@ import com.orion.orion.Adapters.AdapterContestSearch;
 import com.orion.orion.Adapters.AdapterDomain;
 import com.orion.orion.R;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class BottomSheetDomain extends BottomSheetDialogFragment {
+public class BottomSheetDomain extends BottomSheetDialogFragment implements AdapterDomain.OnItemClickListener{
 
+    private static final String TAG = "BOTTOM_SHEET_DOMAIN";
     private BottomSheetListener mListener;
     RecyclerView domainRv;
-
+    List<String> tags;
 
     @Nullable
     @Override
@@ -38,47 +44,28 @@ public class BottomSheetDomain extends BottomSheetDialogFragment {
 
         domainRv.setLayoutManager(linearLayoutManager1);
 
-        List<String> tags = Arrays.asList(getResources().getStringArray(R.array.domain2));
-        AdapterDomain adapterDomain = new AdapterDomain(getContext(), tags);
+        tags = Arrays.asList(getResources().getStringArray(R.array.domain2));
+        tags = tags.subList(1, tags.size());
+        AdapterDomain adapterDomain = new AdapterDomain(getContext(), tags, this);
         domainRv.setAdapter(adapterDomain);
-
-
-//        photography.setOnClickListener(v1 -> {
-//            mListener.onButtonClicked("Photography");
-//            dismiss();
-//        });
-//        filmMaker.setOnClickListener(v1 -> {
-//            mListener.onButtonClicked("Film Maker");
-//            dismiss();
-//        });
-//        musician.setOnClickListener(v1 -> {
-//            mListener.onButtonClicked("Musician");
-//            dismiss();
-//        });
-//        sketchArtist.setOnClickListener(v1 -> {
-//            mListener.onButtonClicked("Sketch Artist");
-//            dismiss();
-//        });
-//        writer.setOnClickListener(v1 -> {
-//            mListener.onButtonClicked("Writer");
-//            dismiss();
-//        });
-//        others.setOnClickListener(v1 -> {
-//            mListener.onButtonClicked("Others");
-//            dismiss();
-//        });
         return v;
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
         try {
             mListener = (BottomSheetListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement BottomSheetListener");
+            throw new ClassCastException(context.toString() + " must implement BottomSheetListener");
         }
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        mListener.onButtonClicked(tags.get(position));
+        Log.d(TAG, "DOMAIN: "+tags.get(position));
+        dismiss();
     }
 
     public interface BottomSheetListener {

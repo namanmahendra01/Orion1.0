@@ -17,8 +17,6 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -162,7 +160,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 
-                            Log.d(TAG, "onDataChange: " + singleSnapshot);
+//                            Log.d(TAG, "updateLeaderboard: " + singleSnapshot);
 //                            users currentUser = new users();
 //                            currentUser=singleSnapshot.getValue(users.class);
 //                            //initializing variables for the updation
@@ -199,6 +197,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 
 //                            if (user.getUid().equals(user_id)) checkOrGetLocation();
 
+                            Log.d(TAG, "updateLeaderboard: posts update");
                             //for posts parameters of leaders according the photos
                             Query query1 = reference.child(getString(R.string.dbname_user_photos)).child(user_id);
                             query1.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -206,18 +205,17 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                                     //initializing temp variables for posts
-                                    int all_time = 0;
-                                    int yearly = 0;
-                                    int last_month = 0;
-                                    int this_month = 0;
-                                    int last_week = 0;
-                                    int this_week = 0;
-
+                                    float all_time = 0;
+                                    float yearly = 0;
+                                    float last_month = 0;
+                                    float this_month = 0;
+                                    float last_week = 0;
+                                    float this_week = 0;
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
                                         long likes = snapshot.child(getString(R.string.field_likes)).getChildrenCount();
                                         long comments = snapshot.child(getString(R.string.field_comment)).getChildrenCount();
-                                        long rating = (long) (0.5 + likes + 0.2 * comments);
+                                        float rating = (float) (0.5 + likes + 0.2 * comments);
 
                                         //calculating date related parameters
                                         String postedTimestamp = (String) snapshot.child(getString(R.string.field_date_createdr)).getValue();
@@ -239,8 +237,8 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                             assert date1 != null;
                                             assert date2 != null;
                                             elapsedDays = (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24);
-                                            Log.d(TAG, "onDataChange: " + elapsedDays);
-                                            Log.d(TAG, "onDataChange: " + currentDay);
+//                                            Log.d(TAG, "onDataChange: " + elapsedDays);
+//                                            Log.d(TAG, "onDataChange: " + currentDay);
                                         } catch (ParseException e) {
                                             e.printStackTrace();
                                         }
@@ -268,9 +266,9 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                         else if (elapsedDays <= currentDay)
                                             this_week += rating;
                                     }
-                                    Log.d(TAG, "onDataChange: currentDay" + currentDay);
-                                    Log.d(TAG, "onDataChange: user_id" + user_id);
-                                    Log.d(TAG, "onDataChange: " + all_time + "," + yearly + "," + last_month + "," + this_month + "," + last_week + "," + this_week);
+                                    Log.d(TAG, "updateLeaderboard: posts currentDay" + currentDay);
+                                    Log.d(TAG, "updateLeaderboard: posts user_id" + user_id);
+                                    Log.d(TAG, "updateLeaderboard: posts " + all_time + "," + yearly + "," + last_month + "," + this_month + "," + last_week + "," + this_week);
                                     reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_all_time)).child(getString(R.string.field_post)).setValue(all_time);
                                     reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_yearly)).child(getString(R.string.field_post)).setValue(yearly);
                                     reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_month)).child(getString(R.string.field_post)).setValue(last_month);
@@ -285,6 +283,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 
                             });
 
+                            Log.d(TAG, "updateLeaderboard: followers update");
                             if (changedFollowers) {
                                 //for updating follow parameter of database
                                 Query query2 = reference.child(getString(R.string.dbname_follower)).child(user_id);
@@ -328,13 +327,13 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                                 try {
                                                     Date date1 = simpleDateFormat.parse(lastUpdatedDateFormat);
                                                     Date date2 = simpleDateFormat.parse(currentDateFormat);
-                                                    Log.d(TAG, "onTimeReceived: " + date1);
-                                                    Log.d(TAG, "onTimeReceived: " + date2);
+//                                                    Log.d(TAG, "onTimeReceived: " + date1);
+//                                                    Log.d(TAG, "onTimeReceived: " + date2);
                                                     assert date1 != null;
                                                     assert date2 != null;
                                                     elapsedDays = (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24);
-                                                    Log.d(TAG, "onDataChange: " + elapsedDays);
-                                                    Log.d(TAG, "onDataChange: " + currentDay);
+//                                                    Log.d(TAG, "onDataChange: " + elapsedDays);
+//                                                    Log.d(TAG, "onDataChange: " + currentDay);
                                                 } catch (ParseException e) {
                                                     e.printStackTrace();
                                                 }
@@ -409,6 +408,9 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                                 }
                                                 if (elapsedDays <= currentDay) this_week += rating;
 
+                                                Log.d(TAG, "updateLeaderboard: followers currentDay" + currentDay);
+                                                Log.d(TAG, "updateLeaderboard: followers user_id" + user_id);
+                                                Log.d(TAG, "updateLeaderboard: followers " + all_time + "," + yearly + "," + last_month + "," + this_month + "," + last_week + "," + this_week);
                                                 reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).setValue(all_time);
                                                 reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_yearly)).child(getString(R.string.field_followers)).setValue(yearly);
                                                 reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_month)).child(getString(R.string.field_followers)).setValue(last_month);
@@ -433,7 +435,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                 });
                             }
 
-
+                            Log.d(TAG, "updateLeaderboard: contests update");
                             if (changedJoinedContest || changedCreateContest) {
                                 //for competition parameters of leaders
                                 Query query3 = reference.child(getString(R.string.dbname_contests)).child(user_id);
@@ -483,13 +485,13 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                                 try {
                                                     Date date1 = simpleDateFormat.parse(lastUpdatedDateFormat);
                                                     Date date2 = simpleDateFormat.parse(currentDateFormat);
-                                                    Log.d(TAG, "onTimeReceived: " + date1);
-                                                    Log.d(TAG, "onTimeReceived: " + date2);
+//                                                    Log.d(TAG, "onTimeReceived: " + date1);
+//                                                    Log.d(TAG, "onTimeReceived: " + date2);
                                                     assert date1 != null;
                                                     assert date2 != null;
                                                     elapsedDays = (date2.getTime() - date1.getTime()) / (ANIMATION_DURATION * 60 * 60 * 24);
-                                                    Log.d(TAG, "onDataChange: " + elapsedDays);
-                                                    Log.d(TAG, "onDataChange: " + currentDay);
+//                                                    Log.d(TAG, "onDataChange: " + elapsedDays);
+//                                                    Log.d(TAG, "onDataChange: " + currentDay);
                                                 } catch (ParseException e) {
                                                     e.printStackTrace();
                                                 }
@@ -576,6 +578,9 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                                 if (elapsedDays <= currentDay)
                                                     this_week += rating;
 
+                                                Log.d(TAG, "updateLeaderboard: contests currentDay" + currentDay);
+                                                Log.d(TAG, "updateLeaderboard: contests user_id" + user_id);
+                                                Log.d(TAG, "updateLeaderboard: contests " + all_time + "," + yearly + "," + last_month + "," + this_month + "," + last_week + "," + this_week);
                                                 reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).setValue(all_time);
                                                 reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_yearly)).child(getString(R.string.field_contest)).setValue(yearly);
                                                 reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_month)).child(getString(R.string.field_contest)).setValue(last_month);
@@ -607,7 +612,6 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                             reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_domain)).setValue(domain);
                             reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.profile_photo)).setValue(profilePhoto);
                             reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_updated)).setValue(currentTimeStamp);
-
                         }
                     }
 
@@ -700,13 +704,13 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
             bottomSheet.show(getSupportFragmentManager(), "location Filter");
         });
         sortedByType.setOnClickListener(v -> {
-            String[] locationList = {"Overall", "Posts", "Followers", "Contests"};
-            BottomSheetFilter bottomSheet = new BottomSheetFilter(locationList);
+            String[] typeList = {"Overall", "Posts", "Followers", "Contests"};
+            BottomSheetFilter bottomSheet = new BottomSheetFilter(typeList);
             bottomSheet.show(getSupportFragmentManager(), "Type Filter");
         });
         sortedByDomain.setOnClickListener(v -> {
-            String[] locationList = {"All", "Photography", "Film Maker", "Musician", "Sketch Artist", "Writer", "Others"};
-            BottomSheetFilter bottomSheet = new BottomSheetFilter(locationList);
+            String[] domainList = getResources().getStringArray(R.array.domain2);
+            BottomSheetFilter bottomSheet = new BottomSheetFilter(domainList);
             bottomSheet.show(getSupportFragmentManager(), "Type Filter");
         });
         swipeRefreshLayout.setOnRefreshListener(() -> {
@@ -753,13 +757,14 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                 sortedByType.setBackgroundResource(R.drawable.circular_gradient_background);
                 YoYo.with(Techniques.ZoomIn).duration(ANIMATION_DURATION).playOn(sortedByType);
                 break;
-            case "All":
-            case "Photography":
-            case "Film Maker":
-            case "Musician":
-            case "Sketch Artist":
-            case "Writer":
-            case "Others":
+//            case "All":
+//            case "Photography":
+//            case "Film Maker":
+//            case "Musician":
+//            case "Sketch Artist":
+//            case "Writer":
+//            case "Others":
+            default:
                 sortedByDomain.setText(text);
                 sortedByDomain.setBackgroundResource(R.drawable.circular_gradient_background);
                 YoYo.with(Techniques.ZoomIn).duration(ANIMATION_DURATION).playOn(sortedByDomain);
@@ -1020,7 +1025,6 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         assert user != null;
         currentUser = user.getUid();
-
 
         time = "";
         locationParameter = "";

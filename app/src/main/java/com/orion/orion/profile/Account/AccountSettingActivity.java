@@ -79,8 +79,8 @@ public class AccountSettingActivity extends AppCompatActivity {
                 case 4: startActivity(new Intent(mcontext, About.class));
                     break;
                 case 5: new AlertDialog.Builder(mcontext)
-                        .setTitle("Log Out but why?")
-                        .setMessage("Are u sure u want to do this?.")
+                        .setTitle("Log Out")
+                        .setMessage("Are you sure u want to log out?")
                         .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                             SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
                             settings.edit().clear().apply();

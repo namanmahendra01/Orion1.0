@@ -18,8 +18,23 @@ public class users implements Parcelable {
     private String facebook;
     private String twitter;
     private String whatsapp;
+    private String link1;
+    private String link2;
+    private String link3;
 
-    public users(String user_id, String email, String domain, String username, String profile_photo, String description, String display_name, String changedFollowers, String changedCreateContest, String changedJoinedContest) {
+    public String getLink1() {
+        return link1;
+    }
+
+    public String getLink2() {
+        return link2;
+    }
+
+    public String getLink3() {
+        return link3;
+    }
+
+    public users(String user_id, String email, String domain, String username, String profile_photo, String description, String display_name, String changedFollowers, String changedCreateContest, String changedJoinedContest, String instagram, String facebook, String twitter, String whatsapp, String link1, String link2, String link3) {
         this.user_id = user_id;
         this.email = email;
         this.domain = domain;
@@ -30,10 +45,13 @@ public class users implements Parcelable {
         this.changedFollowers = changedFollowers;
         this.changedCreateContest = changedCreateContest;
         this.changedJoinedContest = changedJoinedContest;
-        this.instagram = "";
-        this.facebook = "";
-        this.twitter = "";
-        this.whatsapp = "";
+        this.instagram = instagram;
+        this.facebook = facebook;
+        this.twitter = twitter;
+        this.whatsapp = whatsapp;
+        this.link1 = link1;
+        this.link2 = link2;
+        this.link3 = link3;
     }
 
     public String getInstagram() {
@@ -93,7 +111,7 @@ public class users implements Parcelable {
     }
 
     public users() {
-        this.changedJoinedContest="false";
+        this.changedJoinedContest = "false";
         this.changedCreateContest = "false";
         this.changedFollowers = "false";
     }
@@ -106,9 +124,9 @@ public class users implements Parcelable {
         profile_photo = in.readString();
         description = in.readString();
         display_name = in.readString();
-        changedFollowers =in.readString();
-        changedCreateContest =in.readString();
-        changedJoinedContest=in.readString();
+        changedFollowers = in.readString();
+        changedCreateContest = in.readString();
+        changedJoinedContest = in.readString();
     }
 
     public static final Creator<users> CREATOR = new Creator<users>() {

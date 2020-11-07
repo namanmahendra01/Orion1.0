@@ -135,6 +135,9 @@
     <string name="db_posts_deleted">deleted_posts</string>
     <string name="explore_update">explore_update</string>
     <string name="dbname_username">username</string>
+    <string name="field_link1">link1</string>
+    <string name="field_link2">link2</string>
+    <string name="field_link3">link3</string>
 
     field_post
 
