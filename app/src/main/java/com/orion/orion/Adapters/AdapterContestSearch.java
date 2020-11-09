@@ -468,13 +468,13 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                     Intent i = new Intent(mContext.getApplicationContext(), JoiningForm.class);
                     i.putExtra("userId", mcontest.getUserId());
                     i.putExtra("contestId", mcontest.getContestId());
-                    i.putExtra("isJuryOrHost",true);
+                    i.putExtra("isJuryOrHost","true");
                     mContext.startActivity(i);
                 }else{
                     Intent i = new Intent(mContext.getApplicationContext(), JoiningForm.class);
                     i.putExtra("userId", mcontest.getUserId());
                     i.putExtra("contestId", mcontest.getContestId());
-                    i.putExtra("isJuryOrHost",false);
+                    i.putExtra("isJuryOrHost","false");
                     mContext.startActivity(i);
                 }
 

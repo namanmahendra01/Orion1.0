@@ -506,8 +506,13 @@ public class fragment_result_overview extends Fragment {
                         });
                         Collections.reverse(participantLists);
                         try {
-                            for (int x = 0; x < 3; x++) {
+                            int o=0;
+                            for (int x = 0; x < participantLists.size(); x++) {
+                                o++;
                                 participantLists2.add(participantLists.get(x));
+                                if (o==3){
+                                    break;
+                                }
 
                             }
                         } catch (IndexOutOfBoundsException e) {

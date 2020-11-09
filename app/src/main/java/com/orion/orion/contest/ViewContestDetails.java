@@ -762,13 +762,13 @@ public class ViewContestDetails extends AppCompatActivity {
                         Intent i = new Intent(getApplicationContext(), JoiningForm.class);
                         i.putExtra("userId", userId);
                         i.putExtra("contestId", contestId);
-                        i.putExtra("isJuryOrHost",true);
+                        i.putExtra("isJuryOrHost","true");
                         startActivity(i);
                     }else{
                         Intent i = new Intent(getApplicationContext(), JoiningForm.class);
                         i.putExtra("userId", userId);
                         i.putExtra("contestId", contestId);
-                        i.putExtra("isJuryOrHost",false);
+                        i.putExtra("isJuryOrHost","false");
                         startActivity(i);
                     }
                 }

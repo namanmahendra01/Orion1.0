@@ -81,7 +81,7 @@ public class JoiningForm extends AppCompatActivity {
     String type = "";
     String p5 = "p5", p6 = "p6";
     public LinearLayout linearLayout;
-    boolean isJuryOrHost=false;
+    String isJuryOrHost="false";
 
     //firebase
     private FirebaseAuth mAuth;
@@ -103,6 +103,7 @@ public class JoiningForm extends AppCompatActivity {
         Intent i = getIntent();
         userId = i.getStringExtra("userId");
         contestId = i.getStringExtra("contestId");
+        isJuryOrHost = i.getStringExtra("isJuryOrHost");
 
         collegeEt = findViewById(R.id.collegeEt);
         urlEt = findViewById(R.id.url_submission);
@@ -365,7 +366,7 @@ public class JoiningForm extends AppCompatActivity {
 
         });
 
-if (!isJuryOrHost){
+if (isJuryOrHost.equals("true")){
     decline.setVisibility(View.VISIBLE);
 }
     }

@@ -61,6 +61,9 @@ public class contest_evaluation_activity extends AppCompatActivity {
         tablayout.getTabAt(0).setText("Edit");
         tablayout.getTabAt(1).setText("Participants");
         tablayout.getTabAt(2).setText("Overview");
+
+        mViewPager.setCurrentItem(1);
+
     }
 
     @Override

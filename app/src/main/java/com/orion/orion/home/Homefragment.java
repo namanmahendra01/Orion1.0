@@ -1477,6 +1477,9 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
             }
 
         } else {
+            mAadapter = new AdapterMainfeed(getContext(), mPaginatedPhotos, ListViewRv, Homefragment.this);
+            mAadapter.setHasStableIds(true);
+            ListViewRv.setAdapter(mAadapter);
             noPost.setVisibility(View.VISIBLE);
             bottomProgress.setVisibility(View.GONE);
 

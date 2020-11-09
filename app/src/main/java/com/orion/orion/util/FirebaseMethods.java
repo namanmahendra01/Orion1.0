@@ -587,7 +587,7 @@ public class FirebaseMethods {
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if (snapshot.exists()){
                                                     DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
-                                                            .child(snapshot.getKey())
+                                                            .child(snapshot.getValue().toString())
                                                             .child("judged");
 
                                                           ref2.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -627,7 +627,7 @@ public class FirebaseMethods {
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if (snapshot.exists()){
                                                     DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
-                                                            .child(snapshot.getKey())
+                                                            .child(snapshot.getValue().toString())
                                                             .child("judged");
 
                                                     ref2.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -666,7 +666,7 @@ public class FirebaseMethods {
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if (snapshot.exists()){
                                                     DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
-                                                            .child(snapshot.getKey())
+                                                            .child(snapshot.getValue().toString())
                                                             .child("judged");
 
                                                     ref2.addListenerForSingleValueEvent(new ValueEventListener() {

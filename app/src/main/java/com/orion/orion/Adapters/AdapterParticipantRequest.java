@@ -96,7 +96,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
         holder.time.setText(dateTime);
 
 
-        getparticipantDetails(mparticipantLists.getUserid(), holder.username, holder.profile, null, null, null);
+        getparticipantDetails(mparticipantLists.getUserid(), holder.username, holder.profile);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,7 +117,6 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                 CircleImageView profileview = bottomSheetView.findViewById(R.id.profileBs);
 
 
-                getparticipantDetails(mparticipantLists.getUserid(), holder.username, holder.profile, name, username, profileview);
                 name.setText(name1);
                 username.setText(username1);
                 Glide.with(mContext)
@@ -309,7 +308,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                         .setValue("Accepted");
 
                                 db.child(mContext.getString(R.string.dbname_contests))
-                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(mparticipantLists.getUserid())
                                         .child("Joinedupdates")
                                         .child(mparticipantLists.getJoiningKey())
                                         .setValue("Accepted");
@@ -317,11 +316,11 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                 db.child(mContext.getString(R.string.dbname_contestlist))
                                         .child(mparticipantLists.getContestkey())
                                         .child("participantlist")
-                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(mparticipantLists.getUserid())
                                         .setValue(true);
 
                                 db.child(mContext.getString(R.string.dbname_users))
-                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(mparticipantLists.getUserid())
                                         .child(mContext.getString(R.string.changedJoinedContest))
                                         .setValue("true");
 
@@ -558,7 +557,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
     }
 
 
-    private void getparticipantDetails(String userid, TextView username, CircleImageView profile, TextView name, TextView username2, CircleImageView profileview) {
+    private void getparticipantDetails(String userid, TextView username, CircleImageView profile) {
         DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
         ref.child(mContext.getString(R.string.dbname_user_account_settings))
                 .child(userid)
@@ -571,28 +570,21 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                         username1=user.getUsername();
                         profilelink=user.getProfile_photo();
                         try {
-                            name.setText(name1);
-                            username2.setText(username1);
+
                             Glide.with(mContext)
                                     .load(profilelink)
                                     .placeholder(R.drawable.load)
                                     .error(R.drawable.default_image2)
                                     .placeholder(R.drawable.load)
                                     .thumbnail(0.5f)
-                                    .into(profileview);
+                                    .into(profile);
                         }catch (NullPointerException e){
                             Log.e(TAG, "onDataChange: "+e.getMessage() );
 
                         }
 
                         username.setText(user.getUsername());
-                        Glide.with(mContext)
-                                .load(profilelink)
-                                .placeholder(R.drawable.load)
-                                .error(R.drawable.default_image2)
-                                .placeholder(R.drawable.load)
-                                .thumbnail(0.5f)
-                                .into(profileview);
+
 
                     }
 

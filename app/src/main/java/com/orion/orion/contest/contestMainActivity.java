@@ -59,19 +59,9 @@ public class contestMainActivity extends AppCompatActivity {
         adapter.addFragment(new fragment_upcomingContest());
         adapter.addFragment(new fragment_joinedContest());
 
-//        mViewPager.setAdapter(adapter);
 
-//        TabLayout tablayout = (TabLayout) findViewById(R.id.tabs);
-//        tablayout.setupWithViewPager(mViewPager);
-//
-//
-////        for giving icon to them
-//        tablayout.getTabAt(0).setText("create");
-//        tablayout.getTabAt(1).setText("upcoming");
-//        tablayout.getTabAt(2).setText("joined");
         mViewPager.postDelayed((Runnable) () -> {
             mViewPager.setAdapter(adapter);
-//        mViewPager.setAdapter(adapter);
             TabLayout tablayout = (TabLayout) findViewById(R.id.tabs);
             tablayout.setupWithViewPager(mViewPager);
             mViewPager.setCurrentItem(CREATE_CONTEST);

@@ -67,11 +67,12 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
 
         ParticipantList participantList = participantLists.get(i);
-        Display display = ((Activity)mContext).getWindowManager().getDefaultDisplay();
-        int width = display.getWidth(); // ((display.getWidth()*20)/100)
-        CardView.LayoutParams parms = new CardView.LayoutParams(width/3,width/3);
-        holder.image.setLayoutParams(parms);
+
         if (isImage) {
+            Display display = ((Activity)mContext).getWindowManager().getDefaultDisplay();
+            int width = display.getWidth(); // ((display.getWidth()*20)/100)
+            CardView.LayoutParams parms = new CardView.LayoutParams(width/3,width/3);
+            holder.image.setLayoutParams(parms);
             Glide.with(mContext)
                     .load(participantList.getMediaLink())
                     .placeholder(R.drawable.load)
