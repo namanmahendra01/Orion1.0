@@ -268,20 +268,20 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 
                                                 int all_time;
                                                 int yearly = 0;
-                                                if (dataSnapshot.child(getString(R.string.field_yearly)).child(getString(R.string.field_contest)).getValue() != null)
-                                                    yearly = (int) (long) dataSnapshot.child(getString(R.string.field_yearly)).child(getString(R.string.field_contest)).getValue();
+                                                if (dataSnapshot.child(getString(R.string.field_yearly)).child(getString(R.string.field_followers)).getValue() != null)
+                                                    yearly = (int) (long) dataSnapshot.child(getString(R.string.field_yearly)).child(getString(R.string.field_followers)).getValue();
                                                 int last_month = 0;
-                                                if (dataSnapshot.child(getString(R.string.field_last_month)).child(getString(R.string.field_contest)).getValue() != null)
-                                                    last_month = (int) (long) dataSnapshot.child(getString(R.string.field_last_month)).child(getString(R.string.field_contest)).getValue();
+                                                if (dataSnapshot.child(getString(R.string.field_last_month)).child(getString(R.string.field_followers)).getValue() != null)
+                                                    last_month = (int) (long) dataSnapshot.child(getString(R.string.field_last_month)).child(getString(R.string.field_followers)).getValue();
                                                 int this_month = 0;
-                                                if (dataSnapshot.child(getString(R.string.field_this_month)).child(getString(R.string.field_contest)).getValue() != null)
-                                                    this_month = (int) (long) dataSnapshot.child(getString(R.string.field_this_month)).child(getString(R.string.field_contest)).getValue();
+                                                if (dataSnapshot.child(getString(R.string.field_this_month)).child(getString(R.string.field_followers)).getValue() != null)
+                                                    this_month = (int) (long) dataSnapshot.child(getString(R.string.field_this_month)).child(getString(R.string.field_followers)).getValue();
                                                 int last_week = 0;
-                                                if (dataSnapshot.child(getString(R.string.field_last_week)).child(getString(R.string.field_contest)).getValue() != null)
-                                                    last_week = (int) (long) dataSnapshot.child(getString(R.string.field_last_week)).child(getString(R.string.field_contest)).getValue();
+                                                if (dataSnapshot.child(getString(R.string.field_last_week)).child(getString(R.string.field_followers)).getValue() != null)
+                                                    last_week = (int) (long) dataSnapshot.child(getString(R.string.field_last_week)).child(getString(R.string.field_followers)).getValue();
                                                 int this_week = 0;
-                                                if (dataSnapshot.child(getString(R.string.field_this_week)).child(getString(R.string.field_contest)).getValue() != null)
-                                                    this_week = (int) (long) dataSnapshot.child(getString(R.string.field_this_week)).child(getString(R.string.field_contest)).getValue();
+                                                if (dataSnapshot.child(getString(R.string.field_this_week)).child(getString(R.string.field_followers)).getValue() != null)
+                                                    this_week = (int) (long) dataSnapshot.child(getString(R.string.field_this_week)).child(getString(R.string.field_followers)).getValue();
 
                                                 //getting last updated entries
                                                 String lastUpdatedTimestamp = (String) dataSnapshot.child(getString(R.string.field_last_updated)).getValue();
