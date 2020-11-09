@@ -103,7 +103,6 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 
 
     private void updateLeaderboard() {
-
         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
             @Override
             public void onTimeReceived(String currentTimeStamp) {
@@ -382,7 +381,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                                 all_time = currentNoOfFollowers;
                                                 if (finalLastUpdatedYear == currentYear) {
                                                     yearly += rating;
-                                                    if (finalLastUpdatedMonth == currentYear)
+                                                    if (finalLastUpdatedMonth == currentMonth)
                                                         this_month += rating;
                                                 }
                                                 if (elapsedDays <= currentDay) this_week += rating;
@@ -558,7 +557,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                                 all_time += (2.5 * joinedContest);
                                                 if (finalLastUpdatedYear == currentYear) {
                                                     yearly += rating;
-                                                    if (finalLastUpdatedMonth == currentYear)
+                                                    if (finalLastUpdatedMonth == currentMonth)
                                                         this_month += rating;
                                                 }
                                                 if (elapsedDays <= currentDay)
@@ -570,11 +569,10 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                                 all_time += (5 * createdContest);
                                                 if (finalLastUpdatedYear == currentYear) {
                                                     yearly += rating;
-                                                    if (finalLastUpdatedMonth == currentYear)
+                                                    if (finalLastUpdatedMonth == currentMonth)
                                                         this_month += rating;
                                                 }
-                                                if (elapsedDays <= currentDay)
-                                                    this_week += rating;
+                                                if (elapsedDays <= currentDay) this_week += rating;
 
                                                 Log.d(TAG, "updateLeaderboard: contests " + all_time + "," + yearly + "," + last_month + "," + this_month + "," + last_week + "," + this_week);
                                                 reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).setValue(all_time);
@@ -622,7 +620,6 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                 Log.e(SNTPClient.TAG, Objects.requireNonNull(ex.getMessage()));
             }
         });
-        filter();
     }
 
     private void checkOrGetLocation() {
@@ -678,8 +675,9 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         setupFirebaseAuth();
         initializeWidgets();
         checkOrGetLocation();
-
         updateLeaderboard();
+        filter();
+
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
