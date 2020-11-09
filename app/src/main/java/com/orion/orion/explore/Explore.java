@@ -1035,7 +1035,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         if (swipeRefreshLayout.isRefreshing()) {
             String field = spinner.getText().toString();
             Log.d(TAG, "displayPhotos: started" + field);
-            if (field.equals("All")) field = "Overall";
             paginatedPhotos.clear();
             fieldPhotos.clear();
             if (adapterGridImage != null) adapterGridImage.notifyDataSetChanged();

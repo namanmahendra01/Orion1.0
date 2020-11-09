@@ -82,13 +82,13 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     private AdapterPromote promote;
     private int c = 0;
     String domain;
-    boolean flag1 = false, flag2 = false, flag3 = false, flag4 = false,flag5=false;
+    boolean flag1 = false, flag2 = false, flag3 = false, flag4 = false, flag5 = false;
     private static int RETRY_DURATION = 1000;
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
     LinearLayout promo;
     private ImageView star, starFill;
-    TextView domaintv, footer,noPost;
+    TextView domaintv, footer, noPost;
     SwipeRefreshLayout postReferesh;
     ScrollView scrollView;
     private RecyclerView ListViewRv;
@@ -150,7 +150,6 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     Log.d(TAG, "onRefresh: 22");
                     postReferesh.setRefreshing(false);
                     handler.removeCallbacks(this::checkRefresh);
-
                     flag1 = false;
                     flag2 = false;
                     flag3 = false;
@@ -158,7 +157,6 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                 } else {
                     Log.d(TAG, "onRefresh: 33");
                     handler.postDelayed(this::checkRefresh, RETRY_DURATION);
-
                 }
             }
         });
@@ -263,7 +261,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                         if (scrollView.getChildAt(0).getBottom()
                                 == (scrollView.getHeight() + scrollView.getScrollY()) && c != 0) {
-                            if (mPhotos.size()!=mPaginatedPhotos.size()){
+                            if (mPhotos.size() != mPaginatedPhotos.size()) {
                                 bottomProgress.setVisibility(View.VISIBLE);
 
                             }
@@ -314,7 +312,6 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     }
 
 
-
     //  fetching FollowerList  from SharedPreferences
     private void getFollowerListFromSP() {
         String json = sp.getString("fl", null);
@@ -346,7 +343,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         }.getType();
         ArrayList<String> list = new ArrayList<>();
         list = gson.fromJson(json, type);
-        if (list == null||list.size()==0) {    //        not followed anyone
+        if (list == null || list.size() == 0) {    //        not followed anyone
             c++;
         } else {              //    we followed someone....update everylist
             addToPhotosList(list);
@@ -361,7 +358,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         }.getType();
         ArrayList<String> ulist = new ArrayList<>();
         ulist = gson.fromJson(json, type);
-        if (ulist == null||ulist.size()==0) {    //         not unfollowed anyone
+        if (ulist == null || ulist.size() == 0) {    //         not unfollowed anyone
             c++;
         } else {                  //    we unfollowed someone....update everylist
 
@@ -616,7 +613,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                             for (int i = 0; i < list.size(); i++) {
                                 x++;
 
-                                Log.d(TAG, "onDataChange: ooo"+list);
+                                Log.d(TAG, "onDataChange: ooo" + list);
                                 if (dataSnapshot.child(list.get(i))
                                         .child("domain").getValue().equals(domain)) {
                                     mFollowing1.add(list.get(i));
@@ -652,15 +649,15 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         }.getType();
         ArrayList<ContestDetail> list1 = new ArrayList<>();
         list1 = gson.fromJson(json, type);
-        if (list1==null){
+        if (list1 == null) {
             list1 = new ArrayList<>();
         }
-        Log.d(TAG, "removeFromContestList: 3"+list1.size());
+        Log.d(TAG, "removeFromContestList: 3" + list1.size());
 
 
         if (list1.size() != 0) {
             for (int i = 0; i < list.size(); i++) {
-                for (int x=0;x<list1.size();x++){
+                for (int x = 0; x < list1.size(); x++) {
                     if (list1.get(x).getUserId().equals(list.get(i))) {
                         list1.remove(list1.get(x));
                         x--;
@@ -683,8 +680,6 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
         contestUpcoming.notifyDataSetChanged();
         flag3 = true;
-
-
 
 
     }
@@ -723,7 +718,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                             if (!contestDetail.getResult()) {
                                 contestlist.add(contestDetail);
                             }
-                            if (x == dataSnapshot.getChildrenCount()&&count==list.size()-1) {
+                            if (x == dataSnapshot.getChildrenCount() && count == list.size() - 1) {
 
                                 Collections.reverse(contestlist);
 
@@ -745,7 +740,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                         }
 
 
-                    }else {
+                    } else {
                         contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
                         contestUpcoming.setHasStableIds(true);
 
@@ -901,7 +896,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                         }
 
 
-                    }else{
+                    } else {
                         displayPhotos();
 
                     }
@@ -1175,7 +1170,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     }
 
     private void getcontest() {
-        if (contestlist == null||contestlist.size()==0) {
+        if (contestlist == null || contestlist.size() == 0) {
 
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
@@ -1230,8 +1225,8 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
             }
 
-            if (mFollowing.size()==0){
-                flag3=true;
+            if (mFollowing.size() == 0) {
+                flag3 = true;
             }
         } else {
             checkContestUpdate();
@@ -1250,11 +1245,11 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    int x=0;
+                    int x = 0;
                     for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                         x++;
                         mFollowing.add(singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString());
-                        if (x==dataSnapshot.getChildrenCount()){
+                        if (x == dataSnapshot.getChildrenCount()) {
 
 //                        Add newly Created ArrayList to Shared Preferences
                             SharedPreferences.Editor editor = sp.edit();
@@ -1269,7 +1264,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     }
 
 
-                }else{
+                } else {
 
 //                        Add newly Created ArrayList to Shared Preferences
                     SharedPreferences.Editor editor = sp.edit();
@@ -1349,8 +1344,8 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
             });
 
         }
-        if (mFollowing.size()==0){
-            flag2=true;
+        if (mFollowing.size() == 0) {
+            flag2 = true;
         }
     }
 
@@ -1370,67 +1365,66 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            long x = 0;
-                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                                x++;
+                        long x = 0;
+                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                            x++;
 
-                                Photo photo = new Photo();
-                                Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-                                photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
+                            Photo photo = new Photo();
+                            Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
+                            photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
 
-                                photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
+                            photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
 
-                                photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+                            photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
 
-                                photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
+                            photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
 
-                                photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
+                            photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
 
-                                photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+                            photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
 
 
-                                if (objectMap.get(getString(R.string.thumbnail)) != null) {
-                                    photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
+                            if (objectMap.get(getString(R.string.thumbnail)) != null) {
+                                photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
 
-                                }
-                                photo.setType(objectMap.get(getString(R.string.type)).toString());
+                            }
+                            photo.setType(objectMap.get(getString(R.string.type)).toString());
 
-                                ArrayList<Comment> comments = new ArrayList<>();
+                            ArrayList<Comment> comments = new ArrayList<>();
 
-                                for (DataSnapshot dSnapshot : singleSnapshot
-                                        .child(getString(R.string.field_comment)).getChildren()) {
-                                    Comment comment = new Comment();
-                                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-                                    comments.add(comment);
+                            for (DataSnapshot dSnapshot : singleSnapshot
+                                    .child(getString(R.string.field_comment)).getChildren()) {
+                                Comment comment = new Comment();
+                                comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
+                                comment.setComment(dSnapshot.getValue(Comment.class).getComment());
+                                comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                comments.add(comment);
 
-                                }
-                                photo.setComments(comments);
-                                mPhotos.add(photo);
+                            }
+                            photo.setComments(comments);
+                            mPhotos.add(photo);
 //                        sort array List
-                                Collections.sort(mPhotos, new Comparator<Photo>() {
-                                    @Override
-                                    public int compare(Photo o1, Photo o2) {
-                                        return o2.getDate_created().compareTo(o1.getDate_created());
-                                    }
-                                });
+                            Collections.sort(mPhotos, new Comparator<Photo>() {
+                                @Override
+                                public int compare(Photo o1, Photo o2) {
+                                    return o2.getDate_created().compareTo(o1.getDate_created());
+                                }
+                            });
 
 //                        Add newly Created ArrayList to Shared Preferences
-                                SharedPreferences.Editor editor = sp.edit();
-                                String json = gson.toJson(mPhotos);
-                                editor.putString("pl", json);
-                                editor.apply();
+                            SharedPreferences.Editor editor = sp.edit();
+                            String json = gson.toJson(mPhotos);
+                            editor.putString("pl", json);
+                            editor.apply();
 
-                            }
-                            if (count >= mFollowing.size() - 1) {
+                        }
+                        if (count >= mFollowing.size() - 1) {
 //                        call display photos
-                                displayPhotos();
-
-                            }
+                            displayPhotos();
 
                         }
 
+                    }
 
 
                     @Override
@@ -1441,7 +1435,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
 
             }
-            if (mFollowing.size()==0){
+            if (mFollowing.size() == 0) {
                 //                        call display photos
                 displayPhotos();
             }
@@ -1470,7 +1464,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     mPaginatedPhotos.add(mPhotos.get(i));
                 }
                 Log.d(TAG, "displayPhotos: sss" + mPaginatedPhotos.size());
-                mAadapter = new AdapterMainfeed(getContext(), mPaginatedPhotos, ListViewRv,Homefragment.this);
+                mAadapter = new AdapterMainfeed(getContext(), mPaginatedPhotos, ListViewRv, Homefragment.this);
                 mAadapter.setHasStableIds(true);
                 ListViewRv.setAdapter(mAadapter);
 
@@ -1482,7 +1476,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
             }
 
-        }else{
+        } else {
             noPost.setVisibility(View.VISIBLE);
             bottomProgress.setVisibility(View.GONE);
 
@@ -1511,14 +1505,14 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     @Override
                     public void run() {
                         mAadapter.notifyItemRangeInserted(mResults, iterations);
-                        flag5=true;
+                        flag5 = true;
 
                     }
                 });
                 mResults = mResults + iterations;
 
 
-            }else {
+            } else {
                 bottomProgress.setVisibility(View.GONE);
 
             }

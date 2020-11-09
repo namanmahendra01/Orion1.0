@@ -67,7 +67,7 @@ public class PostPhotoActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
 
-
+    private ProgressDialog dialog;
     private EditText mCaption;
 
     private ImageView image;
@@ -108,16 +108,14 @@ public class PostPhotoActivity extends AppCompatActivity {
                     .show();
         });
         post.setOnClickListener(v -> {
-            Toast.makeText(PostPhotoActivity.this, "Attempting to upload new photo", Toast.LENGTH_SHORT).show();
+            dialog = ProgressDialog.show(mContext, "", "Uploading...  ", true);
             String caption = mCaption.getText().toString();
             Log.d(TAG, "onCreate: imgURL" + imgURL);
             Log.d(TAG, "onCreate: imageCount" + imageCount);
-            if (imgURL!=null&&!imgURL.equals("")){
+            if (imgURL!=null && !imgURL.equals("")){
                 uploadNewPhoto(caption, imageCount, imgURL);
-
             }else{
                 Toast.makeText(PostPhotoActivity.this, "Please Select Image First.", Toast.LENGTH_SHORT).show();
-
             }
         });
     }
@@ -127,24 +125,13 @@ public class PostPhotoActivity extends AppCompatActivity {
         FilePaths filepaths = new FilePaths();
         String user_id = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(filepaths.FIREBASE_IMAGE_STORAGE + "/" + user_id + "/post" + (imageCount + 1));
-
-
         String imgUrl2= mFirebaseMethods.compressImage(imgURL);
-
         Bitmap bm = ImageManager.getBitmap(imgUrl2);
-
-
         byte[] bytes;
-
-    bytes = ImageManager.getBytesFromBitmap(bm, 100);
-
+        bytes = ImageManager.getBytesFromBitmap(bm, 100);
         UploadTask uploadTask;
         uploadTask = storageReference.putBytes(bytes);
-        ProgressDialog dialog = ProgressDialog.show(mContext, "", "Uploading...  ", true);
-
-
         Log.d(TAG, "uploadNewPhoto: uploadTask" + uploadTask);
-
         uploadTask.addOnSuccessListener(taskSnapshot -> {
             dialog.dismiss();
             storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
