@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -33,7 +34,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orion.orion.Adapters.AdapterChat;
 import com.orion.orion.R;
 import com.orion.orion.models.Chat;
@@ -172,7 +172,10 @@ Chat_Activity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (!snapshot.exists()) {
-                            sendRequestLayout.setVisibility(View.VISIBLE);
+                          if(!request.equals("yes")){
+                              sendRequestLayout.setVisibility(View.VISIBLE);
+
+                          }
                         }
 
                     }
@@ -853,20 +856,22 @@ Chat_Activity extends AppCompatActivity {
                 }
             }
         };
-        Query query = myRef.child(getString(R.string.dbname_user_account_settings)).orderByChild(getString(R.string.field_user_id)).equalTo(hisUID);
+        Query query = myRef.child(getString(R.string.dbname_user_account_settings)).child(hisUID);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+            public void onDataChange(@NonNull DataSnapshot singleSnapshot) {
+
+                    Glide.with(Chat_Activity.this)
+                            .load(singleSnapshot.child(getString(R.string.profile_photo)).getValue().toString())
+                            .placeholder(R.drawable.load)
+                            .error(R.drawable.default_image2)
+                            .placeholder(R.drawable.load)
+                            .thumbnail(0.2f)
+                            .into(mprofileImage);
+
+                    mUsername.setText(singleSnapshot.child(getString(R.string.field_username)).getValue().toString());
 
 
-                    ImageLoader imageLoader = ImageLoader.getInstance();
-
-                    imageLoader.displayImage(singleSnapshot.getValue(users.class).getProfile_photo(), mprofileImage);
-
-                    mUsername.setText(singleSnapshot.getValue(users.class).getUsername());
-
-                }
             }
 
             @Override

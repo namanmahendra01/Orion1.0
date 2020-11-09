@@ -1,16 +1,20 @@
 package com.orion.orion.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,7 +24,6 @@ import com.orion.orion.R;
 import com.orion.orion.ViewPostActivity;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.Photo;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +37,13 @@ public class AdapterGridImage extends RecyclerView.Adapter<AdapterGridImage.View
     private Context mContext;
     private List<Photo> photos;
 
+
     public AdapterGridImage(Context mContext, List<Photo> photos) {
         this.mContext = mContext;
         this.photos = photos;
     }
+
+
 
 
     @NonNull
@@ -50,15 +56,32 @@ public class AdapterGridImage extends RecyclerView.Adapter<AdapterGridImage.View
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
+        Display display = ((Activity)mContext).getWindowManager().getDefaultDisplay();
+        int width = display.getWidth(); // ((display.getWidth()*20)/100)
+        CardView.LayoutParams parms = new CardView.LayoutParams(width/3,width/3);
+        holder.image.setLayoutParams(parms);
 
+        Log.d(TAG, "onBindViewHolder: "+i);
         Photo photo= photos.get(i);
         Log.d(TAG, "onBindViewHolder: "+photo.getType()+photos.size());
 if (photo.getType().equals("photo")){
-    UniversalImageLoader.setImage(photo.getImage_path(), holder.image, holder.progress, "");
-
+    Glide.with(holder.itemView.getContext())
+            .load(photo.getImage_path())
+            .placeholder(R.drawable.load)
+            .error(R.drawable.default_image2)
+            .centerCrop()
+            .placeholder(R.drawable.load)
+            .thumbnail(0.5f)
+            .into(holder.image);
 }else{
-    UniversalImageLoader.setImage(photo.getThumbnail(), holder.image, holder.progress, "");
-
+    Glide.with(holder.itemView.getContext())
+            .load(photo.getThumbnail())
+            .placeholder(R.drawable.load)
+            .error(R.drawable.default_image2)
+            .centerCrop()
+            .placeholder(R.drawable.load)
+            .thumbnail(0.5f)
+            .into(holder.image);
 }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

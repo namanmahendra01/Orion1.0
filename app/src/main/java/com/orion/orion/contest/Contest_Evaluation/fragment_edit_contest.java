@@ -21,7 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -34,7 +34,6 @@ import com.orion.orion.R;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
-import com.orion.orion.util.UniversalImageLoader;
 
 import static com.android.volley.VolleyLog.TAG;
 
@@ -218,8 +217,13 @@ public class fragment_edit_contest extends Fragment {
                                                         jurypl1.setText(user.getUsername());
                                                         Log.d(TAG, "onDataChange: " + user.getDisplay_name());
 
-                                                        UniversalImageLoader.setImage(user.getProfile_photo(), jurypic1, null, "");
-                                                    }
+                                                        Glide.with(fragment_edit_contest.this)
+                                                                .load(user.getProfile_photo())
+                                                                .placeholder(R.drawable.load)
+                                                                .error(R.drawable.default_image2)
+                                                                .placeholder(R.drawable.load)
+                                                                .thumbnail(0.25f)
+                                                                .into(jurypic1);                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -272,8 +276,13 @@ public class fragment_edit_contest extends Fragment {
                                                         jurypl1.setText(user.getUsername());
                                                         Log.d(TAG, "onDataChange: " + user.getDisplay_name());
 
-                                                        UniversalImageLoader.setImage(user.getProfile_photo(), jurypic1, null, "");
-                                                    }
+                                                        Glide.with(fragment_edit_contest.this)
+                                                                .load(user.getProfile_photo())
+                                                                .placeholder(R.drawable.load)
+                                                                .error(R.drawable.default_image2)
+                                                                .placeholder(R.drawable.load)
+                                                                .thumbnail(0.25f)
+                                                                .into(jurypic1);                                                      }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -309,8 +318,13 @@ public class fragment_edit_contest extends Fragment {
                                                         jurypl2.setText(user.getUsername());
                                                         Log.d(TAG, "onDataChange: " + user.getDisplay_name());
 
-                                                        UniversalImageLoader.setImage(user.getProfile_photo(), jurypic1, null, "");
-                                                    }
+                                                        Glide.with(fragment_edit_contest.this)
+                                                                .load(user.getProfile_photo())
+                                                                .placeholder(R.drawable.load)
+                                                                .error(R.drawable.default_image2)
+                                                                .placeholder(R.drawable.load)
+                                                                .thumbnail(0.25f)
+                                                                .into(jurypic2);                                                      }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -362,8 +376,13 @@ public class fragment_edit_contest extends Fragment {
                                                         jurypl1.setText(user.getUsername());
                                                         Log.d(TAG, "onDataChange: " + user.getDisplay_name());
 
-                                                        UniversalImageLoader.setImage(user.getProfile_photo(), jurypic1, null, "");
-                                                    }
+                                                        Glide.with(fragment_edit_contest.this)
+                                                                .load(user.getProfile_photo())
+                                                                .placeholder(R.drawable.load)
+                                                                .error(R.drawable.default_image2)
+                                                                .placeholder(R.drawable.load)
+                                                                .thumbnail(0.25f)
+                                                                .into(jurypic1);                                                      }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -398,8 +417,13 @@ public class fragment_edit_contest extends Fragment {
                                                         jurypl2.setText(user.getUsername());
                                                         Log.d(TAG, "onDataChange: " + user.getDisplay_name());
 
-                                                        UniversalImageLoader.setImage(user.getProfile_photo(), jurypic1, null, "");
-                                                    }
+                                                        Glide.with(fragment_edit_contest.this)
+                                                                .load(user.getProfile_photo())
+                                                                .placeholder(R.drawable.load)
+                                                                .error(R.drawable.default_image2)
+                                                                .placeholder(R.drawable.load)
+                                                                .thumbnail(0.25f)
+                                                                .into(jurypic2);                                                      }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -435,8 +459,13 @@ public class fragment_edit_contest extends Fragment {
                                                         jurypl3.setText(user.getUsername());
                                                         Log.d(TAG, "onDataChange: " + user.getDisplay_name());
 
-                                                        UniversalImageLoader.setImage(user.getProfile_photo(), jurypic1, null, "");
-                                                    }
+                                                        Glide.with(fragment_edit_contest.this)
+                                                                .load(user.getProfile_photo())
+                                                                .placeholder(R.drawable.load)
+                                                                .error(R.drawable.default_image2)
+                                                                .placeholder(R.drawable.load)
+                                                                .thumbnail(0.25f)
+                                                                .into(jurypic3);                                                      }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -455,7 +484,12 @@ public class fragment_edit_contest extends Fragment {
                 }
 
                 posterlink = mCreateForm.getPoster();
-                UniversalImageLoader.setImage(posterlink, poster, null, mAppend);
+                Glide.with(fragment_edit_contest.this)
+                        .load(posterlink)
+                        .placeholder(R.drawable.load)
+                        .error(R.drawable.default_image2)
+                        .placeholder(R.drawable.load)
+                        .into(poster);
                 title.setText(mCreateForm.getTitle());
                 descrip.setText(mCreateForm.getDescrip());
                 rules.setText(mCreateForm.getRule());

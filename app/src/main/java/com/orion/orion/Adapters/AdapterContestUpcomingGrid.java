@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -22,6 +21,7 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,16 +32,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.contest.ViewContestDetails;
-import com.orion.orion.contest.joined.JoiningForm;
-import com.orion.orion.contest.jury_voting_media;
-import com.orion.orion.contest.public_voting_media;
 import com.orion.orion.contest.result.ResultDeclaredActivity;
 import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.CreateForm;
-import com.orion.orion.models.users;
 import com.orion.orion.util.SNTPClient;
 import com.orion.orion.util.StringManipilation;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -494,8 +489,13 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
                     CreateForm createForm=dataSnapshot.getValue(CreateForm.class);
                     title.setText(createForm.getTitle());
                     Log.d(TAG, "onDataChange: image"+createForm.getPoster() );
-                    UniversalImageLoader.setImage(createForm.getPoster(),poster,progress,mAppend);
-
+                    Glide.with(mContext)
+                            .load(createForm.getPoster())
+                            .placeholder(R.drawable.load)
+                            .error(R.drawable.default_image2)
+                            .placeholder(R.drawable.load)
+                            .thumbnail(0.5f)
+                            .into(poster);
                 }
 
                 @Override

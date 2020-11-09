@@ -13,7 +13,6 @@ import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,7 +45,6 @@ import com.orion.orion.models.Photo;
 import com.orion.orion.models.users;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.SNTPClient;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
@@ -480,7 +479,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         getCreations();
         getParticipation();
         mRank.setText(String.valueOf(rank));
-        getRank();
+//        getRank();
         dialog.dismiss();
     }
 
@@ -735,7 +734,13 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     private void setProfileWidgets(users userSetting) {
         Log.d(TAG, "onDataChange: " + userSetting.toString());
-        UniversalImageLoader.setImage(userSetting.getProfile_photo(), mProfilePhoto, null, "");
+        Glide.with(ViewProfileActivity.this)
+                .load(userSetting.getProfile_photo())
+                .placeholder(R.drawable.load)
+                .error(R.drawable.default_image2)
+                .placeholder(R.drawable.load)
+                .thumbnail(0.2f)
+                .into(mProfilePhoto);
         mUsername.setText(userSetting.getUsername());
         mDomain.setText(userSetting.getDomain());
 

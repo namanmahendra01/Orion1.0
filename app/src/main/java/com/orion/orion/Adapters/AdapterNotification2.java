@@ -5,13 +5,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,7 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.VolleyLog;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -30,7 +28,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -38,10 +35,7 @@ import com.orion.orion.R;
 import com.orion.orion.ViewPostActivity;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.Notification;
-import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.Photo;
-import com.orion.orion.models.users;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -296,12 +290,22 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
                 if(dataSnapshot.exists()) {
                         if(dataSnapshot.child("type").getValue().toString().equals("photo")){
                             String img = dataSnapshot.child("image_path").getValue().toString();
-                            UniversalImageLoader.setImage(img, imageView, progress, "");
-
+                            Glide.with(context)
+                                    .load(img)
+                                    .placeholder(R.drawable.load)
+                                    .error(R.drawable.default_image2)
+                                    .placeholder(R.drawable.load)
+                                    .thumbnail(0.6f)
+                                    .into(imageView);
                         }else{
                             String img = dataSnapshot.child("thumbnail").getValue().toString();
-                            UniversalImageLoader.setImage(img, imageView, progress, "");
-
+                            Glide.with(context)
+                                    .load(img)
+                                    .placeholder(R.drawable.load)
+                                    .error(R.drawable.default_image2)
+                                    .placeholder(R.drawable.load)
+                                    .thumbnail(0.6f)
+                                    .into(imageView);
                         }
                 }
             }

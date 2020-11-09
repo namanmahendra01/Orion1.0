@@ -541,7 +541,9 @@
                 android:id="@+id/gridRv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="true"
                 android:layout_below="@+id/linearLayout2"
+
                 android:layout_marginBottom="50dp"
                 android:background="@color/white"
                 android:gravity="center"

@@ -20,6 +20,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,17 +31,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.orion.orion.R;
 import com.orion.orion.contest.joined.JoiningForm;
-import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
-import com.orion.orion.util.FirebaseMethods;
-import com.orion.orion.util.UniversalImageLoader;
-
-import static com.android.volley.VolleyLog.TAG;
 
 public class ViewContestDetails extends AppCompatActivity {
 
@@ -355,8 +350,13 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         jurypl1.setText(user.getUsername());
                                                         Log.d(TAG, "onDataChange: " + user.getDisplay_name());
 
-                                                        UniversalImageLoader.setImage(user.getProfile_photo(), jurypic1, null, "");
-                                                    }
+                                                        Glide.with(ViewContestDetails.this)
+                                                                .load(user.getProfile_photo())
+                                                                .placeholder(R.drawable.load)
+                                                                .error(R.drawable.default_image2)
+                                                                .placeholder(R.drawable.load)
+                                                                .thumbnail(0.5f)
+                                                                .into(jurypic1);                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -409,7 +409,14 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         jurypl1.setText(user.getUsername());
                                                         Log.d(TAG, "onDataChange: " + user.getDisplay_name());
 
-                                                        UniversalImageLoader.setImage(user.getProfile_photo(), jurypic1, null, "");
+                                                        Glide.with(ViewContestDetails.this)
+                                                                .load(user.getProfile_photo())
+                                                                .placeholder(R.drawable.load)
+                                                                .error(R.drawable.default_image2)
+                                                                .placeholder(R.drawable.load)
+                                                                .thumbnail(0.5f)
+                                                                .into(jurypic1);
+
                                                     }
 
                                                     @Override
@@ -446,8 +453,14 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         jurypl2.setText(user.getUsername());
                                                         Log.d(TAG, "onDataChange: " + user.getDisplay_name());
 
-                                                        UniversalImageLoader.setImage(user.getProfile_photo(), jurypic1, null, "");
-                                                    }
+
+                                                        Glide.with(ViewContestDetails.this)
+                                                                .load(user.getProfile_photo())
+                                                                .placeholder(R.drawable.load)
+                                                                .error(R.drawable.default_image2)
+                                                                .placeholder(R.drawable.load)
+                                                                .thumbnail(0.5f)
+                                                                .into(jurypic2);                                                      }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -499,8 +512,14 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         jurypl1.setText(user.getUsername());
                                                         Log.d(TAG, "onDataChange: " + user.getDisplay_name());
 
-                                                        UniversalImageLoader.setImage(user.getProfile_photo(), jurypic1, null, "");
-                                                    }
+
+                                                        Glide.with(ViewContestDetails.this)
+                                                                .load(user.getProfile_photo())
+                                                                .placeholder(R.drawable.load)
+                                                                .error(R.drawable.default_image2)
+                                                                .placeholder(R.drawable.load)
+                                                                .thumbnail(0.5f)
+                                                                .into(jurypic1);                                                      }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -535,8 +554,14 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         jurypl2.setText(user.getUsername());
                                                         Log.d(TAG, "onDataChange: " + user.getDisplay_name());
 
-                                                        UniversalImageLoader.setImage(user.getProfile_photo(), jurypic1, null, "");
-                                                    }
+
+                                                        Glide.with(ViewContestDetails.this)
+                                                                .load(user.getProfile_photo())
+                                                                .placeholder(R.drawable.load)
+                                                                .error(R.drawable.default_image2)
+                                                                .placeholder(R.drawable.load)
+                                                                .thumbnail(0.5f)
+                                                                .into(jurypic2);                                                      }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -572,8 +597,14 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         jurypl3.setText(user.getUsername());
                                                         Log.d(TAG, "onDataChange: " + user.getDisplay_name());
 
-                                                        UniversalImageLoader.setImage(user.getProfile_photo(), jurypic1, null, "");
-                                                    }
+
+                                                        Glide.with(ViewContestDetails.this)
+                                                                .load(user.getProfile_photo())
+                                                                .placeholder(R.drawable.load)
+                                                                .error(R.drawable.default_image2)
+                                                                .placeholder(R.drawable.load)
+                                                                .thumbnail(0.5f)
+                                                                .into(jurypic3);                                                      }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -592,8 +623,13 @@ public class ViewContestDetails extends AppCompatActivity {
                 }
                 posterlink = mCreateForm.getPoster();
 
-                UniversalImageLoader.setImage(posterlink, poster, null, mAppend);
 
+                Glide.with(ViewContestDetails.this)
+                        .load(posterlink)
+                        .placeholder(R.drawable.load)
+                        .error(R.drawable.default_image2)
+                        .placeholder(R.drawable.load)
+                        .into(poster);
                 title.setText(mCreateForm.getTitle());
                 descrip.setText(mCreateForm.getDescrip());
                 rules.setText(mCreateForm.getRule());

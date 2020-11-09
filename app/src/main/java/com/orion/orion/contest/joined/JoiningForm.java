@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,7 +39,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.orion.orion.R;
 import com.orion.orion.contest.contestMainActivity;
 import com.orion.orion.login.login;
@@ -47,7 +46,6 @@ import com.orion.orion.models.CreateForm;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.Permissions;
 import com.orion.orion.util.SNTPClient;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.io.File;
 import java.text.ParseException;
@@ -610,14 +608,24 @@ if (!isJuryOrHost){
         if (selectedImage == 1) {
 
             idLink = imgurl;
-            UniversalImageLoader.setImage(idLink, idIv, null, mAppend);
+            Glide.with(JoiningForm.this)
+                    .load(idLink)
+                    .placeholder(R.drawable.load)
+                    .error(R.drawable.default_image2)
+                    .placeholder(R.drawable.load)
+                    .thumbnail(0.25f)
+                    .into(idIv);
         }
         if (selectedImage == 2) {
 
             mediaLink = imgurl;
 
-            UniversalImageLoader.setImage(mediaLink, submissionIv, null, mAppend);
-        }
+            Glide.with(JoiningForm.this)
+                    .load(mediaLink)
+                    .placeholder(R.drawable.load)
+                    .error(R.drawable.default_image2)
+                    .placeholder(R.drawable.load)
+                    .into(submissionIv);            }
 
     }
 

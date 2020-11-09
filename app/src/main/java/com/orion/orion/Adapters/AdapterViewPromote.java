@@ -4,55 +4,35 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.android.volley.VolleyLog;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.orion.orion.R;
 import com.orion.orion.ViewPostActivity;
 
-import com.orion.orion.home.ViewPromoted;
-import com.orion.orion.models.Chat;
 import com.orion.orion.models.Comment;
-import com.orion.orion.models.Like;
-import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.Photo;
 import com.orion.orion.models.Promote;
-import com.orion.orion.models.users;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -234,13 +214,18 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(context.getString(R.string.dbname_users))
                 .child(promoterId)
+                .child(context.getString(R.string.field_username))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        users user=dataSnapshot.getValue(users.class);
-                        username.setText("@"+user.getUsername());
-                        UniversalImageLoader.setImage(photoLink,post,progress,"");
-
+                        username.setText("@"+dataSnapshot.getValue().toString());
+                        Glide.with(context)
+                                .load(photoLink)
+                                .placeholder(R.drawable.load)
+                                .error(R.drawable.default_image2)
+                                .placeholder(R.drawable.load)
+                                .thumbnail(0.5f)
+                                .into(post);
                     }
 
                     @Override

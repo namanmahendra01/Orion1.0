@@ -13,10 +13,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.orion.orion.R;
 import com.orion.orion.models.ItemLeaderboard;
 import com.orion.orion.profile.profile;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.util.ArrayList;
 
@@ -54,7 +54,13 @@ public class AdapterItemLeaderboard extends RecyclerView.Adapter<AdapterItemLead
         holder.Position.setText(rank);
         holder.PositionName.setText(currentItem.getPostionName());
         holder.PositionParameter.setText(currentItem.getPostionParameter());
-        UniversalImageLoader.setImage(currentItem.getPostionProfile(), holder.PositionProfile, null, "");
+        Glide.with(holder.itemView.getContext())
+                .load(currentItem.getPostionProfile())
+                .placeholder(R.drawable.load)
+                .error(R.drawable.default_image2)
+                .placeholder(R.drawable.load)
+                .thumbnail(0.2f)
+                .into(holder.PositionProfile);
         holder.itemView.setOnClickListener(v -> {
             Log.d(TAG, "onBindViewHolder: UserID" + currentItem.getUserID());
             Intent i = new Intent(mContext, profile.class);

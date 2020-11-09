@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,9 +29,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.contest.Contest_Evaluation.contest_evaluation_activity;
 import com.orion.orion.models.CreateForm;
-import com.orion.orion.models.Photo;
-import com.orion.orion.profile.Account.Contest;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.util.List;
 
@@ -169,7 +167,13 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
 
         holder.entryFee.setText(mcreateForm.getEntryfee());
         holder.domain.setText(mcreateForm.getDomain());
-        UniversalImageLoader.setImage(mcreateForm.getPoster(), holder.poster, holder.progress, mAppend);
+        Glide.with(holder.itemView.getContext())
+                .load(mcreateForm.getPoster())
+                .placeholder(R.drawable.load)
+                .error(R.drawable.default_image2)
+                .placeholder(R.drawable.load)
+                .thumbnail(0.5f)
+                .into(holder.poster);
         holder.title.setText(mcreateForm.getTitle());
         holder.host.setText(mcreateForm.getHost());
         holder.regEnd.setText(mcreateForm.getRegEnd());

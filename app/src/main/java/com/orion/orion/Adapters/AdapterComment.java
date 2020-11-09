@@ -2,39 +2,27 @@ package com.orion.orion.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orion.orion.R;
-import com.orion.orion.contest.ViewContestDetails;
-import com.orion.orion.contest.joined.JoiningForm;
-import com.orion.orion.contest.joined.joined_contest_overview_activity;
 import com.orion.orion.models.Comment;
-import com.orion.orion.models.ContestDetail;
-import com.orion.orion.models.CreateForm;
-import com.orion.orion.models.JoinForm;
 
-import com.orion.orion.models.Photo;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.util.List;
 
@@ -107,8 +95,12 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.ViewHold
 
                     username.setText((dataSnapshot.getValue(users.class).getUsername()));
 
-              UniversalImageLoader.setImage(dataSnapshot.getValue(users.class).getProfile_photo(),profileimage,null,"");
-
+                Glide.with(mContext)
+                        .load((dataSnapshot.getValue(users.class).getProfile_photo()))
+                        .placeholder(R.drawable.load)
+                        .error(R.drawable.default_image2)
+                        .placeholder(R.drawable.load)
+                        .into(profileimage);
 
 
 

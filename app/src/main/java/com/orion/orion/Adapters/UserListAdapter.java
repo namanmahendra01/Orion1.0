@@ -10,13 +10,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orion.orion.R;
 
 import com.orion.orion.models.users;
@@ -73,10 +73,14 @@ public class UserListAdapter extends ArrayAdapter<users> {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    ImageLoader imageLoader = ImageLoader.getInstance();
 
-                    imageLoader.displayImage(dataSnapshot.child(mContext.getString(R.string.profile_photo)).toString(),holder.profileImage);
-
+                Glide.with(mContext)
+                        .load(dataSnapshot.getValue(users.class).getProfile_photo())
+                        .placeholder(R.drawable.load)
+                        .error(R.drawable.default_image2)
+                        .placeholder(R.drawable.load)
+                        .thumbnail(0.2f)
+                        .into(holder.profileImage);
             }
 
             @Override

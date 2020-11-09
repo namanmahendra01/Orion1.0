@@ -1,11 +1,12 @@
 package com.orion.orion.Adapters;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Message;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,7 +29,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.contest.Contest_Evaluation.activity_view_media;
 import com.orion.orion.models.ParticipantList;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.util.List;
 
@@ -65,8 +67,19 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
 
         ParticipantList participantList = participantLists.get(i);
+        Display display = ((Activity)mContext).getWindowManager().getDefaultDisplay();
+        int width = display.getWidth(); // ((display.getWidth()*20)/100)
+        CardView.LayoutParams parms = new CardView.LayoutParams(width/3,width/3);
+        holder.image.setLayoutParams(parms);
         if (isImage) {
-            UniversalImageLoader.setImage(participantList.getMediaLink(), holder.image, holder.progress, "");
+            Glide.with(mContext)
+                    .load(participantList.getMediaLink())
+                    .placeholder(R.drawable.load)
+                    .error(R.drawable.default_image2)
+                    .placeholder(R.drawable.load)
+                    .thumbnail(0.5f)
+                    .centerCrop()
+                    .into(holder.image);
             holder.image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

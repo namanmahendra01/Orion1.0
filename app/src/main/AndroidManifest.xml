@@ -50,7 +50,6 @@
         <!--Explore Section-->
         <activity
             android:name=".explore.Explore"
-            android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustNothing" />
 
         <!--Contest Section-->

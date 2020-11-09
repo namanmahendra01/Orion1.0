@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,10 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.home.Chat_Activity;
-import com.orion.orion.home.Message_Request;
-import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.users;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.util.HashMap;
 import java.util.List;
@@ -88,8 +86,13 @@ public class AdapterMessageRequest extends RecyclerView.Adapter<AdapterMessageRe
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user = dataSnapshot.getValue(users.class);
                         nameTv.setText(user.getUsername());
-                        UniversalImageLoader.setImage(user.getProfile_photo(), profileTv, null, "");
-
+                        Glide.with(context)
+                                .load(user.getProfile_photo())
+                                .placeholder(R.drawable.load)
+                                .error(R.drawable.default_image2)
+                                .placeholder(R.drawable.load)
+                                .thumbnail(0.5f)
+                                .into(profileTv);
                     }
 
                     @Override

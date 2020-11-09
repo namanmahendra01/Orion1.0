@@ -1,15 +1,19 @@
 package com.orion.orion.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -17,7 +21,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.models.Photo;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.util.List;
 
@@ -27,21 +30,23 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
     private List<Photo> photos;
     private OnPostItemClickListner onPostItemClickListner;
 
+
     public AdapterGridImageExplore(Context mContext, List<Photo> photos, OnPostItemClickListner onPostItemClickListner) {
         this.mContext = mContext;
         this.photos = photos;
-        this.onPostItemClickListner=onPostItemClickListner;
+        this.onPostItemClickListner = onPostItemClickListner;
     }
 
 
-    public interface OnPostItemClickListner{
+    public interface OnPostItemClickListner {
         void onItemClick(int position);
     }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.explore_item, parent, false);
-        return new ViewHolder(view,onPostItemClickListner);
+        return new ViewHolder(view, onPostItemClickListner);
     }
 
     @Override
@@ -53,29 +58,53 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
         Photo photo = photos.get(i);
+        Display display = ((Activity) mContext).getWindowManager().getDefaultDisplay();
+        int width = display.getWidth(); // ((display.getWidth()*20)/100)
+        LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(width / 2, width / 2);
+        holder.image.setLayoutParams(parms);
 
         if (photo.getType() != null)
             if (photo.getType().equals("video"))
-                UniversalImageLoader.setImage(photo.getThumbnail(), holder.image, holder.progress, "");
+                Glide.with(holder.itemView.getContext())
+                        .load(photo.getThumbnail())
+                        .placeholder(R.drawable.load)
+                        .error(R.drawable.default_image2)
+                        .centerCrop()
+                        .placeholder(R.drawable.load)
+                        .thumbnail(0.5f)
+                        .into(holder.image);
             else
-                UniversalImageLoader.setImage(photo.getImage_path(), holder.image, holder.progress, "");
+                Glide.with(holder.itemView.getContext())
+                        .load(photo.getImage_path())
+                        .placeholder(R.drawable.load)
+                        .error(R.drawable.default_image2)
+                        .centerCrop()
+                        .placeholder(R.drawable.load)
+                        .thumbnail(0.5f)
+                        .into(holder.image);
         else
-            UniversalImageLoader.setImage(photo.getImage_path(), holder.image, holder.progress, "");
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+            Glide.with(holder.itemView.getContext())
+                    .load(photo.getImage_path())
+                    .placeholder(R.drawable.load)
+                    .error(R.drawable.default_image2)
+                    .centerCrop()
+                    .placeholder(R.drawable.load)
+                    .thumbnail(0.5f)
+                    .into(holder.image);        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(mContext.getString(R.string.dbname_users))
                 .child(photo.getUser_id())
                 .child(mContext.getString(R.string.field_username))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                holder.username.setText("@" + snapshot.getValue().toString());
-            }
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        holder.username.setText("@" + snapshot.getValue().toString());
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                    }
+                });
 //        holder.itemView.setOnClickListener(v -> {
 //            DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
 //            db1.child(mContext.getString(R.string.dbname_user_photos)).child(photo.getUser_id()).child(photo.getPhoto_id()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -108,13 +137,15 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
     public int getItemCount() {
         return photos.size();
     }
+
     @Override
     public int getItemViewType(int position) {
         return position;
     }
+
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView username;
-        private ImageView image,progress;
+        private ImageView image, progress;
         OnPostItemClickListner onPostItemClickListner;
 
         public ViewHolder(@NonNull View itemView, OnPostItemClickListner onPostItemClickListner) {
@@ -122,7 +153,7 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
             image = itemView.findViewById(R.id.image);
             progress = itemView.findViewById(R.id.progress);
             username = itemView.findViewById(R.id.username);
-            this.onPostItemClickListner=onPostItemClickListner;
+            this.onPostItemClickListner = onPostItemClickListner;
             itemView.setOnClickListener(this);
         }
 

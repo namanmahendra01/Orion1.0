@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -41,7 +42,6 @@ import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
 import com.orion.orion.util.SNTPClient;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -118,7 +118,14 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                 getparticipantDetails(mparticipantLists.getUserid(), holder.username, holder.profile, name, username, profileview);
                 name.setText(name1);
                 username.setText(username1);
-                UniversalImageLoader.setImage(profilelink, profileview, null, mAppend);
+                Glide.with(mContext)
+                        .load(profilelink)
+                        .placeholder(R.drawable.load)
+                        .error(R.drawable.default_image2)
+                        .placeholder(R.drawable.load)
+                        .thumbnail(0.5f)
+                        .into(profileview);
+
                 getparticipantform(mparticipantLists.getUserid(), mparticipantLists.getJoiningKey(), mparticipantLists.getContestkey(), college, layout);
 
                 remove.setOnClickListener(new View.OnClickListener() {
@@ -497,16 +504,26 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                         try {
                             name.setText(name1);
                             username2.setText(username1);
-                            UniversalImageLoader.setImage(profilelink, profileview, null, mAppend);
-
+                            Glide.with(mContext)
+                                    .load(profilelink)
+                                    .placeholder(R.drawable.load)
+                                    .error(R.drawable.default_image2)
+                                    .placeholder(R.drawable.load)
+                                    .thumbnail(0.5f)
+                                    .into(profileview);
                         } catch (NullPointerException e) {
                             Log.e(TAG, "onDataChange: " + e.getMessage());
 
                         }
 
                         username.setText(user.getUsername());
-                        UniversalImageLoader.setImage(profilelink, profile, null, mAppend);
-
+                        Glide.with(mContext)
+                                .load(profilelink)
+                                .placeholder(R.drawable.load)
+                                .error(R.drawable.default_image2)
+                                .placeholder(R.drawable.load)
+                                .thumbnail(0.5f)
+                                .into(profileview);
 
                     }
 

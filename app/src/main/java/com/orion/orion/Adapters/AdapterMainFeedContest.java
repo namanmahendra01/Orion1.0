@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,15 +23,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.orion.orion.R;
 import com.orion.orion.contest.ViewContestDetails;
-import com.orion.orion.contest.joined.JoiningForm;
-import com.orion.orion.contest.joined.joined_contest_overview_activity;
 import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.CreateForm;
-import com.orion.orion.models.JoinForm;
-import com.orion.orion.models.ParticipantList;
 import com.orion.orion.util.SNTPClient;
 import com.orion.orion.util.StringManipilation;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -333,8 +328,13 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
                     title.setText(createForm.getTitle());
                     domain.setText(createForm.getDomain().toString());
 
-                    UniversalImageLoader.setImage(createForm.getPoster(), poster, progress, mAppend);
-                }
+                    Glide.with(mContext)
+                            .load(createForm.getPoster())
+                            .placeholder(R.drawable.load)
+                            .error(R.drawable.default_image2)
+                            .placeholder(R.drawable.load)
+                            .thumbnail(0.5f)
+                            .into(poster);                   }
             }
 
             @Override

@@ -20,9 +20,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +36,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.firebase.auth.FirebaseAuth;
@@ -57,7 +60,6 @@ import com.orion.orion.models.users;
 import com.orion.orion.profile.Account.AccountSettingActivity;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 import com.orion.orion.util.Permissions;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -80,12 +82,14 @@ public class ProfileActivity extends AppCompatActivity {
     private static final int ACTIVITY_NUM = 4;
     FirebaseUser user;
     int rank = 1;
+    int mResults;
     private Context mContext;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
-
+    ScrollView scrollView;
     private ArrayList<Photo> imgURLsList;
+    private ArrayList<Photo> paginatedimgURLsList;
     boolean isKitKat;
     //    Profile Widgets
     private ImageView menu;
@@ -125,7 +129,7 @@ public class ProfileActivity extends AppCompatActivity {
     private RecyclerView gridRv;
     private BottomNavigationViewEx bottomNavigationView;
     private AdapterGridImage adapterGridImage;
-
+    int c = 0;
     //    SP
     Gson gson;
     SharedPreferences sp;
@@ -141,7 +145,7 @@ public class ProfileActivity extends AppCompatActivity {
         dialog = ProgressDialog.show(this, "", "Loading Profile...", true);
         mContext = ProfileActivity.this;
         noPost = findViewById(R.id.noPost);
-
+        scrollView = findViewById(R.id.scroll);
         menu = findViewById(R.id.menu);
         mUsername = findViewById(R.id.username);
         mDomain = findViewById(R.id.domain);
@@ -196,6 +200,34 @@ public class ProfileActivity extends AppCompatActivity {
         setupFirebaseAuth();
         fetchPhotosFromSp();
 //        SetupGridView();
+        scrollView.getViewTreeObserver()
+                .addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                    @Override
+                    public void onScrollChanged() {
+
+                        if (scrollView.getChildAt(0).getBottom()
+                                == (scrollView.getHeight() + scrollView.getScrollY()) && c != 0) {
+                            if (imgURLsList.size() != paginatedimgURLsList.size()) {
+//                                bottomProgress.setVisibility(View.VISIBLE);
+
+                            }
+
+                            //scroll view is at bottom
+
+                            Log.d(TAG, "onScrollChanged: j");
+                            displayMorePhotos();
+//                            checkLoading();
+
+                        } else {
+//                            bottomProgress.setVisibility(View.GONE);
+
+                            //scroll view is not at bottom
+                        }
+                        c++;
+                    }
+
+
+                });
 
         mGmailLink.setOnClickListener(v -> {
             if (gmail != null && !gmail.equals("")) {
@@ -260,8 +292,7 @@ public class ProfileActivity extends AppCompatActivity {
                     intent.setData(uri);
                     mContext.startActivity(intent);
                 }
-            }
-            catch (ActivityNotFoundException e){
+            } catch (ActivityNotFoundException e) {
                 Toast.makeText(mContext, " You don't have any browser to open web page", Toast.LENGTH_LONG).show();
             }
         });
@@ -275,8 +306,7 @@ public class ProfileActivity extends AppCompatActivity {
                     intent.setData(uri);
                     mContext.startActivity(intent);
                 }
-            }
-            catch (ActivityNotFoundException e){
+            } catch (ActivityNotFoundException e) {
                 Toast.makeText(mContext, " You don't have any browser to open web page", Toast.LENGTH_LONG).show();
             }
         });
@@ -290,8 +320,7 @@ public class ProfileActivity extends AppCompatActivity {
                     intent.setData(uri);
                     mContext.startActivity(intent);
                 }
-            }
-            catch (ActivityNotFoundException e){
+            } catch (ActivityNotFoundException e) {
                 Toast.makeText(mContext, " You don't have any browser to open web page", Toast.LENGTH_LONG).show();
             }
         });
@@ -478,9 +507,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     Log.d(TAG, "onDataChange: photoList" + imgURLsList);
 
                                     if (imgURLsList != null && imgURLsList.size() != 0) {
-                                        adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
-                                        adapterGridImage.setHasStableIds(true);
-                                        gridRv.setAdapter(adapterGridImage);
+                                        displayPhotos();
                                     } else {
                                         noPost.setVisibility(View.VISIBLE);
                                     }
@@ -728,9 +755,7 @@ public class ProfileActivity extends AppCompatActivity {
                 editor.apply();
 
                 if (imgURLsList != null && imgURLsList.size() != 0) {
-                    adapterGridImage = new AdapterGridImage(ProfileActivity.this, imgURLsList);
-                    adapterGridImage.setHasStableIds(true);
-                    gridRv.setAdapter(adapterGridImage);//
+                    displayPhotos();
                 } else {
                     noPost.setVisibility(View.VISIBLE);
                 }
@@ -745,7 +770,15 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void setProfileWidgets(users userSetting) {
         Log.d(TAG, "onDataChange: " + userSetting.toString());
-        UniversalImageLoader.setImage(userSetting.getProfile_photo(), mProfilePhoto, null, "");
+
+        Glide.with(ProfileActivity.this)
+                .load(userSetting.getProfile_photo())
+                .placeholder(R.drawable.load)
+                .error(R.drawable.default_image2)
+                .placeholder(R.drawable.load)
+                .thumbnail(0.2f)
+                .into(mProfilePhoto);
+
         mUsername.setText(userSetting.getUsername());
         mDomain.setText(userSetting.getDomain());
 
@@ -846,6 +879,88 @@ public class ProfileActivity extends AppCompatActivity {
                 });
             } else Log.d(TAG, "onAuthStateChanged:signed_out");
         };
+
+    }
+
+    private void displayPhotos() {
+        noPost.setVisibility(View.GONE);
+
+        Log.d(TAG, "display first 10 photo");
+        paginatedimgURLsList = new ArrayList<>();
+        if (imgURLsList != null && imgURLsList.size() != 0) {
+
+            try {
+
+                int iteration = imgURLsList.size();
+                if (iteration > 10) {
+                    iteration = 10;
+                }
+                mResults = 10;
+                for (int i = 0; i < iteration; i++) {
+                    paginatedimgURLsList.add(imgURLsList.get(i));
+                }
+                Log.d(TAG, "displayPhotos: sss" + paginatedimgURLsList.size());
+                adapterGridImage = new AdapterGridImage(ProfileActivity.this, paginatedimgURLsList);
+                adapterGridImage.setHasStableIds(true);
+                gridRv.setAdapter(adapterGridImage);
+
+            } catch (NullPointerException e) {
+                Log.e(TAG, "Null pointer exception" + e.getMessage());
+
+            } catch (IndexOutOfBoundsException e) {
+                Log.e(TAG, "index out of bound" + e.getMessage());
+
+            }
+
+        } else {
+            noPost.setVisibility(View.VISIBLE);
+//            bottomProgress.setVisibility(View.GONE);
+
+        }
+    }
+
+    public void displayMorePhotos() {
+        Log.d(TAG, "display next 10 photo");
+
+        try {
+            if (imgURLsList.size() > mResults && imgURLsList.size() > 0) {
+
+                int iterations;
+                if (imgURLsList.size() > (mResults + 6)) {
+                    Log.d(TAG, "display next 10 photo");
+                    iterations = 6;
+                } else {
+                    Log.d(TAG, "display less tha 10 photo");
+                    iterations = imgURLsList.size() - mResults;
+                }
+                for (int i = mResults; i < mResults + iterations; i++) {
+                    paginatedimgURLsList.add(imgURLsList.get(i));
+
+                }
+                gridRv.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "run: " + mResults + iterations);
+                        adapterGridImage.notifyDataSetChanged();
+
+
+                    }
+                });
+                mResults = mResults + iterations;
+
+
+            } else {
+//                bottomProgress.setVisibility(View.GONE);
+
+            }
+
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Null pointer exception" + e.getMessage());
+
+        } catch (IndexOutOfBoundsException e) {
+            Log.e(TAG, "index out of bound" + e.getMessage());
+
+        }
 
     }
 

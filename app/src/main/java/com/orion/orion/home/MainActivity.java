@@ -27,14 +27,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orion.orion.Notifications.Token;
 import com.orion.orion.R;
 import com.orion.orion.login.login;
 import com.orion.orion.models.Chat;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 import com.orion.orion.Adapters.SectionPagerAdapter;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.util.Objects;
 
@@ -60,7 +58,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initializeImageLoader();
         Log.d(TAG, "onCreate:starting.");
         mAuth = FirebaseAuth.getInstance();
         mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
@@ -160,11 +157,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     //   ************************FIREBASE****************************
-    private void initializeImageLoader() {
-        UniversalImageLoader universalImageLoader = new UniversalImageLoader(MainActivity.this);
-        ImageLoader.getInstance().init(universalImageLoader.getConfig());
 
-    }
 
     //    for adding 3 tabs -media,home,message
     private void setupViewPager() {

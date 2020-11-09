@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -27,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,7 +45,6 @@ import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.Photo;
 import com.orion.orion.models.Promote;
 import com.orion.orion.models.users;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -1034,8 +1033,23 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user = dataSnapshot.getValue(users.class);
-                        UniversalImageLoader.setImage(user.getProfile_photo(), story, null, "");
-                        UniversalImageLoader.setImage(user.getProfile_photo(), storyseen, null, "");
+
+                        Glide.with(Homefragment.this)
+                                .load(user.getProfile_photo())
+                                .placeholder(R.drawable.load)
+                                .error(R.drawable.default_image2)
+                                .placeholder(R.drawable.load)
+                                .thumbnail(0.25f)
+                                .into(story);
+
+                        Glide.with(Homefragment.this)
+                                .load(user.getProfile_photo())
+                                .placeholder(R.drawable.load)
+                                .error(R.drawable.default_image2)
+                                .placeholder(R.drawable.load)
+                                .thumbnail(0.25f)
+                                .into(storyseen);
+
                         username.setText(user.getUsername());
                     }
 

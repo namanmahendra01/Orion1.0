@@ -2,8 +2,6 @@ package com.orion.orion;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -16,8 +14,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -29,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyLog;
+import com.bumptech.glide.Glide;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -67,25 +64,19 @@ import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-import com.orion.orion.Adapters.AdapterMainfeed;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.Photo;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
-import com.orion.orion.util.BottomNaavigationViewHelper;
-import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.SNTPClient;
 import com.orion.orion.util.SquareImageView;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -261,7 +252,12 @@ public class ViewPostActivity extends AppCompatActivity {
 
             mPostImage.setVisibility(View.VISIBLE);
             play2.setVisibility(View.GONE);
-            UniversalImageLoader.setImage(mphoto.getImage_path(), mPostImage, progress2, "");
+            Glide.with(ViewPostActivity.this)
+                    .load(mphoto.getImage_path())
+                    .placeholder(R.drawable.load)
+                    .error(R.drawable.default_image2)
+                    .placeholder(R.drawable.load)
+                    .into(mPostImage);
             playerView.setVisibility(GONE);
 
         } else {
@@ -288,8 +284,13 @@ public class ViewPostActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
-                            UniversalImageLoader.setImage(snapshot.getValue().toString(), thumbnail, null, "");
-                        }
+                            Glide.with(ViewPostActivity.this)
+                                    .load(mphoto.getThumbnail())
+                                    .placeholder(R.drawable.load)
+                                    .error(R.drawable.default_image2)
+                                    .placeholder(R.drawable.load)
+                                    .thumbnail(0.25f)
+                                    .into(thumbnail);                           }
 
                     }
 
@@ -646,7 +647,13 @@ public class ViewPostActivity extends AppCompatActivity {
         TextView cancel = bottomSheetView.findViewById(R.id.cancel);
         TextView promote1 = bottomSheetView.findViewById(R.id.promote);
         ImageView post = bottomSheetView.findViewById(R.id.postBs);
-        UniversalImageLoader.setImage(mphoto.getImage_path(), post, null, "");
+        Glide.with(ViewPostActivity.this)
+                .load(mphoto.getImage_path())
+                .placeholder(R.drawable.load)
+                .error(R.drawable.default_image2)
+                .placeholder(R.drawable.load)
+                .thumbnail(0.5f)
+                .into(post);
         username.setText(currentUsername);
 
 
@@ -1118,7 +1125,12 @@ public class ViewPostActivity extends AppCompatActivity {
                 users user = dataSnapshot.getValue(users.class);
                 mUsername.setText(user.getUsername());
                 currentUsername = user.getUsername();
-                UniversalImageLoader.setImage(user.getProfile_photo(), mProfileImage, null, "");
+                Glide.with(ViewPostActivity.this)
+                        .load(user.getProfile_photo())
+                        .placeholder(R.drawable.load)
+                        .error(R.drawable.default_image2)
+                        .placeholder(R.drawable.load)
+                        .into(mProfileImage);
                 mcredit.setText("© " + user.getUsername());
 
             }

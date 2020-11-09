@@ -9,13 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BlurMaskFilter;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,17 +40,12 @@ import com.google.firebase.storage.UploadTask;
 import com.orion.orion.R;
 import com.orion.orion.login.login;
 import com.orion.orion.models.Photo;
-import com.orion.orion.profile.Account.Password_Reset;
 import com.orion.orion.util.FilePaths;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.ImageManager;
 import com.orion.orion.util.StringManipilation;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -328,8 +317,13 @@ public class PostPhotoActivity extends AppCompatActivity {
         Log.d(TAG, "setImage next " + imgPath);
         imgURL = imgPath;
         String mAppend = "file:/";
-        UniversalImageLoader.setImage(imgURL, image, null, mAppend);
-    }
+
+        Glide.with(PostPhotoActivity.this)
+                .load(imgURL)
+                .placeholder(R.drawable.load)
+                .error(R.drawable.default_image2)
+                .placeholder(R.drawable.load)
+                .into(image);     }
 
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");

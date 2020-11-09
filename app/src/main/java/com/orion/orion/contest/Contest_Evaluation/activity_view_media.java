@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,7 +26,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.login.login;
-import com.orion.orion.util.UniversalImageLoader;
 
 public class activity_view_media extends AppCompatActivity {
     private static final String TAG = "activity_view_media";
@@ -59,8 +59,13 @@ public class activity_view_media extends AppCompatActivity {
         contestKey = i.getStringExtra("contestkey");
         joiningKey = i.getStringExtra("joiningkey");
         String view = i.getStringExtra("view");
-        UniversalImageLoader.setImage(imagelink, mediaIv, progress, "");
 
+        Glide.with(mContext)
+                .load(imagelink)
+                .placeholder(R.drawable.load)
+                .error(R.drawable.default_image2)
+                .placeholder(R.drawable.load)
+                .into(mediaIv);
 
         setupFirebaseAuth();
 

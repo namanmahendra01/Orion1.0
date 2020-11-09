@@ -11,8 +11,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -35,6 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -46,7 +45,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orion.orion.R;
 import com.orion.orion.login.login;
 import com.orion.orion.models.users;
@@ -56,10 +54,8 @@ import com.orion.orion.util.FilePaths;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.ImageManager;
 import com.orion.orion.util.Permissions;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -182,7 +178,7 @@ public class EditProfile extends AppCompatActivity {
 
 //        FirebaseMethods mFirebaseMethods = new FirebaseMethods(this);
 
-        initializeImageLoader();
+
         setupFirebaseAuth();
         initOnClicks();
     }
@@ -479,10 +475,7 @@ public class EditProfile extends AppCompatActivity {
         });
     }
 
-    private void initializeImageLoader() {
-        UniversalImageLoader universalImageLoader = new UniversalImageLoader(this);
-        ImageLoader.getInstance().init(universalImageLoader.getConfig());
-    }
+
 
     public boolean checkPermissionArray(String[] permissions) {
         for (String check : permissions) if (!checkPermissions(check)) return false;
@@ -502,7 +495,14 @@ public class EditProfile extends AppCompatActivity {
     private void setProfileWidgets(users userSetting) {
         setting = userSetting;
 
-        UniversalImageLoader.setImage(setting.getProfile_photo(), mProfilephoto, null, "");
+        Glide.with(EditProfile.this)
+                .load(setting.getProfile_photo())
+                .placeholder(R.drawable.load)
+                .error(R.drawable.default_image2)
+                .placeholder(R.drawable.load)
+                .thumbnail(0.2f)
+                .into(mProfilephoto);
+
         mDisplayname.setText(setting.getDisplay_name());
         mUsername.setText(setting.getUsername());
         mdescription.setText(setting.getDescription());
@@ -656,7 +656,13 @@ public class EditProfile extends AppCompatActivity {
         Log.d(TAG, "setImage next " + imgPath);
         imgURL = imgPath;
         String mAppend = "file:/";
-        UniversalImageLoader.setImage(imgURL, mProfilephoto, null, mAppend);
+        Glide.with(EditProfile.this)
+                .load(imgURL)
+                .placeholder(R.drawable.load)
+                .error(R.drawable.default_image2)
+                .placeholder(R.drawable.load)
+                .thumbnail(0.2f)
+                .into(mProfilephoto);
         photoChanged = true;
     }
 

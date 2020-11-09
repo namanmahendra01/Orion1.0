@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -28,6 +27,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyLog;
+import com.bumptech.glide.Glide;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -64,19 +64,19 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.orion.orion.CommentActivity;
 import com.orion.orion.R;
 import com.orion.orion.ViewPostActivity;
+import com.orion.orion.home.Chat_Activity;
 import com.orion.orion.home.Homefragment;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.Photo;
 import com.orion.orion.models.users;
+import com.orion.orion.profile.ProfileActivity;
 import com.orion.orion.profile.profile;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.SNTPClient;
 import com.orion.orion.util.SquareImageView;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
@@ -286,11 +286,21 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             holder.play2.setVisibility(View.GONE);
             holder.playerView.setVisibility(GONE);
 
-            UniversalImageLoader.setImage(photo.getImage_path(), holder.image,holder.progress,"");
-
+            Glide.with(holder.itemView.getContext())
+                    .load(photo.getImage_path())
+                    .placeholder(R.drawable.load)
+                    .error(R.drawable.default_image2)
+                    .placeholder(R.drawable.load)
+                    .thumbnail(0.2f)
+                    .into(holder.image);
         } else {
-            UniversalImageLoader.setImage(photo.getThumbnail(), holder.thumbnail, null, "");
-
+            Glide.with(holder.itemView.getContext())
+                    .load(photo.getThumbnail())
+                    .placeholder(R.drawable.load)
+                    .error(R.drawable.default_image2)
+                    .placeholder(R.drawable.load)
+                    .thumbnail(0.25f)
+                    .into(holder.image);
             holder.unmute.setVisibility(View.VISIBLE);
             holder.play2.setVisibility(View.VISIBLE);
             holder.image.setVisibility(View.GONE);
@@ -579,9 +589,13 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                         mContext.startActivity(i);
                     }
                 });
-                ImageLoader imageloader = ImageLoader.getInstance();
-
-                imageloader.displayImage(singleSnapshot.getValue(users.class).getProfile_photo(), holder.mProfileImage);
+                Glide.with(mContext)
+                        .load(singleSnapshot.getValue(users.class).getProfile_photo())
+                        .placeholder(R.drawable.load)
+                        .error(R.drawable.default_image2)
+                        .placeholder(R.drawable.load)
+                        .thumbnail(0.2f)
+                        .into(holder.mProfileImage);
                 holder.mProfileImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -809,10 +823,21 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         ImageView progress = bottomSheetView.findViewById(R.id.progress);
 
         if (photo.getType().equals("photo")) {
-            UniversalImageLoader.setImage(photo.getImage_path(), post, progress, "");
+            Glide.with(holder.itemView.getContext())
+                    .load(photo.getImage_path())
+                    .placeholder(R.drawable.load)
+                    .error(R.drawable.default_image2)
+                    .placeholder(R.drawable.load)
+                    .thumbnail(0.2f)
+                    .into(post);
         } else {
-            UniversalImageLoader.setImage(photo.getThumbnail(), post, progress, "");
-
+            Glide.with(holder.itemView.getContext())
+                    .load(photo.getThumbnail())
+                    .placeholder(R.drawable.load)
+                    .error(R.drawable.default_image2)
+                    .placeholder(R.drawable.load)
+                    .thumbnail(0.2f)
+                    .into(post);
         }
 
         username.setText(currentUsername);

@@ -44,6 +44,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.google.common.reflect.TypeToken;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -68,7 +69,6 @@ import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 import com.orion.orion.util.SNTPClient;
-import com.orion.orion.util.UniversalImageLoader;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -77,7 +77,6 @@ import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -981,35 +980,35 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 for (int x = 0; x < user_id.size(); x++) {
                     if (x == 0) {
                         user1 = user_id.get(x);
-                        UniversalImageLoader.setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star1, null, "");
+                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(),star1);
                     }
                     if (x == 1) {
                         user2 = user_id.get(x);
-                        UniversalImageLoader.setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star2, null, "");
+                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(),star2);
                     }
                     if (x == 2) {
                         user3 = user_id.get(x);
-                        UniversalImageLoader.setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star3, null, "");
+                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(),star3);
                     }
                     if (x == 3) {
                         user4 = user_id.get(x);
-                        UniversalImageLoader.setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star4, null, "");
+                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(),star4);
                     }
                     if (x == 4) {
                         user5 = user_id.get(x);
-                        UniversalImageLoader.setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star5, null, "");
+                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(),star5);
                     }
                     if (x == 5) {
                         user6 = user_id.get(x);
-                        UniversalImageLoader.setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star6, null, "");
+                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(),star6);
                     }
                     if (x == 6) {
                         user7 = user_id.get(x);
-                        UniversalImageLoader.setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star7, null, "");
+                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(),star7);
                     }
                     if (x == 7) {
                         user8 = user_id.get(x);
-                        UniversalImageLoader.setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star8, null, "");
+                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(),star1);
                     }
                 }
             }
@@ -1018,6 +1017,17 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
+
+    private void setImage(String link, CircleImageView imageView) {
+
+        Glide.with(Explore.this)
+                .load(link)
+                .placeholder(R.drawable.load)
+                .error(R.drawable.default_image2)
+                .placeholder(R.drawable.load)
+                .thumbnail(0.5f)
+                .into(imageView);
     }
 
     private void displayPhotos() {

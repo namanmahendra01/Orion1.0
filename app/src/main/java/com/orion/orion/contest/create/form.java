@@ -32,7 +32,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +41,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 
+import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.firebase.auth.FirebaseAuth;
@@ -56,7 +56,6 @@ import com.orion.orion.R;
 import com.orion.orion.dialogs.BottomSheetDomain;
 import com.orion.orion.login.login;
 import com.orion.orion.util.Permissions;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -1496,8 +1495,13 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                 selectPoster.setBackgroundTintList(mContext.getResources().getColorStateList(R.color.black));
                 poster.setVisibility(View.VISIBLE);
                 poster.setBackgroundColor(Color.rgb(0, 0, 0));
-                UniversalImageLoader.setImage(posterLink, poster, null, mAppend);
-            }
+
+                Glide.with(form.this)
+                        .load(posterLink)
+                        .placeholder(R.drawable.load)
+                        .error(R.drawable.default_image2)
+                        .placeholder(R.drawable.load)
+                        .into(poster);                 }
         }
     }
 

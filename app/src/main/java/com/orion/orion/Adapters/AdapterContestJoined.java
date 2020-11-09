@@ -5,7 +5,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -18,10 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,12 +30,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.contest.ViewContestDetails;
-import com.orion.orion.contest.joined.JoiningForm;
 import com.orion.orion.contest.joined.joined_contest_overview_activity;
-import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.JoinForm;
-import com.orion.orion.util.UniversalImageLoader;
 
 import java.util.List;
 
@@ -404,8 +399,13 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
                 entryfee.setText(createForm.getEntryfee());
                 domain.setText(createForm.getDomain());
                 Log.d(TAG, "onDataChange: image"+createForm.getPoster() );
-                UniversalImageLoader.setImage(createForm.getPoster(),poster,progress,mAppend);
-
+                Glide.with(mContext)
+                        .load(createForm.getPoster())
+                        .placeholder(R.drawable.load)
+                        .error(R.drawable.default_image2)
+                        .placeholder(R.drawable.load)
+                        .thumbnail(0.5f)
+                        .into(poster);
             }
 
             @Override

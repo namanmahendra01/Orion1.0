@@ -6,16 +6,17 @@
     android:layout_height="wrap_content"
     android:background="@color/white">
 
+
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:scrollbars="none"
+        android:id="@+id/scroll"
         tools:ignore="UselessParent">
-
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -180,6 +181,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginBottom="10dp"
+                android:visibility="visible"
                 android:background="@drawable/info_container"
                 android:elevation="5dp">
 
@@ -442,6 +444,7 @@
                 android:layout_marginEnd="20dp"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical"
+                android:visibility="gone"
                 android:weightSum="100">
 
                 <TextView
@@ -576,8 +579,7 @@
                 android:layout_centerHorizontal="true"
                 />
         </RelativeLayout>
-
-    </ScrollView>
+</ScrollView>
 
     <include layout="@layout/layout_bottom_navigation_view" />
 

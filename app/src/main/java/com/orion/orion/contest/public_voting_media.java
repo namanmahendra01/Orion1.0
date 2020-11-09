@@ -96,7 +96,7 @@ public class public_voting_media extends AppCompatActivity {
                         if (isImage){
 
                             gridRv.setHasFixedSize(true);
-                            GridLayoutManager linearLayoutManager=new GridLayoutManager(public_voting_media.this,2);
+                            GridLayoutManager linearLayoutManager=new GridLayoutManager(public_voting_media.this,3);
                             gridRv.setDrawingCacheEnabled(true);
                             gridRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
                             linearLayoutManager.setItemPrefetchEnabled(true);

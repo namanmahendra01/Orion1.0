@@ -60,6 +60,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -99,7 +102,7 @@ public class FirebaseMethods {
         }
 
     }
-    public void uploadContest(final int count, final String imgURL, Bitmap bm, String contestKey, String p, String joiningkey) {
+    public void uploadContest(final int count, final String imgURL, Bitmap bm, String contestKey, String p, String joiningkey){
         FilePaths filepaths = new FilePaths();
 
         if (!imgURL.equals("")) {
@@ -383,99 +386,106 @@ public class FirebaseMethods {
 
 
     public String compressImage(String imagePath) {
-        Bitmap scaledBitmap = null;
+        Log.d(TAG, "compressImage: "+imagePath);
+  
+        File file = new File(imagePath);
+        if (file.exists() && file.canRead()) {
+            Log.d(TAG, "compressImage: yes");
+            Bitmap scaledBitmap = null;
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        Bitmap bmp = BitmapFactory.decodeFile(imagePath, options);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            Bitmap bmp = BitmapFactory.decodeFile(imagePath, options);
 
-        int actualHeight = options.outHeight;
-        int actualWidth = options.outWidth;
+            int actualHeight = options.outHeight;
+            int actualWidth = options.outWidth;
 
-        float imgRatio = (float) actualWidth / (float) actualHeight;
-        float maxRatio = maxWidth / maxHeight;
+            float imgRatio = (float) actualWidth / (float) actualHeight;
+            float maxRatio = maxWidth / maxHeight;
 
-        if (actualHeight > maxHeight || actualWidth > maxWidth) {
-            if (imgRatio < maxRatio) {
-                imgRatio = maxHeight / actualHeight;
-                actualWidth = (int) (imgRatio * actualWidth);
-                actualHeight = (int) maxHeight;
-            } else if (imgRatio > maxRatio) {
-                imgRatio = maxWidth / actualWidth;
-                actualHeight = (int) (imgRatio * actualHeight);
-                actualWidth = (int) maxWidth;
-            } else {
-                actualHeight = (int) maxHeight;
-                actualWidth = (int) maxWidth;
+            if (actualHeight > maxHeight || actualWidth > maxWidth) {
+                if (imgRatio < maxRatio) {
+                    imgRatio = maxHeight / actualHeight;
+                    actualWidth = (int) (imgRatio * actualWidth);
+                    actualHeight = (int) maxHeight;
+                } else if (imgRatio > maxRatio) {
+                    imgRatio = maxWidth / actualWidth;
+                    actualHeight = (int) (imgRatio * actualHeight);
+                    actualWidth = (int) maxWidth;
+                } else {
+                    actualHeight = (int) maxHeight;
+                    actualWidth = (int) maxWidth;
+
+                }
+            }
+
+            options.inSampleSize = calculateInSampleSize(options, actualWidth, actualHeight);
+            options.inJustDecodeBounds = false;
+            options.inDither = false;
+            options.inPurgeable = true;
+            options.inInputShareable = true;
+            options.inTempStorage = new byte[16 * 1024];
+
+            try {
+                bmp = BitmapFactory.decodeFile(imagePath, options);
+            } catch (OutOfMemoryError exception) {
+                exception.printStackTrace();
 
             }
-        }
-
-        options.inSampleSize = calculateInSampleSize(options, actualWidth, actualHeight);
-        options.inJustDecodeBounds = false;
-        options.inDither = false;
-        options.inPurgeable = true;
-        options.inInputShareable = true;
-        options.inTempStorage = new byte[16 * 1024];
-
-        try {
-            bmp = BitmapFactory.decodeFile(imagePath, options);
-        } catch (OutOfMemoryError exception) {
-            exception.printStackTrace();
-
-        }
-        try {
-            scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight, Bitmap.Config.RGB_565);
-        } catch (OutOfMemoryError exception) {
-            exception.printStackTrace();
-        }
-
-        float ratioX = actualWidth / (float) options.outWidth;
-        float ratioY = actualHeight / (float) options.outHeight;
-        float middleX = actualWidth / 2.0f;
-        float middleY = actualHeight / 2.0f;
-
-        Matrix scaleMatrix = new Matrix();
-        scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
-
-        Canvas canvas = new Canvas(scaledBitmap);
-        canvas.setMatrix(scaleMatrix);
-        canvas.drawBitmap(bmp, middleX - bmp.getWidth() / 2, middleY - bmp.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
-
-        if(bmp!=null)
-        {
-            bmp.recycle();
-        }
-
-        ExifInterface exif;
-        try {
-            exif = new ExifInterface(imagePath);
-            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
-            Matrix matrix = new Matrix();
-            if (orientation == 6) {
-                matrix.postRotate(90);
-            } else if (orientation == 3) {
-                matrix.postRotate(180);
-            } else if (orientation == 8) {
-                matrix.postRotate(270);
+            try {
+                scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight, Bitmap.Config.RGB_565);
+            } catch (OutOfMemoryError exception) {
+                exception.printStackTrace();
             }
-            scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            float ratioX = actualWidth / (float) options.outWidth;
+            float ratioY = actualHeight / (float) options.outHeight;
+            float middleX = actualWidth / 2.0f;
+            float middleY = actualHeight / 2.0f;
+
+            Matrix scaleMatrix = new Matrix();
+            scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
+
+            Canvas canvas = new Canvas(scaledBitmap);
+            canvas.setMatrix(scaleMatrix);
+            canvas.drawBitmap(bmp, middleX - bmp.getWidth() / 2, middleY - bmp.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
+
+            if (bmp != null) {
+                bmp.recycle();
+            }
+
+            ExifInterface exif;
+            try {
+                exif = new ExifInterface(imagePath);
+                int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
+                Matrix matrix = new Matrix();
+                if (orientation == 6) {
+                    matrix.postRotate(90);
+                } else if (orientation == 3) {
+                    matrix.postRotate(180);
+                } else if (orientation == 8) {
+                    matrix.postRotate(270);
+                }
+                scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            FileOutputStream out = null;
+            String filepath = getFilename();
+            try {
+                out = new FileOutputStream(filepath);
+
+                //write the compressed bitmap at the destination specified by filename.
+                scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 80, out);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            return filepath;
+
         }
-        FileOutputStream out = null;
-        String filepath = getFilename();
-        try {
-            out = new FileOutputStream(filepath);
-
-            //write the compressed bitmap at the destination specified by filename.
-            scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 80, out);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return filepath;
+        return "";
     }
 
     public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -499,19 +509,20 @@ public class FirebaseMethods {
     }
 
     public String getFilename() {
-        File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
-                + "/Android/data/"
-                + mContext.getApplicationContext().getPackageName()
-                + "/Files/Compressed");
+            File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
+                    + "/Android/data/"
+                    + mContext.getApplicationContext().getPackageName()
+                    + "/Files/Compressed");
 
-        // Create the storage directory if it does not exist
-        if (! mediaStorageDir.exists()){
-            mediaStorageDir.mkdirs();
-        }
+            // Create the storage directory if it does not exist
+            if (!mediaStorageDir.exists()) {
+                mediaStorageDir.mkdirs();
+            }
 
-        String mImageName="IMG_"+ String.valueOf(System.currentTimeMillis()) +".jpg";
-        String uriString = (mediaStorageDir.getAbsolutePath() + "/"+ mImageName);;
-        return uriString;
+            String mImageName = "IMG_" + String.valueOf(System.currentTimeMillis()) + ".jpg";
+            String uriString = (mediaStorageDir.getAbsolutePath() + "/" + mImageName);
+            ;
+            return uriString;
 
     }
 
