@@ -62,7 +62,6 @@ public class AdapterItemLeaderboard extends RecyclerView.Adapter<AdapterItemLead
                 .thumbnail(0.2f)
                 .into(holder.PositionProfile);
         holder.itemView.setOnClickListener(v -> {
-            Log.d(TAG, "onBindViewHolder: UserID" + currentItem.getUserID());
             Intent i = new Intent(mContext, profile.class);
             i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
             i.putExtra(mContext.getString(R.string.intent_user), currentItem.getUserID());

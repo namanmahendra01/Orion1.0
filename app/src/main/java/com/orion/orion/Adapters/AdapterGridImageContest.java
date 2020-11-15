@@ -74,7 +74,7 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
             CardView.LayoutParams parms = new CardView.LayoutParams(width/3,width/3);
             holder.image.setLayoutParams(parms);
             Glide.with(mContext)
-                    .load(participantList.getMediaLink())
+                    .load(participantList.getMl())
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)
                     .placeholder(R.drawable.load)
@@ -87,9 +87,9 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
 
 
                     Intent i = new Intent(mContext, activity_view_media.class);
-                    i.putExtra("imageLink", participantList.getMediaLink());
-                    i.putExtra("contestkey", participantList.getContestkey());
-                    i.putExtra("joiningkey", participantList.getJoiningKey());
+                    i.putExtra("imageLink", participantList.getMl());
+                    i.putExtra("contestkey", participantList.getCi());
+                    i.putExtra("joiningkey", participantList.getJi());
                     i.putExtra("view", "yes");
 
 
@@ -99,14 +99,14 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
                 }
             });
         } else {
-            ifCurrentUserVote(holder, participantList.getJoiningKey(), participantList.getContestkey());
+            ifCurrentUserVote(holder, participantList.getJi(), participantList.getCi());
 
             holder.viewSub.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     try {
-                        Uri uri = Uri.parse(participantList.getMediaLink());
+                        Uri uri = Uri.parse(participantList.getMl());
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         mContext.startActivity(intent);
 
@@ -125,7 +125,7 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
             Query userquery = ref
                     .child(mContext.getString(R.string.dbname_users))
-                    .child(participantList.getUserid())
+                    .child(participantList.getUi())
                     .child(mContext.getString(R.string.field_username));
             userquery.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -146,8 +146,8 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
                 public void onClick(View v) {
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                     reference.child(mContext.getString(R.string.dbname_contestlist))
-                            .child(participantList.getContestkey())
-                            .child("voterlist")
+                            .child(participantList.getCi())
+                            .child(mContext.getString(R.string.field_total_voters_list))
                             .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -157,7 +157,7 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
                                     } else {
                                         holder.voteNo.setVisibility(View.GONE);
                                         holder.voteYes.setVisibility(View.VISIBLE);
-                                        addVote(holder, participantList.getJoiningKey(), participantList.getContestkey());
+                                        addVote(holder, participantList.getJi(), participantList.getCi());
                                     }
                                 }
 
@@ -176,7 +176,7 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
 
                     holder.voteNo.setVisibility(View.VISIBLE);
                     holder.voteYes.setVisibility(View.GONE);
-                    removeVote(holder, participantList.getJoiningKey(), participantList.getContestkey());
+                    removeVote(holder, participantList.getJi(), participantList.getCi());
 
 
                 }
@@ -202,7 +202,7 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
 
         reference.child(mContext.getString(R.string.dbname_contestlist))
                 .child(contestkey)
-                .child("voterlist")
+                .child(mContext.getString(R.string.field_total_voters_list))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .removeValue();
 
@@ -220,7 +220,7 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
 
         reference.child(mContext.getString(R.string.dbname_contestlist))
                 .child(contestkey)
-                .child("voterlist")
+                .child(mContext.getString(R.string.field_total_voters_list))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .setValue(true);
     }
@@ -228,7 +228,7 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
 
     public long getItemId(int position) {
         ParticipantList form = participantLists.get(position);
-        return form.getJoiningKey().hashCode();
+        return form.getJi().hashCode();
     }
     @Override
     public int getItemViewType(int position) {
@@ -243,9 +243,8 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
 
         private ImageView image;
         TextView viewSub, num, name;
-        private ImageView voteNo, voteYes,progress;
-        private TextView votingNumber;
-        private String mVotingnumber = "";
+        private ImageView voteNo, voteYes;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -256,7 +255,6 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
             viewSub = itemView.findViewById(R.id.view);
             num = itemView.findViewById(R.id.num);
             name = itemView.findViewById(R.id.name);
-            progress = itemView.findViewById(R.id.progress);
 
 
         }
@@ -273,7 +271,6 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
-                        Log.d(TAG, "onDataChange: dddd" + contestKey + joiningKey + dataSnapshot2);
                         if (dataSnapshot2.exists()) {
                             holder.voteNo.setVisibility(View.GONE);
                             holder.voteYes.setVisibility(View.VISIBLE);

@@ -52,7 +52,7 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
     @Override
     public long getItemId(int position) {
         Photo photo = photos.get(position);
-        return photo.getPhoto_id().hashCode();
+        return photo.getPi().hashCode();
     }
 
     @Override
@@ -63,10 +63,10 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
         LinearLayout.LayoutParams parms = new LinearLayout.LayoutParams(width / 2, width / 2);
         holder.image.setLayoutParams(parms);
 
-        if (photo.getType() != null)
-            if (photo.getType().equals("video"))
+        if (photo.getTy() != null)
+            if (photo.getTy().equals("video"))
                 Glide.with(holder.itemView.getContext())
-                        .load(photo.getThumbnail())
+                        .load(photo.getT())
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)
                         .centerCrop()
@@ -75,7 +75,7 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
                         .into(holder.image);
             else
                 Glide.with(holder.itemView.getContext())
-                        .load(photo.getImage_path())
+                        .load(photo.getIp())
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)
                         .centerCrop()
@@ -84,15 +84,16 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
                         .into(holder.image);
         else
             Glide.with(holder.itemView.getContext())
-                    .load(photo.getImage_path())
+                    .load(photo.getIp())
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)
                     .centerCrop()
                     .placeholder(R.drawable.load)
                     .thumbnail(0.5f)
-                    .into(holder.image);        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+                    .into(holder.image);
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(mContext.getString(R.string.dbname_users))
-                .child(photo.getUser_id())
+                .child(photo.getUi())
                 .child(mContext.getString(R.string.field_username))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -105,32 +106,6 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
 
                     }
                 });
-//        holder.itemView.setOnClickListener(v -> {
-//            DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
-//            db1.child(mContext.getString(R.string.dbname_user_photos)).child(photo.getUser_id()).child(photo.getPhoto_id()).addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    ArrayList<Comment> comments = new ArrayList<>();
-//                    for (DataSnapshot dSnapshot : snapshot.child("comment").getChildren()) {
-//                        Comment comment = new Comment();
-//                        comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-//                        comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-//                        comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
-//                        comments.add(comment);
-//                    }
-//                    Log.d(Constraints.TAG, "onDataChange: klj" + comments);
-//                    Intent i1 = new Intent(mContext, ViewPostActivity.class);
-//                    i1.putExtra("photo", photo);
-//                    i1.putParcelableArrayListExtra("comments", comments);
-//                    mContext.startActivity(i1);
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
-//        });
     }
 
     @Override

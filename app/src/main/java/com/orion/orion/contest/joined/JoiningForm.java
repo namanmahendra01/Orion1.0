@@ -131,7 +131,6 @@ public class JoiningForm extends AppCompatActivity {
         });
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-        Log.d(TAG, "onCreate: llll" + userId + "  " + contestId);
         db.child(getString(R.string.dbname_contests))
                 .child(userId)
                 .child(getString(R.string.created_contest))
@@ -140,8 +139,8 @@ public class JoiningForm extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         CreateForm createForm = dataSnapshot.getValue(CreateForm.class);
-                        openfor = createForm.getOpenFor();
-                        type = createForm.getFiletype();
+                        openfor = createForm.getOf();
+                        type = createForm.getFt();
 
                         Log.d(TAG, "onDataChange: " + type + "  " + createForm);
                         if (type.equals("Image")) {
@@ -176,7 +175,7 @@ public class JoiningForm extends AppCompatActivity {
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contestlist));
         ref.child(contestId)
-                .child("participantlist")
+                .child(getString(R.string.field_Participant_List))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -286,16 +285,15 @@ public class JoiningForm extends AppCompatActivity {
                                 mediaLink = urlEt.getText().toString();
                             }
                             HashMap<String, Object> hashMap = new HashMap<>();
-                            hashMap.put("college", collegeEt.getText().toString());
-                            hashMap.put("status", "waiting");
-                            hashMap.put("payment", "true");
-                            hashMap.put("hostId", userId);
-                            hashMap.put("contestKey", contestId);
-                            hashMap.put("timestamp", timeStamp);
-                            hashMap.put("joiningKey", JoiningKey);
-                            hashMap.put("idLink", idLink);
-                            hashMap.put("mediaLink", mediaLink);
-                            hashMap.put("userid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                            hashMap.put(getString(R.string.field_college), collegeEt.getText().toString());
+                            hashMap.put(getString(R.string.field_status), "waiting");
+                            hashMap.put(getString(R.string.field_host), userId);
+                            hashMap.put(getString(R.string.field_contest_ID), contestId);
+                            hashMap.put(getString(R.string.field_timestamp), timeStamp);
+                            hashMap.put(getString(R.string.field_joining_ID), JoiningKey);
+                            hashMap.put(getString(R.string.field_id_link), idLink);
+                            hashMap.put(getString(R.string.field_media_link), mediaLink);
+                            hashMap.put(getString(R.string.field_user_id), FirebaseAuth.getInstance().getCurrentUser().getUid());
                             db.child(getString(R.string.dbname_contests))
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                     .child(getString(R.string.joined_contest))
@@ -306,12 +304,12 @@ public class JoiningForm extends AppCompatActivity {
                                     DatabaseReference db2 = FirebaseDatabase.getInstance().getReference();
 
                                     HashMap<String, Object> hashMap2 = new HashMap<>();
-                                    hashMap2.put("timestamp", timeStamp);
-                                    hashMap2.put("joiningKey", JoiningKey);
-                                    hashMap2.put("totalScore", 0);
-                                    hashMap2.put("contestkey", contestId);
-                                    hashMap2.put("mediaLink", mediaLink);
-                                    hashMap2.put("userid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    hashMap2.put(getString(R.string.field_timestamp), timeStamp);
+                                    hashMap2.put(getString(R.string.field_joining_ID), JoiningKey);
+                                    hashMap2.put(getString(R.string.field_total_score), 0);
+                                    hashMap2.put(getString(R.string.field_contest_ID), contestId);
+                                    hashMap2.put(getString(R.string.field_media_link), mediaLink);
+                                    hashMap2.put(getString(R.string.field_user_id), FirebaseAuth.getInstance().getCurrentUser().getUid());
                                     db2.child(getString(R.string.dbname_request))
                                             .child(getString(R.string.dbname_participantList))
                                             .child(contestId)

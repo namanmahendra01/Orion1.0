@@ -3,148 +3,131 @@ package com.orion.orion.models;
 public class ContestDetail {
 
 
-    String entryfee,doman,userId,contestId,voteType,timestamp,regBegin,regEnd,voteBegin,voteEnd,winDec,maxLimit;
-    Boolean result;
+    String ef, d, ui, ci, vt, tim, rb, re, vb, ve, wd, mLt;
+    Boolean r;
 
  public ContestDetail(){}
 
-    public ContestDetail(String entryfee, String doman, String userId, String contestId, String voteType,
-                         String timestamp, String regBegin, String regEnd, String voteBegin, String voteEnd, String winDec,Boolean result,String maxLimit) {
-        this.entryfee = entryfee;
-        this.doman = doman;
-        this.userId = userId;
-        this.contestId = contestId;
-        this.voteType = voteType;
-        this.timestamp = timestamp;
-        this.regBegin = regBegin;
-        this.regEnd = regEnd;
-        this.voteBegin = voteBegin;
-        this.voteEnd = voteEnd;
-        this.winDec = winDec;
-        this.result=result;
-        this.maxLimit=maxLimit;
+
+    public String getEf() {
+        return ef;
     }
 
-    public String getEntryfee() {
-        return entryfee;
+    public void setEf(String entryfee) {
+        this.ef = entryfee;
     }
 
-    public void setEntryfee(String entryfee) {
-        this.entryfee = entryfee;
+    public String getD() {
+        return d;
     }
 
-    public String getDoman() {
-        return doman;
+    public void setD(String domain) {
+        this.d = domain;
     }
 
-    public void setDoman(String doman) {
-        this.doman = doman;
+    public String getUi() {
+        return ui;
     }
 
-    public String getUserId() {
-        return userId;
+    public void setUi(String userId) {
+        this.ui = userId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public String getCi() {
+        return ci;
     }
 
-    public String getContestId() {
-        return contestId;
+    public void setCi(String contestId) {
+        this.ci = contestId;
     }
 
-    public void setContestId(String contestId) {
-        this.contestId = contestId;
+    public String getVt() {
+        return vt;
     }
 
-    public String getVoteType() {
-        return voteType;
+    public void setVt(String voteType) {
+        this.vt = voteType;
     }
 
-    public void setVoteType(String voteType) {
-        this.voteType = voteType;
+    public String getTim() {
+        return tim;
     }
 
-    public String getTimestamp() {
-        return timestamp;
+    public void setTim(String timestamp) {
+        this.tim = timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public String getRb() {
+        return rb;
     }
 
-    public String getRegBegin() {
-        return regBegin;
+    public void setRb(String regBegin) {
+        this.rb = regBegin;
     }
 
-    public void setRegBegin(String regBegin) {
-        this.regBegin = regBegin;
+    public String getRe() {
+        return re;
     }
 
-    public String getRegEnd() {
-        return regEnd;
+    public void setRe(String regEnd) {
+        this.re = regEnd;
     }
 
-    public void setRegEnd(String regEnd) {
-        this.regEnd = regEnd;
+    public String getVb() {
+        return vb;
     }
 
-    public String getVoteBegin() {
-        return voteBegin;
+    public void setVb(String vb) {
+        this.vb = vb;
     }
 
-    public void setVoteBegin(String voteBegin) {
-        this.voteBegin = voteBegin;
+    public String getVe() {
+        return ve;
     }
 
-    public String getVoteEnd() {
-        return voteEnd;
+    public void setVe(String ve) {
+        this.ve = ve;
     }
 
-    public void setVoteEnd(String voteEnd) {
-        this.voteEnd = voteEnd;
+    public String getWd() {
+        return wd;
     }
 
-    public String getWinDec() {
-        return winDec;
+    public void setWd(String winDec) {
+        this.wd = winDec;
+    }
+    public Boolean getR() {
+        return r;
     }
 
-    public void setWinDec(String winDec) {
-        this.winDec = winDec;
-    }
-    public Boolean getResult() {
-        return result;
+    public void setR(Boolean result) {
+        this.r = result;
     }
 
-    public void setResult(Boolean result) {
-        this.result = result;
+    public String getMLt() {
+        return mLt;
     }
 
-    public String getMaxLimit() {
-        return maxLimit;
+    public void setMLt(String maxLimit) {
+        this.mLt = maxLimit;
     }
-
-    public void setMaxLimit(String maxLimit) {
-        this.maxLimit = maxLimit;
-    }
-
 
     @Override
     public String toString() {
         return "ContestDetail{" +
-                "entryfee='" + entryfee + '\'' +
-                ", doman='" + doman + '\'' +
-                ", userId='" + userId + '\'' +
-                ", contestId='" + contestId + '\'' +
-                ", voteType='" + voteType + '\'' +
-                ", timestamp='" + timestamp + '\'' +
-                ", regBegin='" + regBegin + '\'' +
-                ", regEnd='" + regEnd + '\'' +
-                ", voteBegin='" + voteBegin + '\'' +
-                ", voteEnd='" + voteEnd + '\'' +
-                ", winDec='" + winDec + '\'' +
-                ", result='" + result + '\'' +
-
+                "ef='" + ef + '\'' +
+                ", d='" + d + '\'' +
+                ", ui='" + ui + '\'' +
+                ", ci='" + ci + '\'' +
+                ", vt='" + vt + '\'' +
+                ", tim='" + tim + '\'' +
+                ", rb='" + rb + '\'' +
+                ", re='" + re + '\'' +
+                ", vb='" + vb + '\'' +
+                ", ve='" + ve + '\'' +
+                ", wd='" + wd + '\'' +
+                ", mLt='" + mLt + '\'' +
+                ", r=" + r +
                 '}';
     }
 }

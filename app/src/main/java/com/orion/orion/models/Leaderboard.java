@@ -2,164 +2,164 @@ package com.orion.orion.models;
 
 public class Leaderboard {
 
-    private Rating all_time;
-    private Rating yearly;
-    private Rating last_month;
-    private Rating this_month;
-    private Rating last_week;
-    private Rating this_week;
-    private location last_known_location;
-    private String last_updated;
-    private int followers;
-    private int joined_contest;
-    private int created_contest;
-    private String username;
-    private String domain;
-    private String profile_photo;
+    private Rating at;
+    private Rating y;
+    private Rating lm;
+    private Rating tm;
+    private Rating lw;
+    private Rating tw;
+    private location lkl;
+    private String lu;
+    private int f;
+    private int jc;
+    private int cc;
+    private String u;
+    private String d;
+    private String pp;
 
-    public Rating getAll_time() {
-        return all_time;
+    public Rating getAt() {
+        return at;
     }
 
-    public void setAll_time(Rating all_time) {
-        this.all_time = all_time;
+    public void setAt(Rating all_time) {
+        this.at = all_time;
     }
 
-    public Rating getYearly() {
-        return yearly;
+    public Rating getY() {
+        return y;
     }
 
-    public void setYearly(Rating yearly) {
-        this.yearly = yearly;
+    public void setY(Rating yearly) {
+        this.y = yearly;
     }
 
-    public Rating getLast_month() {
-        return last_month;
+    public Rating getLm() {
+        return lm;
     }
 
-    public void setLast_month(Rating last_month) {
-        this.last_month = last_month;
+    public void setLm(Rating last_month) {
+        this.lm = last_month;
     }
 
-    public Rating getThis_month() {
-        return this_month;
+    public Rating getTm() {
+        return tm;
     }
 
-    public void setThis_month(Rating this_month) {
-        this.this_month = this_month;
+    public void setTm(Rating this_month) {
+        this.tm = this_month;
     }
 
-    public Rating getLast_week() {
-        return last_week;
+    public Rating getLw() {
+        return lw;
     }
 
-    public void setLast_week(Rating last_week) {
-        this.last_week = last_week;
+    public void setLw(Rating last_week) {
+        this.lw = last_week;
     }
 
-    public Rating getThis_week() {
-        return this_week;
+    public Rating getTw() {
+        return tw;
     }
 
-    public void setThis_week(Rating this_week) {
-        this.this_week = this_week;
+    public void setTw(Rating this_week) {
+        this.tw = this_week;
     }
 
-    public location getLast_known_location() {
-        return last_known_location;
+    public location getLkl() {
+        return lkl;
     }
 
-    public void setLast_known_location(location last_known_location) {
-        this.last_known_location = last_known_location;
+    public void setLkl(location last_known_location) {
+        this.lkl = last_known_location;
     }
 
-    public String getLast_updated() {
-        return last_updated;
+    public String getLu() {
+        return lu;
     }
 
-    public void setLast_updated(String last_updated) {
-        this.last_updated = last_updated;
+    public void setLu(String last_updated) {
+        this.lu = last_updated;
     }
 
-    public int getFollowers() {
-        return followers;
+    public int getF() {
+        return f;
     }
 
-    public void setFollowers(int followers) {
-        this.followers = followers;
+    public void setF(int followers) {
+        this.f = followers;
     }
 
-    public int getJoined_contest() {
-        return joined_contest;
+    public int getJc() {
+        return jc;
     }
 
-    public void setJoined_contest(int joined_contest) {
-        this.joined_contest = joined_contest;
+    public void setJc(int joined_contest) {
+        this.jc = joined_contest;
     }
 
-    public int getCreated_contest() {
-        return created_contest;
+    public int getCc() {
+        return cc;
     }
 
-    public void setCreated_contest(int created_contest) {
-        this.created_contest = created_contest;
+    public void setCc(int created_contest) {
+        this.cc = created_contest;
     }
 
-    public String getUsername() {
-        return username;
+    public String getU() {
+        return u;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setU(String username) {
+        this.u = username;
     }
 
-    public String getDomain() {
-        return domain;
+    public String getD() {
+        return d;
     }
 
-    public void setDomain(String domain) {
-        this.domain = domain;
+    public void setD(String domain) {
+        this.d = domain;
     }
 
-    public Leaderboard(Rating all_time, Rating yearly, Rating last_month, Rating this_month, Rating last_week, Rating this_week, location last_known_location, String last_updated, int followers, int joined_contest, int created_contest, String username, String domain, String profile_photo) {
-        this.all_time = all_time;
-        this.yearly = yearly;
-        this.last_month = last_month;
-        this.this_month = this_month;
-        this.last_week = last_week;
-        this.this_week = this_week;
-        this.last_known_location = last_known_location;
-        this.last_updated = last_updated;
-        this.followers = followers;
-        this.joined_contest = joined_contest;
-        this.created_contest = created_contest;
-        this.username = username;
-        this.domain = domain;
-        this.profile_photo = profile_photo;
+    public Leaderboard(Rating at, Rating y, Rating lm, Rating tm, Rating lw, Rating tw, location lkl, String lu, int f, int jc, int cc, String u, String d, String pp) {
+        this.at = at;
+        this.y = y;
+        this.lm = lm;
+        this.tm = tm;
+        this.lw = lw;
+        this.tw = tw;
+        this.lkl = lkl;
+        this.lu = lu;
+        this.f = f;
+        this.jc = jc;
+        this.cc = cc;
+        this.u = u;
+        this.d = d;
+        this.pp = pp;
     }
 
     public Leaderboard() {
-        this.last_updated = "";
-        this.followers = 0;
-        this.joined_contest = 0;
-        this.created_contest = 0;
-        this.last_known_location = new location();
-        this.all_time = new Rating();
-        this.yearly = new Rating();
-        this.last_month = new Rating();
-        this.this_month = new Rating();
-        this.last_week = new Rating();
-        this.this_week = new Rating();
-        this.username = "";
-        this.domain = "";
-        this.profile_photo="";
+        this.lu = "";
+        this.f = 0;
+        this.jc = 0;
+        this.cc = 0;
+        this.lkl = new location();
+        this.at = new Rating();
+        this.y = new Rating();
+        this.lm = new Rating();
+        this.tm = new Rating();
+        this.lw = new Rating();
+        this.tw = new Rating();
+        this.u = "";
+        this.d = "";
+        this.pp ="";
     }
 
-    public String getProfile_photo() {
-        return profile_photo;
+    public String getPp() {
+        return pp;
     }
 
-    public void setProfile_photo(String profile_photo) {
-        this.profile_photo = profile_photo;
+    public void setPp(String profile_photo) {
+        this.pp = profile_photo;
     }
 }

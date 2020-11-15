@@ -135,13 +135,13 @@ public class fragment_marks_and_votes extends Fragment {
                         TextView t4=(TextView ) row2.getChildAt(2);
                         TextView t5=(TextView ) row3.getChildAt(1);
                         TextView t6=(TextView ) row3.getChildAt(2);
-                        t1.setText(juryMarks.getJury1());
-                        t3.setText(juryMarks.getJury2());
-                        t5.setText(juryMarks.getJury3());
+                        t1.setText(juryMarks.getJ1());
+                        t3.setText(juryMarks.getJ2());
+                        t5.setText(juryMarks.getJ3());
 
-                        t2.setText(juryMarks.getComment1());
-                        t4.setText(juryMarks.getComment2());
-                        t6.setText(juryMarks.getComment3());
+                        t2.setText(juryMarks.getC1());
+                        t4.setText(juryMarks.getC2());
+                        t6.setText(juryMarks.getC3());
 
                     }
 

@@ -2,28 +2,28 @@ package com.orion.orion.models;
 
 public class TopUsers {
 
-    private String user_id;
-    private int rating;
+    private String ui;
+    private int rat;
 
-    public String getUser_id() {
-        return user_id;
+    public String getUi() {
+        return ui;
     }
 
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
+    public void setUi(String ui) {
+        this.ui = ui;
     }
 
-    public TopUsers(String user_id, int rating) {
-        this.user_id = user_id;
-        this.rating = rating;
+    public TopUsers(String ui, int rat) {
+        this.ui = ui;
+        this.rat = rat;
     }
 
     public TopUsers() {
     }
 
 
-    public int getRating() {
-        return rating;
+    public int getRat() {
+        return rat;
     }
 
 }

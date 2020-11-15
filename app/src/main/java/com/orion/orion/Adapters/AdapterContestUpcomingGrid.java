@@ -80,8 +80,8 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
 
 
         ContestDetail mcontest = mContestDetail.get(i);
-        getNumberofParticipants(mcontest.getContestId(),mcontest.getMaxLimit());
-        String key = mcontest.getContestId();
+        getNumberofParticipants(mcontest.getCi(),mcontest.getMLt());
+        String key = mcontest.getCi();
         setgp(mcontest, holder.gp);
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_participantList));
@@ -99,7 +99,7 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist));
         ref.child(key)
-                .child("participantlist")
+                .child(mContext.getString(R.string.field_Participant_List))
 
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -122,7 +122,6 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(mContext, holder.option);
                 popupMenu.getMenuInflater().inflate(R.menu.post_menu_contest, popupMenu.getMenu());
-                Log.d(TAG, "onClick: lkj" + holder.ok);
                 if (!holder.ok) {
                     popupMenu.getMenu().getItem(2).setVisible(false);
 
@@ -155,13 +154,12 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                             builder.setTitle("Report");
-                            builder.setMessage("Are you sure, you want to Report this Contest?");
+                            builder.setMessage(mContext.getString(R.string.report_prompt));
 
 //                set buttons
                             builder.setPositiveButton("Report", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Log.d(TAG, "DeleteMessage: deleteing message");
                                     ReportPost(mcontest, holder.p);
 
                                 }
@@ -187,16 +185,16 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
         });
 
         DatabaseReference ref2= FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests));
-                ref2.child(mcontest.getUserId())
+                ref2.child(mcontest.getUi())
                 .child(mContext.getString(R.string.created_contest))
-                .child(mcontest.getContestId())
+                .child(mcontest.getCi())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         CreateForm mCreateForm=dataSnapshot.getValue(CreateForm.class);
-                        juryusername1=mCreateForm.getJname_1();
-                        juryusername2=mCreateForm.getJname_2();
-                        juryusername3=mCreateForm.getJname_3();
+                        juryusername1=mCreateForm.getJn1();
+                        juryusername2=mCreateForm.getJn2();
+                        juryusername3=mCreateForm.getJn3();
 
                     }
 
@@ -216,7 +214,6 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
 
          //*************************************************************************
                 String currentTime = StringManipilation.getTime(rawDate);
-                Log.d(TAG, "onTimeReceived: current time"+currentTime);
                 DateFormat formatter1 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date1 = null;
                 try {
@@ -227,10 +224,9 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
 
                   timestamp = String.valueOf(date1.getTime());
 
-                Log.d(TAG, "onTimeReceived: 1  "+timestamp);
 
 
-                String regStart = mcontest.getRegBegin();
+                String regStart = mcontest.getRb();
                 DateFormat formatter2 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date2 = null;
                 try {
@@ -242,7 +238,7 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
 
                 //*************************************************************************
 
-                String voteStart = mcontest.getVoteBegin();
+                String voteStart = mcontest.getVb();
                 DateFormat formatter3 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date3 = null;
                 if (!voteStart.equals("-")) {
@@ -258,7 +254,7 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
 
                 //*************************************************************************
 
-                String voteEnd = mcontest.getVoteEnd();
+                String voteEnd = mcontest.getVe();
                 DateFormat formatter4 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date4 = null;
                 if (!voteEnd.equals("-")) {
@@ -275,7 +271,7 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
 
                 //*************************************************************************
 
-               String regEnd = mcontest.getRegEnd();
+               String regEnd = mcontest.getRe();
                 DateFormat formatter5 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date5 = null;
                 try {
@@ -285,7 +281,6 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
                 }
                 String regE = String.valueOf(date5.getTime());
 
-                Log.d(TAG, "onTimeReceived: rege  "+regE);
 
                 //*************************************************************************
 
@@ -305,22 +300,21 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
 
 //                compare all dates
 
-                                        Log.d(TAG, "run: timeeeee"+timestamp);
 
-                                        if (mcontest.getResult()){
+                                        if (mcontest.getR()){
 
                                         }else {
 
                                             if(Long.parseLong(regS) <= Long.parseLong(timestamp)&&Long.parseLong(regE) >= Long.parseLong(timestamp))
                                             {
                                             DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_participantList));
-                                            ref.child(mcontest.getContestId())
+                                            ref.child(mcontest.getCi())
                                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                             long i = dataSnapshot.getChildrenCount();
-                                                            if (!mcontest.getMaxLimit().equals("Unlimited")) {
-                                                                if (!String.valueOf(i).equals(mcontest.getMaxLimit())) {
+                                                            if (!mcontest.getMLt().equals("Unlimited")) {
+                                                                if (!String.valueOf(i).equals(mcontest.getMLt())) {
 
                                                                     holder.reg = "yes";
                                                                 } else {
@@ -384,26 +378,26 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
 
 
 
-        holder.entryFee.setText(mcontest.getEntryfee());
-        holder.domain.setText(mcontest.getDoman());
+        holder.entryFee.setText(mcontest.getEf());
+        holder.domain.setText(mcontest.getD());
 
-        getcontestDetails(mcontest.getUserId(),mcontest.getContestId(),holder.poster
+        getcontestDetails(mcontest.getUi(),mcontest.getCi(),holder.poster
         ,holder.title,holder.progress);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (mcontest.getResult()){
+                if (mcontest.getR()){
                     Intent i = new Intent(mContext.getApplicationContext(), ResultDeclaredActivity.class);
-                    i.putExtra("userId",mcontest.getUserId());
-                    i.putExtra("contestId",mcontest.getContestId());
+                    i.putExtra("userId",mcontest.getUi());
+                    i.putExtra("contestId",mcontest.getCi());
 
                     mContext.startActivity(i);
                 }else {
                     Intent i = new Intent(mContext.getApplicationContext(), ViewContestDetails.class);
-                    i.putExtra("userId", mcontest.getUserId());
-                    i.putExtra("contestId", mcontest.getContestId());
+                    i.putExtra("userId", mcontest.getUi());
+                    i.putExtra("contestId", mcontest.getCi());
                     i.putExtra("Vote",holder.vote);
                     i.putExtra("reg", holder.reg);
                     mContext.startActivity(i);
@@ -414,7 +408,6 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
         });
 
 
-        Log.d(TAG, "hello22: "+ timestamp2);
     }
 
     private void getNumberofParticipants(String contestId, String maxLimit) {
@@ -438,7 +431,7 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
     }
     public long getItemId(int position) {
         ContestDetail form = mContestDetail.get(position);
-        return form.getContestId().hashCode();
+        return form.getCi().hashCode();
     }
     @Override
     public int getItemViewType(int position) {
@@ -487,10 +480,10 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     CreateForm createForm=dataSnapshot.getValue(CreateForm.class);
-                    title.setText(createForm.getTitle());
-                    Log.d(TAG, "onDataChange: image"+createForm.getPoster() );
+                    title.setText(createForm.getCt());
+                    Log.d(TAG, "onDataChange: image"+createForm.getPo() );
                     Glide.with(mContext)
-                            .load(createForm.getPoster())
+                            .load(createForm.getPo())
                             .placeholder(R.drawable.load)
                             .error(R.drawable.default_image2)
                             .placeholder(R.drawable.load)
@@ -509,96 +502,81 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
 
     }
     private void ReportPost(ContestDetail mcontest, int p) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child(mContext.getString(R.string.dbname_contestlist))
-                .child(mcontest.getContestId())
-                .child("tr")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                            Toast.makeText(mContext, "You already reported this contest.", Toast.LENGTH_SHORT).show();
 
-                        } else {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist))
+                .child(mcontest.getCi())
+                .child(mContext.getString(R.string.field_contest_report_list));
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                    Toast.makeText(mContext, "You already reported this contest.", Toast.LENGTH_SHORT).show();
+
+                } else {
 
 
-                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                            reference.child(mContext.getString(R.string.dbname_contestlist))
-                                    .child(mcontest.getContestId())
-                                    .child("tr")
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .setValue(true)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    reference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .setValue(true)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-
-                                            DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
-                                            reference2.child(mContext.getString(R.string.dbname_contestlist))
-                                                    .child(mcontest.getContestId())
-                                                    .child("tr")
-                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                            long i = snapshot.getChildrenCount();
-                                                            if ((((i + 1) / p) * 100) > 60) {
-                                                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                                                                reference.child(mContext.getString(R.string.dbname_contests))
-                                                                        .child(mcontest.getUserId())
-                                                                        .child("reports")
-                                                                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                            @Override
-                                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                                if (snapshot.exists()) {
-                                                                                    long x = (long) snapshot.getValue();
-                                                                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                                                                                    reference.child(mContext.getString(R.string.dbname_contests))
-                                                                                            .child(mcontest.getUserId())
-                                                                                            .child("reports")
-                                                                                            .setValue(x + 1);
-                                                                                } else {
-                                                                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                                                                                    reference.child(mContext.getString(R.string.dbname_contests))
-                                                                                            .child(mcontest.getUserId())
-                                                                                            .child("reports")
-                                                                                            .setValue(1);
-                                                                                }
-                                                                            }
-
-                                                                            @Override
-                                                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                                                            }
-                                                                        });
-                                                            }
-
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            long i = snapshot.getChildrenCount();
+                                            if ((((i + 1) / p) * 100) > 60) {
+                                                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
+                                                        .child(mContext.getString(R.string.dbname_contests))
+                                                        .child(mcontest.getUi())
+                                                        .child(mContext.getString(R.string.field_contest_reports));
+                                                reference1.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        if (snapshot.exists()) {
+                                                            long x = (long) snapshot.getValue();
+                                                            reference1
+                                                                    .setValue(x + 1);
+                                                        } else {
+                                                            reference1
+                                                                    .setValue(1);
                                                         }
+                                                    }
 
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError error) {
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                                        }
-                                                    });
+                                                    }
+                                                });
+                                            }
 
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
 
                                         }
                                     });
 
-                        }
-                    }
+
+                                }
+                            });
+
+                }
+            }
 
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+            }
+        });
     }
-
 
     private void setgp(ContestDetail mcontest, TextView gp) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(mContext.getString(R.string.dbname_contests))
-                .child(mcontest.getUserId())
+                .child(mcontest.getUi())
                 .child("completed")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -607,7 +585,7 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
                             long y = (long) snapshot.getValue();
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                             reference.child(mContext.getString(R.string.dbname_contests))
-                                    .child(mcontest.getUserId())
+                                    .child(mcontest.getUi())
                                     .child("reports")
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override

@@ -121,7 +121,7 @@ public class fragment_overview extends Fragment {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child(getString(R.string.dbname_contestlist))
                 .child(Conteskey)
-                .child("result")
+                .child(getString(R.string.field_result))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -171,7 +171,7 @@ public class fragment_overview extends Fragment {
                             ParticipantList participantList = new ParticipantList();
                             participantList = snapshot.getValue(ParticipantList.class);
                             Log.d(TAG, "onDataChange: " + participantList.toString());
-                            joiningKey = participantList.getJoiningKey().toString();
+                            joiningKey = participantList.getJi().toString();
                             Log.d(TAG, "onDataChange: " + joiningKey);
                             DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
                             ParticipantList finalParticipantList = participantList;
@@ -188,7 +188,7 @@ public class fragment_overview extends Fragment {
                                             tbrow.setLayoutParams(new TableLayout.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
                                             tbrow.setWeightSum(5);
                                             TextView t1v = new TextView(getActivity());
-                                            getUsername(finalParticipantList.getUserid(), t1v);
+                                            getU(finalParticipantList.getUi(), t1v);
                                             t1v.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -229,38 +229,38 @@ public class fragment_overview extends Fragment {
                                             t1v.setGravity(Gravity.CENTER);
                                             tbrow.addView(t1v);
                                             TextView t2v = new TextView(getActivity());
-                                            t2v.setText(juryMarks.getJury1());
+                                            t2v.setText(juryMarks.getJ1());
                                             t2v.setTextColor(Color.BLACK);
                                             t2v.setGravity(Gravity.CENTER);
                                             tbrow.addView(t2v);
                                             TextView t3v = new TextView(getActivity());
-                                            t3v.setText(juryMarks.getJury2());
+                                            t3v.setText(juryMarks.getJ2());
                                             t3v.setTextColor(Color.BLACK);
                                             t3v.setGravity(Gravity.CENTER);
                                             tbrow.addView(t3v);
                                             TextView t4v = new TextView(getActivity());
-                                            t4v.setText(juryMarks.getJury3());
+                                            t4v.setText(juryMarks.getJ3());
                                             t4v.setTextColor(Color.BLACK);
                                             t4v.setGravity(Gravity.CENTER);
                                             tbrow.addView(t4v);
                                             TextView t5v = new TextView(getActivity());
                                             long x = 0, y = 0, z = 0;
-                                            if (juryMarks.getJury1().equals("")) {
+                                            if (juryMarks.getJ1().equals("")) {
                                                 x = 0;
                                             } else {
-                                                x = Long.parseLong(juryMarks.getJury1());
+                                                x = Long.parseLong(juryMarks.getJ1());
 
                                             }
-                                            if (juryMarks.getJury2().equals("")) {
+                                            if (juryMarks.getJ2().equals("")) {
                                                 y = 0;
                                             } else {
-                                                y = Long.parseLong(juryMarks.getJury2());
+                                                y = Long.parseLong(juryMarks.getJ2());
 
                                             }
-                                            if (juryMarks.getJury3().equals("")) {
+                                            if (juryMarks.getJ3().equals("")) {
                                                 z = 0;
                                             } else {
-                                                z = Long.parseLong(juryMarks.getJury3());
+                                                z = Long.parseLong(juryMarks.getJ3());
 
                                             }
                                             long total = x + y + z;
@@ -303,7 +303,7 @@ public class fragment_overview extends Fragment {
                             ParticipantList participantList = new ParticipantList();
                             participantList = snapshot.getValue(ParticipantList.class);
                             Log.d(TAG, "onDataChange: " + participantList.toString());
-                            joiningKey = participantList.getJoiningKey().toString();
+                            joiningKey = participantList.getJi().toString();
                             Log.d(TAG, "onDataChange: " + joiningKey);
                             DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
                             ParticipantList finalParticipantList = participantList;
@@ -320,7 +320,7 @@ public class fragment_overview extends Fragment {
                                             tbrow.setLayoutParams(new TableLayout.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
                                             tbrow.setWeightSum(5);
                                             TextView t1v = new TextView(getActivity());
-                                            getUsername(finalParticipantList.getUserid(), t1v);
+                                            getU(finalParticipantList.getUi(), t1v);
                                             t1v.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
@@ -360,29 +360,26 @@ public class fragment_overview extends Fragment {
                                             tbrow.addView(t1v);
                                             TextView t2v = new TextView(getActivity());
                                             long t = 0, o = 0, p = 0;
-                                            if (juryMarks.getJury1().equals("")) {
+                                            if (juryMarks.getJ1().equals("")) {
                                                 t = 0;
                                             } else {
-                                                t = Long.parseLong(juryMarks.getJury1());
+                                                t = Long.parseLong(juryMarks.getJ1());
 
                                             }
-                                            if (juryMarks.getJury2().equals("")) {
+                                            if (juryMarks.getJ2().equals("")) {
                                                 o = 0;
                                             } else {
-                                                o = Long.parseLong(juryMarks.getJury2());
+                                                o = Long.parseLong(juryMarks.getJ2());
 
                                             }
-                                            if (juryMarks.getJury3().equals("")) {
+                                            if (juryMarks.getJ3().equals("")) {
                                                 p = 0;
                                             } else {
-                                                p = Long.parseLong(juryMarks.getJury3());
+                                                p = Long.parseLong(juryMarks.getJ3());
 
                                             }
 
-                                            Log.d(TAG, "onDataChange: marks" + t);
-                                            Log.d(TAG, "onDataChange: marks" + o);
 
-                                            Log.d(TAG, "onDataChange: marks" + p);
 
 //
 
@@ -405,7 +402,7 @@ public class fragment_overview extends Fragment {
 
                                             t4v.setTextColor(Color.BLACK);
                                             t4v.setGravity(Gravity.CENTER);
-                                            getVoteCount(finalParticipantList.getJoiningKey(), t3v, contestkey, t4v, t2v);
+                                            getVoteCount(finalParticipantList.getJi(), t3v, contestkey, t4v, t2v);
                                             tbrow.addView(t4v);
                                             juryTable2.addView(tbrow);
                                             Log.d(TAG, "onDataChange: " + juryMarks.toString());
@@ -440,7 +437,7 @@ public class fragment_overview extends Fragment {
             ref4.child(getString(R.string.dbname_participantList))
                     .child(contestkey)
                     .child(Joiningkey)
-                    .child("totalScore")
+                    .child(getString(R.string.field_total_score))
                     .setValue((int) c);
         } catch (NumberFormatException e) {
 
@@ -458,7 +455,6 @@ public class fragment_overview extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         long i = dataSnapshot.getChildrenCount();
-                        Log.d(TAG, "onDataChange: child count " + i);
 //
                         t3v.setText(String.valueOf(i));
                         getTotal(t2v, t3v, t4v, contestkey, joiningKey);
@@ -475,22 +471,18 @@ public class fragment_overview extends Fragment {
 
     }
 
-    private void getUsername(String userid, TextView textView) {
+    private void getU(String userid, TextView textView) {
         DatabaseReference ref5 = FirebaseDatabase.getInstance().getReference();
-        ref5.child(getString(R.string.dbname_user_account_settings)).
-                orderByChild("user_id").equalTo(userid).
+        ref5.child(getString(R.string.dbname_users)).
+                child(userid).
+                child(getString(R.string.field_username)).
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        String user = dataSnapshot.getValue().toString();
+                        textView.setText(user);
 
-                            Log.d(TAG, "onDataChange: ji" + dataSnapshot.getChildren().toString());
-
-                            users user = ds.getValue(users.class);
-                            textView.setText(user.getUsername());
-                        }
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -518,7 +510,7 @@ public class fragment_overview extends Fragment {
                         Collections.sort(participantLists, new Comparator<ParticipantList>() {
                             @Override
                             public int compare(ParticipantList o1, ParticipantList o2) {
-                                return Integer.compare(o1.getTotalScore(), o2.getTotalScore());
+                                return Integer.compare(o1.getTs(), o2.getTs());
                             }
                         });
                         Collections.reverse(participantLists);
@@ -544,7 +536,6 @@ public class fragment_overview extends Fragment {
     }
 
     private void displayParticipantRank() {
-        Log.d(TAG, "display first 10 contest");
         paginatedParticipantLists = new ArrayList<>();
         if (participantLists != null) {
 
@@ -559,7 +550,6 @@ public class fragment_overview extends Fragment {
                 for (int i = 0; i < iteration; i++) {
                     paginatedParticipantLists.add(participantLists.get(i));
                 }
-                Log.d(TAG, "contest: sss" + paginatedParticipantLists.size());
                 rankList = new AdapterRankList(getContext(), paginatedParticipantLists);
                 rankList.setHasStableIds(true);
                 rankRv.setAdapter(rankList);

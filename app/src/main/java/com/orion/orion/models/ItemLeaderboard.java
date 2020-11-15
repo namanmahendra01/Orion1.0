@@ -4,10 +4,10 @@ public class ItemLeaderboard {
     public String postionName;
     public int postionParameter;
     public String postionProfile;
-    public String userID;
+    public String ui;
 
     public String getUserID() {
-        return userID;
+        return ui;
     }
 
     public String getPostionProfile() {
@@ -18,7 +18,7 @@ public class ItemLeaderboard {
         this.postionName = postionName;
         this.postionParameter = postionParameter;
         this.postionProfile = postionProfile;
-        this.userID=userID;
+        this.ui =userID;
     }
 
     public String getPostionName() {

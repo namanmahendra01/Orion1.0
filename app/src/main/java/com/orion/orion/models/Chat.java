@@ -1,84 +1,77 @@
 package com.orion.orion.models;
 
 public class Chat implements  Comparable<Chat>{
-    String message,receiver,sender,timestamp,messageid;
-    boolean ifseen;
+    String msg, rID, sID, tim, mID;
+    boolean ifs;
 
     public Chat(){
 
     }
 
-    public Chat(String message, String receiver, String sender, String timestamp, String messageid, boolean ifseen) {
-        this.message = message;
-        this.receiver = receiver;
-        this.sender = sender;
-        this.timestamp = timestamp;
-        this.messageid = messageid;
-        this.ifseen = ifseen;
+
+
+    public String getMsg() {
+        return msg;
     }
 
-    public String getMessage() {
-        return message;
+    public void setMsg(String message) {
+        this.msg = message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getReceiver() {
-        return receiver;
+    public String getRID() {
+        return rID;
     }
 
     public void setReceiver(String receiver) {
-        this.receiver = receiver;
+        this.rID = receiver;
     }
 
-    public String getSender() {
-        return sender;
+    public String getSID() {
+        return sID;
     }
 
     public void setSender(String sender) {
-        this.sender = sender;
+        this.sID = sender;
     }
 
-    public String getTimestamp() {
-        return timestamp;
+    public String getTim() {
+        return tim;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public void setTim(String timestamp) {
+        this.tim = timestamp;
     }
 
-    public String getMessageid() {
-        return messageid;
+    public String getMID() {
+        return mID;
     }
 
     public void setMessageid(String messageid) {
-        this.messageid = messageid;
+        this.mID = messageid;
     }
 
-    public boolean isIfseen() {
-        return ifseen;
+    public boolean getIfs() {
+        return ifs;
     }
 
     public void setIfseen(boolean ifseen) {
-        this.ifseen = ifseen;
+        this.ifs = ifseen;
     }
 
     @Override
     public String toString() {
         return "Chat{" +
-                "message='" + message + '\'' +
-                ", receiver='" + receiver + '\'' +
-                ", sender='" + sender + '\'' +
-                ", timestamp='" + timestamp + '\'' +
-                ", messageid='" + messageid + '\'' +
-                ", ifseen=" + ifseen +
+                "msg='" + msg + '\'' +
+                ", rID='" + rID + '\'' +
+                ", sID='" + sID + '\'' +
+                ", tim='" + tim + '\'' +
+                ", mID='" + mID + '\'' +
+                ", ifs=" + ifs +
                 '}';
     }
 
     @Override
     public int compareTo(Chat o) {
-        return this.timestamp.compareTo(o.timestamp);
+        return this.tim.compareTo(o.tim);
     }
 }

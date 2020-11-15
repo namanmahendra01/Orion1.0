@@ -90,18 +90,17 @@ public class AdapterVoterList extends RecyclerView.Adapter<AdapterVoterList.View
 
     private void getparticipantDetails(String userid, TextView username, CircleImageView profile) {
         DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
-        ref.child(mContext.getString(R.string.dbname_user_account_settings))
+        ref.child(mContext.getString(R.string.dbname_users))
                 .child(userid)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user =dataSnapshot.getValue(users.class);
-                        Log.d(TAG, "onDataChange: "+ user.getDisplay_name());
-                        name1=user.getDisplay_name();
-                        username1=user.getUsername();
-                        profilelink=user.getProfile_photo();
+                        name1=user.getDn();
+                        username1=user.getU();
+                        profilelink=user.getPp();
 
-                        username.setText(user.getUsername());
+                        username.setText(user.getU());
                         Glide.with(mContext)
                                 .load(profilelink)
                                 .placeholder(R.drawable.load)

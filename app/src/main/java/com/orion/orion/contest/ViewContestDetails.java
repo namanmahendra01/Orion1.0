@@ -264,7 +264,7 @@ public class ViewContestDetails extends AppCompatActivity {
                 CreateForm mCreateForm = dataSnapshot.getValue(CreateForm.class);
                 assert mCreateForm != null;
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
-                ref.child(mCreateForm.getUserid())
+                ref.child(mCreateForm.getUi())
                         .child(getString(R.string.field_username))
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -278,46 +278,46 @@ public class ViewContestDetails extends AppCompatActivity {
                             }
                         });
 
-                if (mCreateForm.getEntryfee().equals("")) {
+                if (mCreateForm.getEf().equals("")) {
                     entryfee.setText("Free");
                 } else {
-                    entryfee.setText(mCreateForm.getEntryfee());
+                    entryfee.setText(mCreateForm.getEf());
                 }
-                if (mCreateForm.getTotal_prize().equals("")) {
+                if (mCreateForm.getTp().equals("")) {
                     prizeLinear.setVisibility(View.GONE);
                     totalprize.setText("-");
 
                 } else {
-                    totalprize.setText(mCreateForm.getTotal_prize());
+                    totalprize.setText(mCreateForm.getTp());
                     prizeLinear.setVisibility(View.VISIBLE);
 
                 }
-                if (mCreateForm.getMaxLimit().equals("")) {
+                if (mCreateForm.getMLt().equals("")) {
                     maxPart.setText("Unlimited");
 
                 } else {
-                    maxPart.setText(mCreateForm.getMaxLimit());
+                    maxPart.setText(mCreateForm.getMLt());
 
                 }
-                if (mCreateForm.getVoteBegin().equals("")) {
+                if (mCreateForm.getVb().equals("")) {
                     voteBegin.setText("-");
 
                 } else {
-                    voteBegin.setText(mCreateForm.getVoteBegin());
+                    voteBegin.setText(mCreateForm.getVb());
 
                 }
-                if (mCreateForm.getVoteEnd().equals("")) {
+                if (mCreateForm.getVe().equals("")) {
                     voteEnd.setText("-");
 
                 } else {
-                    voteEnd.setText(mCreateForm.getVoteEnd());
+                    voteEnd.setText(mCreateForm.getVe());
 
                 }
-                if (mCreateForm.getJname_1().equals("")) {
+                if (mCreateForm.getJn1().equals("")) {
                     jury.setVisibility(View.GONE);
                     cardView.setVisibility(View.GONE);
                 }
-                if (!mCreateForm.getJname_1().equals("") &&  mCreateForm.getJname_2().equals("")){
+                if (!mCreateForm.getJn1().equals("") &&  mCreateForm.getJn2().equals("")){
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -332,7 +332,7 @@ public class ViewContestDetails extends AppCompatActivity {
 
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                     db.child(getString(R.string.dbname_username))
-                            .child(mCreateForm.getJname_1())
+                            .child(mCreateForm.getJn1())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -346,12 +346,12 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         users user = snapshot.getValue(users.class);
 
 
-                                                        juryname1.setText(user.getDisplay_name());
-                                                        jurypl1.setText(user.getUsername());
-                                                        Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                        juryname1.setText(user.getDn());
+                                                        jurypl1.setText(user.getU());
+                                                        Log.d(TAG, "onDataChange: " + user.getDn());
 
                                                         Glide.with(ViewContestDetails.this)
-                                                                .load(user.getProfile_photo())
+                                                                .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
@@ -376,8 +376,8 @@ public class ViewContestDetails extends AppCompatActivity {
 
 
                 }
-                if(!mCreateForm.getJname_1().equals("") &&  !mCreateForm.getJname_2().equals("")
-                        && mCreateForm.getJname_3().equals("")){
+                if(!mCreateForm.getJn1().equals("") &&  !mCreateForm.getJn2().equals("")
+                        && mCreateForm.getJn3().equals("")){
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -391,7 +391,7 @@ public class ViewContestDetails extends AppCompatActivity {
                     jurypl3.setVisibility(View.GONE);
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                     db.child(getString(R.string.dbname_username))
-                            .child(mCreateForm.getJname_1())
+                            .child(mCreateForm.getJn1())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -405,12 +405,12 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         users user = snapshot.getValue(users.class);
 
 
-                                                        juryname1.setText(user.getDisplay_name());
-                                                        jurypl1.setText(user.getUsername());
-                                                        Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                        juryname1.setText(user.getDn());
+                                                        jurypl1.setText(user.getU());
+                                                        Log.d(TAG, "onDataChange: " + user.getDn());
 
                                                         Glide.with(ViewContestDetails.this)
-                                                                .load(user.getProfile_photo())
+                                                                .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
@@ -435,7 +435,7 @@ public class ViewContestDetails extends AppCompatActivity {
                             });
 
                     db.child(getString(R.string.dbname_username))
-                            .child(mCreateForm.getJname_2())
+                            .child(mCreateForm.getJn2())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -449,13 +449,13 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         users user = snapshot.getValue(users.class);
 
 
-                                                        juryname2.setText(user.getDisplay_name());
-                                                        jurypl2.setText(user.getUsername());
-                                                        Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                        juryname2.setText(user.getDn());
+                                                        jurypl2.setText(user.getU());
+                                                        Log.d(TAG, "onDataChange: " + user.getDn());
 
 
                                                         Glide.with(ViewContestDetails.this)
-                                                                .load(user.getProfile_photo())
+                                                                .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
@@ -477,8 +477,8 @@ public class ViewContestDetails extends AppCompatActivity {
                                 }
                             });
                 }
-                if(!mCreateForm.getJname_1().equals("") &&  !mCreateForm.getJname_2().equals("")
-                        && !mCreateForm.getJname_3().equals("")){
+                if(!mCreateForm.getJn1().equals("") &&  !mCreateForm.getJn2().equals("")
+                        && !mCreateForm.getJn3().equals("")){
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -494,7 +494,7 @@ public class ViewContestDetails extends AppCompatActivity {
 
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                     db.child(getString(R.string.dbname_username))
-                            .child(mCreateForm.getJname_1())
+                            .child(mCreateForm.getJn1())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -508,13 +508,13 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         users user = snapshot.getValue(users.class);
 
 
-                                                        juryname1.setText(user.getDisplay_name());
-                                                        jurypl1.setText(user.getUsername());
-                                                        Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                        juryname1.setText(user.getDn());
+                                                        jurypl1.setText(user.getU());
+                                                        Log.d(TAG, "onDataChange: " + user.getDn());
 
 
                                                         Glide.with(ViewContestDetails.this)
-                                                                .load(user.getProfile_photo())
+                                                                .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
@@ -536,7 +536,7 @@ public class ViewContestDetails extends AppCompatActivity {
                                 }
                             });
                     db.child(getString(R.string.dbname_username))
-                            .child(mCreateForm.getJname_2())
+                            .child(mCreateForm.getJn2())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -550,13 +550,13 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         users user = snapshot.getValue(users.class);
 
 
-                                                        juryname2.setText(user.getDisplay_name());
-                                                        jurypl2.setText(user.getUsername());
-                                                        Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                        juryname2.setText(user.getDn());
+                                                        jurypl2.setText(user.getU());
+                                                        Log.d(TAG, "onDataChange: " + user.getDn());
 
 
                                                         Glide.with(ViewContestDetails.this)
-                                                                .load(user.getProfile_photo())
+                                                                .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
@@ -579,7 +579,7 @@ public class ViewContestDetails extends AppCompatActivity {
                             });
 
                     db.child(getString(R.string.dbname_username))
-                            .child(mCreateForm.getJname_3())
+                            .child(mCreateForm.getJn3())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -593,13 +593,13 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         users user = snapshot.getValue(users.class);
 
 
-                                                        juryname3.setText(user.getDisplay_name());
-                                                        jurypl3.setText(user.getUsername());
-                                                        Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                        juryname3.setText(user.getDn());
+                                                        jurypl3.setText(user.getU());
+                                                        Log.d(TAG, "onDataChange: " + user.getDn());
 
 
                                                         Glide.with(ViewContestDetails.this)
-                                                                .load(user.getProfile_photo())
+                                                                .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
@@ -621,7 +621,7 @@ public class ViewContestDetails extends AppCompatActivity {
                                 }
                             });
                 }
-                posterlink = mCreateForm.getPoster();
+                posterlink = mCreateForm.getPo();
 
 
                 Glide.with(ViewContestDetails.this)
@@ -630,28 +630,28 @@ public class ViewContestDetails extends AppCompatActivity {
                         .error(R.drawable.default_image2)
                         .placeholder(R.drawable.load)
                         .into(poster);
-                title.setText(mCreateForm.getTitle());
-                descrip.setText(mCreateForm.getDescrip());
-                rules.setText(mCreateForm.getRule());
-                voteType.setText(mCreateForm.getVotetype());
-                regBegin.setText(mCreateForm.getRegBegin());
-                regEnd.setText(mCreateForm.getRegEnd());
-                domain.setText(mCreateForm.getDomain());
-                openfor.setText(mCreateForm.getOpenFor());
+                title.setText(mCreateForm.getCt());
+                descrip.setText(mCreateForm.getDes());
+                rules.setText(mCreateForm.getRul());
+                voteType.setText(mCreateForm.getVt());
+                regBegin.setText(mCreateForm.getRb());
+                regEnd.setText(mCreateForm.getRe());
+                domain.setText(mCreateForm.getD());
+                openfor.setText(mCreateForm.getOf());
 
 
-                hostedby.setText(mCreateForm.getHost());
-                filetype.setText(mCreateForm.getFiletype());
-                windate.setText(mCreateForm.getWinDeclare());
-                p1Tv.setText(mCreateForm.getPlace_1());
+                hostedby.setText(mCreateForm.getHst());
+                filetype.setText(mCreateForm.getFt());
+                windate.setText(mCreateForm.getWd());
+                p1Tv.setText(mCreateForm.getP1());
 
-                p2Tv.setText(mCreateForm.getPlace_2());
+                p2Tv.setText(mCreateForm.getP2());
 
-                p3Tv.setText(mCreateForm.getPlace_3());
+                p3Tv.setText(mCreateForm.getP3());
 
-                juryusername1 = mCreateForm.getJname_1();
-                juryusername2 = mCreateForm.getJname_2();
-                juryusername3 = mCreateForm.getJname_3();
+                juryusername1 = mCreateForm.getJn1();
+                juryusername2 = mCreateForm.getJn2();
+                juryusername3 = mCreateForm.getJn3();
 
 
             }
@@ -785,14 +785,14 @@ public class ViewContestDetails extends AppCompatActivity {
                 public void onClick(View v) {
 
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                    ref.child(getString(R.string.dbname_user_account_settings))
+                    ref.child(getString(R.string.dbname_users))
                             .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     users user = new users();
                                     user = dataSnapshot.getValue(users.class);
-                                    String username = user.getUsername();
+                                    String username = user.getU();
                                     if (username.equals(juryusername1)) {
                                         Intent i = new Intent(ViewContestDetails.this, jury_voting_media.class);
                                         i.putExtra("userId", userId);
@@ -880,7 +880,7 @@ public class ViewContestDetails extends AppCompatActivity {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(getString(R.string.dbname_contests))
                 .child(userid)
-                .child("completed")
+                .child(getString(R.string.field_contest_completed))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -889,7 +889,7 @@ public class ViewContestDetails extends AppCompatActivity {
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                             reference.child(getString(R.string.dbname_contests))
                                     .child(userid)
-                                    .child("reports")
+                                    .child(getString(R.string.field_contest_reports))
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -922,93 +922,77 @@ public class ViewContestDetails extends AppCompatActivity {
                 });
     }
 
-    private void ReportPost(String contestId,String userid, int p) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child(getString(R.string.dbname_contestlist))
+    private void ReportPost(String contestId,String userId, int p) {
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contestlist))
                 .child(contestId)
-                .child("tr")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                            Toast.makeText(ViewContestDetails.this, "You already reported this contest.", Toast.LENGTH_SHORT).show();
+                .child(getString(R.string.field_contest_report_list));
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                    Toast.makeText(ViewContestDetails.this, "You already reported this contest.", Toast.LENGTH_SHORT).show();
 
-                        } else {
+                } else {
 
 
-                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                            reference.child(getString(R.string.dbname_contestlist))
-                                    .child(contestId)
-                                    .child("tr")
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .setValue(true)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    reference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .setValue(true)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-
-                                            DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
-                                            reference2.child(getString(R.string.dbname_contestlist))
-                                                    .child(contestId)
-                                                    .child("tr")
-                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                            long i = snapshot.getChildrenCount();
-                                                            if ((((i + 1) / p) * 100) > 60) {
-                                                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                                                                reference.child(getString(R.string.dbname_contests))
-                                                                        .child(userid)
-                                                                        .child("reports")
-                                                                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                            @Override
-                                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                                if (snapshot.exists()) {
-                                                                                    long x = (long) snapshot.getValue();
-                                                                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                                                                                    reference.child(getString(R.string.dbname_contests))
-                                                                                            .child(userid)
-                                                                                            .child("reports")
-                                                                                            .setValue(x + 1);
-                                                                                } else {
-                                                                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                                                                                    reference.child(getString(R.string.dbname_contests))
-                                                                                            .child(userid)
-                                                                                            .child("reports")
-                                                                                            .setValue(0);
-                                                                                }
-                                                                            }
-
-                                                                            @Override
-                                                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                                                            }
-                                                                        });
-                                                            }
-
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            long i = snapshot.getChildrenCount();
+                                            if ((((i + 1) / p) * 100) > 60) {
+                                                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests))
+                                                        .child(getString(R.string.dbname_contests))
+                                                        .child(userId)
+                                                        .child(getString(R.string.field_contest_reports));
+                                                reference1.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        if (snapshot.exists()) {
+                                                            long x = (long) snapshot.getValue();
+                                                            reference1
+                                                                    .setValue(x + 1);
+                                                        } else {
+                                                            reference1
+                                                                    .setValue(1);
                                                         }
+                                                    }
 
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError error) {
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                                        }
-                                                    });
+                                                    }
+                                                });
+                                            }
 
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
 
                                         }
                                     });
 
-                        }
-                    }
+
+                                }
+                            });
+
+                }
+            }
 
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+            }
+        });
     }
-
-
 
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");

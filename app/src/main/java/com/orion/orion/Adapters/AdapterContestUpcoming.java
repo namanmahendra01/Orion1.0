@@ -51,7 +51,6 @@ import java.util.TimeZone;
 import static com.android.volley.VolleyLog.TAG;
 
 public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestUpcoming.ViewHolder> {
-    private String mAppend = "";
 
 
     private String juryusername1 = "", juryusername2 = "", juryusername3 = "";
@@ -81,10 +80,9 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
 
 
         ContestDetail mcontest = mContestDetail.get(i);
-        String key = mcontest.getContestId();
+        String key = mcontest.getCi();
 
         setgp(mcontest, holder.gp);
-        Log.d(TAG, "onClick: lkj2" + holder.ok);
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_participantList));
         db.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -101,7 +99,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist));
         ref.child(key)
-                .child("participantlist")
+                .child(mContext.getString(R.string.field_Participant_List))
 
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -109,7 +107,6 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             holder.ok = true;
-                            Log.d(TAG, "onClick: lkj1" + holder.ok);
 
                         }
 
@@ -125,7 +122,6 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(mContext, holder.option);
                 popupMenu.getMenuInflater().inflate(R.menu.post_menu_contest, popupMenu.getMenu());
-                Log.d(TAG, "onClick: lkj" + holder.ok);
                 if (!holder.ok) {
                     popupMenu.getMenu().getItem(2).setVisible(false);
 
@@ -158,13 +154,12 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                             builder.setTitle("Report");
-                            builder.setMessage("Are you sure, you want to Report this Contest?");
+                            builder.setMessage(R.string.report_prompt);
 
 //                set buttons
                             builder.setPositiveButton("Report", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Log.d(TAG, "DeleteMessage: deleteing message");
                                     ReportPost(mcontest, holder.p);
 
                                 }
@@ -198,14 +193,15 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
                         holder.username = dataSnapshot.getValue().toString();
 
                     }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-                    });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
         ref8.child(mContext.getString(R.string.dbname_users))
-                .child(mcontest.getUserId())
+                .child(mcontest.getUi())
                 .child(mContext.getString(R.string.field_username))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -213,6 +209,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
                         holder.hostUsername = dataSnapshot.getValue().toString();
 
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -220,20 +217,17 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
                 });
 
 
-
-
-
         DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests));
-        ref1.child(mcontest.getUserId())
+        ref1.child(mcontest.getUi())
                 .child(mContext.getString(R.string.created_contest))
-                .child(mcontest.getContestId())
+                .child(mcontest.getCi())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         CreateForm mCreateForm = dataSnapshot.getValue(CreateForm.class);
-                        juryusername1 = mCreateForm.getJname_1();
-                        juryusername2 = mCreateForm.getJname_2();
-                        juryusername3 = mCreateForm.getJname_3();
+                        juryusername1 = mCreateForm.getJn1();
+                        juryusername2 = mCreateForm.getJn2();
+                        juryusername3 = mCreateForm.getJn3();
 
                     }
 
@@ -257,7 +251,6 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
 
                 //*************************************************************************
                 String currentTime = StringManipilation.getTime(rawDate);
-                Log.d(TAG, "onTimeReceived: current time" + currentTime);
                 java.text.DateFormat formatter1 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date1 = null;
                 try {
@@ -268,10 +261,8 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
 
                 timestamp = String.valueOf(date1.getTime());
 
-                Log.d(TAG, "onTimeReceived: 1  " + timestamp);
 
-
-                String regStart = mcontest.getRegBegin();
+                String regStart = mcontest.getRb();
                 java.text.DateFormat formatter2 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date2 = null;
                 try {
@@ -283,7 +274,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
 
                 //*************************************************************************
 
-                String voteStart = mcontest.getVoteBegin();
+                String voteStart = mcontest.getVb();
                 java.text.DateFormat formatter3 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date3 = null;
                 if (!voteStart.equals("-")) {
@@ -299,7 +290,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
 
                 //*************************************************************************
 
-                String voteEnd = mcontest.getVoteEnd();
+                String voteEnd = mcontest.getVe();
                 java.text.DateFormat formatter4 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date4 = null;
                 if (!voteEnd.equals("-")) {
@@ -315,7 +306,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
 
                 //*************************************************************************
 
-                String regEnd = mcontest.getRegEnd();
+                String regEnd = mcontest.getRe();
                 java.text.DateFormat formatter5 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date5 = null;
                 try {
@@ -343,9 +334,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
 
 //                compare all dates
 
-                                        Log.d(TAG, "run: timeeeee" + timestamp);
-
-                                        if (mcontest.getResult()) {
+                                        if (mcontest.getR()) {
                                             holder.resultBtn.setVisibility(View.VISIBLE);
 
                                         } else {
@@ -355,13 +344,13 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
                                             }
                                             if (Long.parseLong(regS) <= Long.parseLong(timestamp) && Long.parseLong(regE) >= Long.parseLong(timestamp)) {
                                                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_participantList));
-                                                ref.child(mcontest.getContestId())
+                                                ref.child(mcontest.getCi())
                                                         .addListenerForSingleValueEvent(new ValueEventListener() {
                                                             @Override
                                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                                 long i = dataSnapshot.getChildrenCount();
-                                                                if (!mcontest.getMaxLimit().equals("Unlimited")) {
-                                                                    if (!String.valueOf(i).equals(mcontest.getMaxLimit())) {
+                                                                if (!mcontest.getMLt().equals("Unlimited")) {
+                                                                    if (!String.valueOf(i).equals(mcontest.getMLt())) {
 
                                                                         holder.participateBtn.setVisibility(View.VISIBLE);
                                                                         holder.reg = "yes";
@@ -432,31 +421,14 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
         holder.gp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
-                alertDialog.setTitle("GP:GENUINE PERCENTAGE");
-                alertDialog.setMessage("This is the percentage showing how much genuine this host is.");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cool",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
+                gpAlertDialog();
+
             }
         });
         holder.info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
-                alertDialog.setTitle("GP:GENUINE PERCENTAGE");
-                alertDialog.setMessage("This is the percentage showing how much genuine this host is.");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cool",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
+                gpAlertDialog();
             }
         });
 
@@ -465,18 +437,18 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
             public void onClick(View v) {
 
 
-                if (holder.username.equals(juryusername1)||holder.username.equals(juryusername2)
-                        ||holder.username.equals(juryusername3)||holder.username.equals(holder.hostUsername)) {
+                if (holder.username.equals(juryusername1) || holder.username.equals(juryusername2)
+                        || holder.username.equals(juryusername3) || holder.username.equals(holder.hostUsername)) {
                     Intent i = new Intent(mContext.getApplicationContext(), JoiningForm.class);
-                    i.putExtra("userId", mcontest.getUserId());
-                    i.putExtra("contestId", mcontest.getContestId());
-                    i.putExtra("isJuryOrHost","true");
+                    i.putExtra("userId", mcontest.getUi());
+                    i.putExtra("contestId", mcontest.getCi());
+                    i.putExtra("isJuryOrHost", "true");
                     mContext.startActivity(i);
-                }else{
+                } else {
                     Intent i = new Intent(mContext.getApplicationContext(), JoiningForm.class);
-                    i.putExtra("userId", mcontest.getUserId());
-                    i.putExtra("contestId", mcontest.getContestId());
-                    i.putExtra("isJuryOrHost","false");
+                    i.putExtra("userId", mcontest.getUi());
+                    i.putExtra("contestId", mcontest.getCi());
+                    i.putExtra("isJuryOrHost", "false");
                     mContext.startActivity(i);
                 }
 
@@ -486,76 +458,72 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
         holder.voteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mcontest.getVoteType().equals("Public")) {
+                if (mcontest.getVt().equals("Public")) {
                     Intent i = new Intent(mContext.getApplicationContext(), public_voting_media.class);
-                    i.putExtra("userId", mcontest.getUserId());
-                    i.putExtra("contestId", mcontest.getContestId());
+                    i.putExtra("userId", mcontest.getUi());
+                    i.putExtra("contestId", mcontest.getCi());
                     mContext.startActivity(i);
 
-                }else{
+                } else {
 
-                                    if (holder.username.equals(juryusername1)) {
-                                        Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
-                                        i.putExtra("userId", mcontest.getUserId());
-                                        i.putExtra("contestId", mcontest.getContestId());
-                                        i.putExtra("jury", "jury1");
-                                        i.putExtra("comment", "comment1");
-                                        mContext.startActivity(i);
+                    if (holder.username.equals(juryusername1)) {
+                        Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
+                        i.putExtra("userId", mcontest.getUi());
+                        i.putExtra("contestId", mcontest.getCi());
+                        i.putExtra("jury", "jury1");
+                        i.putExtra("comment", "comment1");
+                        mContext.startActivity(i);
 
-                                    } else if (holder.username.equals(juryusername2)) {
-                                        Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
-                                        i.putExtra("userId", mcontest.getUserId());
-                                        i.putExtra("contestId", mcontest.getContestId());
-                                        i.putExtra("jury", "jury2");
-                                        i.putExtra("comment", "comment2");
+                    } else if (holder.username.equals(juryusername2)) {
+                        Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
+                        i.putExtra("userId", mcontest.getUi());
+                        i.putExtra("contestId", mcontest.getCi());
+                        i.putExtra("jury", "jury2");
+                        i.putExtra("comment", "comment2");
 
-                                        mContext.startActivity(i);
+                        mContext.startActivity(i);
 
-                                    } else if (holder.username.equals(juryusername3)) {
-                                        Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
-                                        i.putExtra("userId", mcontest.getUserId());
-                                        i.putExtra("contestId", mcontest.getContestId());
-                                        i.putExtra("jury", "jury3");
-                                        i.putExtra("comment", "comment3");
-                                        mContext.startActivity(i);
+                    } else if (holder.username.equals(juryusername3)) {
+                        Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
+                        i.putExtra("userId", mcontest.getUi());
+                        i.putExtra("contestId", mcontest.getCi());
+                        i.putExtra("jury", "jury3");
+                        i.putExtra("comment", "comment3");
+                        mContext.startActivity(i);
 
-                                    } else {
-                                        Intent i = new Intent(mContext.getApplicationContext(), public_voting_media.class);
-                                        i.putExtra("userId", mcontest.getUserId());
-                                        i.putExtra("contestId", mcontest.getContestId());
-                                        mContext.startActivity(i);
-                                    }
-                                }
-
-
-
-
+                    } else {
+                        Intent i = new Intent(mContext.getApplicationContext(), public_voting_media.class);
+                        i.putExtra("userId", mcontest.getUi());
+                        i.putExtra("contestId", mcontest.getCi());
+                        mContext.startActivity(i);
+                    }
+                }
 
 
             }
         });
 
 
-        holder.entryFee.setText(mcontest.getEntryfee());
-        holder.domain.setText(mcontest.getDoman());
+        holder.entryFee.setText(mcontest.getEf());
+        holder.domain.setText(mcontest.getD());
 
-        getcontestDetails(mcontest.getUserId(), mcontest.getContestId(), holder.poster
-                , holder.title, holder.host, holder.regEnd, holder.totalP,holder.progress);
+        getcontestDetails(mcontest.getUi(), mcontest.getCi(), holder.poster
+                , holder.title, holder.host, holder.regEnd, holder.totalP, holder.progress);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (mcontest.getResult()) {
+                if (mcontest.getR()) {
                     Intent i = new Intent(mContext.getApplicationContext(), ResultDeclaredActivity.class);
-                    i.putExtra("userId", mcontest.getUserId());
-                    i.putExtra("contestId", mcontest.getContestId());
+                    i.putExtra("userId", mcontest.getUi());
+                    i.putExtra("contestId", mcontest.getCi());
 
                     mContext.startActivity(i);
                 } else {
                     Intent i = new Intent(mContext.getApplicationContext(), ViewContestDetails.class);
-                    i.putExtra("userId", mcontest.getUserId());
-                    i.putExtra("contestId", mcontest.getContestId());
+                    i.putExtra("userId", mcontest.getUi());
+                    i.putExtra("contestId", mcontest.getCi());
                     i.putExtra("Vote", holder.vote);
                     i.putExtra("reg", holder.reg);
                     mContext.startActivity(i);
@@ -566,14 +534,27 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
         });
 
 
-        Log.d(TAG, "hello22: " + timestamp2);
     }
+
+    private void gpAlertDialog() {
+        AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+        alertDialog.setTitle(mContext.getString(R.string.gp_displayer_tittle));
+        alertDialog.setMessage(mContext.getString(R.string.gp_diplayer_description));
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cool",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
 
     private void setgp(ContestDetail mcontest, TextView gp) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(mContext.getString(R.string.dbname_contests))
-                .child(mcontest.getUserId())
-                .child("completed")
+                .child(mcontest.getUi())
+                .child(mContext.getString(R.string.field_contest_completed))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -581,8 +562,8 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
                             long y = (long) snapshot.getValue();
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                             reference.child(mContext.getString(R.string.dbname_contests))
-                                    .child(mcontest.getUserId())
-                                    .child("reports")
+                                    .child(mcontest.getUi())
+                                    .child(mContext.getString(R.string.field_contest_reports))
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -616,99 +597,88 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
     }
 
     private void ReportPost(ContestDetail mcontest, int p) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child(mContext.getString(R.string.dbname_contestlist))
-                .child(mcontest.getContestId())
-                .child("tr")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                            Toast.makeText(mContext, "You already reported this contest.", Toast.LENGTH_SHORT).show();
 
-                        } else {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist))
+                .child(mcontest.getCi())
+                .child(mContext.getString(R.string.field_contest_report_list));
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                    Toast.makeText(mContext, "You already reported this contest.", Toast.LENGTH_SHORT).show();
+
+                } else {
 
 
-                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                            reference.child(mContext.getString(R.string.dbname_contestlist))
-                                    .child(mcontest.getContestId())
-                                    .child("tr")
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .setValue(true)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    reference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .setValue(true)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-
-                                            DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
-                                            reference2.child(mContext.getString(R.string.dbname_contestlist))
-                                                    .child(mcontest.getContestId())
-                                                    .child("tr")
-                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                            long i = snapshot.getChildrenCount();
-                                                            if ((((i + 1) / p) * 100) > 60) {
-                                                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                                                                reference.child(mContext.getString(R.string.dbname_contests))
-                                                                        .child(mcontest.getUserId())
-                                                                        .child("reports")
-                                                                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                            @Override
-                                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                                if (snapshot.exists()) {
-                                                                                    long x = (long) snapshot.getValue();
-                                                                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                                                                                    reference.child(mContext.getString(R.string.dbname_contests))
-                                                                                            .child(mcontest.getUserId())
-                                                                                            .child("reports")
-                                                                                            .setValue(x + 1);
-                                                                                } else {
-                                                                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                                                                                    reference.child(mContext.getString(R.string.dbname_contests))
-                                                                                            .child(mcontest.getUserId())
-                                                                                            .child("reports")
-                                                                                            .setValue(1);
-                                                                                }
-                                                                            }
-
-                                                                            @Override
-                                                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                                                            }
-                                                                        });
-                                                            }
-
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            long i = snapshot.getChildrenCount();
+                                            if ((((i + 1) / p) * 100) > 60) {
+                                                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
+                                                        .child(mContext.getString(R.string.dbname_contests))
+                                                        .child(mcontest.getUi())
+                                                        .child(mContext.getString(R.string.field_contest_reports));
+                                                reference1.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        if (snapshot.exists()) {
+                                                            long x = (long) snapshot.getValue();
+                                                            reference1
+                                                                    .setValue(x + 1);
+                                                        } else {
+                                                            reference1
+                                                                    .setValue(1);
                                                         }
+                                                    }
 
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError error) {
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                                        }
-                                                    });
+                                                    }
+                                                });
+                                            }
 
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
 
                                         }
                                     });
 
-                        }
-                    }
+
+                                }
+                            });
+
+                }
+            }
 
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+            }
+        });
     }
+
     @Override
     public int getItemViewType(int position) {
         return position;
     }
+
     @Override
     public long getItemId(int position) {
         ContestDetail form = mContestDetail.get(position);
-        return form.getContestId().hashCode();
+        return form.getCi().hashCode();
     }
+
     @Override
     public int getItemCount() {
         return mContestDetail.size();
@@ -717,15 +687,15 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView domain, title, regEnd, entryFee, host, totalP, ended, gp;
-        private ImageView poster, option,info,progress;
+        private ImageView poster, option, info, progress;
         String vote = "No";
         String reg = "No";
         String voteS = "";
         String voteE = "";
         Boolean ok = false;
         int p = 0;
-        String username="";
-        String hostUsername="";
+        String username = "";
+        String hostUsername = "";
         private Button voteBtn, participateBtn, regSoonBtn, contestBtn, resultBtn, limitBtn;
 
         public ViewHolder(@NonNull View itemView) {
@@ -750,7 +720,6 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
             progress = itemView.findViewById(R.id.progress);
 
 
-            Log.d(TAG, "hello2kk2: " + timestamp2);
 
 
         }
@@ -766,13 +735,12 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 CreateForm createForm = dataSnapshot.getValue(CreateForm.class);
-                title.setText(createForm.getTitle());
-                host.setText(createForm.getHost());
-                regend.setText(createForm.getRegEnd());
-                totalp.setText(createForm.getTotal_prize());
-                Log.d(TAG, "onDataChange: image" + createForm.getPoster());
+                title.setText(createForm.getCt());
+                host.setText(createForm.getHst());
+                regend.setText(createForm.getRe());
+                totalp.setText(createForm.getTp());
                 Glide.with(mContext)
-                        .load(createForm.getPoster())
+                        .load(createForm.getPo())
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)
                         .placeholder(R.drawable.load)

@@ -34,14 +34,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import static com.android.volley.VolleyLog.TAG;
-
 public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeedContest.ViewHolder> {
-    private String mAppend = "";
     //    SP
     Gson gson;
     SharedPreferences sp;
-
     String timestamp = "";
 
 
@@ -73,7 +69,7 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
         gson = new Gson();
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist));
-                ref.child(contestDetail.getContestId())
+                ref.child(contestDetail.getCi())
                 .child("result")
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -119,10 +115,9 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
 
                 timestamp = String.valueOf(date1.getTime());
 
-                Log.d(TAG, "onTimeReceived: 1  " + timestamp);
 
 
-                String regStart = contestDetail.getRegBegin();
+                String regStart = contestDetail.getRb();
                 java.text.DateFormat formatter2 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date2 = null;
                 try {
@@ -133,7 +128,7 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
                 String regS = String.valueOf(date2.getTime());
                 //*************************************************************************
 
-                    String voteStart = contestDetail.getVoteBegin();
+                    String voteStart = contestDetail.getVb();
                     java.text.DateFormat formatter3 = new SimpleDateFormat("dd-MM-yyyy");
                     Date date3 = null;
                     if (!voteStart.equals("-")) {
@@ -152,7 +147,7 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
 
                 //*************************************************************************
 
-                String voteEnd = contestDetail.getVoteEnd();
+                String voteEnd = contestDetail.getVe();
                 java.text.DateFormat formatter4 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date4 = null;
                 if (!voteEnd.equals("-")) {
@@ -168,7 +163,7 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
 
                 //*************************************************************************
 
-                String regEnd = contestDetail.getRegEnd();
+                String regEnd = contestDetail.getRe();
                 java.text.DateFormat formatter5 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date5 = null;
                 try {
@@ -194,18 +189,17 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
 
 //                compare all dates
 
-                                        Log.d(TAG, "run: timeeeee" + timestamp);
                                         {
 
                                             if(Long.parseLong(regS) <= Long.parseLong(timestamp)&&Long.parseLong(regE) >= Long.parseLong(timestamp)) {
                                                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_participantList));
-                                                ref.child(contestDetail.getContestId())
+                                                ref.child(contestDetail.getCi())
                                                         .addListenerForSingleValueEvent(new ValueEventListener() {
                                                             @Override
                                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                                 long i = dataSnapshot.getChildrenCount();
-                                                                if (!contestDetail.getMaxLimit().equals("Unlimited")) {
-                                                                    if (!String.valueOf(i).equals(contestDetail.getMaxLimit())) {
+                                                                if (!contestDetail.getMLt().equals("Unlimited")) {
+                                                                    if (!String.valueOf(i).equals(contestDetail.getMLt())) {
 
                                                                         holder.reg = "yes";
                                                                     } else {
@@ -263,15 +257,15 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
 //
 
 
-        getcontestDetails(contestDetail.getUserId(), contestDetail.getContestId(), holder.poster
+        getcontestDetails(contestDetail.getUi(), contestDetail.getCi(), holder.poster
                 , holder.title, holder.domain,holder.progress);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(mContext.getApplicationContext(), ViewContestDetails.class);
-                i.putExtra("userId", contestDetail.getUserId());
-                i.putExtra("contestId", contestDetail.getContestId());
+                i.putExtra("userId", contestDetail.getUi());
+                i.putExtra("contestId", contestDetail.getCi());
                 i.putExtra("Vote", holder.vote);
                 i.putExtra("reg", holder.reg);
                 mContext.startActivity(i);
@@ -286,7 +280,7 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
     }
     public long getItemId(int position) {
         ContestDetail form = contestDetails.get(position);
-        return form.getContestId().hashCode();
+        return form.getCi().hashCode();
     }
     @Override
     public int getItemCount() {
@@ -325,11 +319,11 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     CreateForm createForm = dataSnapshot.getValue(CreateForm.class);
-                    title.setText(createForm.getTitle());
-                    domain.setText(createForm.getDomain().toString());
+                    title.setText(createForm.getCt());
+                    domain.setText(createForm.getD().toString());
 
                     Glide.with(mContext)
-                            .load(createForm.getPoster())
+                            .load(createForm.getPo())
                             .placeholder(R.drawable.load)
                             .error(R.drawable.default_image2)
                             .placeholder(R.drawable.load)

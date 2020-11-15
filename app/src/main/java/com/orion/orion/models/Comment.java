@@ -4,30 +4,31 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Comment implements Parcelable {
-    private String comment;
-    private String user_id;
-    private String date_created;
+    private String c;
+    private String ui;
+    private String dc;
 
-    public Comment(String comment, String user_id, String date_created) {
-        this.comment = comment;
-        this.user_id = user_id;
-        this.date_created = date_created;
+    public Comment(String c, String ui, String dc) {
+        this.c = c;
+        this.ui = ui;
+        this.dc = dc;
     }
+
     public Comment() {
 
     }
 
     protected Comment(Parcel in) {
-        comment = in.readString();
-        user_id = in.readString();
-        date_created = in.readString();
+        c = in.readString();
+        ui = in.readString();
+        dc = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(comment);
-        dest.writeString(user_id);
-        dest.writeString(date_created);
+        dest.writeString(c);
+        dest.writeString(ui);
+        dest.writeString(dc);
     }
 
     @Override
@@ -47,38 +48,38 @@ public class Comment implements Parcelable {
         }
     };
 
-    public String getComment() {
-        return comment;
+    public String getC() {
+        return c;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setC(String comment) {
+        this.c = comment;
     }
 
-    public String getUser_id() {
-        return user_id;
+    public String getUi() {
+        return ui;
     }
 
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
+    public void setUi(String user_id) {
+        this.ui = user_id;
     }
 
 
 
-    public String getDate_created() {
-        return date_created;
+    public String getDc() {
+        return dc;
     }
 
-    public void setDate_created(String date_created) {
-        this.date_created = date_created;
+    public void setDc(String date_created) {
+        this.dc = date_created;
     }
 
     @Override
     public String toString() {
         return "Comment{" +
-                "comment='" + comment + '\'' +
-                ", user_id='" + user_id + '\'' +
-                ", date_created='" + date_created + '\'' +
+                "c='" + c + '\'' +
+                ", ui='" + ui + '\'' +
+                ", dc='" + dc + '\'' +
                 '}';
     }
 }

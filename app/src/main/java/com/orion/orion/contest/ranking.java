@@ -124,12 +124,10 @@ public class ranking extends AppCompatActivity {
                     paginatedParticipantLists.add(participantLists.get(i));
 
                 }
-                Log.d(TAG, "displayMoreParticipantRank: mResults"+paginatedParticipantLists.size());
                 int positionStart =mResults;
                 rankRv.post(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d(TAG, "run: mResults "+positionStart+"  " +iterations);
                         rankList.notifyItemRangeInserted(positionStart,iterations);
                     }
                 });

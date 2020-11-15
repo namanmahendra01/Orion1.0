@@ -207,10 +207,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                         if (scrollView.getChildAt(0).getBottom()
                                 == (scrollView.getHeight() + scrollView.getScrollY()) && c != 0) {
-                            if (imgURLsList.size() != paginatedimgURLsList.size()) {
-//                                bottomProgress.setVisibility(View.VISIBLE);
 
-                            }
 
                             //scroll view is at bottom
 
@@ -498,13 +495,12 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    if (imgURLsList.get(0).getPhoto_id().equals(dataSnapshot.getKey())) {
+                    if (imgURLsList.get(0).getPi().equals(dataSnapshot.getKey())) {
 
                         reference.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.getChildrenCount() == imgURLsList.size()) {
-                                    Log.d(TAG, "onDataChange: photoList" + imgURLsList);
 
                                     if (imgURLsList != null && imgURLsList.size() != 0) {
                                         displayPhotos();
@@ -710,43 +706,37 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                    Log.d(TAG, "onBindViewHolder: " + dataSnapshot.getChildrenCount());
                     Photo photo = new Photo();
                     Map<String, Object> objectMap = (Map<String, Object>) singleSnapshot.getValue();
-                    Log.d(TAG, "onDataChange: objectMap" + objectMap);
-                    try {
-                        photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
-                        photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
-                        photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
-                        photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
-                        photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
-                        photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+
+                        photo.setCap(objectMap.get(getString(R.string.field_caption)).toString());
+                        photo.setTg(objectMap.get(getString(R.string.field_tags)).toString());
+                        photo.setPi(objectMap.get(getString(R.string.field_photo_id)).toString());
+                        photo.setUi(objectMap.get(getString(R.string.field_user_id)).toString());
+                        photo.setDc(objectMap.get(getString(R.string.field_date_createdr)).toString());
+                        photo.setIp(objectMap.get(getString(R.string.field_image_path)).toString());
                         if (objectMap.get(getString(R.string.thumbnail)) != null)
-                            photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
-                        photo.setType(objectMap.get(getString(R.string.type)).toString());
+                            photo.setT(objectMap.get(getString(R.string.thumbnail)).toString());
+                        photo.setTy(objectMap.get(getString(R.string.type)).toString());
                         ArrayList<Comment> comments = new ArrayList<>();
                         for (DataSnapshot dSnapshot : singleSnapshot.child(getString(R.string.field_comment)).getChildren()) {
                             Comment comment = new Comment();
-                            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                            comment.setUi(dSnapshot.getValue(Comment.class).getUi());
+                            comment.setC(dSnapshot.getValue(Comment.class).getC());
+                            comment.setDc(dSnapshot.getValue(Comment.class).getDc());
                             comments.add(comment);
                         }
                         photo.setComments(comments);
                         List<Like> likeList = new ArrayList<Like>();
                         for (DataSnapshot dSnapshot : singleSnapshot.child(getString(R.string.field_likes)).getChildren()) {
                             Like like = new Like();
-                            like.setUser_id(dSnapshot.getValue(Like.class).getUser_id());
+                            like.setUi(dSnapshot.getValue(Like.class).getUi());
                             likeList.add(like);
                         }
                         photos.add(photo);
-                    } catch (NullPointerException e) {
-                        Log.e(TAG, "null pointer exception" + e.getMessage());
-                    }
+
                 }
-                Log.d(TAG, "onDataChange: imgURLsList.size()" + imgURLsList.size());
                 imgURLsList.addAll(photos);
-                Log.d(TAG, "onDataChange: imgURLsList.size()" + imgURLsList.size());
                 Collections.reverse(imgURLsList);
                 //    Add newly Created ArrayList to Shared Preferences
                 SharedPreferences.Editor editor = sp.edit();
@@ -772,74 +762,74 @@ public class ProfileActivity extends AppCompatActivity {
         Log.d(TAG, "onDataChange: " + userSetting.toString());
 
         Glide.with(ProfileActivity.this)
-                .load(userSetting.getProfile_photo())
+                .load(userSetting.getPp())
                 .placeholder(R.drawable.load)
                 .error(R.drawable.default_image2)
                 .placeholder(R.drawable.load)
                 .thumbnail(0.2f)
                 .into(mProfilePhoto);
 
-        mUsername.setText(userSetting.getUsername());
-        mDomain.setText(userSetting.getDomain());
+        mUsername.setText(userSetting.getU());
+        mDomain.setText(userSetting.getD());
 
-        if (userSetting.getDisplay_name() == null || userSetting.getDisplay_name().equals(""))
+        if (userSetting.getDn() == null || userSetting.getDn().equals(""))
             mDisplayName.setVisibility(View.GONE);
         else {
-            mDisplayName.setText(userSetting.getDisplay_name());
+            mDisplayName.setText(userSetting.getDn());
         }
-        if (userSetting.getDescription() == null || userSetting.getDescription().equals(""))
+        if (userSetting.getDes() == null || userSetting.getDes().equals(""))
             mDescription.setVisibility(View.GONE);
         else {
             mDescription.setVisibility(View.VISIBLE);
-            mDescription.setText(userSetting.getDescription());
+            mDescription.setText(userSetting.getDes());
         }
 
-        if (userSetting.getLink1() == null || userSetting.getLink1().equals(""))
+        if (userSetting.getl1() == null || userSetting.getl1().equals(""))
             mLink1.setVisibility(View.GONE);
-        else mLink1.setText(userSetting.getLink1());
-        if (userSetting.getLink2() == null || userSetting.getLink2().equals(""))
+        else mLink1.setText(userSetting.getl1());
+        if (userSetting.getl2() == null || userSetting.getl2().equals(""))
             mLink2.setVisibility(View.GONE);
-        else mLink2.setText(userSetting.getLink2());
-        if (userSetting.getLink3() == null || userSetting.getLink3().equals(""))
+        else mLink2.setText(userSetting.getl2());
+        if (userSetting.getl3() == null || userSetting.getl3().equals(""))
             mLink3.setVisibility(View.GONE);
-        else mLink3.setText(userSetting.getLink3());
+        else mLink3.setText(userSetting.getl3());
 
-        if (userSetting.getEmail() == null || userSetting.getEmail().equals("")) {
+        if (userSetting.getE() == null || userSetting.getE().equals("")) {
 //            mWebsite.setVisibility(View.GONE);
             mGmailLink.setClickable(false);
             mGmailLink.setAlpha(0.5f);
         } else {
 //            mWebsite.setVisibility(View.VISIBLE);
-//            mWebsite.setText(userSetting.getEmail());
-            gmail = userSetting.getEmail();
+//            mWebsite.setText(userSetting.getE());
+            gmail = userSetting.getE();
         }
 
-        if (userSetting.getInstagram() == null || userSetting.getInstagram().equals("")) {
+        if (userSetting.getIn() == null || userSetting.getIn().equals("")) {
             mInstagramLink.setClickable(false);
             mInstagramLink.setAlpha(0.5f);
         } else {
-            instagramProfile = userSetting.getInstagram();
+            instagramProfile = userSetting.getIn();
         }
 
-        if (userSetting.getFacebook() == null || userSetting.getFacebook().equals("")) {
+        if (userSetting.getFb() == null || userSetting.getFb().equals("")) {
             mFacebookLink.setClickable(false);
             mFacebookLink.setAlpha(0.5f);
         } else {
-            facebookProfile = userSetting.getFacebook();
+            facebookProfile = userSetting.getFb();
 
         }
-        if (userSetting.getTwitter() == null || userSetting.getTwitter().equals("")) {
+        if (userSetting.getTw() == null || userSetting.getTw().equals("")) {
             mTwitterLink.setClickable(false);
             mTwitterLink.setAlpha(0.5f);
         } else {
-            twitterProfile = userSetting.getTwitter();
+            twitterProfile = userSetting.getTw();
         }
 
-        if (userSetting.getWhatsapp() == null || userSetting.getWhatsapp().equals("")) {
+        if (userSetting.getWa() == null || userSetting.getWa().equals("")) {
             mWhatsappLink.setClickable(false);
             mWhatsappLink.setAlpha(0.5f);
         } else {
-            whatsappNo = userSetting.getWhatsapp();
+            whatsappNo = userSetting.getWa();
         }
 //        dialog.dismiss();
     }

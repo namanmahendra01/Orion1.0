@@ -86,7 +86,6 @@ public class CommentActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!mComment.getText().toString().equals("")){
-                    Log.d(TAG,"attempting to submit new comment");
                     notify = true;
 
                     addNewComment(mComment.getText().toString(),userId,phhotoId);
@@ -104,12 +103,11 @@ public class CommentActivity extends AppCompatActivity {
         mBackArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: dfg");
                 finish();
             }
         });
     }
-    private String getTimeStamp(){
+    private String getTim(){
         SimpleDateFormat sdf  = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
         return  sdf.format(new Date());
@@ -124,7 +122,6 @@ public class CommentActivity extends AppCompatActivity {
     }
 
     private void addNewComment(String newComment, String userId, String phhotoId){
-        Log.d(TAG,"adding new comment");
 
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
 
@@ -132,9 +129,9 @@ public class CommentActivity extends AppCompatActivity {
         String commentID = myRef.push().getKey();
 
         Comment comment = new Comment();
-        comment.setComment(newComment);
-        comment.setDate_created(getTimeStamp());
-        comment.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        comment.setC(newComment);
+        comment.setDc(getTim());
+        comment.setUi(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
         myRef.child(getString(R.string.dbname_user_photos))
@@ -152,7 +149,7 @@ public class CommentActivity extends AppCompatActivity {
                 users user = dataSnapshot.getValue(users.class);
 
                 if (notify) {
-                    mFirebaseMethods.sendNotification(userId, user.getUsername(), "commented on your post","Comment");
+                    mFirebaseMethods.sendNotification(userId, user.getU(), "commented on your post","Comment");
                 }
                 notify = false;
 
@@ -180,19 +177,19 @@ public class CommentActivity extends AppCompatActivity {
         HashMap<Object,String> hashMap = new HashMap<>();
         hashMap.put("pId",pId);
 
-        hashMap.put("timeStamp",timestamp);
+        hashMap.put(getString(R.string.field_timestamp),timestamp);
 
         hashMap.put("pUid",hisUid);
 
-        hashMap.put("notificaton",notification);
-        hashMap.put("seen","false");
+        hashMap.put(getString(R.string.field_notification_message),notification);
+        hashMap.put(getString(R.string.field_if_seen),"false");
 
         hashMap.put("sUid",FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
-        ref.child(hisUid).child("Notifications").child(timestamp).setValue(hashMap)
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
+        ref.child(hisUid).child(getString(R.string.field_Notifications)).child(timestamp).setValue(hashMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -219,7 +216,6 @@ public class CommentActivity extends AppCompatActivity {
                         for (DataSnapshot snapshot1:snapshot.getChildren()){
 
                             Comment comment=snapshot1.getValue(Comment.class);
-                            Log.d(TAG, "onDataChange: kil"+comment.toString());
                             comments.add(comment);
 
                         }

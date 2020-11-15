@@ -192,19 +192,19 @@ public class messagesfragment extends Fragment {
         Collections.sort(chatList, new Comparator<Chat>() {
             @Override
             public int compare(Chat o1, Chat o2) {
-                return o2.getTimestamp().compareTo(o1.getTimestamp());
+                return o2.getTim().compareTo(o1.getTim());
             }
         });
 
         for (int i = 0; i < chatList.size(); i++) {
 
 
-            if (chatList.get(i).getSender().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+            if (chatList.get(i).getSID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
-                messagesfragment.this.userlist2.add(chatList.get(i).getReceiver());
+                messagesfragment.this.userlist2.add(chatList.get(i).getRID());
             } else {
 
-                messagesfragment.this.userlist2.add(chatList.get(i).getSender());
+                messagesfragment.this.userlist2.add(chatList.get(i).getSID());
 
             }
 
@@ -240,7 +240,7 @@ public class messagesfragment extends Fragment {
                                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                             if (ds.exists()) {
                                                 Chat chat = ds.getValue(Chat.class);
-                                                lmsg = chat.getMessage();
+                                                lmsg = chat.getMsg();
 
                                             }
 

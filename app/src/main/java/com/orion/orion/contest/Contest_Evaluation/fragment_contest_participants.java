@@ -171,10 +171,8 @@ public class fragment_contest_participants extends Fragment {
         participantLists = gson.fromJson(json, type);
         if (participantLists == null || participantLists.size() == 0) {    //        if no arrayList is present
             participantLists = new ArrayList<>();
-            Log.d(TAG, "ttt 1");
             fetchParticipants();             //            make new Arraylist
         } else {
-            Log.d(TAG, "ttt 2" + participantLists);
             checkUpdate();       //         Check if new paricipant is there
 
         }
@@ -191,11 +189,8 @@ public class fragment_contest_participants extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
-                            Log.d(TAG, "onDataChange: hjh 1");
                             for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                                Log.d(TAG, "onDataChange: hjh 2");
-                                if (participantLists.get(0).getJoiningKey().equals(snapshot1.getKey())) {
-                                    Log.d(TAG, "onDataChange: hjh 3");
+                                if (participantLists.get(0).getJi().equals(snapshot1.getKey())) {
                                     displayParticipant();
                                 } else updateList();
                             }
@@ -215,7 +210,7 @@ public class fragment_contest_participants extends Fragment {
                 .child(getString(R.string.dbname_participantList))
                 .child(Conteskey)
                 .orderByKey()
-                .startAt(participantLists.get(participantLists.size() - 1).getJoiningKey())
+                .startAt(participantLists.get(participantLists.size() - 1).getJi())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -305,8 +300,8 @@ public class fragment_contest_participants extends Fragment {
                     String noti = "Contest Host send you Message.Click here to see.///" + msg1;
                     for (int x = 0; x < participantLists.size(); x++) {
                         if (notify)
-                            mFirebaseMethods.sendNotification(participantLists.get(x).getUserid(), "", "Contest Host send you a Message.Its important.", "Contest");
-                        addToHisNotification(participantLists.get(x).getUserid(), noti);
+                            mFirebaseMethods.sendNotification(participantLists.get(x).getUi(), "", "Contest Host send you a Message.Its important.", "Contest");
+                        addToHisNotification(participantLists.get(x).getUi(), noti);
                         if (x == participantLists.size() - 1) {
                             bottomSheetDialog.dismiss();
                             Toast.makeText(getContext(), "Message sent!", Toast.LENGTH_SHORT).show();
@@ -329,17 +324,22 @@ public class fragment_contest_participants extends Fragment {
 
     private void addToHisNotification(String hisUid, String notification) {
         String timestamp = "" + System.currentTimeMillis();
-//        data to put in notification
-        HashMap<Object, String> hashMap = new HashMap<>();
-        hashMap.put("pId", "false");
-        hashMap.put("timeStamp", timestamp);
-        hashMap.put("pUid", hisUid);
-        hashMap.put("notificaton", notification);
-        hashMap.put("seen", "false");
-        hashMap.put("sUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
-        ref.child(hisUid).child("Notifications").child(timestamp).setValue(hashMap)
+//        data to put in notification
+        HashMap<Object,String> hashMap = new HashMap<>();
+        hashMap.put("pId","false");
+
+        hashMap.put(getString(R.string.field_timestamp),timestamp);
+
+        hashMap.put("pUid",hisUid);
+
+        hashMap.put(getString(R.string.field_notification_message),notification);
+        hashMap.put(getString(R.string.field_if_seen),"false");
+
+        hashMap.put("sUid",FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
+        ref.child(hisUid).child(getString(R.string.field_Notifications)).child(timestamp).setValue(hashMap)
                 .addOnSuccessListener(aVoid -> {
                 }).addOnFailureListener(e -> {
         });
@@ -348,7 +348,6 @@ public class fragment_contest_participants extends Fragment {
 
 
     private void displayParticipant() {
-        Log.d(TAG, "display first 20 participant");
         flag1 = true;
         partNum.setText("Participants: " + participantLists.size());
         paginatedparticipantList = new ArrayList<>();
@@ -359,7 +358,6 @@ public class fragment_contest_participants extends Fragment {
                 mResults = 20;
                 for (int i = 0; i < iteration; i++)
                     paginatedparticipantList.add(participantLists.get(i));
-                Log.d(TAG, "participant: sss" + paginatedparticipantList.size());
                 adapterParticipantList = new AdapterParticipantList(getContext(), paginatedparticipantList);
                 adapterParticipantList.setHasStableIds(true);
                 participantRv.setAdapter(adapterParticipantList);
@@ -372,15 +370,12 @@ public class fragment_contest_participants extends Fragment {
     }
 
     public void displayMoreParticipnat() {
-        Log.d(TAG, "display next 20 participant");
         try {
             if (participantLists.size() > mResults && participantLists.size() > 0) {
                 int iterations;
                 if (participantLists.size() > (mResults + 20)) {
-                    Log.d(TAG, "display next 15 participant");
                     iterations = 20;
                 } else {
-                    Log.d(TAG, "display less tha 15 participant");
                     iterations = participantLists.size() - mResults;
                 }
                 for (int i = mResults; i < mResults + iterations; i++) {

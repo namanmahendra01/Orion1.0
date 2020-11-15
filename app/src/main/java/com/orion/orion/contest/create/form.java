@@ -1048,7 +1048,6 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                     }
                     if (votingType.equals("Jury")) {
                         if (noOfJury.equals("")) {
-                            Log.d(TAG, "onCreate: outerouter");
                             YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(jurySelectionContainer);
                             Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
                             jurySelectionContainer.requestFocus();
@@ -1256,10 +1255,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
             if (!thirdPrize.getText().toString().equals(""))
                 c = Integer.parseInt(thirdPrize.getText().toString());
             prizeTotal = String.valueOf(a + b + c);
-            Log.d(TAG, "afterTextChanged: a" + a);
-            Log.d(TAG, "afterTextChanged: b" + b);
-            Log.d(TAG, "afterTextChanged: c" + c);
-            Log.d(TAG, "afterTextChanged: d" + prizeTotal);
+
             totalPrize.setText(prizeTotal);
         } catch (Exception e) {
             Log.e(TAG, "afterTextChanged: " + e.getMessage());

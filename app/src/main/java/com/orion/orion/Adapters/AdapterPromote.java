@@ -68,9 +68,9 @@ public class AdapterPromote extends RecyclerView.Adapter<AdapterPromote.MyHolder
                         for (DataSnapshot dataSnapshot1:dataSnapshot.getChildren()) {
                             myHolder.promote = dataSnapshot1.getValue(Promote.class);
 
-                            Long timeEnd = Long.parseLong(myHolder.promote.getTimeEnd());
-                            seenStory(myHolder, myHolder.promote.getPromoterId(), myHolder.promote.getStoryid(), timeEnd);
-                            getUserInfo(myHolder.promote.getPromoterId(), myHolder.story, myHolder.storySeen, myHolder.username);
+                            Long timeEnd = Long.parseLong(myHolder.promote.getTiE());
+                            seenStory(myHolder, myHolder.promote.getPID(), myHolder.promote.getStID(), timeEnd);
+                            getUserInfo(myHolder.promote.getPID(), myHolder.story, myHolder.storySeen, myHolder.username);
 
                         }
                         }
@@ -107,19 +107,20 @@ public class AdapterPromote extends RecyclerView.Adapter<AdapterPromote.MyHolder
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user=dataSnapshot.getValue(users.class);
                         Glide.with(context)
-                                .load(user.getProfile_photo())
+                                .load(user.getPp())
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)
                                 .placeholder(R.drawable.load)
                                 .thumbnail(0.5f)
                                 .into(story);
                         Glide.with(context)
-                                .load(user.getProfile_photo())
+                                .load(user.getPp())
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)
                                 .placeholder(R.drawable.load)
                                 .thumbnail(0.5f)
-                                .into(storyseen);                          username.setText(user.getUsername());
+                                .into(storyseen);
+                        username.setText(user.getU());
                     }
 
                     @Override
@@ -141,18 +142,15 @@ db.child(context.getString(R.string.dbname_promote))
         int t=0;
         for (DataSnapshot snapshot:dataSnapshot.getChildren()){
 
-            if ((snapshot.child("views").child(FirebaseAuth.getInstance()
+            if ((snapshot.child(context.getString(R.string.field_view)).child(FirebaseAuth.getInstance()
             .getCurrentUser().getUid()).exists())){
                 t++;
-                Log.d(TAG, "onDataChange: ss"+t);
             }
         }if (t==l){
-            Log.d(TAG, "onDataChange: ss2"+t);
             holder.storySeen.setVisibility(View.VISIBLE);
             holder.story.setVisibility(View.GONE);
 
         }else {
-            Log.d(TAG, "onDataChange: ss4"+t);
             holder.storySeen.setVisibility(View.GONE);
             holder.story.setVisibility(View.VISIBLE);
         }

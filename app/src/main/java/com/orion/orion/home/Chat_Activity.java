@@ -311,7 +311,7 @@ Chat_Activity extends AppCompatActivity {
                                                 for (Chat c : chat1) {
                                                     ref.child(context.getString(R.string.dbname_ChatList))
                                                             .child(key)
-                                                            .child(c.getMessageid())
+                                                            .child(c.getMID())
                                                             .setValue(c);
                                                 }
                                             }
@@ -398,12 +398,12 @@ Chat_Activity extends AppCompatActivity {
                     DatabaseReference refer1 = FirebaseDatabase.getInstance().getReference();
                     newMessageKey = refer1.child(getString(R.string.dbname_Chats)).push().getKey();
                     HashMap<String, Object> hashMap = new HashMap<>();
-                    hashMap.put("sender", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    hashMap.put("receiver", hisUID);
-                    hashMap.put("message", message);
-                    hashMap.put("timestamp", timeStamp);
-                    hashMap.put("ifseen", false);
-                    hashMap.put("messageid", newMessageKey);
+                    hashMap.put(getString(R.string.field_sender_ID), FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    hashMap.put(getString(R.string.field_receiver_ID), hisUID);
+                    hashMap.put(getString(R.string.field_message), message);
+                    hashMap.put(getString(R.string.field_timestamp), timeStamp);
+                    hashMap.put(getString(R.string.field_if_seen), false);
+                    hashMap.put(getString(R.string.field_message_ID), newMessageKey);
 
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                     db.child(getString(R.string.dbname_request))
@@ -503,7 +503,7 @@ Chat_Activity extends AppCompatActivity {
 
                             DbRef.child(getString(R.string.dbname_ChatList))
                                     .child(key)
-                                    .orderByChild("ifseen").equalTo(false)
+                                    .orderByChild(getString(R.string.field_if_seen)).equalTo(false)
                                     .addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -513,13 +513,15 @@ Chat_Activity extends AppCompatActivity {
 
                                                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                                     p++;
-                                                    if (ds.child("receiver").getValue().toString().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                                    if (ds.child(getString(R.string.field_receiver_ID))
+                                                            .getValue().toString()
+                                                            .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                                         if (activity) {
                                                             DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                                                             db.child(getString(R.string.dbname_ChatList))
                                                                     .child(key)
                                                                     .child(ds.getKey())
-                                                                    .child("ifseen")
+                                                                    .child(getString(R.string.field_if_seen))
                                                                     .setValue(true)
                                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                         @Override
@@ -587,7 +589,6 @@ Chat_Activity extends AppCompatActivity {
                                     }
 
                                     long current = date.getTime();
-                                    Log.d(TAG, "onDataChange: timestamp" + timeStamp + "  " + current);
 
                                     long sevenDayEarlier = current - 604800000;
                                     recievelistener = queryr1.addValueEventListener(new ValueEventListener() {
@@ -598,11 +599,11 @@ Chat_Activity extends AppCompatActivity {
                                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                                 x++;
                                                 Chat chat = ds.getValue(Chat.class);
-                                                if (Long.parseLong(chat.getTimestamp()) < sevenDayEarlier) {
+                                                if (Long.parseLong(chat.getTim()) < sevenDayEarlier) {
                                                     DatabaseReference DbRef2 = FirebaseDatabase.getInstance().getReference();
                                                     DbRef2.child(getString(R.string.dbname_ChatList))
                                                             .child(snapshot.getValue().toString())
-                                                            .child(chat.getMessageid())
+                                                            .child(chat.getMID())
                                                             .removeValue();
                                                 } else {
                                                     assert chat != null;
@@ -680,12 +681,12 @@ Chat_Activity extends AppCompatActivity {
                 DatabaseReference refer1 = FirebaseDatabase.getInstance().getReference();
                 newMessageKey = refer1.child(getString(R.string.dbname_Chats)).push().getKey();
                 HashMap<String, Object> hashMap = new HashMap<>();
-                hashMap.put("sender", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                hashMap.put("receiver", hisUID);
-                hashMap.put("message", message);
-                hashMap.put("timestamp", timeStamp);
-                hashMap.put("ifseen", false);
-                hashMap.put("messageid", newMessageKey);
+                hashMap.put(getString(R.string.field_sender_ID), FirebaseAuth.getInstance().getCurrentUser().getUid());
+                hashMap.put(getString(R.string.field_receiver_ID), hisUID);
+                hashMap.put(getString(R.string.field_message), message);
+                hashMap.put(getString(R.string.field_timestamp), timeStamp);
+                hashMap.put(getString(R.string.field_if_seen), false);
+                hashMap.put(getString(R.string.field_message_ID), newMessageKey);
 
                 refer1.child(getString(R.string.dbname_Chats))
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -856,7 +857,7 @@ Chat_Activity extends AppCompatActivity {
                 }
             }
         };
-        Query query = myRef.child(getString(R.string.dbname_user_account_settings)).child(hisUID);
+        Query query = myRef.child(getString(R.string.dbname_users)).child(hisUID);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot singleSnapshot) {

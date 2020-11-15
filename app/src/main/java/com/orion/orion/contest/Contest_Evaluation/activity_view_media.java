@@ -140,11 +140,9 @@ public class activity_view_media extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
                         if (dataSnapshot2.exists()) {
-                            Log.d(TAG, " checking current user liked or not: Already liked");
                             voteNo.setVisibility(View.GONE);
                             voteYes.setVisibility(View.VISIBLE);
                         } else {
-                            Log.d(TAG, " checking current user liked or not: Not liked");
                             voteNo.setVisibility(View.VISIBLE);
                             voteYes.setVisibility(View.GONE);
                         }
@@ -158,7 +156,7 @@ public class activity_view_media extends AppCompatActivity {
                 });
         reference.child(getString(R.string.dbname_contestlist))
                 .child(contestKey)
-                .child("voterlist")
+                .child(mContext.getString(R.string.field_total_voters_list))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -192,13 +190,11 @@ public class activity_view_media extends AppCompatActivity {
         });
     }
     private void setupFirebaseAuth() {
-        Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = firebaseAuth -> {
             mUser = firebaseAuth.getCurrentUser();
             if (mUser == null) {
-                Log.d(TAG, "onAuthStateChanged:signed_out");
-                Log.d(TAG, "onAuthStateChanged: navigating to login");
+
                 SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
                 new AlertDialog.Builder(mContext)
                         .setTitle("No user logon found")

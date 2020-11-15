@@ -149,7 +149,7 @@ public class FirebaseMethods {
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.created_contest))
                                         .child(contestKey)
-                                        .child("jpic1").setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        .child(mContext.getString(R.string.field_jury_pic_1)).setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         flag1=true;
@@ -174,7 +174,7 @@ public class FirebaseMethods {
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.created_contest))
                                         .child(contestKey)
-                                        .child("jpic2").setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        .child(mContext.getString(R.string.field_jury_pic_2)).setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         flag2=true;
@@ -197,7 +197,7 @@ public class FirebaseMethods {
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.created_contest))
                                         .child(contestKey)
-                                        .child("jpic3").setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        .child(mContext.getString(R.string.field_jury_pic_3)).setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         flag3=true;
@@ -220,7 +220,7 @@ public class FirebaseMethods {
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.created_contest))
                                         .child(contestKey)
-                                        .child("poster").setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        .child(mContext.getString(R.string.field_poster)).setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         flag4=true;
@@ -245,12 +245,12 @@ public class FirebaseMethods {
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.joined_contest))
                                         .child(joiningkey)
-                                        .child("idLink").setValue(firebaseurl.toString());
+                                        .child(mContext.getString(R.string.field_id_link)).setValue(firebaseurl.toString());
                                 ref.child(mContext.getString(R.string.dbname_request))
                                         .child(mContext.getString(R.string.dbname_participantList))
                                         .child(contestKey)
                                         .child(joiningkey)
-                                        .child("idLink").setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        .child(mContext.getString(R.string.field_id_link)).setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         flag5=true;
@@ -272,12 +272,12 @@ public class FirebaseMethods {
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.joined_contest))
                                         .child(joiningkey)
-                                        .child("mediaLink").setValue(firebaseurl.toString());
+                                        .child(mContext.getString(R.string.field_media_link)).setValue(firebaseurl.toString());
                                 ref.child(mContext.getString(R.string.dbname_request))
                                         .child(mContext.getString(R.string.dbname_participantList))
                                         .child(contestKey)
                                         .child(joiningkey)
-                                        .child("mediaLink").setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        .child(mContext.getString(R.string.field_media_link)).setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         flag6=true;
@@ -378,7 +378,7 @@ public class FirebaseMethods {
 
 
 
-    public String getTimeStamp() {
+    public String getTim() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
         return sdf.format(new Date());
@@ -537,12 +537,12 @@ public class FirebaseMethods {
 
             ref.child(mContext.getString(R.string.dbname_contestlist))
                     .child(Conteskey)
-                    .child("result")
+                    .child(mContext.getString(R.string.field_result))
                     .setValue(true);
 
             ref.child(mContext.getString(R.string.dbname_contests))
                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                    .child("completed")
+                    .child(mContext.getString(R.string.field_contest_completed))
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -550,12 +550,12 @@ public class FirebaseMethods {
                                 long x = (long) snapshot.getValue();
                                 ref.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .child("completed")
+                                        .child(mContext.getString(R.string.field_contest_completed))
                                         .setValue(x + 1);
                             } else {
                                 ref.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .child("completed")
+                                        .child(mContext.getString(R.string.field_contest_completed))
                                         .setValue(1);
                             }
                         }
@@ -568,13 +568,13 @@ public class FirebaseMethods {
         }else{
             ref.child(mContext.getString(R.string.dbname_contestlist))
                     .child(Conteskey)
-                    .child("result")
+                    .child(mContext.getString(R.string.field_result))
                     .setValue(true);
         }
 
         ref.child(mContext.getString(R.string.dbname_contests))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child(mContext.getString(R.string.field_created_contest))
+                .child(mContext.getString(R.string.created_contest))
                 .child(Conteskey)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -588,7 +588,7 @@ public class FirebaseMethods {
                                             if (snapshot.exists()){
                                                     DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
                                                             .child(snapshot.getValue().toString())
-                                                            .child("judged");
+                                                            .child(mContext.getString(R.string.field_contest_judged));
 
                                                           ref2.addListenerForSingleValueEvent(new ValueEventListener() {
                                                                 @Override
@@ -628,7 +628,7 @@ public class FirebaseMethods {
                                             if (snapshot.exists()){
                                                     DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
                                                             .child(snapshot.getValue().toString())
-                                                            .child("judged");
+                                                            .child(mContext.getString(R.string.field_contest_judged));
 
                                                     ref2.addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
@@ -667,7 +667,7 @@ public class FirebaseMethods {
                                             if (snapshot.exists()){
                                                     DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
                                                             .child(snapshot.getValue().toString())
-                                                            .child("judged");
+                                                            .child(mContext.getString(R.string.field_contest_judged));
 
                                                     ref2.addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
@@ -710,14 +710,13 @@ public class FirebaseMethods {
 
             for (int x = 0; x < winnerList.size(); x++) {
                 DatabaseReference ref3 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
-                        .child(winnerList.get(x).getUserid())
-                        .child("win");
+                        .child(winnerList.get(x).getUi())
+                        .child(mContext.getString(R.string.field_contest_wins));
 
                 int finalX = x;
                 ref3.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot1) {
-                        Log.d(TAG, "onDataChange: mnmn "+winnerList.get(finalX).getUserid());
                         if (snapshot1.exists()){
                             long l= (long)snapshot1.getValue();
                             ref3.setValue(l+1);
@@ -739,23 +738,23 @@ public class FirebaseMethods {
         if (participantLists.size() != 0) {
             for (int x = 0; x < participantLists.size(); x++) {
 
-                  sendNotification(participantLists.get(x).getUserid(), "", "Result has been declared of a contest.Check your ranking now.", "Result Declared");
+                  sendNotification(participantLists.get(x).getUi(), "", "Result has been declared of a contest.Check your ranking now.", "Result Declared");
 
 
-                addToHisNotification("" + participantLists.get(x).getUserid(), "Result has been declared of a contest.Check your ranking now.");
+                addToHisNotification("" + participantLists.get(x).getUi(), "Result has been declared of a contest.Check your ranking now.");
 
                 int finalX = x;
                 ref.child(mContext.getString(R.string.dbname_contests))
-                        .child(participantLists.get(finalX).getUserid())
-                        .child("participated")
+                        .child(participantLists.get(finalX).getUi())
+                        .child(mContext.getString(R.string.field_contest_participated))
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
                                     long l= (long) snapshot.getValue();
                                     ref.child(mContext.getString(R.string.dbname_contests))
-                                            .child(participantLists.get(finalX).getUserid())
-                                            .child("participated")
+                                            .child(participantLists.get(finalX).getUi())
+                                            .child(mContext.getString(R.string.field_contest_participated))
                                             .setValue(l+ 1);
                                     if (finalX==participantLists.size()-1){
 
@@ -763,8 +762,8 @@ public class FirebaseMethods {
                                     }
                                 } else {
                                     ref.child(mContext.getString(R.string.dbname_contests))
-                                            .child(participantLists.get(finalX).getUserid())
-                                            .child("participated")
+                                            .child(participantLists.get(finalX).getUi())
+                                            .child(mContext.getString(R.string.field_contest_participated))
                                             .setValue(1);
                                     if (finalX==participantLists.size()-1){
                                         progress.setVisibility(View.GONE);
@@ -807,17 +806,22 @@ public class FirebaseMethods {
                 String timestamp = String.valueOf(date.getTime());
 
 
-                //data to put in notification
-                HashMap<Object, String> hashMap = new HashMap<>();
-                hashMap.put("pId", "false");
-                hashMap.put("timeStamp", timestamp);
-                hashMap.put("pUid", hisUid);
-                hashMap.put("seen", "false");
-                hashMap.put("notificaton", notification);
-                hashMap.put("sUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
-                ref.child(hisUid).child("Notifications").child(timestamp).setValue(hashMap)
+//        data to put in notification
+                HashMap<Object,String> hashMap = new HashMap<>();
+                hashMap.put("pId","false");
+
+                hashMap.put(mContext.getString(R.string.field_timestamp),timestamp);
+
+                hashMap.put("pUid",hisUid);
+
+                hashMap.put(mContext.getString(R.string.field_notification_message),notification);
+                hashMap.put(mContext.getString(R.string.field_if_seen),"false");
+
+                hashMap.put("sUid",FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_users));
+                ref.child(hisUid).child(mContext.getString(R.string.field_Notifications)).child(timestamp).setValue(hashMap)
                         .addOnSuccessListener(aVoid -> {
 
                         }).addOnFailureListener(e -> {

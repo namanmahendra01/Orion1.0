@@ -85,9 +85,9 @@ public class AdapterMessageRequest extends RecyclerView.Adapter<AdapterMessageRe
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user = dataSnapshot.getValue(users.class);
-                        nameTv.setText(user.getUsername());
+                        nameTv.setText(user.getU());
                         Glide.with(context)
-                                .load(user.getProfile_photo())
+                                .load(user.getPp())
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)
                                 .placeholder(R.drawable.load)
@@ -108,7 +108,6 @@ public class AdapterMessageRequest extends RecyclerView.Adapter<AdapterMessageRe
         LastMessagemap.put(userId,lastMessage);
     }
     public long getItemId(int position) {
-        Log.d(TAG, "getItemId: lol"+usersList);
         if (usersList==null||usersList.size()==0){
             return position;
         }else{

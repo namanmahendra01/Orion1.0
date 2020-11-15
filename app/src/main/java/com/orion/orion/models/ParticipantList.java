@@ -3,45 +3,42 @@ package com.orion.orion.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.List;
-
 public class ParticipantList  implements Parcelable {
 
-    String userid,timestamp,joiningKey,mediaLink,idLink,contestkey;
-    int totalScore;
+    String ui, tim, ji, ml, il, ci;
+    int ts;
 
-    public ParticipantList(String userid, String timestamp, String joiningKey, String mediaLink, String idLink, int totalScore,String contestkey) {
-        this.userid = userid;
-        this.timestamp = timestamp;
-        this.joiningKey = joiningKey;
-        this.mediaLink = mediaLink;
-        this.idLink = idLink;
-        this.totalScore=totalScore;
-        this.contestkey=contestkey;
-
+    public ParticipantList(String ui, String tim, String ji, String ml, String il, String ci, int ts) {
+        this.ui = ui;
+        this.tim = tim;
+        this.ji = ji;
+        this.ml = ml;
+        this.il = il;
+        this.ci = ci;
+        this.ts = ts;
     }
 
     public ParticipantList(){}
 
     protected ParticipantList(Parcel in) {
-        userid = in.readString();
-        timestamp = in.readString();
-        joiningKey = in.readString();
-        mediaLink = in.readString();
-        idLink = in.readString();
-        contestkey = in.readString();
-        totalScore = in.readInt();
+        ui = in.readString();
+        tim = in.readString();
+        ji = in.readString();
+        ml = in.readString();
+        il = in.readString();
+        ci = in.readString();
+        ts = in.readInt();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(userid);
-        dest.writeString(timestamp);
-        dest.writeString(joiningKey);
-        dest.writeString(mediaLink);
-        dest.writeString(idLink);
-        dest.writeString(contestkey);
-        dest.writeInt(totalScore);
+        dest.writeString(ui);
+        dest.writeString(tim);
+        dest.writeString(ji);
+        dest.writeString(ml);
+        dest.writeString(il);
+        dest.writeString(ci);
+        dest.writeInt(ts);
     }
 
     @Override
@@ -61,72 +58,72 @@ public class ParticipantList  implements Parcelable {
         }
     };
 
-    public String getUserid() {
-        return userid;
+    public String getUi() {
+        return ui;
     }
 
-    public void setUserid(String userid) {
-        this.userid = userid;
+    public void setUi(String userid) {
+        this.ui = userid;
     }
 
-    public String getTimestamp() {
-        return timestamp;
+    public String getTim() {
+        return tim;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public void setTim(String timestamp) {
+        this.tim = timestamp;
     }
 
-    public String getJoiningKey() {
-        return joiningKey;
+    public String getJi() {
+        return ji;
     }
 
-    public void setJoiningKey(String joiningKey) {
-        this.joiningKey = joiningKey;
+    public void setJi(String joiningKey) {
+        this.ji = joiningKey;
     }
 
-    public String getMediaLink() {
-        return mediaLink;
+    public String getMl() {
+        return ml;
     }
 
     public void setMediaLink(String mediaLink) {
-        this.mediaLink = mediaLink;
+        this.ml = mediaLink;
     }
 
-    public String getIdLink() {
-        return idLink;
+    public String getIl() {
+        return il;
     }
 
     public void setIdLink(String idLink) {
-        this.idLink = idLink;
+        this.il = idLink;
     }
 
-    public String getContestkey() {
-        return contestkey;
+    public String getCi() {
+        return ci;
     }
 
-    public void setContestkey(String contestkey) {
-        this.contestkey = contestkey;
+    public void setCi(String contestkey) {
+        this.ci = contestkey;
     }
 
-    public int getTotalScore() {
-        return totalScore;
+    public int getTs() {
+        return ts;
     }
 
     public void setTotalScore(int totalScore) {
-        this.totalScore = totalScore;
+        this.ts = totalScore;
     }
 
     @Override
     public String toString() {
         return "ParticipantList{" +
-                "userid='" + userid + '\'' +
-                ", timestamp='" + timestamp + '\'' +
-                ", joiningKey='" + joiningKey + '\'' +
-                ", mediaLink='" + mediaLink + '\'' +
-                ", idLink='" + idLink + '\'' +
-                ", contestkey='" + contestkey + '\'' +
-                ", totalScore=" + totalScore +
+                "ui='" + ui + '\'' +
+                ", tim='" + tim + '\'' +
+                ", ji='" + ji + '\'' +
+                ", ml='" + ml + '\'' +
+                ", il='" + il + '\'' +
+                ", ci='" + ci + '\'' +
+                ", ts=" + ts +
                 '}';
     }
 }

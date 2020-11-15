@@ -76,9 +76,28 @@ public class jury_voting_media extends AppCompatActivity {
 
         Intent i = getIntent();
         contestkey = i.getStringExtra("contestId");
-        String userid = i.getStringExtra("userId");
         jury = i.getStringExtra("jury");
         comment = i.getStringExtra("comment");
+
+        if (jury.equals("jury1")){
+            jury="j1";
+        }else if(jury.equals("jury2")){
+            jury="j2";
+
+        }else{
+            jury="j3";
+
+        }
+
+        if (comment.equals("comment1")){
+            comment="c1";
+        }else if(comment.equals("comment2")){
+            comment="c2";
+
+        }else{
+            comment="c3";
+
+        }
 
         backArrrow = findViewById(R.id.backarrow);
 
@@ -200,7 +219,7 @@ public class jury_voting_media extends AppCompatActivity {
         ref2.child(getString(R.string.dbname_participantList))
                 .child(contestkey)
                 .child(joiningKey)
-                .child("userid").
+                .child(getString(R.string.field_user_id)).
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -216,7 +235,7 @@ public class jury_voting_media extends AppCompatActivity {
                                         ref2.child(getString(R.string.dbname_participantList))
                                                 .child(contestkey)
                                                 .child(joiningKey)
-                                                .child("mediaLink").
+                                                .child(getString(R.string.field_media_link)).
                                                 addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
@@ -232,7 +251,6 @@ public class jury_voting_media extends AppCompatActivity {
                                                         String json = gson.toJson(finalList);
                                                         editor.putString(joiningKey, json);
                                                         editor.apply();
-                                                        Log.d(TAG, "onClick: vbn" + finalList);
 
                                                     }
 
@@ -251,7 +269,6 @@ public class jury_voting_media extends AppCompatActivity {
                                     }
                                 });
 
-                        Log.d(TAG, "onDataChange: " + username2);
                     }
 
                     @Override
@@ -291,9 +308,7 @@ public class jury_voting_media extends AppCompatActivity {
             Type type = new TypeToken<ArrayList<String>>() {
             }.getType();
             markList = gson.fromJson(json, type);
-            Log.d(TAG, "fetchdetails: " + markList);
             if (markList == null || markList.size() < 4) {    //        if no arrayList is present
-                Log.d(TAG, "fetchdetails: 1");
                 //                fetching table
 //                setting row
                 TableRow tbrow = new TableRow(jury_voting_media.this);
@@ -302,7 +317,7 @@ public class jury_voting_media extends AppCompatActivity {
 
 //                setting 1st item of row i.e textview
                 TextView t1v = new TextView(jury_voting_media.this);
-                getUsername(joiningKey, t1v);
+                getU(joiningKey, t1v);
                 t1v.setTextColor(getResources().getColor(R.color.yellow));
                 t1v.setGravity(Gravity.CENTER);
                 tbrow.addView(t1v);
@@ -349,7 +364,7 @@ public class jury_voting_media extends AppCompatActivity {
                                 .child(getString(R.string.dbname_participantList))
                                 .child(contestkey)
                                 .child(joiningKey)
-                                .child("userid");
+                                .child(getString(R.string.field_user_id));
                         userquery.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -383,7 +398,7 @@ public class jury_voting_media extends AppCompatActivity {
                         ref.child(getString(R.string.dbname_participantList))
                                 .child(contestkey)
                                 .child(joiningKey)
-                                .child("mediaLink").
+                                .child(getString(R.string.field_media_link)).
                                 addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -407,7 +422,6 @@ public class jury_voting_media extends AppCompatActivity {
 
                                                 } catch (ActivityNotFoundException e) {
                                                     Toast.makeText(jury_voting_media.this, "Invalid Link", Toast.LENGTH_SHORT).show();
-                                                    Log.e(TAG, "onClick: " + e.getMessage());
                                                 }
                                             }
                                         } else {
@@ -418,7 +432,6 @@ public class jury_voting_media extends AppCompatActivity {
 
                                             } catch (ActivityNotFoundException e) {
                                                 Toast.makeText(jury_voting_media.this, "Invalid Link", Toast.LENGTH_SHORT).show();
-                                                Log.e(TAG, "onClick: " + e.getMessage());
                                             }
                                         }
 
@@ -435,7 +448,6 @@ public class jury_voting_media extends AppCompatActivity {
                 });
 
             } else {
-                Log.d(TAG, "fetchdetails: 2");
 
 //                fetching table
 //                setting row
@@ -494,7 +506,7 @@ public class jury_voting_media extends AppCompatActivity {
                                 .child(getString(R.string.dbname_participantList))
                                 .child(contestkey)
                                 .child(joiningKey)
-                                .child("userid");
+                                .child(getString(R.string.field_user_id));
                         userquery.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -565,12 +577,12 @@ public class jury_voting_media extends AppCompatActivity {
     }
 
 
-    private void getUsername(String joiningKey, TextView textView) {
+    private void getU(String joiningKey, TextView textView) {
         DatabaseReference ref5 = FirebaseDatabase.getInstance().getReference();
         ref5.child(getString(R.string.dbname_participantList))
                 .child(contestkey)
                 .child(joiningKey)
-                .child("userid").
+                .child(getString(R.string.field_user_id)).
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

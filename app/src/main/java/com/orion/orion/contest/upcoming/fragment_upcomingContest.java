@@ -402,7 +402,7 @@ public class fragment_upcomingContest extends Fragment {
 
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
             reference.child(getString(R.string.dbname_contestlist))
-                    .orderByChild("doman").equalTo(domain)
+                    .orderByChild(getString(R.string.field_domain)).equalTo(domain)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -417,23 +417,19 @@ public class fragment_upcomingContest extends Fragment {
                                 contestlist3.clear();
                                 for (int x = 0; x < contestlist.size(); x++) {
                                     ContestDetail contestDetail = contestlist.get(x);
-                                    Log.d(TAG, "onDataChange: asd" + contestDetail);
                                     if (entryfee.equals("Free")) {
-                                        if (contestDetail.getEntryfee().equals(entryfee)) {
-                                            Log.d(TAG, "onDataChange: qwe" + contestDetail.getEntryfee());
+                                        if (contestDetail.getEf().equals(entryfee)) {
 
                                             contestlist3.add(contestDetail);
                                         }
                                     }
                                     if (!entryfee.equals("Free"))
-                                        if (!contestDetail.getEntryfee().equals("Free")) {
-                                            Log.d(TAG, "onDataChange: qwe" + contestDetail.getEntryfee());
+                                        if (!contestDetail.getEf().equals("Free")) {
                                             contestlist3.add(contestDetail);
                                         }
                                 }
                                 contestlist.clear();
                                 contestlist.addAll(contestlist3);
-                                Log.d(TAG, "onDataChange: size "+contestlist.size());
                                 Collections.reverse(contestlist);
                                 displaycontest();
                             } else {
@@ -468,13 +464,13 @@ public class fragment_upcomingContest extends Fragment {
                                 for (int x = 0; x < contestlist.size(); x++) {
                                     ContestDetail contestDetail = contestlist.get(x);
                                     if (entryfee.equals("Free")) {
-                                        if (contestDetail.getEntryfee().equals(entryfee)) {
+                                        if (contestDetail.getEf().equals(entryfee)) {
 
                                             contestlist3.add(contestDetail);
                                         }
                                     }
                                     if (!entryfee.equals("Free"))
-                                        if (!contestDetail.getEntryfee().equals("Free")) {
+                                        if (!contestDetail.getEf().equals("Free")) {
                                             contestlist3.add(contestDetail);
                                         }
                                 }
@@ -534,7 +530,6 @@ public class fragment_upcomingContest extends Fragment {
 
     }
     private void displaycontest() {
-        Log.d(TAG, "display first 10 contest");
 noPost.setVisibility(View.GONE);
         bottomProgress.setVisibility(View.GONE);
 
@@ -556,7 +551,6 @@ noPost.setVisibility(View.GONE);
                 for (int i = 0; i < iteration; i++) {
                     paginatedcontestlist.add(contestlist.get(i));
                 }
-                Log.d(TAG, "contest: sss" + paginatedcontestlist.size());
                 if ( upcomingContestRv.getAdapter().getClass().equals( contestUpcoming.getClass())) {
 
                     contestUpcoming = new AdapterContestUpcoming(getContext(), paginatedcontestlist);
@@ -589,17 +583,14 @@ noPost.setVisibility(View.GONE);
     }
 
     public void displayMoreContest() {
-        Log.d(TAG, "display next 10 contest");
 
         try {
             if (contestlist.size() > mResults && contestlist.size() > 0) {
 
                 int iterations;
                 if (contestlist.size() > (mResults + 10)) {
-                    Log.d(TAG, "display next 20 contest");
                     iterations = 10;
                 } else {
-                    Log.d(TAG, "display less tha 20 contest");
                     iterations = contestlist.size() - mResults;
                 }
                 for (int i = mResults; i < mResults + iterations; i++) {
@@ -636,7 +627,6 @@ noPost.setVisibility(View.GONE);
 
     }
     private void displaysearch() {
-        Log.d(TAG, "display first 10 contest");
 blurBg.setVisibility(View.VISIBLE);
         paginatedcontestSearch = new ArrayList<>();
         if (contestlist2 != null) {
@@ -654,7 +644,6 @@ blurBg.setVisibility(View.VISIBLE);
                 for (int i = 0; i < iteration; i++) {
                     paginatedcontestSearch.add(contestlist2.get(i));
                 }
-                Log.d(TAG, "contest: sss" + paginatedcontestSearch.size());
                 adapterContestSearch = new AdapterContestSearch(getContext(), paginatedcontestSearch);
                 contestSearchRv.setAdapter(adapterContestSearch);
 
@@ -670,17 +659,14 @@ blurBg.setVisibility(View.VISIBLE);
     }
 
     public void displayMoreSearch() {
-        Log.d(TAG, "display next 10 contest");
 
         try {
             if (contestlist2.size() > mResults2 && contestlist2.size() > 0) {
 
                 int iterations;
                 if (contestlist2.size() > (mResults2 + 10)) {
-                    Log.d(TAG, "display next 20 contest");
                     iterations = 10;
                 } else {
-                    Log.d(TAG, "display less tha 20 contest");
                     iterations = contestlist2.size() - mResults2;
                 }
                 for (int i = mResults2; i < mResults2 + iterations; i++) {

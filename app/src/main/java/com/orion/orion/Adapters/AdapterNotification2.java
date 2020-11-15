@@ -69,12 +69,12 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
 
         Notification notification = mNotification.get(i);
 
-        if (notification.getNotificaton().contains("///")) {
-            String split[] = notification.getNotificaton().split("///");
+        if (notification.getNot().contains("///")) {
+            String split[] = notification.getNot().split("///");
             holder.msg2 = split[1];
             holder.msg1 = split[0];
         }else{
-            holder.msg1=notification.getNotificaton();
+            holder.msg1=notification.getNot();
         }
 
 
@@ -98,7 +98,7 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
 
 
 
-        final String timestamp = notification.getTimeStamp();
+        final String timestamp = notification.getTim();
 
 
 
@@ -135,11 +135,11 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
                                         holder.photo = snapshot.getValue(Photo.class);
                                         ArrayList<Comment> comments = new ArrayList<>();
 
-                                        for (DataSnapshot dSnapshot : snapshot.child("comment").getChildren()) {
+                                        for (DataSnapshot dSnapshot : snapshot.child(context.getString(R.string.field_comment)).getChildren()) {
                                             Comment comment = new Comment();
-                                            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                            comment.setUi(dSnapshot.getValue(Comment.class).getUi());
+                                            comment.setC(dSnapshot.getValue(Comment.class).getC());
+                                            comment.setDc(dSnapshot.getValue(Comment.class).getDc());
                                             comments.add(comment);
 
 
@@ -173,15 +173,11 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
             public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Notification");
-                builder.setMessage("Are you sure, you want to delete this Notification?");
+                builder.setMessage(R.string.delete_notification_prompt);
 
                 builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Log.d(TAG, "DeleteMessage: deleteing message");
-
-
-
 
                         deleteNotification(notification,i);
 
@@ -228,7 +224,7 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
     public long getItemId(int position) {
         if (mNotification!=null&&mNotification.size()!=0) {
             Notification form = mNotification.get(position);
-            return form.getTimeStamp().hashCode();
+            return form.getTim().hashCode();
         }else{
             return position;
         }
@@ -286,10 +282,9 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange: eee"+postId+" "+postUid);
                 if(dataSnapshot.exists()) {
-                        if(dataSnapshot.child("type").getValue().toString().equals("photo")){
-                            String img = dataSnapshot.child("image_path").getValue().toString();
+                        if(dataSnapshot.child(context.getString(R.string.type)).getValue().toString().equals("photo")){
+                            String img = dataSnapshot.child(context.getString(R.string.field_image_path)).getValue().toString();
                             Glide.with(context)
                                     .load(img)
                                     .placeholder(R.drawable.load)
@@ -298,7 +293,7 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
                                     .thumbnail(0.6f)
                                     .into(imageView);
                         }else{
-                            String img = dataSnapshot.child("thumbnail").getValue().toString();
+                            String img = dataSnapshot.child(context.getString(R.string.thumbnail)).getValue().toString();
                             Glide.with(context)
                                     .load(img)
                                     .placeholder(R.drawable.load)
@@ -317,8 +312,10 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
         });
     }
     private void deleteNotification(Notification notification, int i) {
-        DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference("users");
-        ref1.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Notifications").child(notification.getTimeStamp())
+        DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference(context.getString(R.string.dbname_users));
+        ref1.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(context.getString(R.string.field_Notifications))
+                .child(notification.getTim())
                 .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -331,18 +328,15 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
                 ArrayList<Notification> notifyList=new ArrayList<>();
                 notifyList = gson.fromJson(json, type);
                 if (notifyList==null){
-                    Log.d(TAG, "onClick: notik 3");
 
                 }else {
-                    Log.d(TAG, "onClick: notik 1"+notifyList.size());
                     notifyList.remove(notification);
 
                     mNotification.remove(notification);
                     ArrayList<Notification> notifyList2=new ArrayList<>(notifyList);
-                    Log.d(TAG, "onClick: notik 2"+notifyList2.size());
 
                     for(Notification a:notifyList){
-                        if (a.getTimeStamp().equals(notification.getTimeStamp())){
+                        if (a.getTim().equals(notification.getTim())){
                             notifyList2.remove(a);
                         }
                     }
@@ -350,7 +344,7 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
                     String json1 = gson.toJson(notifyList2);
                     editor.putString("nl", json1);
                     editor.apply();
-                    Log.d(TAG, "onClick: notik 3"+notifyList2.size());
+
                     AdapterNotification2.this.notifyItemRemoved(i);
 
 

@@ -387,28 +387,28 @@ public class EditProfile extends AppCompatActivity {
         final String username = mUsername.getText().toString();
         final String description = mdescription.getText().toString();
         //if user made a change to username
-        if (!setting.getUsername().equals(username))
+        if (!setting.getU().equals(username))
             checkifuserexist(username);
 
-        if (!displayName.equals("") && !setting.getDisplay_name().equals(displayName))
-            myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_display)).setValue(displayName);
-        if (!setting.getDescription().equals(description))
-            myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_description)).setValue(description);
+        if (!displayName.equals("") && !setting.getDn().equals(displayName))
+            myRef.child(getString(R.string.dbname_users)).child(userID).child(getString(R.string.field_display_name)).setValue(displayName);
+        if (!setting.getDes().equals(description))
+            myRef.child(getString(R.string.dbname_users)).child(userID).child(getString(R.string.field_description)).setValue(description);
 
-        if (!gmail.equals("") && (setting.getEmail() == null || !setting.getEmail().equals(gmail)))
-            myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_email)).setValue(gmail);
-        if (!instagramProfile.equals("") && (setting.getInstagram() == null || !setting.getInstagram().equals(instagramProfile)))
-            myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_instagram)).setValue(instagramProfile);
-        if (!facebookProfile.equals("") && (setting.getFacebook() == null || !setting.getFacebook().equals(facebookProfile)))
-            myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_facebook)).setValue(facebookProfile);
-        if (!twitterProfile.equals("") && (setting.getTwitter() == null || !setting.getTwitter().equals(twitterProfile)))
-            myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_twitter)).setValue(twitterProfile);
-        if (!whatsappNo.equals("") && (setting.getWhatsapp() == null || !setting.getWhatsapp().equals(whatsappNo)))
-            myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_whatsapp)).setValue(whatsappNo);
+        if (!gmail.equals("") && (setting.getE() == null || !setting.getE().equals(gmail)))
+            myRef.child(getString(R.string.dbname_users)).child(userID).child(getString(R.string.field_email)).setValue(gmail);
+        if (!instagramProfile.equals("") && (setting.getIn() == null || !setting.getIn().equals(instagramProfile)))
+            myRef.child(getString(R.string.dbname_users)).child(userID).child(getString(R.string.field_instagram)).setValue(instagramProfile);
+        if (!facebookProfile.equals("") && (setting.getFb() == null || !setting.getFb().equals(facebookProfile)))
+            myRef.child(getString(R.string.dbname_users)).child(userID).child(getString(R.string.field_facebook)).setValue(facebookProfile);
+        if (!twitterProfile.equals("") && (setting.getTw() == null || !setting.getTw().equals(twitterProfile)))
+            myRef.child(getString(R.string.dbname_users)).child(userID).child(getString(R.string.field_twitter)).setValue(twitterProfile);
+        if (!whatsappNo.equals("") && (setting.getWa() == null || !setting.getWa().equals(whatsappNo)))
+            myRef.child(getString(R.string.dbname_users)).child(userID).child(getString(R.string.field_whatsapp)).setValue(whatsappNo);
 
-        myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_link1)).setValue(externalLink1);
-        myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_link2)).setValue(externalLink2);
-        myRef.child(getString(R.string.dbname_user_account_settings)).child(userID).child(getString(R.string.field_link3)).setValue(externalLink3);
+        myRef.child(getString(R.string.dbname_users)).child(userID).child(getString(R.string.field_link1)).setValue(externalLink1);
+        myRef.child(getString(R.string.dbname_users)).child(userID).child(getString(R.string.field_link2)).setValue(externalLink2);
+        myRef.child(getString(R.string.dbname_users)).child(userID).child(getString(R.string.field_link3)).setValue(externalLink3);
 
         if (photoChanged) {
             Log.d(TAG, "uploadNewPhoto: uploading new PROFILE photo" + (mContext.getString(R.string.profile_photo)));
@@ -496,46 +496,46 @@ public class EditProfile extends AppCompatActivity {
         setting = userSetting;
 
         Glide.with(EditProfile.this)
-                .load(setting.getProfile_photo())
+                .load(setting.getPp())
                 .placeholder(R.drawable.load)
                 .error(R.drawable.default_image2)
                 .placeholder(R.drawable.load)
                 .thumbnail(0.2f)
                 .into(mProfilephoto);
 
-        mDisplayname.setText(setting.getDisplay_name());
-        mUsername.setText(setting.getUsername());
-        mdescription.setText(setting.getDescription());
+        mDisplayname.setText(setting.getDn());
+        mUsername.setText(setting.getU());
+        mdescription.setText(setting.getDes());
 
-        if (userSetting.getLink1() == null || userSetting.getLink1().equals(""))
+        if (userSetting.getl1() == null || userSetting.getl1().equals(""))
             link1Container.setVisibility(View.GONE);
-        else mLink1.setText(userSetting.getLink1());
-        if (userSetting.getLink2() == null || userSetting.getLink2().equals(""))
+        else mLink1.setText(userSetting.getl1());
+        if (userSetting.getl2() == null || userSetting.getl2().equals(""))
             link2Container.setVisibility(View.GONE);
-        else mLink2.setText(userSetting.getLink2());
-        if (userSetting.getLink3() == null || userSetting.getLink3().equals(""))
+        else mLink2.setText(userSetting.getl2());
+        if (userSetting.getl3() == null || userSetting.getl3().equals(""))
             link3Container.setVisibility(View.GONE);
-        else mLink3.setText(userSetting.getLink3());
+        else mLink3.setText(userSetting.getl3());
 
-        if (userSetting.getEmail() == null || userSetting.getEmail().equals(""))
+        if (userSetting.getE() == null || userSetting.getE().equals(""))
             mGmailLink.setAlpha(0.5f);
-        else gmail = userSetting.getEmail();
+        else gmail = userSetting.getE();
 
-        if (userSetting.getInstagram() == null || userSetting.getInstagram().equals(""))
+        if (userSetting.getIn() == null || userSetting.getIn().equals(""))
             mInstagramLink.setAlpha(0.5f);
-        else instagramProfile = userSetting.getInstagram();
+        else instagramProfile = userSetting.getIn();
 
-        if (userSetting.getFacebook() == null || userSetting.getFacebook().equals(""))
+        if (userSetting.getFb() == null || userSetting.getFb().equals(""))
             mFacebookLink.setAlpha(0.5f);
-        else facebookProfile = userSetting.getFacebook();
+        else facebookProfile = userSetting.getFb();
 
-        if (userSetting.getTwitter() == null || userSetting.getTwitter().equals(""))
+        if (userSetting.getTw() == null || userSetting.getTw().equals(""))
             mTwitterLink.setAlpha(0.5f);
-        else twitterProfile = userSetting.getTwitter();
+        else twitterProfile = userSetting.getTw();
 
-        if (userSetting.getWhatsapp() == null || userSetting.getWhatsapp().equals(""))
+        if (userSetting.getWa() == null || userSetting.getWa().equals(""))
             mWhatsappLink.setAlpha(0.5f);
-        else whatsappNo = userSetting.getWhatsapp();
+        else whatsappNo = userSetting.getWa();
     }
 
     @TargetApi(19)

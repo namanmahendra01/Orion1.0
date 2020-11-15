@@ -83,14 +83,13 @@ public class public_voting_media extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             ParticipantList participantList = snapshot.getValue(ParticipantList.class);
-                            Log.d(TAG, "onDataChange: join" + participantList.toString());
 
                             participantLists.add(participantList);
                         }
                        imgURLsList.addAll(participantLists);
                         boolean isImage=false;
-                        if (imgURLsList.size()!=0&&imgURLsList.get(0).getMediaLink().length()>23){
-                            isImage= imgURLsList.get(0).getMediaLink().substring(8,23).equals("firebasestorage");
+                        if (imgURLsList.size()!=0&&imgURLsList.get(0).getMl().length()>23){
+                            isImage= imgURLsList.get(0).getMl().substring(8,23).equals("firebasestorage");
 
                         }
                         if (isImage){

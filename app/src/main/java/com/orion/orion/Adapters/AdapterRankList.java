@@ -50,10 +50,10 @@ public class AdapterRankList extends RecyclerView.Adapter<AdapterRankList.ViewHo
 
         ParticipantList mparticipantList = participantLists.get(i);
 
-        holder.totalScore.setText(String.valueOf(mparticipantList.getTotalScore()));
+        holder.totalScore.setText(String.valueOf(mparticipantList.getTs()));
         holder.rankNum.setText(String.valueOf(i + 1));
 
-        getParticipantDetails(mparticipantList.getUserid(), holder.username, holder.profile);
+        getParticipantDetails(mparticipantList.getUi(), holder.username, holder.profile);
 
 
         holder.username.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +63,7 @@ public class AdapterRankList extends RecyclerView.Adapter<AdapterRankList.ViewHo
                 Intent i = new Intent(mContext, profile.class);
                 i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                i.putExtra(mContext.getString(R.string.intent_user),mparticipantList.getUserid());
+                i.putExtra(mContext.getString(R.string.intent_user),mparticipantList.getUi());
                 mContext.startActivity(i);
             }
         });
@@ -80,9 +80,9 @@ public class AdapterRankList extends RecyclerView.Adapter<AdapterRankList.ViewHo
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user = dataSnapshot.getValue(users.class);
-                        username.setText(user.getUsername());
+                        username.setText(user.getU());
                         Glide.with(mContext)
-                                .load(user.getProfile_photo())
+                                .load(user.getPp())
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)
                                 .placeholder(R.drawable.load)
@@ -103,7 +103,7 @@ public class AdapterRankList extends RecyclerView.Adapter<AdapterRankList.ViewHo
     }
     public long getItemId(int position) {
         ParticipantList form = participantLists.get(position);
-        return form.getJoiningKey().hashCode();
+        return form.getJi().hashCode();
     }
     @Override
     public int getItemCount() {

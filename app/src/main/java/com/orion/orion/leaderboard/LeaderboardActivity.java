@@ -127,15 +127,15 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 //                            String user_id = singleSnapshot.getKey();
 //                            assert user_id != null;
 //                            assert currentUser != null;
-//                            String username = currentUser.getUsername();
-//                            String domain = currentUser.getDomain();
-//                            String profilePhoto = currentUser.getProfile_photo();
+//                            String username = currentUser.getU();
+//                            String domain = currentUser.getD();
+//                            String profilePhoto = currentUser.getPp();
 //                            boolean changedFollowers=false;
 //                            boolean changedJoinedContest = false;
 //                            boolean changedCreateContest = false;
-//                            if(currentUser.getChangedFollowers()!=null && currentUser.getChangedFollowers().equals("false")) changedFollowers = currentUser.getChangedFollowers().equals("true");
-//                            if(currentUser.getChangedJoinedContest()!=null && currentUser.getChangedJoinedContest().equals("false")) changedJoinedContest = currentUser.getChangedJoinedContest().equals("true");
-//                            if(currentUser.getChangedCreateContest()!=null && currentUser.getChangedCreateContest().equals("false")) changedCreateContest = currentUser.getChangedCreateContest().equals("true");
+//                            if(currentUser.getCf()!=null && currentUser.getCf().equals("false")) changedFollowers = currentUser.getCf().equals("true");
+//                            if(currentUser.getCjc()!=null && currentUser.getCjc().equals("false")) changedJoinedContest = currentUser.getCjc().equals("true");
+//                            if(currentUser.getCcc()!=null && currentUser.getCcc().equals("false")) changedCreateContest = currentUser.getCcc().equals("true");
                             String user_id = singleSnapshot.getKey();
                             assert user_id != null;
                             String username = (String) singleSnapshot.child(getString(R.string.field_username)).getValue();
@@ -436,10 +436,10 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 
                                                 //details entries
                                                 int previousJoinedContests = 0;
-                                                if(dataSnapshot.child(getString(R.string.field_joined_contest)).getValue()!=null)
+                                                if(dataSnapshot.child(getString(R.string.joined_contest)).getValue()!=null)
                                                     previousJoinedContests = (int)(long) dataSnapshot.child(getString(R.string.joined_contest)).getValue();
                                                 int previousCreatedContest = 0;
-                                                if(dataSnapshot.child(getString(R.string.field_created_contest)).getValue()!=null)
+                                                if(dataSnapshot.child(getString(R.string.created_contest)).getValue()!=null)
                                                     previousCreatedContest = (int) (long)dataSnapshot.child(getString(R.string.created_contest)).getValue();
 
                                                 int all_time = 0;
@@ -581,8 +581,8 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                                 reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_this_month)).child(getString(R.string.field_contest)).setValue(this_month);
                                                 reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_week)).child(getString(R.string.field_contest)).setValue(last_week);
                                                 reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_this_week)).child(getString(R.string.field_contest)).setValue(this_week);
-                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_joined_contest)).setValue(joinedContest);
-                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_created_contest)).setValue(createdContest);
+                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.joined_contest)).setValue(joinedContest);
+                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.created_contest)).setValue(createdContest);
 
                                                 reference.child(getString(R.string.dbname_users)).child(user_id).child(getString(R.string.changedCreatedContest)).setValue("false");
                                                 reference.child(getString(R.string.dbname_users)).child(user_id).child(getString(R.string.changedJoinedContest)).setValue("false");
@@ -651,9 +651,9 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                         Log.d(TAG, "checkOrGetLocation: addresse" + addresses.get(0));
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         assert user != null;
-                        reference.child(getString(R.string.dbname_leaderboard)).child(user.getUid()).child(getString(R.string.field_last_known_location)).child("city").setValue(city);
-                        reference.child(getString(R.string.dbname_leaderboard)).child(user.getUid()).child(getString(R.string.field_last_known_location)).child("country").setValue(country);
-                        reference.child(getString(R.string.dbname_leaderboard)).child(user.getUid()).child(getString(R.string.field_last_known_location)).child("area").setValue(area);
+                        reference.child(getString(R.string.dbname_leaderboard)).child(user.getUid()).child(getString(R.string.field_last_known_location)).child(getString(R.string.field_city)).setValue(city);
+                        reference.child(getString(R.string.dbname_leaderboard)).child(user.getUid()).child(getString(R.string.field_last_known_location)).child(getString(R.string.field_country)).setValue(country);
+                        reference.child(getString(R.string.dbname_leaderboard)).child(user.getUid()).child(getString(R.string.field_last_known_location)).child(getString(R.string.field_area)).setValue(area);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -888,7 +888,11 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                 int rating;
                                 assert user_id != null;
                                 if (finalTypeParameter.equals("")) {
-                                    rating = (int) (long) dataSnapshot.child(user_id).child(finalTime).child(getString(R.string.field_post)).getValue() + (int) (long) dataSnapshot.child(user_id).child(finalTime).child(getString(R.string.field_followers)).getValue() + (int) (long) dataSnapshot.child(user_id).child(finalTime).child(getString(R.string.field_contest)).getValue();
+                                    rating = (int) (long) dataSnapshot.child(user_id)
+                                            .child(finalTime)
+                                            .child(getString(R.string.field_post)).getValue() + (int) (long) dataSnapshot.child(user_id)
+                                            .child(finalTime)
+                                            .child(getString(R.string.field_followers)).getValue() + (int) (long) dataSnapshot.child(user_id).child(finalTime).child(getString(R.string.field_contest)).getValue();
 //                                Log.d(TAG, "onDataChange: user_id"+user_id);
 //                                Log.d(TAG, "onDataChange: "+dataSnapshot.child(user_id));
                                 } else

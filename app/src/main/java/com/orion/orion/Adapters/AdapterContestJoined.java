@@ -5,7 +5,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,8 +35,6 @@ import com.orion.orion.models.JoinForm;
 
 import java.util.List;
 
-import static com.android.volley.VolleyLog.TAG;
-
 public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoined.ViewHolder> {
     private String mAppend = "";
 
@@ -63,8 +60,8 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
 
         JoinForm joiningForm= joiningForms.get(i);
         holder.relStatus.setVisibility(View.VISIBLE);
-        String key = joiningForm.getContestKey();
-        String userid=joiningForm.getHostId();
+        String key = joiningForm.getCi();
+        String userid=joiningForm.getHID();
 
         setgp(userid, holder.gp);
 
@@ -83,15 +80,13 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist));
         ref.child(key)
-                .child("participantlist")
-
+                .child(mContext.getString(R.string.field_Participant_List))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             holder.ok = true;
-                            Log.d(TAG, "onClick: lkj1" + holder.ok);
 
                         }
 
@@ -107,7 +102,6 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(mContext, holder.option);
                 popupMenu.getMenuInflater().inflate(R.menu.post_menu_contest, popupMenu.getMenu());
-                Log.d(TAG, "onClick: lkj" + holder.ok);
                 if (!holder.ok) {
                     popupMenu.getMenu().getItem(2).setVisible(false);
 
@@ -146,8 +140,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
                             builder.setPositiveButton("Report", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Log.d(TAG, "DeleteMessage: deleteing message");
-                                    ReportPost(joiningForm.getContestKey(),joiningForm.getHostId(), holder.p);
+                                    ReportPost(joiningForm.getCi(),joiningForm.getHID(), holder.p);
 
                                 }
                             });
@@ -172,11 +165,11 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
         });
 
 //
-        String status = joiningForm.getStatus();
+        String status = joiningForm.getSt();
         holder.status.setText(status);
 
 
-        getcontestDetails(joiningForm.getHostId(),joiningForm.getContestKey(),holder.poster
+        getcontestDetails(joiningForm.getHID(),joiningForm.getCi(),holder.poster
                 ,holder.title,holder.host,holder.regEnd,holder.totalP,holder.entryFee,holder.domain,holder.progress);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -184,17 +177,17 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
             public void onClick(View v) {
                 if (status.equals("waiting") || status.equals("Rejected")) {
                     Intent i = new Intent(mContext.getApplicationContext(), ViewContestDetails.class);
-                    i.putExtra("userId", joiningForm.getHostId());
-                    i.putExtra("contestId", joiningForm.getContestKey());
+                    i.putExtra("userId", joiningForm.getHID());
+                    i.putExtra("contestId", joiningForm.getCi());
                     i.putExtra("Vote","No");
                     i.putExtra("reg", "No");
                     mContext.startActivity(i);
                 }else{
 
                     Intent i = new Intent(mContext.getApplicationContext(), joined_contest_overview_activity.class);
-                    i.putExtra("userId", joiningForm.getHostId());
-                    i.putExtra("contestId", joiningForm.getContestKey());
-                    i.putExtra("joiningKey", joiningForm.getJoiningKey());
+                    i.putExtra("userId", joiningForm.getHID());
+                    i.putExtra("contestId", joiningForm.getCi());
+                    i.putExtra("joiningKey", joiningForm.getJi());
 
                     mContext.startActivity(i);
                 }
@@ -206,7 +199,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
     @Override
     public long getItemId(int position) {
         JoinForm form = joiningForms.get(position);
-        return form.getJoiningKey().hashCode();
+        return form.getJi().hashCode();
     }
     @Override
     public int getItemCount() {
@@ -252,7 +245,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(mContext.getString(R.string.dbname_contests))
                 .child(userid)
-                .child("completed")
+                .child(mContext.getString(R.string.field_contest_completed))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -261,7 +254,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                             reference.child(mContext.getString(R.string.dbname_contests))
                                     .child(userid)
-                                    .child("reports")
+                                    .child(mContext.getString(R.string.field_contest_reports))
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -294,91 +287,78 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
                 });
     }
 
-    private void ReportPost(String contestId,String userid, int p) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child(mContext.getString(R.string.dbname_contestlist))
+    private void ReportPost(String contestId,String userId, int p) {
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist))
                 .child(contestId)
-                .child("tr")
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                            Toast.makeText(mContext, "You already reported this contest.", Toast.LENGTH_SHORT).show();
+                .child(mContext.getString(R.string.field_contest_report_list));
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                    Toast.makeText(mContext, "You already reported this contest.", Toast.LENGTH_SHORT).show();
 
-                        } else {
+                } else {
 
 
-                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                            reference.child(mContext.getString(R.string.dbname_contestlist))
-                                    .child(contestId)
-                                    .child("tr")
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .setValue(true)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    reference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .setValue(true)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-
-                                            DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
-                                            reference2.child(mContext.getString(R.string.dbname_contestlist))
-                                                    .child(contestId)
-                                                    .child("tr")
-                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                            long i = snapshot.getChildrenCount();
-                                                            if ((((i + 1) / p) * 100) > 60) {
-                                                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                                                                reference.child(mContext.getString(R.string.dbname_contests))
-                                                                        .child(userid)
-                                                                        .child("reports")
-                                                                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                            @Override
-                                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                                if (snapshot.exists()) {
-                                                                                    long x = (long) snapshot.getValue();
-                                                                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                                                                                    reference.child(mContext.getString(R.string.dbname_contests))
-                                                                                            .child(userid)
-                                                                                            .child("reports")
-                                                                                            .setValue(x + 1);
-                                                                                } else {
-                                                                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                                                                                    reference.child(mContext.getString(R.string.dbname_contests))
-                                                                                            .child(userid)
-                                                                                            .child("reports")
-                                                                                            .setValue(0);
-                                                                                }
-                                                                            }
-
-                                                                            @Override
-                                                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                                                            }
-                                                                        });
-                                                            }
-
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            long i = snapshot.getChildrenCount();
+                                            if ((((i + 1) / p) * 100) > 60) {
+                                                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
+                                                        .child(mContext.getString(R.string.dbname_contests))
+                                                        .child(userId)
+                                                        .child(mContext.getString(R.string.field_contest_reports));
+                                                reference1.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        if (snapshot.exists()) {
+                                                            long x = (long) snapshot.getValue();
+                                                            reference1
+                                                                    .setValue(x + 1);
+                                                        } else {
+                                                            reference1
+                                                                    .setValue(1);
                                                         }
+                                                    }
 
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError error) {
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                                        }
-                                                    });
+                                                    }
+                                                });
+                                            }
 
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
 
                                         }
                                     });
 
-                        }
-                    }
+
+                                }
+                            });
+
+                }
+            }
 
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+            }
+        });
     }
+
 
     private  void getcontestDetails(String userid, String contestid, ImageView poster, TextView title,
                                     TextView host, TextView regend, TextView totalp, TextView entryfee, TextView domain, ImageView progress){
@@ -392,15 +372,15 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 CreateForm createForm=dataSnapshot.getValue(CreateForm.class);
                 assert createForm != null;
-                title.setText(createForm.getTitle());
-                host.setText(createForm.getHost());
-                regend.setText(createForm.getRegEnd());
-                totalp.setText(createForm.getTotal_prize());
-                entryfee.setText(createForm.getEntryfee());
-                domain.setText(createForm.getDomain());
-                Log.d(TAG, "onDataChange: image"+createForm.getPoster() );
+                title.setText(createForm.getCt());
+                host.setText(createForm.getHst());
+                regend.setText(createForm.getRe());
+                totalp.setText(createForm.getTp());
+                entryfee.setText(createForm.getEf());
+                domain.setText(createForm.getD());
+
                 Glide.with(mContext)
-                        .load(createForm.getPoster())
+                        .load(createForm.getPo())
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)
                         .placeholder(R.drawable.load)

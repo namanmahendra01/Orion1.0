@@ -11,8 +11,6 @@
     <string name="app_name">orion</string>
 
     <!--    Databases-->
-    <string name="dbname_users">users</string>
-    <string name="dbname_user_account_settings">users</string>
 
     <string name="edit_profile">Edit Pofile</string>
     <string name="sign_out">Sign Out</string>
@@ -20,126 +18,195 @@
     <string name="view_post_fragment">View Post</string>
     <string name="calling_activity">calling_activity</string>
     <string name="profile_activity">profile_activity</string>
-    <string name="field_username">username</string>
-    <string name="field_email">email</string>
-    <string name="field_display">display_name</string>
-    <string name="field_user_id">user_id</string>
-    <string name="field_website">website</string>
-    <string name="field_description">description</string>
-    <string name="field_phone_number">phone_number</string>
-    <string name="field_caption">caption</string>
-    <string name="field_date_createdr">date_created</string>
-    <string name="field_photo_id">photo_id</string>
-    <string name="field_tags">tags</string>
-    <string name="confirm_password_dialog">ConfirmPasswordDialog</string>
-    <string name="gallery">GALLERY</string>
-    <string name="camera">CAMERA</string>
 
-    <string name="open_camera">OPEN CAMERA</string>
-    <string name="photo">PHOTO</string>
-    <string name="string_next">NEXT</string>
-    <string name="string_share">SHARE</string>
+    <string name="confirm_password_dialog">ConfirmPasswordDialog</string>
+
 
     <string name="selected_image">selected_image</string>
     <string name="selected_bitmap">selected_bitmap</string>
-    <string name="dbname_user_photos">user_photos</string>
-    <string name="dbname_photos">photos</string>
-    <string name="new_photo">new_photo</string>
-    <string name="profile_photo">profile_photo</string>
+
     <string name="return_to_fragment">return_to_fragment</string>
     <string name="activity_number">activity_number</string>
-    <string name="field_likes">likes</string>
-    <string name="field_image_path">image_path</string>
-    <string name="field_photo_path">photo_path</string>
+
     <string name="comments">Comments</string>
     <string name="view_comment_fragment">View Comments</string>
-    <string name="field_comment">comment</string>
+
     <string name="search_activity">Search Activity</string>
     <string name="intent_user">intent_user</string>
     <string name="view_profile_fragment">ViewProfile</string>
-    <string name="dbname_following">following</string>
 
-    <string name="dbname_follower">followers</string>
     <string name="bundle_user_accountsetting">bundle_user_accountsetting</string>
     <string name="bundle_photo">bundle_photo</string>
     <string name="home">Home Activity</string>
     <string name="his_UID">his_UID</string>
 
-    <string name="dbname_Chats">Chats</string>
     <string name="entryfee_prompt">Select here</string>
-    <string name="dbname_contests">Contests</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="descrip">Andreu World launches its 20th international design contest and opens registration for 2020 to both students and professionals worldwide. Participants are invited to design an item of furniture (chair and/or table) based on specifications provided in a brief. The best design for 2020 will be awarded with 4,000 Euro and the second-best, with 2,000 Euro. A maximum of four (4) non-monetary prizes will also be announced. The competition briefing implies the following requirements:</string>
     <string name="rule">Chairs (chairs, armchairs, lounge chairs, stools, benches and sofas): The main material shall be wood and upholstery. Beech, ash, oak, or walnut should be the wood species utilized, in either solid or plywood version. The Kvadrat textile collections should be used for upholstered pieces. The use of other materials such as metal, thermopolymer, and aluminum will also be accepted. Tables (meeting table, living tables and occasional tables): The principal material shall be “Solid Textile Board by Really” – a high-density material manufactured from Kvadrat textiles at the end of their life-cycle. The use of other materials such as wood, plywood, laminate, glass, metal, thermopolymer, and natural stones will be accepted. All designs presented should be new, not having been marketed or disclosed prior to the date of the Contest.</string>
-    <string name="created_contest">created_contest</string>
-    <string name="joined_contest">joined_contest</string>
-    <string name="dbname_contestlist">ContestList</string>
-    <string name="dbname_participantList">ParticipantList</string>
-    <string name="voting_list">VotingList</string>
-    <string name="juryMarks">juryMarks</string>
+
 
 
     <!-- Databses names-->
-
-
+    <string name="dbname_users">users</string>
+    <string name="dbname_contests">Contests</string>
+    <string name="dbname_follower">followers</string>
+    <string name="dbname_following">following</string>
+    <string name="dbname_user_photos">user_photos</string>
+    <string name="dbname_contestlist">ContestList</string>
+    <string name="dbname_participantList">ParticipantList</string>
     <string name="dbname_leaderboard">Leaderboard</string>
-
-    <!-- Field Names -->
-    <string name="field_posts">posts</string>
-    <string name="field_followers">followers</string>
-    <string name="field_contest_title">title</string>
-    <string name="field_contest_organized_by">organized_by</string>
-    <string name="field_contest_prize">prize</string>
-    <string name="field_contest_description">description</string>
-    <string name="field_all_time">all_time</string>
-    <string name="field_yearly">yearly</string>
-    <string name="field_last_month">last_month</string>
-    <string name="field_this_month">this_month</string>
-    <string name="field_last_week">last_week</string>
-    <string name="field_this_week">this_week</string>
-    <string name="field_follow">follow</string>
-    <string name="field_contest">contest</string>
-    <string name="field_joined_contest">joined_contest</string>
-    <string name="field_created_contest">created_contest</string>
-    <string name="field_last_updated">last_updated</string>
-    <string name="field_last_known_location">last_known_location</string>
-    <string name="field_month">month</string>
-    <string name="field_year">year</string>
-    <string name="field_date">date</string>
-    <string name="field_country">country</string>
-    <string name="field_city">city</string>
-    <string name="field_area">area</string>
+    <string name="dbname_Chats">Chats</string>
     <string name="dbname_request">Requests</string>
     <string name="dbname_promote">Promote</string>
-    <string name="domain">domain</string>
-    <string name="field_domain">domain</string>
-    <string name="field_follower">follower</string>
-    <string name="field_post">post</string>
     <string name="dbname_reports">Reports</string>
-    <string name="post_updates">Post_updates</string>
     <string name="dbname_ChatList">ChatList</string>
-    <string name="thumbnail">thumbnail</string>
-    <string name="type">type</string>
     <string name="db_topUsersParams">db_topUsersParams</string>
-    <string name="field_last_updated_topUsers">last_updated_topUsers</string>
-    <string name="field_overall">Overall</string>
-    <string name="field_completed">completed</string>
-    <string name="contest_update">contest_update</string>
-    <string name="changedFollowers">changedFollowers</string>
-    <string name="changedJoinedContest">changedJoinedContest</string>
-    <string name="changedCreatedContest">changedCreatedContest</string>
-    <string name="field_instagram">instagram</string>
-    <string name="field_facebook">facebook</string>
-    <string name="field_twitter">twitter</string>
-    <string name="field_whatsapp">whatsapp</string>
-    <string name="db_posts_deleted">deleted_posts</string>
-    <string name="explore_update">explore_update</string>
     <string name="dbname_username">username</string>
-    <string name="field_link1">link1</string>
-    <string name="field_link2">link2</string>
-    <string name="field_link3">link3</string>
 
-    field_post
+
+
+    <!-- Field Names -->
+    <string name="field_followers">f</string>
+    <string name="field_promotes">pmt</string>
+    <string name="field_contest_title">ct</string>
+    <string name="field_contest_organized_by">cob</string>
+    <string name="field_contest_description">cd</string>
+    <string name="field_all_time">at</string>
+    <string name="field_yearly">y</string>
+    <string name="field_last_month">lm</string>
+    <string name="field_this_month">tm</string>
+    <string name="field_last_week">lw</string>
+    <string name="field_this_week">tw</string>
+    <string name="field_contest">c</string>
+    <string name="field_last_updated">lu</string>
+    <string name="field_last_known_location">lkl</string>
+    <string name="field_month">m</string>
+    <string name="field_country">cntry</string>
+    <string name="field_city">cty</string>
+    <string name="field_area">area</string>
+    <string name="field_domain">d</string>
+    <string name="field_post">p</string>
+    <string name="post_updates">pu</string>
+    <string name="thumbnail">t</string>
+    <string name="type">ty</string>
+    <string name="field_last_updated_topUsers">luu</string>
+    <string name="field_overall">o</string>
+    <string name="field_completed">cmp</string>
+    <string name="contest_update">cu</string>
+    <string name="changedFollowers">cf</string>
+    <string name="changedJoinedContest">cjc</string>
+    <string name="changedCreatedContest">ccc</string>
+    <string name="field_instagram">in</string>
+    <string name="field_facebook">fb</string>
+    <string name="field_twitter">tw</string>
+    <string name="field_whatsapp">wa</string>
+    <string name="db_posts_deleted">dp</string>
+    <string name="explore_update">eu</string>
+    <string name="field_link1">l1</string>
+    <string name="field_link2">l2</string>
+    <string name="field_link3">l3</string>
+    <string name="created_contest">cc</string>
+    <string name="joined_contest">jc</string>
+    <string name="voting_list">vl</string>
+    <string name="juryMarks">jm</string>
+    <string name="field_comment">cmnt</string>
+    <string name="profile_photo">pp</string>
+    <string name="field_likes">l</string>
+    <string name="field_image_path">ip</string>
+    <string name="field_username">u</string>
+    <string name="field_email">e</string>
+    <string name="field_display_name">dn</string>
+    <string name="field_user_id">ui</string>
+    <string name="field_website">web</string>
+    <string name="field_description">des</string>
+    <string name="field_phone_number">pn</string>
+    <string name="field_Notifications">n</string>
+    <string name="field_caption">cap</string>
+    <string name="field_date_createdr">dc</string>
+    <string name="field_photo_id">pi</string>
+    <string name="field_tags">tg</string>
+    <string name="field_Participant_List">pl</string>
+    <string name="gp_displayer_tittle">GP:GENUINE PERCENTAGE</string>
+    <string name="delete_message_prompt">Are you sure, you want to delete this message?</string>
+    <string name="delete_post_prompt">Are you sure, you want to delete this Post?</string>
+    <string name="remove_promotion_prompt">"Are you sure, you want to remove this Promotion?"</string>
+    <string name="promotion_prompt">"Are you sure, you want to promote this Post?"</string>
+
+    <string name="field_contest_completed">c_cmp</string>
+    <string name="field_contest_reports">c_rprt</string>
+    <string name="field_contest_report_list">rl</string>
+    <string name="report_prompt">Are you sure, you want to Report this Contest?</string>
+    <string name="report_post_prompt">Are you sure, you want to Report this Post?</string>
+
+    <string name="gp_diplayer_description">This is the percentage showing how much genuine this host is.</string>
+    <string name="field_total_voters_list">tvl</string>
+    <string name="delete_notification_prompt">Are you sure, you want to delete this Notification?</string>
+    <string name="remove_participant_prompt">Are you sure, you want to remove this Participant?</string>
+    <string name="field_status">st</string>
+    <string name="field_joined_updates">ju</string>
+    <string name="reject_participant_prompt">Are you sure, you want to Reject this Participant?</string>
+    <string name="allow_participanr_prompt">Are you sure, you want to Allow this Participant?</string>
+    <string name="field_open_for">of</string>
+    <string name="field_view">v</string>
+    <string name="field_total_score">ts</string>
+    <string name="field_rule">rul</string>
+    <string name="field_contest_created_updates">ccu</string>
+    <string name="field_contest_joined_updates">cju</string>
+    <string name="field_result">r</string>
+    <string name="field_media_link">ml</string>
+    <string name="field_jury_pic_1">jp1</string>
+    <string name="field_jury_pic_2">jp2</string>
+    <string name="field_jury_pic_3">jp3</string>
+    <string name="field_poster">po</string>
+    <string name="field_id_link">il</string>
+    <string name="field_contest_judged">cj</string>
+    <string name="field_contest_wins">cw</string>
+    <string name="field_contest_participated">cp</string>
+    <string name="field_sender_ID">sID</string>
+    <string name="field_receiver_ID">rID</string>
+    <string name="field_message">msg</string>
+    <string name="field_timestamp">tim</string>
+    <string name="field_if_seen">ifs</string>
+    <string name="field_message_ID">mID</string>
+    <string name="field_entry_fee">ef</string>
+    <string name="field_contest_ID">ci</string>
+    <string name="field_vote_type">vt</string>
+    <string name="field_registration_begin">rb</string>
+    <string name="field_registration_end">re</string>
+    <string name="field_voting_begin">vb</string>
+    <string name="field_voting_end">ve</string>
+    <string name="field_max_participant_limit">mLt</string>
+    <string name="field_winners_declare">wd</string>
+    <string name="field_file_type">ft</string>
+    <string name="field_total_prize">tp</string>
+    <string name="field_place1_prize">p1</string>
+    <string name="field_place2_prize">p2</string>
+    <string name="field_place3_prize">p3</string>
+    <string name="field_jury_name_1">jn1</string>
+    <string name="field_jury_name_2">jn2</string>
+    <string name="field_jury_name_3">jn3</string>
+    <string name="field_host">hst</string>
+    <string name="field_college">clg</string>
+    <string name="field_joining_ID">ji</string>
+    <string name="field_jury_comment1">c1</string>
+    <string name="field_jury_comment2">c2</string>
+    <string name="field_jury_comment3">c3</string>
+    <string name="field_jury_1">j1</string>
+    <string name="field_jury_2">j2</string>
+    <string name="field_jury_3">j3</string>
+    <string name="field_notification_message">not</string>
+
+    <string name="field_promotion_time_start">tiS</string>
+    <string name="field_promotion_time_end">tiE</string>
+    <string name="field_promoter_ID">pID</string>
+    <string name="field_story_ID">stID</string>
+    <string name="field_rating">rat</string>
+
+
+
+
+
 
 
     <string-array name="entryfee">

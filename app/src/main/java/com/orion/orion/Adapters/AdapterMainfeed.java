@@ -158,14 +158,13 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 //          Initialize SharedPreference variables
         sp = mContext.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
-        Log.d(TAG, "onBindViewHolder: " + photo.getType() + photos.size());
 
 
         holder.eclipse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(mContext, holder.eclipse);
-                if (photo.getUser_id().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                if (photo.getUi().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                     popupMenu.getMenuInflater().inflate(R.menu.post_menu, popupMenu.getMenu());
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
@@ -173,7 +172,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                             builder.setTitle("Delete");
-                            builder.setMessage("Are you sure, you want to delete this Post?");
+                            builder.setMessage(mContext.getString(R.string.delete_post_prompt));
 
 //                set buttons
                             builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
@@ -207,7 +206,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                             builder.setTitle("Report");
-                            builder.setMessage("Are you sure, you want to Report this Post?");
+                            builder.setMessage(mContext.getString(R.string.report_post_prompt));
 
 //                set buttons
                             builder.setPositiveButton("Report", new DialogInterface.OnClickListener() {
@@ -237,19 +236,18 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         });
 
 
-        numberofPromote(holder.promoteNum, photo.getPhoto_id(), photo.getUser_id(), holder);
+        numberofPromote(holder.promoteNum, photo.getPi(), photo.getUi(), holder);
 //            set the comment
         List<Comment> comments = photo.getComments();
-        Log.d(TAG, "onBindViewHolder: comment 1"+comments);
-        Log.d(TAG, "onBindViewHolder: comment 2"+comments.size());
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
 
         Query query = reference
                 .child(mContext.getString(R.string.dbname_user_photos))
-                .child(photo.getUser_id())
-                .child(photo.getPhoto_id())
-                .child("comment");
+                .child(photo.getUi())
+                .child(photo.getPi())
+                .child(mContext.getString(R.string.field_comment));
         query  .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -270,8 +268,8 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
 
 //        get time
-        holder.timeDate.setText(photo.getDate_created().substring(0, 10));
-        holder.caption.setText(photo.getCaption());
+        holder.timeDate.setText(photo.getDc().substring(0, 10));
+        holder.caption.setText(photo.getCap());
 
 //        get post
 
@@ -279,15 +277,14 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 //       ******************* get Image***************
 
 
-        holder.type = photo.getType();
-        Log.d(TAG, "onBindViewHolder: lll"+photo);
+        holder.type = photo.getTy();
         if (holder.type!= null &&  holder.type.equals("photo")) {
             holder.image.setVisibility(View.VISIBLE);
             holder.play2.setVisibility(View.GONE);
             holder.playerView.setVisibility(GONE);
 
             Glide.with(holder.itemView.getContext())
-                    .load(photo.getImage_path())
+                    .load(photo.getIp())
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)
                     .placeholder(R.drawable.load)
@@ -295,7 +292,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                     .into(holder.image);
         } else {
             Glide.with(holder.itemView.getContext())
-                    .load(photo.getThumbnail())
+                    .load(photo.getT())
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)
                     .placeholder(R.drawable.load)
@@ -370,10 +367,8 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             @Override
             public void onClick(View view) {
                 holder.progressBar.setVisibility(View.VISIBLE);
-                Log.d(TAG, "onClick: play 1");
 //                if paused
                 if (holder.play) {
-                    Log.d(TAG, "onClick: play 2");
                     holder.play = false;
                     holder.play2.setVisibility(View.INVISIBLE);
 
@@ -383,21 +378,16 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                     BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
                     TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
                     if (simpleExoPlayer != null) {
-                        Log.d(TAG, "onClick: play 3");
                         simpleExoPlayer.release();
                     }
 
                     simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(mContext, trackSelector, loadControl);
-                    Log.d(TAG, "onClick: play 4");
                     DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
                             mContext, Util.getUserAgent(mContext, "RecyclerView VideoPlayer"));
-                    String mediaUrl = photo.getImage_path();
-                    Log.d(TAG, "onClick: play 5");
+                    String mediaUrl = photo.getIp();
                     HttpProxyCacheServer proxy = getProxy(mContext);
-                    Log.d(TAG, "onClick: play 6");
                     String proxyUrl = proxy.getProxyUrl(mediaUrl);
 
-                    Log.d(TAG, "onClick: play 7");
                     holder.playerView.setPlayer(simpleExoPlayer);
 
 
@@ -407,7 +397,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
                     MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
                             .createMediaSource(Uri.parse(proxyUrl));
-                    Log.d(TAG, "onClick: play 8");
 //                    set Volume
                     if (holder.mute.getVisibility() == View.VISIBLE) {
                         simpleExoPlayer.setVolume(0f);
@@ -424,29 +413,24 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                     simpleExoPlayer.addListener(new Player.EventListener() {
                         @Override
                         public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
-                            Log.d(TAG, "onClick: play 9");
                         }
 
                         @Override
                         public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-                            Log.d(TAG, "onClick: play 10");
                         }
 
                         @Override
                         public void onLoadingChanged(boolean isLoading) {
-                            Log.d(TAG, "onClick: play 11");
                         }
 
                         @Override
                         public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
 
                             if (playbackState == Player.STATE_BUFFERING) {
-                                Log.d(TAG, "onClick: play 12");
                                 holder.progressBar.setVisibility(View.VISIBLE);
 
 
                             } else if (playbackState == Player.STATE_READY) {
-                                Log.d(TAG, "onClick: play 13");
                                 holder.thumbnail.setVisibility(GONE);
                                 holder.duration.setVisibility(View.VISIBLE);
                                 holder.progressBar.setVisibility(View.GONE);
@@ -477,7 +461,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
 
                             } else if (playbackState == Player.STATE_ENDED) {
-                                Log.d(TAG, "onClick: play 15");
                                 holder.play2.setVisibility(View.VISIBLE);
                                 holder.play = true;
                                 holder.thumbnail.setVisibility(View.VISIBLE);
@@ -486,7 +469,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                                 simpleExoPlayer.release();
 
                             } else if (playbackState == Player.STATE_IDLE) {
-                                Log.d(TAG, "onClick: play 16");
                                 holder.play2.setVisibility(View.VISIBLE);
 
                             }
@@ -522,7 +504,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                         }
                     });
                 } else {
-                    Log.d(TAG, "onClick: play 17");
 //                    if playing
                     holder.play = true;
                     holder.play2.setVisibility(View.VISIBLE);
@@ -568,12 +549,12 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 //        get username
         DatabaseReference reference3 = FirebaseDatabase.getInstance().getReference();
         Query query3 = reference3
-                .child(mContext.getString(R.string.dbname_user_account_settings))
-                .child(photo.getUser_id());
+                .child(mContext.getString(R.string.dbname_users))
+                .child(photo.getUi());
         query3.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot singleSnapshot) {
-                currentUsername = singleSnapshot.getValue(users.class).getUsername();
+                currentUsername = singleSnapshot.getValue(users.class).getU();
 
                 holder.username.setText(currentUsername);
                 holder.credit.setText("© " + currentUsername);
@@ -585,12 +566,12 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                         Intent i = new Intent(mContext, profile.class);
                         i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                        i.putExtra(mContext.getString(R.string.intent_user), photo.getUser_id());
+                        i.putExtra(mContext.getString(R.string.intent_user), photo.getUi());
                         mContext.startActivity(i);
                     }
                 });
                 Glide.with(mContext)
-                        .load(singleSnapshot.getValue(users.class).getProfile_photo())
+                        .load(singleSnapshot.getValue(users.class).getPp())
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)
                         .placeholder(R.drawable.load)
@@ -602,7 +583,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                         Intent i = new Intent(mContext, profile.class);
                         i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                        i.putExtra(mContext.getString(R.string.intent_user), photo.getUser_id());
+                        i.putExtra(mContext.getString(R.string.intent_user), photo.getUi());
                         mContext.startActivity(i);
                     }
                 });
@@ -613,8 +594,8 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(mContext, CommentActivity.class);
-                        i.putExtra("photoId", photo.getPhoto_id());
-                        i.putExtra("userId", photo.getUser_id());
+                        i.putExtra("photoId", photo.getPi());
+                        i.putExtra("userId", photo.getUi());
                         mContext.startActivity(i);
                     }
                 });
@@ -632,19 +613,19 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             public void onClick(View v) {
                 DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
                 db1.child(mContext.getString(R.string.dbname_user_photos))
-                        .child(photo.getUser_id())
-                        .child(photo.getPhoto_id())
+                        .child(photo.getUi())
+                        .child(photo.getPi())
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 holder.photo = snapshot.getValue(Photo.class);
                                 ArrayList<Comment> comments = new ArrayList<>();
 
-                                for (DataSnapshot dSnapshot : snapshot.child("comment").getChildren()) {
+                                for (DataSnapshot dSnapshot : snapshot.child(mContext.getString(R.string.field_comment)).getChildren()) {
                                     Comment comment = new Comment();
-                                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                    comment.setUi(dSnapshot.getValue(Comment.class).getUi());
+                                    comment.setC(dSnapshot.getValue(Comment.class).getC());
+                                    comment.setDc(dSnapshot.getValue(Comment.class).getDc());
                                     comments.add(comment);
 
 
@@ -673,19 +654,19 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             public void onClick(View v) {
                 DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
                 db1.child(mContext.getString(R.string.dbname_user_photos))
-                        .child(photo.getUser_id())
-                        .child(photo.getPhoto_id())
+                        .child(photo.getUi())
+                        .child(photo.getPi())
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 holder.photo = snapshot.getValue(Photo.class);
                                 ArrayList<Comment> comments = new ArrayList<>();
 
-                                for (DataSnapshot dSnapshot : snapshot.child("comment").getChildren()) {
+                                for (DataSnapshot dSnapshot : snapshot.child(mContext.getString(R.string.field_comment)).getChildren()) {
                                     Comment comment = new Comment();
-                                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                    comment.setUi(dSnapshot.getValue(Comment.class).getUi());
+                                    comment.setC(dSnapshot.getValue(Comment.class).getC());
+                                    comment.setDc(dSnapshot.getValue(Comment.class).getDc());
                                     comments.add(comment);
 
 
@@ -762,28 +743,27 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
     private void unPromotePost(Photo photo, ViewHolder holder) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle("Remove Promotion");
-        builder.setMessage("Are you sure, you want to remove this Promotion?");
+        builder.setMessage(mContext.getString(R.string.remove_promotion_prompt));
 
 //                set buttons
         builder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.d(VolleyLog.TAG, "Rejecting: rejected ");
 
                 togglePromoteBtn(holder);
 
                 DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                 db.child(mContext.getString(R.string.dbname_promote))
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .child(photo.getPhoto_id())
+                        .child(photo.getPi())
                         .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                         reference.child(mContext.getString(R.string.dbname_user_photos))
-                                .child(photo.getUser_id())
-                                .child(photo.getPhoto_id())
-                                .child("Promote")
+                                .child(photo.getUi())
+                                .child(photo.getPi())
+                                .child(mContext.getString(R.string.field_promotes))
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                 .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
@@ -822,9 +802,9 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         ImageView post = bottomSheetView.findViewById(R.id.postBs);
         ImageView progress = bottomSheetView.findViewById(R.id.progress);
 
-        if (photo.getType().equals("photo")) {
+        if (photo.getTy().equals("photo")) {
             Glide.with(holder.itemView.getContext())
-                    .load(photo.getImage_path())
+                    .load(photo.getIp())
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)
                     .placeholder(R.drawable.load)
@@ -832,7 +812,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                     .into(post);
         } else {
             Glide.with(holder.itemView.getContext())
-                    .load(photo.getThumbnail())
+                    .load(photo.getT())
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)
                     .placeholder(R.drawable.load)
@@ -876,29 +856,29 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                         DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
 
                         HashMap<String, Object> hashMap = new HashMap<>();
-                        hashMap.put("photoid", photo.getPhoto_id());
-                        hashMap.put("userid", photo.getUser_id());
-                        hashMap.put("photoLink", photo.getImage_path());
-                        hashMap.put("storyid", photo.getPhoto_id());
-                        hashMap.put("timeEnd", String.valueOf(timeEnd));
-                        hashMap.put("timeStart", String.valueOf(timeStart));
-                        hashMap.put("promoterId", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        hashMap.put(mContext.getString(R.string.field_photo_id), photo.getPi());
+                        hashMap.put(mContext.getString(R.string.field_user_id), photo.getUi());
+                        hashMap.put(mContext.getString(R.string.field_image_path), photo.getIp());
+                        hashMap.put(mContext.getString(R.string.field_story_ID), photo.getPi());
+                        hashMap.put(mContext.getString(R.string.field_promotion_time_end), String.valueOf(timeEnd));
+                        hashMap.put(mContext.getString(R.string.field_promotion_time_start), String.valueOf(timeStart));
+                        hashMap.put(mContext.getString(R.string.field_promoter_ID), FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
                         db1.child(mContext.getString(R.string.dbname_promote))
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                .child(photo.getPhoto_id())
+                                .child(photo.getPi())
                                 .setValue(hashMap);
 
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                         reference.child(mContext.getString(R.string.dbname_user_photos))
-                                .child(photo.getUser_id())
-                                .child(photo.getPhoto_id())
-                                .child("Promote")
+                                .child(photo.getUi())
+                                .child(photo.getPi())
+                                .child(mContext.getString(R.string.field_promotes))
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                 .setValue("true");
 
-                        addToHisNotification("" + photo.getUser_id(), photo.getPhoto_id(), "promoted your post.");
+                        addToHisNotification("" + photo.getUi(), photo.getPi(), "promoted your post.");
                         final DatabaseReference data = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_users))
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mContext.getString(R.string.field_username));
                         data.addValueEventListener(new ValueEventListener() {
@@ -907,7 +887,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                                 String user = dataSnapshot.getValue().toString();
 
                                 if (notify) {
-                                    mFirebaseMethods.sendNotification(photo.getUser_id(), user, "promoted your post.", "Promote");
+                                    mFirebaseMethods.sendNotification(photo.getUi(), user, "promoted your post.", "Promote");
                                 }
                                 notify = false;
 
@@ -948,9 +928,9 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
     private void ifCurrentUserPromoted(ViewHolder holder, Photo photo) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(mContext.getString(R.string.dbname_user_photos))
-                .child(photo.getUser_id())
-                .child(photo.getPhoto_id())
-                .child("Promote")
+                .child(photo.getUi())
+                .child(photo.getPi())
+                .child(mContext.getString(R.string.field_promotes))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -980,7 +960,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         Query query = reference.child(mContext.getString(R.string.dbname_user_photos))
                 .child(user_id)
                 .child(photo_id)
-                .child("Promote");
+                .child(mContext.getString(R.string.field_promotes));
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -1018,7 +998,11 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
     @Override
     public long getItemId(int position) {
         Photo photo = photos.get(position);
-        return photo.getPhoto_id().hashCode();
+        if (photo!=null&&photos.size()!=0) {
+            return photo.getPi().hashCode();
+        }else{
+            return position;
+        }
     }
 
     @Override
@@ -1094,24 +1078,22 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
         String timestamp = "" + System.currentTimeMillis();
 
-
 //        data to put in notification
-        HashMap<Object, String> hashMap = new HashMap<>();
-        hashMap.put("pId", pId);
+        HashMap<Object,String> hashMap = new HashMap<>();
+        hashMap.put("pId",pId);
 
-        hashMap.put("timeStamp", timestamp);
+        hashMap.put(mContext.getString(R.string.field_timestamp),timestamp);
 
-        hashMap.put("pUid", hisUid);
+        hashMap.put("pUid",hisUid);
 
-        hashMap.put("notificaton", notification);
-        hashMap.put("seen", "false");
+        hashMap.put(mContext.getString(R.string.field_notification_message),notification);
+        hashMap.put(mContext.getString(R.string.field_if_seen),"false");
+
+        hashMap.put("sUid",FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
-        hashMap.put("sUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
-        ref.child(hisUid).child("Notifications").child(timestamp).setValue(hashMap)
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_users));
+        ref.child(hisUid).child(mContext.getString(R.string.field_Notifications)).child(timestamp).setValue(hashMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -1130,8 +1112,8 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference
                 .child(mContext.getString(R.string.dbname_users))
-                .child(photo.getUser_id())
-                .child(mContext.getString(R.string.domain));
+                .child(photo.getUi())
+                .child(mContext.getString(R.string.field_domain));
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -1143,7 +1125,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d(TAG, "Query Cancelled");
             }
         });
     }
@@ -1165,7 +1146,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                                 reference3.child(mContext.getString(R.string.dbname_users))
                                         .child(snapshot1.getKey())
                                         .child(mContext.getString(R.string.post_updates))
-                                        .child(photo.getPhoto_id())
+                                        .child(photo.getPi())
                                         .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                                 if (x[0] == snapshot.getChildrenCount()) {
@@ -1179,8 +1160,8 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
                     private void DeleteFurther() {
 
-                       if( !photo.getType().equals("photo")){
-                           StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(photo.getThumbnail());
+                       if( !photo.getTy().equals("photo")){
+                           StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(photo.getT());
                            photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                @Override
                                public void onSuccess(Void aVoid) {
@@ -1192,19 +1173,19 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                         DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
                         reference2.child(mContext.getString(R.string.dbname_user_photos))
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                .child(photo.getPhoto_id())
+                                .child(photo.getPi())
                                 .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(photo.getImage_path());
+                                StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(photo.getIp());
                                 photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         // File deleted successfully
 
                                         DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
-                                        reference2.child("explore_update")
-                                                .child(photo.getPhoto_id())
+                                        reference2.child(mContext.getString(R.string.explore_update))
+                                                .child(photo.getPi())
                                                 .setValue(true)
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
@@ -1236,7 +1217,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                                                         } else {
 
                                                             for (Photo a : photoList) {
-                                                                if (a.getPhoto_id().equals(photo.getPhoto_id()))
+                                                                if (a.getPi().equals(photo.getPi()))
                                                                     photoList2.remove(a);
 
                                                             }
@@ -1248,7 +1229,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                                                         } else {
 
                                                             for (Photo a : mymediaList) {
-                                                                if (a.getPhoto_id().equals(photo.getPhoto_id()))
+                                                                if (a.getPi().equals(photo.getPi()))
                                                                     mymediaList2.remove(a);
 
                                                             }
@@ -1268,11 +1249,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
                                                         photos.remove(photo);
                                                         AdapterMainfeed.this.notifyItemRemoved(i);
-
-
-
-
-                                                        Log.d(VolleyLog.TAG, "onSuccess: deleted file");
                                                     }
                                                 });
 
@@ -1285,7 +1261,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                                     @Override
                                     public void onFailure(@NonNull Exception exception) {
                                         // Uh-oh, an error occurred!
-                                        Log.d(VolleyLog.TAG, "onFailure: did not delete file");
                                     }
                                 });
                             }
@@ -1306,10 +1281,10 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
     private void ReportPost(Photo photo) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(mContext.getString(R.string.dbname_reports))
-                .child("posts")
-                .child(photo.getPhoto_id())
-                .child("user_id")
-                .setValue(photo.getUser_id())
+                .child(mContext.getString(R.string.field_post))
+                .child(photo.getPi())
+                .child(mContext.getString(R.string.field_user_id))
+                .setValue(photo.getUi())
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -1322,9 +1297,9 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
     private void NumberOfLikes(final ViewHolder holder, Photo photo) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(mContext.getString(R.string.dbname_user_photos))
-                .child(photo.getUser_id())
-                .child(photo.getPhoto_id())
-                .child("likes");
+                .child(photo.getUi())
+                .child(photo.getPi())
+                .child(mContext.getString(R.string.field_likes));
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -1350,25 +1325,22 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
 
     private void ifCurrentUserLiked(final ViewHolder holder, Photo photo) {
-        Log.d(TAG, " checking current user liked or not");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(mContext.getString(R.string.dbname_user_photos))
-                .child(photo.getUser_id())
-                .child(photo.getPhoto_id())
-                .child("likes")
+                .child(photo.getUi())
+                .child(photo.getPi())
+                .child(mContext.getString(R.string.field_likes))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    Log.d(TAG, " checking current user liked or not: Already liked");
                     holder.whitestar.setVisibility(View.GONE);
                     holder.yellowstar.setVisibility(View.VISIBLE);
                     NumberOfLikes(holder, photo);
                     holder.likeByCurrentsUser2 = true;
 
                 } else {
-                    Log.d(TAG, " checking current user liked or not: not liked");
                     holder.whitestar.setVisibility(View.VISIBLE);
                     holder.yellowstar.setVisibility(View.GONE);
                     NumberOfLikes(holder, photo);
@@ -1386,15 +1358,14 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
     }
 
     private void addlike(final ViewHolder holder, Photo photo) {
-        Log.d(TAG, " like add");
 
         DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
         reference1.child(mContext.getString(R.string.dbname_user_photos))
-                .child(photo.getUser_id())
-                .child(photo.getPhoto_id())
-                .child("likes")
+                .child(photo.getUi())
+                .child(photo.getPi())
+                .child(mContext.getString(R.string.field_likes))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child("user_id")
+                .child(mContext.getString(R.string.field_user_id))
                 .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
         NumberOfLikes(holder, photo);
 
@@ -1406,7 +1377,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                 users user = dataSnapshot.getValue(users.class);
 
                 if (notify) {
-                    mFirebaseMethods.sendNotification(photo.getUser_id(), user.getUsername(), "liked your post", "Like");
+                    mFirebaseMethods.sendNotification(photo.getUi(), user.getU(), "liked your post", "Like");
                 }
                 notify = false;
 
@@ -1419,7 +1390,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         });
 
 
-        addToHisNotification("" + photo.getUser_id(), photo.getPhoto_id(), "Liked your post");
+        addToHisNotification("" + photo.getUi(), photo.getPi(), "Liked your post");
 
 
     }
@@ -1429,9 +1400,9 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
 
         DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
         reference1.child(mContext.getString(R.string.dbname_user_photos))
-                .child(photo.getUser_id())
-                .child(photo.getPhoto_id())
-                .child("likes")
+                .child(photo.getUi())
+                .child(photo.getPi())
+                .child(mContext.getString(R.string.field_likes))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override

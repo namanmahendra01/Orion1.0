@@ -444,7 +444,7 @@
                 android:layout_marginEnd="20dp"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:weightSum="100">
 
                 <TextView
@@ -476,7 +476,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:textColor="#00BCD4"
+                    android:textColor="#03A9F4"
                     android:textSize="16sp" />
 
                 <TextView
@@ -484,7 +484,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:textColor="#00BCD4"
+                    android:textColor="#03A9F4"
                     android:textSize="16sp" />
 
                 <TextView
@@ -492,7 +492,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:textColor="#00BCD4"
+                    android:textColor="#03A9F4"
                     android:textSize="16sp" />
 
                 <LinearLayout
@@ -501,6 +501,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
+                    android:layout_marginTop="20dp"
                     android:background="@drawable/circular_button"
                     android:backgroundTint="@color/white"
                     android:elevation="5dp"
@@ -534,6 +535,7 @@
                 android:horizontalSpacing="1dp"
                 android:stretchMode="columnWidth"
                 android:verticalSpacing="1dp"
+                android:layout_marginTop="20dp"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:spanCount="3">
 
@@ -543,6 +545,7 @@
                 android:layout_height="wrap_content"
                 android:text="NO POST SHARED"
                 android:layout_marginBottom="70dp"
+                android:layout_marginTop="20dp"
 
                 android:id="@+id/noPost"
                 android:visibility="gone"

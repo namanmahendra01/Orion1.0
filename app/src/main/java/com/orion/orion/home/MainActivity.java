@@ -88,7 +88,6 @@ public class MainActivity extends AppCompatActivity
 
     //    *********************FIREBASE***************************
     private void checkCurrentuser(FirebaseUser user) {
-        Log.d(TAG, "checkCurrentuser:check if current user logged in");
         if (user == null) {
             Intent intent = new Intent(MainActivity.this, login.class);
             startActivity(intent);
@@ -180,19 +179,19 @@ public class MainActivity extends AppCompatActivity
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(getString(R.string.dbname_users))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child("Notifications").orderByKey().limitToLast(1)
+                .child(getString(R.string.field_Notifications)).orderByKey().limitToLast(1)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
                             for (DataSnapshot snapshot1 : snapshot.getChildren()) {
 
-                                if (snapshot1.child("seen").getValue().equals("true")) {
+                                if (snapshot1.child(getString(R.string.field_if_seen)).getValue().equals("true")) {
 
                                     tablayout.getTabAt(0).setIcon(R.drawable.ic_bell_black);
 
                                 }
-                                if (snapshot1.child("seen").getValue().equals("false")) {
+                                if (snapshot1.child(getString(R.string.field_if_seen)).getValue().equals("false")) {
                                     tablayout.getTabAt(0).setIcon(R.drawable.ic_bell_red);
                                     break;
                                 }
@@ -224,8 +223,8 @@ public class MainActivity extends AppCompatActivity
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                     db.child(getString(R.string.dbname_users))
                             .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .child("Notifications")
-                            .orderByChild("seen")
+                            .child(getString(R.string.field_Notifications))
+                            .orderByChild(getString(R.string.field_if_seen))
                             .equalTo("false")
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -235,9 +234,9 @@ public class MainActivity extends AppCompatActivity
                                             if (tablayout.getSelectedTabPosition() == 0) {
                                                 db.child(getString(R.string.dbname_users))
                                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                        .child("Notifications")
+                                                        .child(getString(R.string.field_Notifications))
                                                         .child(snapshot1.getKey())
-                                                        .child("seen")
+                                                        .child(getString(R.string.field_if_seen))
                                                         .setValue("true");
                                             }
                                         }
@@ -300,7 +299,7 @@ public class MainActivity extends AppCompatActivity
                                                 if (ds.exists()) {
 
                                                     Chat chat = ds.getValue(Chat.class);
-                                                    if (!chat.isIfseen()&&chat.getReceiver().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                                    if (!chat.getIfs()&&chat.getRID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                                         tablayout.getTabAt(2).setIcon(R.drawable.ic_chat_red);
                                                         x[0]++;
                                                     }

@@ -85,8 +85,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
 
         ParticipantList mparticipantLists = participantLists.get(i);
 
-        String timeStamp = mparticipantLists.getTimestamp();
-        Log.d(TAG, "onBindViewHolder: " + mparticipantLists.getTimestamp());
+        String timeStamp = mparticipantLists.getTim();
 
 //        convert time stamp to date and time
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
@@ -96,7 +95,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
         holder.time.setText(dateTime);
 
 
-        getparticipantDetails(mparticipantLists.getUserid(), holder.username, holder.profile);
+        getparticipantDetails(mparticipantLists.getUi(), holder.username, holder.profile);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +125,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                         .placeholder(R.drawable.load)
                         .thumbnail(0.5f)
                         .into(profileview);
-                getparticipantform(mparticipantLists.getUserid(), mparticipantLists.getJoiningKey(), mparticipantLists.getContestkey(), college, layout);
+                getparticipantform(mparticipantLists.getUi(), mparticipantLists.getJi(), mparticipantLists.getCi(), college, layout);
 
 
                 name.setOnClickListener(new View.OnClickListener() {
@@ -136,7 +135,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                         Intent i = new Intent(mContext, profile.class);
                         i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                        i.putExtra(mContext.getString(R.string.intent_user), mparticipantLists.getUserid());
+                        i.putExtra(mContext.getString(R.string.intent_user), mparticipantLists.getUi());
                         mContext.startActivity(i);
                     }
                 });
@@ -147,7 +146,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                         Intent i = new Intent(mContext, profile.class);
                         i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                        i.putExtra(mContext.getString(R.string.intent_user),mparticipantLists.getUserid());
+                        i.putExtra(mContext.getString(R.string.intent_user),mparticipantLists.getUi());
                         mContext.startActivity(i);
                     }
                 });
@@ -158,31 +157,29 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                         Intent i = new Intent(mContext, profile.class);
                         i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                        i.putExtra(mContext.getString(R.string.intent_user),mparticipantLists.getUserid());
+                        i.putExtra(mContext.getString(R.string.intent_user),mparticipantLists.getUi());
                         mContext.startActivity(i);
                     }
                 });
                 submission.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        boolean ok=mparticipantLists.getMediaLink().length()>23;
-                        boolean ifNull=mparticipantLists.getMediaLink() == null || mparticipantLists.getMediaLink().equals("");
+                        boolean ok=mparticipantLists.getMl().length()>23;
+                        boolean ifNull=mparticipantLists.getMl() == null || mparticipantLists.getMl().equals("");
                         if (ifNull){
-                            Log.d(TAG, "onClick: mmm"+mparticipantLists.getJoiningKey());
                             Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
 
                         }else if (ok) {
-                            if (mparticipantLists.getMediaLink().substring(8, 23).equals("firebasestorage")) {
+                            if (mparticipantLists.getMl().substring(8, 23).equals("firebasestorage")) {
                                 Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
-                                i.putExtra("imageLink", mparticipantLists.getMediaLink());
+                                i.putExtra("imageLink", mparticipantLists.getMl());
                                 i.putExtra("view", "No");
 
                                 mContext.startActivity(i);
                             } else {
-                                Log.d(TAG, "onClick: mmm 3"+mparticipantLists.getJoiningKey());
 
                                 try{
-                                    Uri uri = Uri.parse(mparticipantLists.getMediaLink());
+                                    Uri uri = Uri.parse(mparticipantLists.getMl());
                                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                                     mContext.startActivity(intent);
 
@@ -192,10 +189,9 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                 }
                             }
                         }else {
-                            Log.d(TAG, "onClick: mmm 2"+mparticipantLists.getJoiningKey());
 
                             try{
-                                Uri uri = Uri.parse(mparticipantLists.getMediaLink());
+                                Uri uri = Uri.parse(mparticipantLists.getMl());
                                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                                 mContext.startActivity(intent);
 
@@ -211,7 +207,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
-                        i.putExtra("imageLink", mparticipantLists.getIdLink());
+                        i.putExtra("imageLink", mparticipantLists.getIl());
                         i.putExtra("view", "No");
 
                         mContext.startActivity(i);
@@ -224,7 +220,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                         builder.setTitle("Reject Participant");
-                        builder.setMessage("Are you sure, you want to Reject this Participant?");
+                        builder.setMessage(R.string.reject_participant_prompt);
 
 //                set buttons
                         builder.setPositiveButton("Reject", new DialogInterface.OnClickListener() {
@@ -235,25 +231,25 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                 DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                                 db.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .child("Joinedupdates")
-                                        .child(mparticipantLists.getJoiningKey())
+                                        .child(mContext.getString(R.string.field_joined_updates))
+                                        .child(mparticipantLists.getJi())
                                         .setValue("Rejected");
                                 db.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.joined_contest))
-                                        .child(mparticipantLists.getJoiningKey())
-                                        .child("status")
+                                        .child(mparticipantLists.getJi())
+                                        .child(mContext.getString(R.string.field_status))
                                         .setValue("Rejected");
 
-                                deleteRequest(mparticipantLists.getContestkey(), mparticipantLists.getJoiningKey(), mparticipantLists.getUserid());
+                                deleteRequest(mparticipantLists.getCi(), mparticipantLists.getJi(), mparticipantLists.getUi());
                                 participantLists.remove(i);
 
                                 AdapterParticipantRequest.this.notifyItemRemoved(i);
 
-                                if (mparticipantLists.getMediaLink() == null || mparticipantLists.getMediaLink().equals("")||!mparticipantLists.getMediaLink().substring(8,23).equals("firebasestorage")) {
+                                if (mparticipantLists.getMl() == null || mparticipantLists.getMl().equals("")||!mparticipantLists.getMl().substring(8,23).equals("firebasestorage")) {
 
                                 }else{
-                                    StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMediaLink());
+                                    StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMl());
                                     photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
@@ -289,46 +285,45 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                         builder.setTitle("Allow");
-                        builder.setMessage("Are you sure, you want to Allow this Participant?");
+                        builder.setMessage(R.string.allow_participanr_prompt);
 
 //                set buttons
                         builder.setPositiveButton("Allow", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Log.d(TAG, "DeleteMessage: deleteing message");
                                 notify = true;
 
                                 DatabaseReference db = FirebaseDatabase.getInstance().getReference();
 
                                 db.child(mContext.getString(R.string.dbname_contests))
-                                        .child(mparticipantLists.getUserid())
+                                        .child(mparticipantLists.getUi())
                                         .child(mContext.getString(R.string.joined_contest))
-                                        .child(mparticipantLists.getJoiningKey())
-                                        .child("status")
+                                        .child(mparticipantLists.getJi())
+                                        .child(mContext.getString(R.string.field_status))
                                         .setValue("Accepted");
 
                                 db.child(mContext.getString(R.string.dbname_contests))
-                                        .child(mparticipantLists.getUserid())
-                                        .child("Joinedupdates")
-                                        .child(mparticipantLists.getJoiningKey())
+                                        .child(mparticipantLists.getUi())
+                                        .child(mContext.getString(R.string.field_joined_updates))
+                                        .child(mparticipantLists.getJi())
                                         .setValue("Accepted");
 
                                 db.child(mContext.getString(R.string.dbname_contestlist))
-                                        .child(mparticipantLists.getContestkey())
-                                        .child("participantlist")
-                                        .child(mparticipantLists.getUserid())
+                                        .child(mparticipantLists.getCi())
+                                        .child(mContext.getString(R.string.field_Participant_List))
+                                        .child(mparticipantLists.getUi())
                                         .setValue(true);
 
                                 db.child(mContext.getString(R.string.dbname_users))
-                                        .child(mparticipantLists.getUserid())
+                                        .child(mparticipantLists.getUi())
                                         .child(mContext.getString(R.string.changedJoinedContest))
                                         .setValue("true");
 
                                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                                 ref.child(mContext.getString(R.string.dbname_request))
                                         .child(mContext.getString(R.string.dbname_participantList))
-                                        .child(mparticipantLists.getContestkey())
-                                        .child(mparticipantLists.getJoiningKey())
+                                        .child(mparticipantLists.getCi())
+                                        .child(mparticipantLists.getJi())
                                         .addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -336,31 +331,31 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
 
                                                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                                                 ref.child(mContext.getString(R.string.dbname_participantList))
-                                                        .child(mparticipantLists.getContestkey())
-                                                        .child(mparticipantLists.getJoiningKey())
+                                                        .child(mparticipantLists.getCi())
+                                                        .child(mparticipantLists.getJi())
                                                         .setValue(participantList)
                                                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                 if (task.isSuccessful()) {
                                                                     HashMap<String, Object> hashMap3 = new HashMap<>();
-                                                                    hashMap3.put("jury1", "");
-                                                                    hashMap3.put("jury2", "");
-                                                                    hashMap3.put("jury3", "");
-                                                                    hashMap3.put("jusername1", "-");
-                                                                    hashMap3.put("jusername2", "-");
-                                                                    hashMap3.put("jusername3", "-");
-                                                                    hashMap3.put("comment1", "-");
-                                                                    hashMap3.put("comment2", "-");
-                                                                    hashMap3.put("comment3", "-");
+                                                                    hashMap3.put(mContext.getString(R.string.field_jury_1), "");
+                                                                    hashMap3.put(mContext.getString(R.string.field_jury_2), "");
+                                                                    hashMap3.put(mContext.getString(R.string.field_jury_3), "");
+                                                                    hashMap3.put(mContext.getString(R.string.field_jury_name_1), "-");
+                                                                    hashMap3.put(mContext.getString(R.string.field_jury_name_2), "-");
+                                                                    hashMap3.put(mContext.getString(R.string.field_jury_name_3), "-");
+                                                                    hashMap3.put(mContext.getString(R.string.field_jury_comment1), "-");
+                                                                    hashMap3.put(mContext.getString(R.string.field_jury_comment2), "-");
+                                                                    hashMap3.put(mContext.getString(R.string.field_jury_comment3), "-");
 
                                                                     DatabaseReference db3 = FirebaseDatabase.getInstance().getReference();
                                                                     db3.child(mContext.getString(R.string.dbname_participantList))
-                                                                            .child(mparticipantLists.getContestkey())
-                                                                            .child(mparticipantLists.getJoiningKey())
+                                                                            .child(mparticipantLists.getCi())
+                                                                            .child(mparticipantLists.getJi())
                                                                             .child(mContext.getString(R.string.juryMarks))
                                                                             .setValue(hashMap3);
-                                                                    deleteRequest(mparticipantLists.getContestkey(), mparticipantLists.getJoiningKey(), mparticipantLists.getUserid());
+                                                                    deleteRequest(mparticipantLists.getCi(), mparticipantLists.getJi(), mparticipantLists.getUi());
                                                                     bottomSheetDialog.dismiss();
 
                                                                     participantLists.remove(i);
@@ -387,7 +382,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                         users user = dataSnapshot.getValue(users.class);
 
                                         if (notify) {
-                                            mFirebaseMethods.sendNotification(mparticipantLists.getUserid(),"", "You are now a participant.Check your ranking now.","Submission Accepted");
+                                            mFirebaseMethods.sendNotification(mparticipantLists.getUi(),"", "You are now a participant.Check your ranking now.","Submission Accepted");
                                         }
                                         notify = false;
 
@@ -398,7 +393,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
 
                                     }
                                 });
-                                addToHisNotification(""+mparticipantLists.getUserid(),"Submission Accepted for a contest.Check on Contests.");
+                                addToHisNotification(""+mparticipantLists.getUi(),"Submission Accepted for a contest.Check on Contests.");
 
                             }
                         });
@@ -439,21 +434,24 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                Log.d(TAG, "onCreateView: timestampyesss" + date.getTime());
                 String timestamp = String.valueOf(date.getTime());
 
+//        data to put in notification
+                HashMap<Object,String> hashMap = new HashMap<>();
+                hashMap.put("pId","false");
 
-                //data to put in notification
-                HashMap<Object, String> hashMap = new HashMap<>();
-                hashMap.put("pId", "false");
-                hashMap.put("timeStamp", timestamp);
-                hashMap.put("pUid", hisUid);
-                hashMap.put("seen","false");
-                hashMap.put("notificaton", notification);
-                hashMap.put("sUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                hashMap.put(mContext.getString(R.string.field_timestamp),timestamp);
 
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
-                ref.child(hisUid).child("Notifications").child(timestamp).setValue(hashMap)
+                hashMap.put("pUid",hisUid);
+
+                hashMap.put(mContext.getString(R.string.field_notification_message),notification);
+                hashMap.put(mContext.getString(R.string.field_if_seen),"false");
+
+                hashMap.put("sUid",FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_users));
+                ref.child(hisUid).child(mContext.getString(R.string.field_Notifications)).child(timestamp).setValue(hashMap)
                         .addOnSuccessListener(aVoid -> {
 
                         }).addOnFailureListener(e -> {
@@ -493,8 +491,8 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         JoinForm joinForm = dataSnapshot.getValue(JoinForm.class);
-                        college1=joinForm.getCollege();
-                        String hostid=joinForm.getHostId();
+                        college1=joinForm.getClg();
+                        String hostid=joinForm.getHID();
                         DatabaseReference ref1 =FirebaseDatabase.getInstance().getReference();
                         ref1.child(mContext.getString(R.string.dbname_contests))
                                 .child(hostid)
@@ -503,7 +501,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        String openfor = dataSnapshot.child("openFor").getValue().toString();
+                                        String openfor = dataSnapshot.child(mContext.getString(R.string.field_open_for)).getValue().toString();
                                         if (openfor.equals("All")){
                                             layout.setVisibility(View.GONE);
                                         }else{
@@ -530,7 +528,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
 
     public long getItemId(int position) {
         ParticipantList form = participantLists.get(position);
-        return form.getJoiningKey().hashCode();
+        return form.getJi().hashCode();
     }
     @Override
     public int getItemCount() {
@@ -559,16 +557,15 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
 
     private void getparticipantDetails(String userid, TextView username, CircleImageView profile) {
         DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
-        ref.child(mContext.getString(R.string.dbname_user_account_settings))
+        ref.child(mContext.getString(R.string.dbname_users))
                 .child(userid)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user =dataSnapshot.getValue(users.class);
-                        Log.d(TAG, "onDataChange: "+ user.getDisplay_name());
-                        name1=user.getDisplay_name();
-                        username1=user.getUsername();
-                        profilelink=user.getProfile_photo();
+                        name1=user.getDn();
+                        username1=user.getU();
+                        profilelink=user.getPp();
                         try {
 
                             Glide.with(mContext)
@@ -583,7 +580,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
 
                         }
 
-                        username.setText(user.getUsername());
+                        username.setText(user.getU());
 
 
                     }

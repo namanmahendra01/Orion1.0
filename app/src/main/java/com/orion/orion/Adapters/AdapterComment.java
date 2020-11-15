@@ -25,13 +25,13 @@ import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
 
 import java.util.List;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.android.volley.VolleyLog.TAG;
 
 public class AdapterComment extends RecyclerView.Adapter<AdapterComment.ViewHolder> {
-    private String mAppend = "";
 
     private Context mContext;
     private List<Comment> comments;
@@ -46,7 +46,7 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.ViewHold
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view= LayoutInflater.from(mContext).inflate(R.layout.layout_commets,parent,false);
-        return new AdapterComment.ViewHolder(view);
+        return new ViewHolder(view);
 
     }
 
@@ -55,31 +55,25 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.ViewHold
 
         Comment comment= comments.get(i);
 
-        holder.comment.setText(comment.getComment());
-        holder.timestamp.setText(comment.getDate_created().substring(0,10));
+        holder.comment.setText(comment.getC());
+        holder.timestamp.setText(comment.getDc().substring(0,10));
 
-        getUserdetail(comment.getUser_id(),holder.username,holder.profileimage);
+        getUserdetail(comment.getUi(),holder.username,holder.profileimage);
 
-        holder.username.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(mContext, profile.class);
-                i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
+        holder.username.setOnClickListener(v -> {
+            Intent i1 = new Intent(mContext, profile.class);
+            i1.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                i.putExtra(mContext.getString(R.string.intent_user), comment.getUser_id());
-                mContext.startActivity(i);
-            }
+            i1.putExtra(mContext.getString(R.string.intent_user), comment.getUi());
+            mContext.startActivity(i1);
         });
 
-        holder.profileimage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(mContext, profile.class);
-                i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
+        holder.profileimage.setOnClickListener(v -> {
+            Intent i12 = new Intent(mContext, profile.class);
+            i12.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                i.putExtra(mContext.getString(R.string.intent_user), comment.getUser_id());
-                mContext.startActivity(i);
-            }
+            i12.putExtra(mContext.getString(R.string.intent_user), comment.getUi());
+            mContext.startActivity(i12);
         });
 
        }
@@ -87,16 +81,16 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.ViewHold
     private void getUserdetail(String user_id, TextView username, CircleImageView profileimage) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference
-                .child(mContext.getString(R.string.dbname_user_account_settings))
+                .child(mContext.getString(R.string.dbname_users))
                 .child(user_id);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    username.setText((dataSnapshot.getValue(users.class).getUsername()));
+                    username.setText((Objects.requireNonNull(dataSnapshot.getValue(users.class)).getU()));
 
                 Glide.with(mContext)
-                        .load((dataSnapshot.getValue(users.class).getProfile_photo()))
+                        .load((Objects.requireNonNull(dataSnapshot.getValue(users.class)).getPp()))
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)
                         .placeholder(R.drawable.load)
@@ -118,7 +112,7 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.ViewHold
     @Override
     public long getItemId(int position) {
         Comment photo = comments.get(position);
-        return photo.getDate_created().hashCode();
+        return photo.getDc().hashCode();
     }
 
     @Override
@@ -129,7 +123,7 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.ViewHold
     public int getItemViewType(int position) {
         return position;
     }
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView comment,username,timestamp;
         CircleImageView profileimage;
@@ -137,10 +131,10 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.ViewHold
         public ViewHolder(@NonNull View convertView) {
             super(convertView);
 
-            comment=(TextView)convertView.findViewById(R.id.addcomment);
-            username=(TextView)convertView.findViewById(R.id.comment_username);
-         timestamp=(TextView)convertView.findViewById(R.id.comment_time_posted);
-           profileimage=(CircleImageView)convertView.findViewById((R.id.commet_profile_image));
+            comment= convertView.findViewById(R.id.addcomment);
+            username= convertView.findViewById(R.id.comment_username);
+         timestamp= convertView.findViewById(R.id.comment_time_posted);
+           profileimage= convertView.findViewById((R.id.commet_profile_image));
 
 
 

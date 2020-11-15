@@ -63,7 +63,6 @@ private HashMap<String,String> LastMessagemap;
                  .addValueEventListener(new ValueEventListener() {
                      @Override
                      public void onDataChange(@NonNull DataSnapshot snapshot) {
-                         Log.d(TAG, "onDataChange: changeit3");
                          DatabaseReference refer = FirebaseDatabase.getInstance().getReference(context.getString(R.string.dbname_ChatList));
                          Query query=   refer
                                  .child(snapshot.getValue().toString())
@@ -76,8 +75,8 @@ private HashMap<String,String> LastMessagemap;
                                      if (ds.exists()){
 
                                          Chat chat = ds.getValue(Chat.class);
-                                         if (!chat.isIfseen()
-                                                 && chat.getReceiver().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                                         if (!chat.getIfs()
+                                                 && chat.getRID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
                                              holder.notSeen.setVisibility(View.VISIBLE);
                                          }else {
                                              holder.notSeen.setVisibility(View.INVISIBLE);
@@ -140,9 +139,9 @@ private HashMap<String,String> LastMessagemap;
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user = dataSnapshot.getValue(users.class);
-                        nameTv.setText(user.getUsername());
+                        nameTv.setText(user.getU());
                         Glide.with(context)
-                                .load(user.getProfile_photo())
+                                .load(user.getPp())
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)
                                 .placeholder(R.drawable.load)

@@ -3,10 +3,8 @@ package com.orion.orion.Adapters;
 import android.app.AlertDialog;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,11 +29,10 @@ import com.orion.orion.contest.Contest_Evaluation.contest_evaluation_activity;
 import com.orion.orion.models.CreateForm;
 
 import java.util.List;
+import java.util.Objects;
 
-import static com.android.volley.VolleyLog.TAG;
 
 public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCreated.ViewHolder> {
-    private String mAppend = "";
     private Context mContext;
     private List<CreateForm> createForms;
 
@@ -48,14 +45,14 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.layout_contest_item, parent, false);
-        return new AdapterContestCreated.ViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
         CreateForm mcreateForm = createForms.get(i);
-        String key = mcreateForm.getContestkey();
-        String userid = mcreateForm.getUserid();
+        String key = mcreateForm.getCi();
+        String userid = mcreateForm.getUi();
         setgp(userid, holder.gp);
         DatabaseReference db = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_participantList));
         db.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -69,12 +66,13 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
             }
         });
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist));
-        ref.child(key).child("participantlist").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.child(key).child(mContext.getString(R.string.field_Participant_List))
+                .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     holder.ok = true;
-                    Log.d(TAG, "onClick: lkj1" + holder.ok);
                 }
             }
 
@@ -82,51 +80,21 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
-        holder.gp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
-                alertDialog.setTitle("GP:GENUINE PERCENTAGE");
-                alertDialog.setMessage("This is the percentage showing how much genuine this host is.");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cool",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
-            }
-        });
-        holder.info.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
-                alertDialog.setTitle("GP:GENUINE PERCENTAGE");
-                alertDialog.setMessage("This is the percentage showing how much genuine this host is.");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cool",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
-            }
-        });
+        holder.gp.setOnClickListener(view -> displayGpAlert());
+        holder.info.setOnClickListener(view -> displayGpAlert());
         holder.option.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(mContext, holder.option);
             popupMenu.getMenuInflater().inflate(R.menu.post_menu_contest, popupMenu.getMenu());
-            Log.d(TAG, "onClick: lkj" + holder.ok);
             if (!holder.ok) {
                 popupMenu.getMenu().getItem(2).setVisible(false);
             }
             popupMenu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.ic_house) {
                     int sdk = android.os.Build.VERSION.SDK_INT;
+                    ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
                     if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
-                        ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
                         clipboard.setText(key);
                     } else {
-                        ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
                         android.content.ClipData clip = android.content.ClipData.newPlainText("Key", key);
                         clipboard.setPrimaryClip(clip);
                     }
@@ -145,10 +113,7 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setTitle("Report");
                     builder.setMessage("Are you sure, you want to Report this Contest?");
-                    builder.setPositiveButton("Report", (dialog, which) -> {
-                        Log.d(TAG, "DeleteMessage: deleteing message");
-                        ReportPost(mcreateForm.getContestkey(), mcreateForm.getUserid(), holder.p);
-                    });
+                    builder.setPositiveButton("Report", (dialog, which) -> ReportPost(mcreateForm.getCi(), mcreateForm.getUi(), holder.p));
                     builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
                     builder.create().show();
                 }
@@ -158,37 +123,47 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
         });
 
         holder.relStatus.setVisibility(View.VISIBLE);
-        holder.status.setText(mcreateForm.getStatus());
-        if (mcreateForm.getStatus().equals("Rejected")) {
+        holder.status.setText(mcreateForm.getSt());
+        if (mcreateForm.getSt().equals("Rejected")) {
             holder.status.setTextColor(Color.RED);
-        } else if (mcreateForm.getStatus().equals("Accepted")) {
+        } else if (mcreateForm.getSt().equals("Accepted")) {
             holder.status.setTextColor(Color.GREEN);
         }
 
-        holder.entryFee.setText(mcreateForm.getEntryfee());
-        holder.domain.setText(mcreateForm.getDomain());
+        holder.entryFee.setText(mcreateForm.getEf());
+        holder.domain.setText(mcreateForm.getD());
         Glide.with(holder.itemView.getContext())
-                .load(mcreateForm.getPoster())
+                .load(mcreateForm.getPo())
                 .placeholder(R.drawable.load)
                 .error(R.drawable.default_image2)
                 .placeholder(R.drawable.load)
                 .thumbnail(0.5f)
                 .into(holder.poster);
-        holder.title.setText(mcreateForm.getTitle());
-        holder.host.setText(mcreateForm.getHost());
-        holder.regEnd.setText(mcreateForm.getRegEnd());
-        holder.totalP.setText(mcreateForm.getTotal_prize());
+        holder.title.setText(mcreateForm.getCt());
+        holder.host.setText(mcreateForm.getHst());
+        holder.regEnd.setText(mcreateForm.getRe());
+        holder.totalP.setText(mcreateForm.getTp());
         holder.itemView.setOnClickListener(v -> {
             Intent i1 = new Intent(mContext.getApplicationContext(), contest_evaluation_activity.class);
-            i1.putExtra("contestId", mcreateForm.getContestkey());
-            i1.putExtra("userid", mcreateForm.getUserid());
+            i1.putExtra("contestId", mcreateForm.getCi());
+            i1.putExtra("userid", mcreateForm.getUi());
             mContext.startActivity(i1);
         });
     }
+
+    private void displayGpAlert() {
+        AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+        alertDialog.setTitle(mContext.getString(R.string.gp_displayer_tittle));
+        alertDialog.setMessage("This is the percentage showing how much genuine this host is.");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cool",
+                (dialog, which) -> dialog.dismiss());
+        alertDialog.show();
+    }
+
     @Override
     public long getItemId(int position) {
         CreateForm form = createForms.get(position);
-        return form.getContestkey().hashCode();
+        return form.getCi().hashCode();
     }
     @Override
     public int getItemCount() {
@@ -234,7 +209,7 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
         reference.child(mContext.getString(R.string.dbname_contestlist)).child(contestId).child("tr").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                if (snapshot.hasChild(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())) {
                     Toast.makeText(mContext, "You already reported this contest.", Toast.LENGTH_SHORT).show();
                 } else {
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -283,11 +258,13 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
     public int getItemViewType(int position) {
         return position;
     }
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         Boolean ok = false;
         int p = 0;
         private TextView domain, title, regEnd, entryFee, host, gp, totalP, status;
-        private ImageView poster, option,info,progress;
+        private ImageView poster;
+        private ImageView option;
+        private ImageView info;
         private RelativeLayout relStatus;
 
         public ViewHolder(@NonNull View itemView) {
@@ -304,7 +281,6 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
             option = itemView.findViewById(R.id.optionC);
             gp = itemView.findViewById(R.id.gp);
             info = itemView.findViewById(R.id.info);
-            progress = itemView.findViewById(R.id.progress);
 
 
         }

@@ -53,24 +53,22 @@ public class AdapterWinners extends RecyclerView.Adapter<AdapterWinners.ViewHold
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
 
-        Log.d(TAG, "onBindViewHolder: asd11"+participantLists);
         ParticipantList mparticipantList = participantLists.get(i);
 
                  holder.rankNum.setText(String.valueOf(i+1));
-                 getParticipantDetails(mparticipantList.getUserid(), holder.username, holder.profile,holder.displayname);
-                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                 getParticipantDetails(mparticipantList.getUi(), holder.username, holder.profile,holder.displayname);
 
                  holder.media.setOnClickListener(new View.OnClickListener() {
                      @Override
                      public void onClick(View view) {
-                         if (mparticipantList.getMediaLink().substring(8,23).equals("firebasestorage")) {
+                         if (mparticipantList.getMl().substring(8,23).equals("firebasestorage")) {
                              Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
-                             i.putExtra("imageLink", mparticipantList.getMediaLink());
+                             i.putExtra("imageLink", mparticipantList.getMl());
                              i.putExtra("view", "No");
 
                              mContext.startActivity(i);
                          }else{
-                             Uri uri = Uri.parse(mparticipantList.getMediaLink());
+                             Uri uri = Uri.parse(mparticipantList.getMl());
                              Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                              mContext.startActivity(intent);
                          }
@@ -84,7 +82,7 @@ public class AdapterWinners extends RecyclerView.Adapter<AdapterWinners.ViewHold
                 Intent i = new Intent(mContext, profile.class);
                 i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                i.putExtra(mContext.getString(R.string.intent_user),mparticipantList.getUserid());
+                i.putExtra(mContext.getString(R.string.intent_user),mparticipantList.getUi());
                 mContext.startActivity(i);
             }
         });
@@ -96,7 +94,7 @@ public class AdapterWinners extends RecyclerView.Adapter<AdapterWinners.ViewHold
                 Intent i = new Intent(mContext, profile.class);
                 i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                i.putExtra(mContext.getString(R.string.intent_user),mparticipantList.getUserid());
+                i.putExtra(mContext.getString(R.string.intent_user),mparticipantList.getUi());
                 mContext.startActivity(i);
             }
         });
@@ -108,7 +106,7 @@ public class AdapterWinners extends RecyclerView.Adapter<AdapterWinners.ViewHold
                 Intent i = new Intent(mContext, profile.class);
                 i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                i.putExtra(mContext.getString(R.string.intent_user), mparticipantList.getUserid());
+                i.putExtra(mContext.getString(R.string.intent_user), mparticipantList.getUi());
                 mContext.startActivity(i);
             }
         });
@@ -121,16 +119,16 @@ public class AdapterWinners extends RecyclerView.Adapter<AdapterWinners.ViewHold
 
     private void getParticipantDetails(String userid, TextView username, CircleImageView profile, TextView displayname) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        ref.child(mContext.getString(R.string.dbname_user_account_settings))
+        ref.child(mContext.getString(R.string.dbname_users))
                 .child(userid)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user = dataSnapshot.getValue(users.class);
-                        username.setText(user.getUsername());
-                        displayname.setText(user.getDisplay_name());
+                        username.setText(user.getU());
+                        displayname.setText(user.getDn());
                         Glide.with(mContext)
-                                .load(user.getProfile_photo())
+                                .load(user.getPp())
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)
                                 .placeholder(R.drawable.load)
@@ -147,7 +145,7 @@ public class AdapterWinners extends RecyclerView.Adapter<AdapterWinners.ViewHold
     }
     public long getItemId(int position) {
         ParticipantList form = participantLists.get(position);
-        return form.getJoiningKey().hashCode();
+        return form.getJi().hashCode();
     }
     @Override
     public int getItemCount() {

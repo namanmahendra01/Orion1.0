@@ -137,7 +137,6 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                 flag4 = false;
 
                 getFollowerListFromSP();
-                Log.d(TAG, "onRefresh: 11");
 
                 checkRefresh();
 
@@ -147,7 +146,6 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
             private void checkRefresh() {
                 Log.d(TAG, "onRefresh: " + flag1 + flag2 + flag3 + flag4);
                 if (postReferesh.isRefreshing() && flag1 && flag2 && (flag3 || flag4)) {
-                    Log.d(TAG, "onRefresh: 22");
                     postReferesh.setRefreshing(false);
                     handler.removeCallbacks(this::checkRefresh);
                     flag1 = false;
@@ -155,7 +153,6 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     flag3 = false;
                     flag4 = false;
                 } else {
-                    Log.d(TAG, "onRefresh: 33");
                     handler.postDelayed(this::checkRefresh, RETRY_DURATION);
                 }
             }
@@ -169,7 +166,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
             reference2
                     .child(getString(R.string.dbname_users))
                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                    .child("domain")
+                    .child(getString(R.string.field_domain))
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -315,19 +312,17 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     //  fetching FollowerList  from SharedPreferences
     private void getFollowerListFromSP() {
         String json = sp.getString("fl", null);
-        Log.d(TAG, "getFollowerListFromSP: 1" + json);
 
         Type type = new TypeToken<ArrayList<String>>() {
         }.getType();
         mFollowing = gson.fromJson(json, type);
         if (mFollowing == null) {    //        if no arrayList is present
-            Log.d(TAG, "getFollowerListFromSP: 3");
             mFollowing = new ArrayList<>();
 
+            Log.d(TAG, "getFollowerListFromSP: 1");
             getFollowing();   //            make new Arraylist
 
         } else {
-            Log.d(TAG, "getFollowerListFromSP: 2" + mFollowing);
             checkFollowingUpdate();  //         Check if we followed or unfollowed anyone
 
         }
@@ -384,6 +379,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         }.getType();
         mPhotos = gson.fromJson(json, type);
         if (mPhotos == null || mPhotos.size() == 0) {                 //    if no arrayList is present
+            Log.d(TAG, "getFollowerListFromSP: 3");
 
             getPhotos();                    //  make new Arraylist
 
@@ -425,7 +421,6 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     }
 
     private void checkContestUpdate() {
-        Log.d(TAG, "checkContestUpdate: 1");
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(getString(R.string.dbname_users))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -434,9 +429,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot1) {
 //                        If snapshot exist,new contest are there
-                        Log.d(TAG, "checkContestUpdate: 2");
                         if (snapshot1.exists()) {
-                            Log.d(TAG, "checkContestUpdate: 3");
                             Collections.reverse(contestlist);
                             for (DataSnapshot snapshot : snapshot1.getChildren()) {
 
@@ -449,8 +442,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                 flag[0]++;
                                                 ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
-                                                if (contestDetail != null && !contestDetail.getResult()) {
-                                                    Log.d(TAG, "checkContestUpdate: 4");
+                                                if (contestDetail != null && !contestDetail.getR()) {
                                                     contestlist.add(contestDetail);
 
                                                 }
@@ -470,7 +462,6 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                                                     contestUpcoming.notifyDataSetChanged();
                                                     flag4 = true;
-                                                    Log.d(TAG, "checkContestUpdate: 6");
 
 
 //                                                    delete update
@@ -492,7 +483,6 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                             }
                         } else {
-                            Log.d(TAG, "checkContestUpdate: 5");
 
                             contestUpcoming = new AdapterMainFeedContest(getContext(), contestlist);
                             contestUpcoming.setHasStableIds(true);
@@ -615,7 +605,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                                 Log.d(TAG, "onDataChange: ooo" + list);
                                 if (dataSnapshot.child(list.get(i))
-                                        .child("domain").getValue().equals(domain)) {
+                                        .child(getString(R.string.field_domain)).getValue().equals(domain)) {
                                     mFollowing1.add(list.get(i));
                                 }
                                 if (x == dataSnapshot.getChildrenCount()) {
@@ -652,13 +642,12 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         if (list1 == null) {
             list1 = new ArrayList<>();
         }
-        Log.d(TAG, "removeFromContestList: 3" + list1.size());
 
 
         if (list1.size() != 0) {
             for (int i = 0; i < list.size(); i++) {
                 for (int x = 0; x < list1.size(); x++) {
-                    if (list1.get(x).getUserId().equals(list.get(i))) {
+                    if (list1.get(x).getUi().equals(list.get(i))) {
                         list1.remove(list1.get(x));
                         x--;
                     }
@@ -703,7 +692,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
             Query query = reference
                     .child(getString(R.string.dbname_contestlist))
-                    .orderByChild("userId")
+                    .orderByChild(getString(R.string.field_user_id))
                     .equalTo(list.get(i));
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -715,7 +704,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             x++;
                             ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
-                            if (!contestDetail.getResult()) {
+                            if (!contestDetail.getR()) {
                                 contestlist.add(contestDetail);
                             }
                             if (x == dataSnapshot.getChildrenCount() && count == list.size() - 1) {
@@ -782,7 +771,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
             ArrayList<Photo> l = new ArrayList<>(mPhotos);
             for (Photo a : l) {
-                if (a.getUser_id().equals(uid.get(x))) {
+                if (a.getUi().equals(uid.get(x))) {
                     mPhotos.remove(a);
 
                 }
@@ -793,7 +782,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         Collections.sort(mPhotos, new Comparator<Photo>() {
             @Override
             public int compare(Photo o1, Photo o2) {
-                return o2.getDate_created().compareTo(o1.getDate_created());
+                return o2.getDc().compareTo(o1.getDc());
             }
         });
 
@@ -842,30 +831,30 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                             Photo photo = new Photo();
                             Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
-                            photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
+                            photo.setCap(objectMap.get(getString(R.string.field_caption)).toString());
 
-                            photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
+                            photo.setTg(objectMap.get(getString(R.string.field_tags)).toString());
 
-                            photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+                            photo.setPi(objectMap.get(getString(R.string.field_photo_id)).toString());
 
-                            photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
+                            photo.setUi(objectMap.get(getString(R.string.field_user_id)).toString());
 
-                            photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
+                            photo.setDc(objectMap.get(getString(R.string.field_date_createdr)).toString());
 
-                            photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+                            photo.setIp(objectMap.get(getString(R.string.field_image_path)).toString());
 
                             if (objectMap.get(getString(R.string.thumbnail)) != null)
-                                photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
+                                photo.setT(objectMap.get(getString(R.string.thumbnail)).toString());
                             if (objectMap.get(getString(R.string.type)) != null)
-                                photo.setType(objectMap.get(getString(R.string.type)).toString());
+                                photo.setTy(objectMap.get(getString(R.string.type)).toString());
                             ArrayList<Comment> comments = new ArrayList<>();
 
                             for (DataSnapshot dSnapshot : singleSnapshot
                                     .child(getString(R.string.field_comment)).getChildren()) {
                                 Comment comment = new Comment();
-                                comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                comment.setUi(dSnapshot.getValue(Comment.class).getUi());
+                                comment.setC(dSnapshot.getValue(Comment.class).getC());
+                                comment.setDc(dSnapshot.getValue(Comment.class).getDc());
                                 comments.add(comment);
 
                             }
@@ -879,7 +868,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                                 Collections.sort(mPhotos, new Comparator<Photo>() {
                                     @Override
                                     public int compare(Photo o1, Photo o2) {
-                                        return o2.getDate_created().compareTo(o1.getDate_created());
+                                        return o2.getDc().compareTo(o1.getDc());
                                     }
                                 });
 
@@ -934,43 +923,37 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                         Photo photo = new Photo();
                         Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
 
-                        photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
+                        photo.setCap(objectMap.get(getString(R.string.field_caption)).toString());
 
-                        photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
+                        photo.setTg(objectMap.get(getString(R.string.field_tags)).toString());
 
-                        photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+                        photo.setPi(objectMap.get(getString(R.string.field_photo_id)).toString());
 
-                        photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
+                        photo.setUi(objectMap.get(getString(R.string.field_user_id)).toString());
 
-                        photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
+                        photo.setDc(objectMap.get(getString(R.string.field_date_createdr)).toString());
 
-                        photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+                        photo.setIp(objectMap.get(getString(R.string.field_image_path)).toString());
 
                         if (objectMap.get(getString(R.string.thumbnail)) != null)
-                            photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
-                        photo.setType(objectMap.get(getString(R.string.type)).toString());
+                            photo.setT(objectMap.get(getString(R.string.thumbnail)).toString());
+                        photo.setTy(objectMap.get(getString(R.string.type)).toString());
 
                         ArrayList<Comment> comments = new ArrayList<>();
 
                         for (DataSnapshot dSnapshot : singleSnapshot
                                 .child(getString(R.string.field_comment)).getChildren()) {
                             Comment comment = new Comment();
-                            comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                            comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                            comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                            comment.setUi(dSnapshot.getValue(Comment.class).getUi());
+                            comment.setC(dSnapshot.getValue(Comment.class).getC());
+                            comment.setDc(dSnapshot.getValue(Comment.class).getDc());
                             comments.add(comment);
 
                         }
                         photo.setComments(comments);
 //                    add photo to mPhotos list
                         mPhotos.add(photo);
-//                    sort mPhotos
-                        Collections.sort(mPhotos, new Comparator<Photo>() {
-                            @Override
-                            public int compare(Photo o1, Photo o2) {
-                                return o2.getDate_created().compareTo(o1.getDate_created());
-                            }
-                        });
+
 
 
                     } else {
@@ -979,7 +962,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                         ArrayList<Photo> l = new ArrayList<>(mPhotos);
                         for (Photo a : l) {
-                            if (a.getPhoto_id().equals(key.get(finalX))) {
+                            if (a.getPi().equals(key.get(finalX))) {
                                 mPhotos.remove(a);
 
                             }
@@ -987,11 +970,20 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
 
                     }
-                    //                add updated list to Shared Preference
-                    SharedPreferences.Editor editor = sp.edit();
-                    String json = gson.toJson(mPhotos);
-                    editor.putString("pl", json);
-                    editor.apply();
+                    if(finalX==key.size()) {
+                        //                    sort mPhotos
+                        Collections.sort(mPhotos, new Comparator<Photo>() {
+                            @Override
+                            public int compare(Photo o1, Photo o2) {
+                                return o2.getDc().compareTo(o1.getDc());
+                            }
+                        });
+                        //                add updated list to Shared Preference
+                        SharedPreferences.Editor editor = sp.edit();
+                        String json = gson.toJson(mPhotos);
+                        editor.putString("pl", json);
+                        editor.apply();
+                    }
 //                remove update_post node from database
                     removeUpdate();
 //                  display post
@@ -1030,7 +1022,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                         users user = dataSnapshot.getValue(users.class);
 
                         Glide.with(Homefragment.this)
-                                .load(user.getProfile_photo())
+                                .load(user.getPp())
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)
                                 .placeholder(R.drawable.load)
@@ -1038,14 +1030,14 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                                 .into(story);
 
                         Glide.with(Homefragment.this)
-                                .load(user.getProfile_photo())
+                                .load(user.getPp())
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)
                                 .placeholder(R.drawable.load)
                                 .thumbnail(0.25f)
                                 .into(storyseen);
 
-                        username.setText(user.getUsername());
+                        username.setText(user.getU());
                     }
 
                     @Override
@@ -1068,16 +1060,13 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                             int t = 0;
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-                                if ((snapshot.child("views").child(FirebaseAuth.getInstance()
+                                if ((snapshot.child(getString(R.string.field_view)).child(FirebaseAuth.getInstance()
                                         .getCurrentUser().getUid()).exists())) {
                                     t++;
-                                    Log.d(TAG, "onDataChange: ss" + t);
-
                                     break;
                                 }
                             }
                             if (t == l) {
-                                Log.d(TAG, "onDataChange: ss2" + t);
                                 storySeen.setVisibility(View.VISIBLE);
                                 story.setVisibility(View.GONE);
                                 footer.setVisibility(View.GONE);
@@ -1120,7 +1109,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
 
                             if (dataSnapshot.child(mFollowing.get(i))
-                                    .child("domain").getValue().equals(domain)) {
+                                    .child(getString(R.string.field_domain)).getValue().equals(domain)) {
                                 mFollowing1.add(mFollowing.get(i));
                             }
                             if (i == mFollowing.size() - 1) {
@@ -1152,7 +1141,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         for (int x = 0; x < mFollowing1.size(); x++) {
 
             for (Photo a : mPhotos) {
-                if (a.getUser_id().equals(mFollowing1.get(x))) {
+                if (a.getUi().equals(mFollowing1.get(x))) {
                     list.add(a);
                 }
             }
@@ -1163,7 +1152,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         Collections.sort(mPhotos, new Comparator<Photo>() {
             @Override
             public int compare(Photo o1, Photo o2) {
-                return o2.getDate_created().compareTo(o1.getDate_created());
+                return o2.getDc().compareTo(o1.getDc());
             }
         });
         displayPhotos();
@@ -1181,7 +1170,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                 Query query = reference
                         .child(getString(R.string.dbname_contestlist))
-                        .orderByChild("userId")
+                        .orderByChild(getString(R.string.field_user_id))
                         .equalTo(mFollowing.get(i));
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -1189,7 +1178,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
-                            if (!contestDetail.getResult()) {
+                            if (!contestDetail.getR()) {
                                 contestlist.add(contestDetail);
                             }
                         }
@@ -1197,7 +1186,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                         Collections.sort(contestlist, new Comparator<ContestDetail>() {
                             @Override
                             public int compare(ContestDetail o1, ContestDetail o2) {
-                                return o2.getTimestamp().compareTo(o1.getTimestamp());
+                                return o2.getTim().compareTo(o1.getTim());
                             }
                         });
 //                Add newly Created ArrayList to Shared Preferences
@@ -1248,7 +1237,8 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     int x = 0;
                     for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                         x++;
-                        mFollowing.add(singleSnapshot.child(getString(R.string.field_user_id)).getValue().toString());
+                        Log.d(TAG, "getFollowerListFromSP: 2");
+                        mFollowing.add(singleSnapshot.getKey());
                         if (x == dataSnapshot.getChildrenCount()) {
 
 //                        Add newly Created ArrayList to Shared Preferences
@@ -1311,7 +1301,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Promote promote = snapshot.getValue(Promote.class);
-                            if (timestamp >= Long.parseLong(promote.getTimeStart()) && timestamp <= Long.parseLong(promote.getTimeEnd())) {
+                            if (timestamp >= Long.parseLong(promote.getTiS()) && timestamp <= Long.parseLong(promote.getTiE())) {
                             } else {
                                 DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
 
@@ -1368,36 +1358,37 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                         long x = 0;
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
                             x++;
+                            Log.d(TAG, "getFollowerListFromSP: 4");
 
                             Photo photo = new Photo();
                             Map<String, Object> objectMap = (HashMap<String, Object>) singleSnapshot.getValue();
-                            photo.setCaption(objectMap.get(getString(R.string.field_caption)).toString());
+                            photo.setCap(objectMap.get(getString(R.string.field_caption)).toString());
 
-                            photo.setTags(objectMap.get(getString(R.string.field_tags)).toString());
+                            photo.setTg(objectMap.get(getString(R.string.field_tags)).toString());
 
-                            photo.setPhoto_id(objectMap.get(getString(R.string.field_photo_id)).toString());
+                            photo.setPi(objectMap.get(getString(R.string.field_photo_id)).toString());
 
-                            photo.setUser_id(objectMap.get(getString(R.string.field_user_id)).toString());
+                            photo.setUi(objectMap.get(getString(R.string.field_user_id)).toString());
 
-                            photo.setDate_created(objectMap.get(getString(R.string.field_date_createdr)).toString());
+                            photo.setDc(objectMap.get(getString(R.string.field_date_createdr)).toString());
 
-                            photo.setImage_path(objectMap.get(getString(R.string.field_image_path)).toString());
+                            photo.setIp(objectMap.get(getString(R.string.field_image_path)).toString());
 
 
                             if (objectMap.get(getString(R.string.thumbnail)) != null) {
-                                photo.setThumbnail(objectMap.get(getString(R.string.thumbnail)).toString());
+                                photo.setT(objectMap.get(getString(R.string.thumbnail)).toString());
 
                             }
-                            photo.setType(objectMap.get(getString(R.string.type)).toString());
+                            photo.setTy(objectMap.get(getString(R.string.type)).toString());
 
                             ArrayList<Comment> comments = new ArrayList<>();
 
                             for (DataSnapshot dSnapshot : singleSnapshot
                                     .child(getString(R.string.field_comment)).getChildren()) {
                                 Comment comment = new Comment();
-                                comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                comment.setUi(dSnapshot.getValue(Comment.class).getUi());
+                                comment.setC(dSnapshot.getValue(Comment.class).getC());
+                                comment.setDc(dSnapshot.getValue(Comment.class).getDc());
                                 comments.add(comment);
 
                             }
@@ -1407,7 +1398,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                             Collections.sort(mPhotos, new Comparator<Photo>() {
                                 @Override
                                 public int compare(Photo o1, Photo o2) {
-                                    return o2.getDate_created().compareTo(o1.getDate_created());
+                                    return o2.getDc().compareTo(o1.getDc());
                                 }
                             });
 
@@ -1463,7 +1454,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                 for (int i = 0; i < iteration; i++) {
                     mPaginatedPhotos.add(mPhotos.get(i));
                 }
-                Log.d(TAG, "displayPhotos: sss" + mPaginatedPhotos.size());
+                Log.d(TAG, "displayPhotos: sss" + mPaginatedPhotos);
                 mAadapter = new AdapterMainfeed(getContext(), mPaginatedPhotos, ListViewRv, Homefragment.this);
                 mAadapter.setHasStableIds(true);
                 ListViewRv.setAdapter(mAadapter);

@@ -2,15 +2,12 @@ package com.orion.orion.Adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,18 +19,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
-import com.orion.orion.home.Chat_Activity;
 import com.orion.orion.models.Chat;
-import com.orion.orion.models.Photo;
 
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
-import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
 
@@ -65,8 +59,8 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
     @Override
     public void onBindViewHolder(@NonNull final MyHolder myHolder, final int i) {
 //        get data
-        String message = chatList.get(i).getMessage();
-        String timeStamp = chatList.get(i).getTimestamp();
+        String message = chatList.get(i).getMsg();
+        String timeStamp = chatList.get(i).getTim();
 
 //        convert time stamp to date and time
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
@@ -78,51 +72,34 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
         myHolder.timeTv.setText(dateTime);
 
 //        click to show dialogue box
-        myHolder.messageLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Delete");
-                builder.setMessage("Are you sure, you want to delete this message?");
+        myHolder.messageLayout.setOnLongClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Delete");
+            builder.setMessage(R.string.delete_message_prompt);
 
 //                set buttons
-                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d(TAG, "DeleteMessage: deleteing message");
-                        DeleteMessage(i);
-
-                    }
-                });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builder.create().show();
+            builder.setPositiveButton("Delete", (dialog, which) -> DeleteMessage(i));
+            builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+            builder.create().show();
 
 
-                return true;
-            }
-
+            return true;
         });
     }
-    private void DeleteMessage(int position) {
 
-        Log.d(TAG, "DeleteMessage: deleting message");
-        String msgID = chatList.get(position).getMessageid();
-        String hisId = chatList.get(position).getReceiver();
-        DatabaseReference dbTs1= FirebaseDatabase.getInstance().getReference();
+    private void DeleteMessage(int position) {
+        String msgID = chatList.get(position).getMID();
+        String hisId = chatList.get(position).getRID();
+        DatabaseReference dbTs1 = FirebaseDatabase.getInstance().getReference();
         dbTs1.child(context.getString(R.string.dbname_Chats))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
                 .child(hisId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
                             dbTs1.child(context.getString(R.string.dbname_ChatList))
-                                    .child(snapshot.getValue().toString())
+                                    .child(Objects.requireNonNull(snapshot.getValue()).toString())
                                     .child(msgID)
                                     .removeValue();
                             chatList.remove(chatList.get(position));
@@ -138,11 +115,13 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
                 });
 
     }
+
     @Override
     public long getItemId(int position) {
-       Chat chat= chatList.get(position);
-        return chat.getMessageid().hashCode();
+        Chat chat = chatList.get(position);
+        return chat.getMID().hashCode();
     }
+
     @Override
     public int getItemCount() {
         return chatList.size();
@@ -152,17 +131,16 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
     public int getItemViewType(int position) {
 //        get currently signed user
         fUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (chatList.get(position).getSender().equals(fUser.getUid())) {
+        if (chatList.get(position).getSID().equals(fUser.getUid())) {
             return MSG_TYPE_RIGHT;
 
         } else {
             return MSG_TYPE_LEFT;
         }
     }
+    static class MyHolder extends RecyclerView.ViewHolder {
 
-    class MyHolder extends RecyclerView.ViewHolder {
-
-        TextView messageTv, timeTv, isSeenTv;
+        TextView messageTv, timeTv;
         LinearLayout messageLayout;
 
         public MyHolder(@NonNull View itemView) {

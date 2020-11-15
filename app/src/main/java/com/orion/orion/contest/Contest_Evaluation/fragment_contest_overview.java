@@ -162,9 +162,9 @@ public class fragment_contest_overview extends Fragment {
                                 if (dataSnapshot.exists()) {
                                     ContestDetail contestDetail = dataSnapshot.getValue(ContestDetail.class);
                                     assert contestDetail != null;
-                                    String WinDec = contestDetail.getWinDec();
-                                    boolean result = contestDetail.getResult();
-                                    if (contestDetail.getVoteType().equals("Jury and Public")) {
+                                    String WinDec = contestDetail.getWd();
+                                    boolean result = contestDetail.getR();
+                                    if (contestDetail.getVt().equals("Jury and Public")) {
                                         isPublicAndJuryVote = true;
                                     }
 
@@ -191,14 +191,11 @@ public class fragment_contest_overview extends Fragment {
                                                             relWinner.setVisibility(View.VISIBLE);
                                                         } else {
                                                             if ((Long.parseLong(winD) + 172800000) < Long.parseLong(timestamp)) {
-                                                                Log.d(TAG, "run: 1");
                                                                 publishResultAutomatically();
                                                             } else if (Long.parseLong(winD) <= Long.parseLong(timestamp)) {
-                                                                Log.d(TAG, "run: 2");
                                                                 pubBtn.setVisibility(View.VISIBLE);
                                                                 relWinner.setVisibility(View.VISIBLE);
                                                             } else {
-                                                                Log.d(TAG, "run: 3");
                                                                 relWinner.setVisibility(View.INVISIBLE);
                                                             }
                                                         }
@@ -274,14 +271,13 @@ public class fragment_contest_overview extends Fragment {
     }
 
     private void getWinners(ArrayList<ParticipantList> participantLists, boolean manual) {
-        Collections.sort(participantLists, (o1, o2) -> Integer.compare(o1.getTotalScore(), o2.getTotalScore()));
+        Collections.sort(participantLists, (o1, o2) -> Integer.compare(o1.getTs(), o2.getTs()));
         Collections.reverse(participantLists);
         try {
             for (int x = 0; x < 3; x++) {
                 participantLists2.add(participantLists.get(x));
             }
         } catch (IndexOutOfBoundsException e) {
-            Log.e(TAG, "onDataChange: " + e.getMessage());
         }
         mFirebaseMethods.publishResut(manual, Conteskey, participantLists, progress, getActivity(), participantLists2);
         pubBtn2.setVisibility(View.VISIBLE);
@@ -297,12 +293,9 @@ public class fragment_contest_overview extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            ParticipantList participantList = new ParticipantList();
-                            participantList = snapshot.getValue(ParticipantList.class);
+                            ParticipantList    participantList = snapshot.getValue(ParticipantList.class);
                             assert participantList != null;
-                            Log.d(TAG, "onDataChange: " + participantList.toString());
-                            joiningKey = participantList.getJoiningKey().toString();
-                            Log.d(TAG, "onDataChange: " + joiningKey);
+                            joiningKey = participantList.getJi();
                             DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
                             ParticipantList finalParticipantList = participantList;
                             ref2.child(getString(R.string.dbname_participantList))
@@ -312,13 +305,12 @@ public class fragment_contest_overview extends Fragment {
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            juryMarks juryMarks = new juryMarks();
-                                            juryMarks = dataSnapshot.getValue(juryMarks.class);
+                                            juryMarks  juryMarks = dataSnapshot.getValue(juryMarks.class);
                                             TableRow tbrow = new TableRow(getActivity());
                                             tbrow.setLayoutParams(new TableLayout.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
                                             tbrow.setWeightSum(5);
                                             TextView t1v = new TextView(getActivity());
-                                            getUsername(finalParticipantList.getUserid(), t1v);
+                                            getU(finalParticipantList.getUi(), t1v);
                                             t1v.setOnClickListener(v -> {
                                                 DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
 
@@ -355,28 +347,28 @@ public class fragment_contest_overview extends Fragment {
                                             tbrow.addView(t1v);
                                             TextView t2v = new TextView(getActivity());
                                             assert juryMarks != null;
-                                            t2v.setText(juryMarks.getJury1());
+                                            t2v.setText(juryMarks.getJ1());
                                             t2v.setTextColor(Color.BLACK);
                                             t2v.setGravity(Gravity.CENTER);
                                             tbrow.addView(t2v);
                                             TextView t3v = new TextView(getActivity());
-                                            t3v.setText(juryMarks.getJury2());
+                                            t3v.setText(juryMarks.getJ2());
                                             t3v.setTextColor(Color.BLACK);
                                             t3v.setGravity(Gravity.CENTER);
                                             tbrow.addView(t3v);
                                             TextView t4v = new TextView(getActivity());
-                                            t4v.setText(juryMarks.getJury3());
+                                            t4v.setText(juryMarks.getJ3());
                                             t4v.setTextColor(Color.BLACK);
                                             t4v.setGravity(Gravity.CENTER);
                                             tbrow.addView(t4v);
                                             TextView t5v = new TextView(getActivity());
                                             long x = 0, y = 0, z = 0;
-                                            if (juryMarks.getJury1().equals("")) x = 0;
-                                            else x = Long.parseLong(juryMarks.getJury1());
-                                            if (juryMarks.getJury2().equals("")) y = 0;
-                                            else y = Long.parseLong(juryMarks.getJury2());
-                                            if (juryMarks.getJury3().equals("")) z = 0;
-                                            else z = Long.parseLong(juryMarks.getJury3());
+                                            if (juryMarks.getJ1().equals("")) x = 0;
+                                            else x = Long.parseLong(juryMarks.getJ1());
+                                            if (juryMarks.getJ2().equals("")) y = 0;
+                                            else y = Long.parseLong(juryMarks.getJ2());
+                                            if (juryMarks.getJ3().equals("")) z = 0;
+                                            else z = Long.parseLong(juryMarks.getJ3());
                                             long total = x + y + z;
                                             t5v.setText(String.valueOf(total));
                                             t5v.setTextColor(Color.BLACK);
@@ -384,7 +376,6 @@ public class fragment_contest_overview extends Fragment {
                                             t5v.setGravity(Gravity.CENTER);
                                             tbrow.addView(t5v);
                                             juryTable.addView(tbrow);
-                                            Log.d(TAG, "onDataChange: " + juryMarks.toString());
                                         }
 
                                         @Override
@@ -412,9 +403,7 @@ public class fragment_contest_overview extends Fragment {
                             ParticipantList participantList = new ParticipantList();
                             participantList = snapshot.getValue(ParticipantList.class);
                             assert participantList != null;
-                            Log.d(TAG, "onDataChange: " + participantList.toString());
-                            joiningKey = participantList.getJoiningKey().toString();
-                            Log.d(TAG, "onDataChange: " + joiningKey);
+                            joiningKey = participantList.getJi().toString();
                             DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
                             ParticipantList finalParticipantList = participantList;
                             ref2.child(getString(R.string.dbname_participantList))
@@ -430,7 +419,7 @@ public class fragment_contest_overview extends Fragment {
                                             tbrow.setLayoutParams(new TableLayout.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
                                             tbrow.setWeightSum(5);
                                             TextView t1v = new TextView(getActivity());
-                                            getUsername(finalParticipantList.getUserid(), t1v);
+                                            getU(finalParticipantList.getUi(), t1v);
                                             t1v.setOnClickListener(v -> {
                                                 DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
 
@@ -467,12 +456,12 @@ public class fragment_contest_overview extends Fragment {
                                             tbrow.addView(t1v);
                                             TextView t2v = new TextView(getActivity());
                                             long t = 0, o = 0, p = 0;
-                                            if (juryMarks.getJury1().equals("")) t = 0;
-                                            else t = Long.parseLong(juryMarks.getJury1());
-                                            if (juryMarks.getJury2().equals("")) o = 0;
-                                            else o = Long.parseLong(juryMarks.getJury2());
-                                            if (juryMarks.getJury3().equals("")) p = 0;
-                                            else p = Long.parseLong(juryMarks.getJury3());
+                                            if (juryMarks.getJ1().equals("")) t = 0;
+                                            else t = Long.parseLong(juryMarks.getJ1());
+                                            if (juryMarks.getJ2().equals("")) o = 0;
+                                            else o = Long.parseLong(juryMarks.getJ2());
+                                            if (juryMarks.getJ3().equals("")) p = 0;
+                                            else p = Long.parseLong(juryMarks.getJ3());
                                             long total = t + o + p;
                                             t2v.setText(String.valueOf(total));
                                             t2v.setTextColor(Color.BLACK);
@@ -485,7 +474,7 @@ public class fragment_contest_overview extends Fragment {
                                             TextView t4v = new TextView(getActivity());
                                             t4v.setTextColor(Color.BLACK);
                                             t4v.setGravity(Gravity.CENTER);
-                                            getVoteCount(finalParticipantList.getJoiningKey(), t3v, contestkey, t4v, t2v);
+                                            getVoteCount(finalParticipantList.getJi(), t3v, contestkey, t4v, t2v);
                                             tbrow.addView(t4v);
                                             juryTable2.addView(tbrow);
                                         }
@@ -518,7 +507,7 @@ public class fragment_contest_overview extends Fragment {
             ref4.child(getString(R.string.dbname_participantList))
                     .child(contestkey)
                     .child(Joiningkey)
-                    .child("totalScore")
+                    .child(getString(R.string.field_total_score))
                     .setValue((int) c);
         } catch (NumberFormatException ignored) {
 
@@ -547,18 +536,17 @@ public class fragment_contest_overview extends Fragment {
                 });
     }
 
-    private void getUsername(String userid, TextView textView) {
+    private void getU(String userid, TextView textView) {
         DatabaseReference ref5 = FirebaseDatabase.getInstance().getReference();
-        ref5.child(getString(R.string.dbname_user_account_settings)).
-                orderByChild("user_id").equalTo(userid).
+        ref5.child(getString(R.string.dbname_users)).
+                child(userid).
+                child(getString(R.string.field_username)).
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            users user = ds.getValue(users.class);
-                            assert user != null;
-                            textView.setText(user.getUsername());
-                        }
+                            String user = dataSnapshot.getValue().toString();
+                            textView.setText(user);
+
                     }
 
                     @Override
@@ -572,7 +560,7 @@ public class fragment_contest_overview extends Fragment {
 
     private void getRank() {
         participantLists2.clear();
-        Collections.sort(participantLists, (o1, o2) -> Integer.compare(o1.getTotalScore(), o2.getTotalScore()));
+        Collections.sort(participantLists, (o1, o2) -> Integer.compare(o1.getTs(), o2.getTs()));
         Collections.reverse(participantLists);
         try {
             for (int x = 0; x < 3; x++) participantLists2.add(participantLists.get(x));
@@ -605,7 +593,6 @@ public class fragment_contest_overview extends Fragment {
     }
 
     private void displayParticipantRank() {
-        Log.d(TAG, "display first 10 contest");
         ArrayList<ParticipantList> paginatedParticipantLists = new ArrayList<>();
         if (participantLists != null) {
             try {
@@ -614,7 +601,6 @@ public class fragment_contest_overview extends Fragment {
                 int mResults = 10;
                 for (int i = 0; i < iteration; i++)
                     paginatedParticipantLists.add(participantLists.get(i));
-                Log.d(TAG, "contest: sss" + paginatedParticipantLists.size());
                 AdapterRankList rankList = new AdapterRankList(getContext(), paginatedParticipantLists);
                 rankList.setHasStableIds(true);
                 rankRv.setAdapter(rankList);

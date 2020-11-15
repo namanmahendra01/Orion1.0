@@ -149,42 +149,42 @@ public class fragment_edit_contest extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 CreateForm mCreateForm = dataSnapshot.getValue(CreateForm.class);
-                if (mCreateForm.getEntryfee().equals("")) {
+                if (mCreateForm.getEf().equals("")) {
                     entryfee.setText("Free");
                 } else {
-                    entryfee.setText(mCreateForm.getEntryfee());
+                    entryfee.setText(mCreateForm.getEf());
                 }
-                if (mCreateForm.getTotal_prize().equals("")) {
+                if (mCreateForm.getTp().equals("")) {
                     prizeLinear.setVisibility(View.GONE);
                     totalprize.setText("-");
 
                 } else {
-                    totalprize.setText(mCreateForm.getTotal_prize());
+                    totalprize.setText(mCreateForm.getTp());
                     prizeLinear.setVisibility(View.VISIBLE);
                 }
-                if (mCreateForm.getMaxLimit().equals("")) {
+                if (mCreateForm.getMLt().equals("")) {
                     maxPart.setText("Unlimited");
 
                 } else {
-                    maxPart.setText(mCreateForm.getMaxLimit());
+                    maxPart.setText(mCreateForm.getMLt());
                 }
-                if (mCreateForm.getVoteBegin().equals("")) {
+                if (mCreateForm.getVb().equals("")) {
                     voteBegin.setText("-");
 
                 } else {
-                    voteBegin.setText(mCreateForm.getVoteBegin());
+                    voteBegin.setText(mCreateForm.getVb());
 
                 }
-                if (mCreateForm.getVoteEnd().equals("")) {
+                if (mCreateForm.getVe().equals("")) {
                     voteEnd.setText("-");
                 } else {
-                    voteEnd.setText(mCreateForm.getVoteEnd());
+                    voteEnd.setText(mCreateForm.getVe());
                 }
-                if (mCreateForm.getJname_1().equals("")) {
+                if (mCreateForm.getJn1().equals("")) {
                     jury.setVisibility(View.GONE);
                     cardView.setVisibility(View.GONE);
                 }
-                if (!mCreateForm.getJname_1().equals("") &&  mCreateForm.getJname_2().equals("")){
+                if (!mCreateForm.getJn1().equals("") &&  mCreateForm.getJn2().equals("")){
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -199,7 +199,7 @@ public class fragment_edit_contest extends Fragment {
 
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                     db.child(getString(R.string.dbname_username))
-                            .child(mCreateForm.getJname_1())
+                            .child(mCreateForm.getJn1())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -213,12 +213,11 @@ public class fragment_edit_contest extends Fragment {
                                                         users user = snapshot.getValue(users.class);
 
 
-                                                        juryname1.setText(user.getDisplay_name());
-                                                        jurypl1.setText(user.getUsername());
-                                                        Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                        juryname1.setText(user.getDn());
+                                                        jurypl1.setText(user.getU());
 
                                                         Glide.with(fragment_edit_contest.this)
-                                                                .load(user.getProfile_photo())
+                                                                .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
@@ -243,8 +242,8 @@ public class fragment_edit_contest extends Fragment {
 
 
                 }
-                if(!mCreateForm.getJname_1().equals("") &&  !mCreateForm.getJname_2().equals("")
-                        && mCreateForm.getJname_3().equals("")){
+                if(!mCreateForm.getJn1().equals("") &&  !mCreateForm.getJn2().equals("")
+                        && mCreateForm.getJn3().equals("")){
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -258,7 +257,7 @@ public class fragment_edit_contest extends Fragment {
                     jurypl3.setVisibility(View.GONE);
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                     db.child(getString(R.string.dbname_username))
-                            .child(mCreateForm.getJname_1())
+                            .child(mCreateForm.getJn1())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -272,12 +271,11 @@ public class fragment_edit_contest extends Fragment {
                                                         users user = snapshot.getValue(users.class);
 
 
-                                                        juryname1.setText(user.getDisplay_name());
-                                                        jurypl1.setText(user.getUsername());
-                                                        Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                        juryname1.setText(user.getDn());
+                                                        jurypl1.setText(user.getU());
 
                                                         Glide.with(fragment_edit_contest.this)
-                                                                .load(user.getProfile_photo())
+                                                                .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
@@ -300,7 +298,7 @@ public class fragment_edit_contest extends Fragment {
                             });
 
                     db.child(getString(R.string.dbname_username))
-                            .child(mCreateForm.getJname_2())
+                            .child(mCreateForm.getJn2())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -314,12 +312,12 @@ public class fragment_edit_contest extends Fragment {
                                                         users user = snapshot.getValue(users.class);
 
 
-                                                        juryname2.setText(user.getDisplay_name());
-                                                        jurypl2.setText(user.getUsername());
-                                                        Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                        juryname2.setText(user.getDn());
+                                                        jurypl2.setText(user.getU());
+                                                        Log.d(TAG, "onDataChange: " + user.getDn());
 
                                                         Glide.with(fragment_edit_contest.this)
-                                                                .load(user.getProfile_photo())
+                                                                .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
@@ -341,8 +339,8 @@ public class fragment_edit_contest extends Fragment {
                                 }
                             });
                 }
-                if(!mCreateForm.getJname_1().equals("") &&  !mCreateForm.getJname_2().equals("")
-                        && !mCreateForm.getJname_3().equals("")){
+                if(!mCreateForm.getJn1().equals("") &&  !mCreateForm.getJn2().equals("")
+                        && !mCreateForm.getJn3().equals("")){
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -358,7 +356,7 @@ public class fragment_edit_contest extends Fragment {
 
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                     db.child(getString(R.string.dbname_username))
-                            .child(mCreateForm.getJname_1())
+                            .child(mCreateForm.getJn1())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -372,12 +370,11 @@ public class fragment_edit_contest extends Fragment {
                                                         users user = snapshot.getValue(users.class);
 
 
-                                                        juryname1.setText(user.getDisplay_name());
-                                                        jurypl1.setText(user.getUsername());
-                                                        Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                        juryname1.setText(user.getDn());
+                                                        jurypl1.setText(user.getU());
 
                                                         Glide.with(fragment_edit_contest.this)
-                                                                .load(user.getProfile_photo())
+                                                                .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
@@ -399,7 +396,7 @@ public class fragment_edit_contest extends Fragment {
                                 }
                             });
                     db.child(getString(R.string.dbname_username))
-                            .child(mCreateForm.getJname_2())
+                            .child(mCreateForm.getJn2())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -413,12 +410,11 @@ public class fragment_edit_contest extends Fragment {
                                                         users user = snapshot.getValue(users.class);
 
 
-                                                        juryname2.setText(user.getDisplay_name());
-                                                        jurypl2.setText(user.getUsername());
-                                                        Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                        juryname2.setText(user.getDn());
+                                                        jurypl2.setText(user.getU());
 
                                                         Glide.with(fragment_edit_contest.this)
-                                                                .load(user.getProfile_photo())
+                                                                .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
@@ -441,7 +437,7 @@ public class fragment_edit_contest extends Fragment {
                             });
 
                     db.child(getString(R.string.dbname_username))
-                            .child(mCreateForm.getJname_3())
+                            .child(mCreateForm.getJn3())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -455,12 +451,12 @@ public class fragment_edit_contest extends Fragment {
                                                         users user = snapshot.getValue(users.class);
 
 
-                                                        juryname3.setText(user.getDisplay_name());
-                                                        jurypl3.setText(user.getUsername());
-                                                        Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                        juryname3.setText(user.getDn());
+                                                        jurypl3.setText(user.getU());
+                                                        Log.d(TAG, "onDataChange: " + user.getDn());
 
                                                         Glide.with(fragment_edit_contest.this)
-                                                                .load(user.getProfile_photo())
+                                                                .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
@@ -483,27 +479,27 @@ public class fragment_edit_contest extends Fragment {
                             });
                 }
 
-                posterlink = mCreateForm.getPoster();
+                posterlink = mCreateForm.getPo();
                 Glide.with(fragment_edit_contest.this)
                         .load(posterlink)
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)
                         .placeholder(R.drawable.load)
                         .into(poster);
-                title.setText(mCreateForm.getTitle());
-                descrip.setText(mCreateForm.getDescrip());
-                rules.setText(mCreateForm.getRule());
-                voteType.setText(mCreateForm.getVotetype());
-                regBegin.setText(mCreateForm.getRegBegin());
-                regEnd.setText(mCreateForm.getRegEnd());
-                domain.setText(mCreateForm.getDomain());
-                openfor.setText(mCreateForm.getOpenFor());
-                hostedby.setText(mCreateForm.getHost());
-                filetype.setText(mCreateForm.getFiletype());
-                windate.setText(mCreateForm.getWinDeclare());
-                p1Tv.setText(mCreateForm.getPlace_1());
-                p2Tv.setText(mCreateForm.getPlace_2());
-                p3Tv.setText(mCreateForm.getPlace_3());
+                title.setText(mCreateForm.getCt());
+                descrip.setText(mCreateForm.getDes());
+                rules.setText(mCreateForm.getRul());
+                voteType.setText(mCreateForm.getVt());
+                regBegin.setText(mCreateForm.getRb());
+                regEnd.setText(mCreateForm.getRe());
+                domain.setText(mCreateForm.getD());
+                openfor.setText(mCreateForm.getOf());
+                hostedby.setText(mCreateForm.getHst());
+                filetype.setText(mCreateForm.getFt());
+                windate.setText(mCreateForm.getWd());
+                p1Tv.setText(mCreateForm.getP1());
+                p2Tv.setText(mCreateForm.getP2());
+                p3Tv.setText(mCreateForm.getP3());
             }
 
             @Override
@@ -558,13 +554,13 @@ public class fragment_edit_contest extends Fragment {
             ref1.child(userid)
                     .child(getString(R.string.created_contest))
                     .child(Contestkey)
-                    .child("descrip")
+                    .child(getString(R.string.field_description))
                     .setValue(descrip2).addOnSuccessListener(aVoid -> {
                         DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
                         ref2.child(userid)
                                 .child(getString(R.string.created_contest))
                                 .child(Contestkey)
-                                .child("rule")
+                                .child(getString(R.string.field_rule))
                                 .setValue(rule2).addOnSuccessListener(aVoid1 -> Toast.makeText(getContext(), "Your changes are saved!", Toast.LENGTH_SHORT).show());
                     });
         });
@@ -605,14 +601,12 @@ public class fragment_edit_contest extends Fragment {
     }
 
     private void setupFirebaseAuth() {
-        Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
         FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference myRef = mFirebaseDatabase.getReference();
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = firebaseAuth -> {
             FirebaseUser user = firebaseAuth.getCurrentUser();
             if (user != null) {
-                Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
             } else {
                 Log.d(TAG, "onAuthStateChanged:signed_out");
             }
@@ -637,7 +631,7 @@ public class fragment_edit_contest extends Fragment {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(getString(R.string.dbname_contests))
                 .child(userid)
-                .child("completed")
+                .child(getString(R.string.field_contest_completed))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -646,7 +640,7 @@ public class fragment_edit_contest extends Fragment {
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                             reference.child(getString(R.string.dbname_contests))
                                     .child(userid)
-                                    .child("reports")
+                                    .child(getString(R.string.field_contest_reports))
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {

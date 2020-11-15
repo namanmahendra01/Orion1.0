@@ -341,9 +341,9 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                         Log.d(TAG, "checkOrGetLocation: addresse" + addresses.get(0));
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         assert user != null;
-                        reference.child(getString(R.string.dbname_leaderboard)).child(mAuth.getCurrentUser().getUid()).child(getString(R.string.field_last_known_location)).child("city").setValue(city);
-                        reference.child(getString(R.string.dbname_leaderboard)).child(mAuth.getCurrentUser().getUid()).child(getString(R.string.field_last_known_location)).child("country").setValue(country);
-                        reference.child(getString(R.string.dbname_leaderboard)).child(mAuth.getCurrentUser().getUid()).child(getString(R.string.field_last_known_location)).child("area").setValue(area);
+                        reference.child(getString(R.string.dbname_leaderboard)).child(mAuth.getCurrentUser().getUid()).child(getString(R.string.field_last_known_location)).child(getString(R.string.field_city)).setValue(city);
+                        reference.child(getString(R.string.dbname_leaderboard)).child(mAuth.getCurrentUser().getUid()).child(getString(R.string.field_last_known_location)).child(getString(R.string.field_country)).setValue(country);
+                        reference.child(getString(R.string.dbname_leaderboard)).child(mAuth.getCurrentUser().getUid()).child(getString(R.string.field_last_known_location)).child(getString(R.string.field_area)).setValue(area);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -558,7 +558,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                             int l = mList.size();
                             //loop to push in between and next one further away for arraylist
                             for (int i = 0; i < l; i++) {
-                                int r = mList.get(i).getRating();
+                                int r = mList.get(i).getRat();
                                 if (rating >= r) {
                                     mList.add(new TopUsers());
                                     for (int j = mList.size() - 1; j > i; j--)
@@ -579,7 +579,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                             int l = mList.size();
                             //loop to push in between and next one further away for arraylist
                             for (int i = 0; i < l; i++) {
-                                int r = mList.get(i).getRating();
+                                int r = mList.get(i).getRat();
                                 if (rating >= r) {
                                     mList.add(new TopUsers());
                                     for (int j = mList.size() - 1; j > i; j--)
@@ -602,7 +602,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 //adding the list fetched to database
                 for (int i = completed; i < 300; i++) {
                     String value = "";
-                    if (i < mList.size()) value = mList.get(i).getUser_id();
+                    if (i < mList.size()) value = mList.get(i).getUi();
                     Log.d(TAG, "createTopDatabase: key, value" + (i + 1) + ", " + value);
                     reference.child(getString(R.string.db_topUsersParams)).child(field).child(String.valueOf(i + 1)).setValue(value);
                     reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue((i + 1) + "/300");
@@ -910,7 +910,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                             boolean exists = false;
                                             for (Photo existingPhoto : fieldPhotos) {
                                                 assert photo != null;
-                                                if (existingPhoto.getPhoto_id().equals(photo.getPhoto_id())) {
+                                                if (existingPhoto.getPi().equals(photo.getPi())) {
                                                     exists = true;
                                                     break;
                                                 }
@@ -957,13 +957,15 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-                    if (!singleSnapshot.getValue().toString().equals("")) {
-                        topUser8.add(singleSnapshot.getValue().toString());
+                if (snapshot.exists()) {
+                    for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
+                        if (!singleSnapshot.getValue().toString().equals("")&&!singleSnapshot.getKey().equals(getString(R.string.field_completed))) {
+                            topUser8.add(singleSnapshot.getValue().toString());
+                        }
+                        Log.d(TAG, "getTop8: topUser" + topUser8);
                     }
-                    Log.d(TAG, "getTop8: topUser" + topUser8);
+                    getStarImage(topUser8);
                 }
-                getStarImage(topUser8);
             }
 
             @Override
@@ -1096,7 +1098,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                         ArrayList<Photo> fieldPhotos2 = new ArrayList<>(fieldPhotos);
                                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                             for (Photo photo : fieldPhotos)
-                                                if (photo.getPhoto_id().equals(dataSnapshot.getKey())) {
+                                                if (photo.getPi().equals(dataSnapshot.getKey())) {
                                                     fieldPhotos2.remove(photo);
                                                     break;
                                                 }
@@ -1267,7 +1269,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 Log.d(TAG, "selected user" + mUserList.get(position).toString());
                 Intent intent = new Intent(Explore.this, profile.class);
                 intent.putExtra(getString(R.string.calling_activity), getString(R.string.search_activity));
-                intent.putExtra(getString(R.string.intent_user), mUserList.get(position).getUser_id());
+                intent.putExtra(getString(R.string.intent_user), mUserList.get(position).getUi());
                 startActivity(intent);
             }
         });
@@ -1296,15 +1298,15 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     public void onItemClick(int position) {
         Photo photo = paginatedPhotos.get(position);
         DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
-        db1.child(mContext.getString(R.string.dbname_user_photos)).child(photo.getUser_id()).child(photo.getPhoto_id()).addListenerForSingleValueEvent(new ValueEventListener() {
+        db1.child(mContext.getString(R.string.dbname_user_photos)).child(photo.getUi()).child(photo.getPi()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ArrayList<Comment> comments = new ArrayList<>();
                 for (DataSnapshot dSnapshot : snapshot.child("comment").getChildren()) {
                     Comment comment = new Comment();
-                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                    comment.setUi(dSnapshot.getValue(Comment.class).getUi());
+                    comment.setC(dSnapshot.getValue(Comment.class).getC());
+                    comment.setDc(dSnapshot.getValue(Comment.class).getDc());
                     comments.add(comment);
                 }
                 Log.d(Constraints.TAG, "onDataChange: klj" + comments);

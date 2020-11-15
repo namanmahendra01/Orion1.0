@@ -5,143 +5,82 @@ import java.util.List;
 public class JoinForm {
     public JoinForm(){}
 
-    String name,username,college,comment,status,payment,contestKey,timestamp,joiningKey,idLink,mediaLink,userid,hostId;
+    String clg, st, ci, tim, ji, il, ml, ui, hID;
     private List<juryMarks> jurymarks;
 
-    public JoinForm(String name, String username, String college, String comment, String status,
-                    String payment,String contestKey,String timestamp,String joiningKey,String mediaLink,String userid,String idLink,String hostId) {
-        this.name = name;
-        this.username = username;
-        this.college = college;
-        this.comment = comment;
-        this.status = status;
-        this.payment = payment;
-        this.contestKey=contestKey;
-        this.timestamp=timestamp;
-        this.joiningKey=joiningKey;
-        this.mediaLink=mediaLink;
-        this.userid=userid;
-        this.idLink=idLink;
-        this.hostId=hostId;
+
+
+
+
+    public String getClg() {
+        return clg;
     }
 
-    public String getName() {
-        return name;
+    public void setClg(String college) {
+        this.clg = college;
     }
 
-    public void setName(String name) {
-        this.name = name;
+
+
+    public String getSt() {
+        return st;
     }
 
-    public String getUsername() {
-        return username;
+    public void setSt(String status) {
+        this.st = status;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+
+    public String getCi() {
+        return ci;
     }
 
-    public String getCollege() {
-        return college;
+    public void setCi(String contestKey) {
+        this.ci = contestKey;
+    }
+    public String getTim() {
+        return tim;
     }
 
-    public void setCollege(String college) {
-        this.college = college;
+    public void setTim(String timestamp) {
+        this.tim = timestamp;
+    }
+    public String getJi() {
+        return ji;
     }
 
-    public String getComment() {
-        return comment;
+    public void setJi(String joiningKey) {
+        this.ji = joiningKey;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public String getUi() {
+        return ui;
     }
 
-    public String getStatus() {
-        return status;
+    public void setUi(String userid) {
+        this.ui = userid;
+    }
+    public String getHID() {
+        return hID;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setHID(String hostId) {
+        this.hID = hostId;
     }
 
-    public String getPayment() {
-        return payment;
-    }
-
-    public void setPayment(String payment) {
-        this.payment = payment;
-    }
-    public String getContestKey() {
-        return contestKey;
-    }
-
-    public void setContestKey(String contestKey) {
-        this.contestKey = contestKey;
-    }
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-    public String getJoiningKey() {
-        return joiningKey;
-    }
-
-    public void setJoiningKey(String joiningKey) {
-        this.joiningKey = joiningKey;
-    }
-    public String getIdLink() {
-        return idLink;
-    }
-
-    public void setIdLink(String idLink) {
-        this.idLink = idLink;
-    }
-    public String getMediaLink() {
-        return mediaLink;
-    }
-
-    public void setMediaLink(String mediaLink) {
-        this.mediaLink = mediaLink;
-    }
-    public String getUserid() {
-        return userid;
-    }
-
-    public void setUserid(String userid) {
-        this.userid = userid;
-    }
-    public String getHostId() {
-        return hostId;
-    }
-
-    public void setHostId(String hostId) {
-        this.hostId = hostId;
-    }
     @Override
     public String toString() {
         return "JoinForm{" +
-                "name='" + name + '\'' +
-                ", username='" + username + '\'' +
-                ", college='" + college + '\'' +
-                ", comment='" + comment + '\'' +
-                ", status='" + status + '\'' +
-                ", payment='" + payment + '\'' +
-                ", contestKey='" + contestKey + '\'' +
-                ", joiningKey='" + joiningKey + '\'' +
-                ", idLink='" + idLink + '\'' +
-
-                ", mediaLink='" + mediaLink + '\'' +
-
-                ", userid='" + userid + '\'' +
-                ", hostId='" + hostId + '\'' +
-
-
-
-
+                "clg='" + clg + '\'' +
+                ", st='" + st + '\'' +
+                ", ci='" + ci + '\'' +
+                ", tim='" + tim + '\'' +
+                ", ji='" + ji + '\'' +
+                ", il='" + il + '\'' +
+                ", ml='" + ml + '\'' +
+                ", ui='" + ui + '\'' +
+                ", hID='" + hID + '\'' +
+                ", jurymarks=" + jurymarks +
                 '}';
     }
 }

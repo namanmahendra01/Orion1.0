@@ -72,7 +72,7 @@ public class AccountSettingActivity extends AppCompatActivity {
                     break;
                 case 1: startActivity(new Intent(mcontext, Password_Reset.class));
                     break;
-                case 2: startActivity(new Intent(mcontext, Password_Reset.class));
+                case 2: startActivity(new Intent(mcontext, Contest.class));
                     break;
                 case 3: startActivity(new Intent(mcontext, Help.class));
                     break;

@@ -6,29 +6,27 @@ import android.os.Parcelable;
 import java.util.List;
 
 public class Photo implements Parcelable {
-    private String caption;
-    private String date_created;
-    private String image_path;
-    private String photo_id;
-    private String type;
-    private String user_id;
-    private String users;
-    private String Tags;
-    private String thumbnail;
+    private String cap;
+    private String dc;
+    private String ip;
+    private String pi;
+    private String ty;
+    private String ui;
+    private String tg;
+    private String t;
     private List<Comment>comment;
 
 
-    public Photo(String caption, String date_created, String image_path, String photo_id, String user_id, String users, String tags, List<Comment> comment,String type,String thumbnail) {
-        this.caption = caption;
-        this.date_created = date_created;
-        this.image_path = image_path;
-        this.photo_id = photo_id;
-        this.user_id = user_id;
-        this.users = users;
-        this.Tags = tags;
+    public Photo(String cap, String dc, String ip, String pi, String ty, String ui, String tg, String t, List<Comment> comment) {
+        this.cap = cap;
+        this.dc = dc;
+        this.ip = ip;
+        this.pi = pi;
+        this.ty = ty;
+        this.ui = ui;
+        this.tg = tg;
+        this.t = t;
         this.comment = comment;
-        this.thumbnail = thumbnail;
-        this.type=type;
     }
 
     public Photo(){
@@ -36,15 +34,14 @@ public class Photo implements Parcelable {
 
 
     protected Photo(Parcel in) {
-        caption = in.readString();
-        date_created = in.readString();
-        image_path = in.readString();
-        photo_id = in.readString();
-        user_id = in.readString();
-        users = in.readString();
-        Tags = in.readString();
-        type = in.readString();
-        thumbnail=in.readString();
+        cap = in.readString();
+        dc = in.readString();
+        ip = in.readString();
+        pi = in.readString();
+        ui = in.readString();
+        tg = in.readString();
+        ty = in.readString();
+        t =in.readString();
     }
 
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {
@@ -59,78 +56,71 @@ public class Photo implements Parcelable {
         }
     };
 
-    public String getCaption() {
-        return caption;
+    public String getCap() {
+        return cap;
     }
 
-    public void setCaption(String caption) {
-        this.caption = caption;
+    public void setCap(String caption) {
+        this.cap = caption;
     }
 
-    public String getDate_created() {
-        return date_created;
+    public String getDc() {
+        return dc;
     }
 
-    public void setDate_created(String date_created) {
-        this.date_created = date_created;
+    public void setDc(String date_created) {
+        this.dc = date_created;
     }
 
-    public String getImage_path() {
-        return image_path;
+    public String getIp() {
+        return ip;
     }
 
-    public void setImage_path(String image_path) {
-        this.image_path = image_path;
+    public void setIp(String image_path) {
+        this.ip = image_path;
     }
 
-    public String getPhoto_id() {
-        return photo_id;
+    public String getPi() {
+        return pi;
     }
 
-    public void setPhoto_id(String photo_id) {
-        this.photo_id = photo_id;
+    public void setPi(String photo_id) {
+        this.pi = photo_id;
     }
 
-    public String getUser_id() {
-        return user_id;
+    public String getUi() {
+        return ui;
     }
 
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
-    }
-
-    public String getUsers() {
-        return users;
-    }
-
-    public void setUsers(String users) {
-        this.users = users;
-    }
-
-    public String getTags() {
-        return Tags;
-    }
-
-    public void setTags(String tags) {
-        Tags = tags;
+    public void setUi(String user_id) {
+        this.ui = user_id;
     }
 
 
-    public String getType() {
-        return type;
+    public String getTg() {
+        return tg;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setTg(String tags) {
+        tg = tags;
     }
 
 
-    public String getThumbnail() {
-        return thumbnail;
+    public String getTy() {
+        return ty;
     }
 
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
+    public void setTy(String type) {
+        this.ty = type;
+    }
+
+
+    public String getT() {
+        return t;
+    }
+
+    public void setT(String thumbnail) {
+        this.t = thumbnail;
     }
 
     public List<Comment> getComments() {
@@ -144,18 +134,15 @@ public class Photo implements Parcelable {
     @Override
     public String toString() {
         return "Photo{" +
-                "caption='" + caption + '\'' +
-                ", date_created='" + date_created + '\'' +
-                ", image_path='" + image_path + '\'' +
-                ", photo_id='" + photo_id + '\'' +
-                ", user_id='" + user_id + '\'' +
-                ", users='" + users + '\'' +
-                ", Tags='" + Tags + '\'' +
+                "cap='" + cap + '\'' +
+                ", dc='" + dc + '\'' +
+                ", ip='" + ip + '\'' +
+                ", pi='" + pi + '\'' +
+                ", ty='" + ty + '\'' +
+                ", ui='" + ui + '\'' +
+                ", tg='" + tg + '\'' +
+                ", t='" + t + '\'' +
                 ", comment=" + comment +
-                ", type=" + type +
-                ", thumbnail=" + thumbnail +
-
-
                 '}';
     }
 
@@ -167,14 +154,13 @@ public class Photo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(caption);
-        dest.writeString(date_created);
-        dest.writeString(image_path);
-        dest.writeString(photo_id);
-        dest.writeString(user_id);
-        dest.writeString(users);
-        dest.writeString(Tags);
-        dest.writeString(type);
-        dest.writeString(thumbnail);
+        dest.writeString(cap);
+        dest.writeString(dc);
+        dest.writeString(ip);
+        dest.writeString(pi);
+        dest.writeString(ui);
+        dest.writeString(tg);
+        dest.writeString(ty);
+        dest.writeString(t);
     }
 }

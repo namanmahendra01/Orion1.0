@@ -64,9 +64,8 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
 
         Promote promote= promoteList.get(i);
 
-        Log.d(TAG, "onBindViewHolder: pos"+i);
 
-        if (promote.getPromoterId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+        if (promote.getPID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
             myHolder.delete.setVisibility(View.VISIBLE);
         }else{
             myHolder.delete.setVisibility(View.GONE);
@@ -74,9 +73,9 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
         }
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(context.getString(R.string.dbname_user_photos))
-                .child(promote.getUserid())
-                .child(promote.getPhotoid())
-                .child("thumbnail")
+                .child(promote.getUi())
+                .child(promote.getPi())
+                .child(context.getString(R.string.thumbnail))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -84,10 +83,10 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
                             if (!snapshot.getValue().toString().equals("")) {
                                 myHolder.image = snapshot.getValue().toString();
                             } else {
-                                myHolder.image = promote.getPhotoLink();
+                                myHolder.image = promote.getIp();
 
                             }
-                            setWidgets(promote.getUserid(), myHolder.image, myHolder.username, myHolder.post, myHolder.progress);
+                            setWidgets(promote.getUi(), myHolder.image, myHolder.username, myHolder.post, myHolder.progress);
 
                         }else{
 
@@ -109,7 +108,7 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Remove Selected Promotion");
-                builder.setMessage("Are you sure, you want to remove this Promotion?");
+                builder.setMessage(context.getString(R.string.remove_promotion_prompt));
 
 //                set buttons
                 builder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
@@ -118,14 +117,14 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
                         Log.d(VolleyLog.TAG, "Rejecting: rejected ");
                         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                         db.child(context.getString(R.string.dbname_promote))
-                                .child(promote.getPromoterId())
-                                .child(promote.getStoryid())
+                                .child(promote.getPID())
+                                .child(promote.getStID())
                                 .removeValue();
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                         reference.child(context.getString(R.string.dbname_user_photos))
-                                .child(promote.getUserid())
-                                .child(promote.getPhotoid())
-                                .child("Promote")
+                                .child(promote.getUi())
+                                .child(promote.getPi())
+                                .child(context.getString(R.string.field_promotes))
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                 .removeValue();
 
@@ -145,9 +144,9 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(context.getString(R.string.dbname_promote))
-                .child(promote.getPromoterId())
-                .child(promote.getStoryid())
-                .child("views")
+                .child(promote.getPID())
+                .child(promote.getStID())
+                .child(context.getString(R.string.field_view))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .setValue("true");
 
@@ -164,26 +163,23 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
 
                 DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
                 db1.child(context.getString(R.string.dbname_user_photos))
-                        .child(promote.getUserid())
-                        .child(promote.getPhotoid())
+                        .child(promote.getUi())
+                        .child(promote.getPi())
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 myHolder.photo = snapshot.getValue(Photo.class);
-                                Log.d(TAG, "onDataChange: klj"+myHolder.photo.getPhoto_id());
                                 ArrayList<Comment> comments = new ArrayList<>();
 
-                                for (DataSnapshot dSnapshot:snapshot.child("comment").getChildren()){
+                                for (DataSnapshot dSnapshot:snapshot.child(context.getString(R.string.field_comment)).getChildren()){
                                     Comment comment = new Comment();
-                                    comment.setUser_id(dSnapshot.getValue(Comment.class).getUser_id());
-                                    comment.setComment(dSnapshot.getValue(Comment.class).getComment());
-                                    comment.setDate_created(dSnapshot.getValue(Comment.class).getDate_created());
+                                    comment.setUi(dSnapshot.getValue(Comment.class).getUi());
+                                    comment.setC(dSnapshot.getValue(Comment.class).getC());
+                                    comment.setDc(dSnapshot.getValue(Comment.class).getDc());
                                     comments.add(comment);
 
 
                                 }
-
-                                Log.d(TAG, "onDataChange: klj"+comments);
 
                                 Intent i = new Intent(context, ViewPostActivity.class);
                                 i.putExtra("photo",myHolder.photo);
@@ -245,7 +241,7 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
 
     public long getItemId(int position) {
         Promote form = promoteList.get(position);
-        return form.getStoryid().hashCode();
+        return form.getStID().hashCode();
     }
     @Override
     public int getItemCount() {

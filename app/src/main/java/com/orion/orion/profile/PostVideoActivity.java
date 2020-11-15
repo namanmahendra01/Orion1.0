@@ -164,11 +164,11 @@ public class PostVideoActivity extends AppCompatActivity {
         initWidgets();
         back.setOnClickListener(v -> {
             androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
-            builder.setTitle("Are u sure")
-                    .setMessage("You will discard all the changes u made?")
+            builder.setTitle("Back without saving")
+                    .setMessage("You will discard all the changes you made")
                     .setCancelable(false)
-                    .setPositiveButton("Yes", (dialog, id) -> finish())
-                    .setNegativeButton("No", (dialog, id) -> dialog.cancel())
+                    .setPositiveButton("Go", (dialog, id) -> finish())
+                    .setNegativeButton("Stay", (dialog, id) -> dialog.cancel())
                     .show();
         });
         fab.setOnClickListener(v -> {
@@ -250,7 +250,6 @@ public class PostVideoActivity extends AppCompatActivity {
     }
 
     private void postVideo() {
-        Log.d(TAG, "postVideo: started");
         caption = inputCaption.getText().toString();
         boolean flag= progress.getText().equals("100% completed")||progress.getVisibility()!=View.VISIBLE;
         if (videoUri != null && flag && imageUri != null && caption.length()<150) {
@@ -342,30 +341,30 @@ public class PostVideoActivity extends AppCompatActivity {
     }
 
     private void addVideoToDatabase(String caption, String uriThumbnail, String uriVideo) {
-        Log.d(TAG, "adding Post database: adding photo to database");
-        Log.d(TAG, "addVideoToDatabase: caption" + caption);
-        Log.d(TAG, "addVideoToDatabase: uriThumbnail" + uriThumbnail);
-        Log.d(TAG, "addVideoToDatabase: uriVideo" + uriVideo);
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
         String tags = StringManipilation.getTags(caption);
         String newPhotoKey = myRef.child(mContext.getString(R.string.dbname_user_photos)).push().getKey();
         Photo photo = new Photo();
-        photo.setCaption(caption);
-        photo.setDate_created(sdf.format(new Date()));
-        photo.setImage_path(uriVideo);
-        photo.setThumbnail(uriThumbnail);
-        photo.setTags(tags);
-        photo.setUser_id(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-        photo.setPhoto_id(newPhotoKey);
-        photo.setType("video");
+        photo.setCap(caption);
+        photo.setDc(sdf.format(new Date()));
+        photo.setIp(uriVideo);
+        photo.setT(uriThumbnail);
+        photo.setTg(tags);
+        photo.setUi(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+        photo.setPi(newPhotoKey);
+        photo.setTy("video");
         assert newPhotoKey != null;
         myRef.child(mContext.getString(R.string.dbname_user_photos)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(newPhotoKey).setValue(photo);
         myRef.child(mContext.getString(R.string.dbname_follower)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot snapshot1 : snapshot.getChildren())
-                    myRef.child(mContext.getString(R.string.dbname_users)).child(Objects.requireNonNull(snapshot1.getKey())).child(mContext.getString(R.string.post_updates)).child(newPhotoKey).setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    myRef.child(mContext.getString(R.string.dbname_users))
+                            .child(Objects.requireNonNull(snapshot1.getKey()))
+                            .child(mContext.getString(R.string.post_updates)).child(newPhotoKey)
+                            .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
             }
 
             @Override
@@ -389,17 +388,14 @@ public class PostVideoActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void setupVideoPlayer(Uri uri) {
-        Log.d(TAG, "setupVideoPlayer: started");
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(mContext, Util.getUserAgent(mContext, "RecyclerView VideoPlayer"));
-        Log.d(TAG, "setupVideoPlayer: videoUri" + videoUri);
-        Log.d(TAG, "setupVideoPlayer: uri" + uri);
+
         if (uri != null) {
             final String path = getPathFromUri(mContext, uri);
             assert path != null;
             File f = new File(path);
             float size = f.length();
-            Log.d(TAG, "setupVideoPlayer: path" + path);
-            Log.d(TAG, "setupVideoPlayer: size" + size / 1024 / 1024 + "MB");
+
             MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
             if (mute.getVisibility() == View.VISIBLE) simpleExoPlayer.setVolume(0f);
             else simpleExoPlayer.setVolume(AudioManager.STREAM_MUSIC);
@@ -608,10 +604,7 @@ public class PostVideoActivity extends AppCompatActivity {
                 Log.d(TAG, "savevideoUri: failed to create direnctory");
                 Toast.makeText(mContext, "Could not access external storage. Plz check ur permissions or Try again", Toast.LENGTH_SHORT).show();
             }
-            Log.d(TAG, "savevideoUri: folder path" + folder.getPath());
-            Log.d(TAG, "savevideoUri: videoUri -" + videoUri);
-            Log.d(TAG, "savevideoUri: videoUriName -" + videoUriName);
-            Log.d(TAG, "savevideoUri: folderName -" + folder.getName());
+
             if (Build.VERSION.SDK_INT >= 29) {
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.Images.Media.DISPLAY_NAME, videoUriName);
@@ -620,9 +613,7 @@ public class PostVideoActivity extends AppCompatActivity {
                 values.put(MediaStore.Images.Media.IS_PENDING, 1);
                 Uri collection = MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
                 Uri fileUri = getApplicationContext().getContentResolver().insert(collection, values);
-                Log.d(TAG, "savevideoUri: values" + values);
-                Log.d(TAG, "savevideoUri: collection" + collection);
-                Log.d(TAG, "savevideoUri: fileUri" + fileUri);
+
                 if (fileUri != null) {
                     try {
                         final ParcelFileDescriptor descriptor = getApplicationContext().getContentResolver().openFileDescriptor(fileUri, "w");
@@ -666,8 +657,7 @@ public class PostVideoActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            Log.d(TAG, "onActivityResult: requestCode" + requestCode);
-            Log.d(TAG, "onActivityResult: requestCode" + REQUEST_SELECT_VIDEO);
+
             if (requestCode == REQUEST_SELECT_VIDEO) {
                 if (data != null && data.getData() != null) {
                     Uri uri = data.getData();
@@ -683,10 +673,7 @@ public class PostVideoActivity extends AppCompatActivity {
                         String time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
                         assert time != null;
                         final long timeInMillisec = Long.parseLong(time);
-                        Log.d(TAG, "onActivityResult: video file uri: " + uri);
-                        Log.d(TAG, "onActivityResult: video file path: " + path);
-                        Log.d(TAG, "onActivityResult: video file size in MB: " + size / 1024 / 1024);
-                        Log.d(TAG, "onActivityResult: video file duration in s: " + timeInMillisec / 1000);
+
                         //checking met conditions
                         if (size > SIZE_IN_BYTES || timeInMillisec > DURATION_IN_MS) {
 //                        if(false){

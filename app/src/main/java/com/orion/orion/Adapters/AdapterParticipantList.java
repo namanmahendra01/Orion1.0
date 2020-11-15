@@ -84,8 +84,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
         sp = mContext.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
 
-        String timeStamp = mparticipantLists.getTimestamp();
-        Log.d(TAG, "onBindViewHolder: " + mparticipantLists.getTimestamp());
+        String timeStamp = mparticipantLists.getTim();
 
 //        convert time stamp to date and time
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
@@ -95,7 +94,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
         holder.time.setText(dateTime);
 
 
-        getparticipantDetails(mparticipantLists.getUserid(), holder.username, holder.profile);
+        getparticipantDetails(mparticipantLists.getUi(), holder.username, holder.profile);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,53 +124,52 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                         .thumbnail(0.5f)
                         .into(profileview);
 
-                getparticipantform(mparticipantLists.getUserid(), mparticipantLists.getJoiningKey(), mparticipantLists.getContestkey(), college, layout);
+                getparticipantform(mparticipantLists.getUi(), mparticipantLists.getJi(), mparticipantLists.getCi(), college, layout);
 
                 remove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                         builder.setTitle("Remove Participant");
-                        builder.setMessage("Are you sure, you want to remove this Participant?");
+                        builder.setMessage(R.string.remove_participant_prompt);
 
 //                set buttons
                         builder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Log.d(TAG, "onClick: mnb 1");
 
                                 DatabaseReference db = FirebaseDatabase.getInstance().getReference();
 
                                 db.child(mContext.getString(R.string.dbname_contests))
-                                        .child(mparticipantLists.getUserid())
+                                        .child(mparticipantLists.getUi())
                                         .child(mContext.getString(R.string.joined_contest))
-                                        .child(mparticipantLists.getJoiningKey())
-                                        .child("status")
+                                        .child(mparticipantLists.getJi())
+                                        .child(mContext.getString(R.string.field_status))
                                         .setValue("Rejected");
 
                                 db.child(mContext.getString(R.string.dbname_contests))
-                                        .child(mparticipantLists.getUserid())
-                                        .child("Joinedupdates")
-                                        .child(mparticipantLists.getJoiningKey())
+                                        .child(mparticipantLists.getUi())
+                                        .child(mContext.getString(R.string.field_joined_updates))
+                                        .child(mparticipantLists.getJi())
                                         .setValue("Rejected");
 
                                 db.child(mContext.getString(R.string.dbname_participantList))
-                                        .child(mparticipantLists.getContestkey())
-                                        .child(mparticipantLists.getJoiningKey())
+                                        .child(mparticipantLists.getCi())
+                                        .child(mparticipantLists.getJi())
                                         .removeValue();
 
                                 db.child(mContext.getString(R.string.dbname_contestlist))
-                                        .child(mparticipantLists.getContestkey())
-                                        .child("participantlist")
-                                        .child(mparticipantLists.getUserid())
+                                        .child(mparticipantLists.getCi())
+                                        .child(mContext.getString(R.string.field_Participant_List))
+                                        .child(mparticipantLists.getUi())
                                         .removeValue()
                                         .addOnSuccessListener(aVoid -> {
-                                            if (mparticipantLists.getMediaLink().length()<23)
+                                            if (mparticipantLists.getMl().length()<23)
                                             {
                                                 deleteUrl();
                                             }
-                                           else if (mparticipantLists.getMediaLink() == null || mparticipantLists.getMediaLink().equals("")
-                                                    || !mparticipantLists.getMediaLink().substring(8, 23).equals("firebasestorage")) {
+                                           else if (mparticipantLists.getMl() == null || mparticipantLists.getMl().equals("")
+                                                    || !mparticipantLists.getMl().substring(8, 23).equals("firebasestorage")) {
 
                                                deleteUrl();
 
@@ -190,20 +188,20 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                             private void deleteImage() {
                                 DatabaseReference db = FirebaseDatabase.getInstance().getReference();
 
-                                StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMediaLink());
+                                StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMl());
                                 photoRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
 
                                         DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
                                         ref2.child(mContext.getString(R.string.dbname_participantList))
-                                                .child(mparticipantLists.getContestkey())
-                                                .child(mparticipantLists.getJoiningKey())
+                                                .child(mparticipantLists.getCi())
+                                                .child(mparticipantLists.getJi())
                                                 .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
                                                 //    Add newly Created ArrayList to Shared Preferences
-                                                String json = sp.getString(mparticipantLists.getContestkey(), null);
+                                                String json = sp.getString(mparticipantLists.getCi(), null);
 
                                                 Type type = new TypeToken<ArrayList<ParticipantList>>() {
                                                 }.getType();
@@ -217,19 +215,17 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                                     ArrayList<ParticipantList> participantList2=new ArrayList<>(participantList);
 
 
-                                                    Log.d(TAG, "onSuccess: lklk"+participantList2.size());
                                                     for (ParticipantList a:participantList){
-                                                        if (a.getJoiningKey().equals(mparticipantLists.getJoiningKey())){
+                                                        if (a.getJi().equals(mparticipantLists.getJi())){
                                                             participantList2.remove(a);
                                                         }
                                                     }
-                                                    Log.d(TAG, "onSuccess: lklk 2"+participantList2.size());
 
                                                     participantList.remove(mparticipantLists);
 
                                                     SharedPreferences.Editor editor = sp.edit();
                                                     json = gson.toJson(participantList2);
-                                                    editor.putString(mparticipantLists.getContestkey(), json);
+                                                    editor.putString(mparticipantLists.getCi(), json);
                                                     editor.apply();
 
                                                 }
@@ -258,7 +254,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                 DatabaseReference db = FirebaseDatabase.getInstance().getReference();
 
                                 //    Add newly Created ArrayList to Shared Preferences
-                                String json = sp.getString(mparticipantLists.getContestkey(), null);
+                                String json = sp.getString(mparticipantLists.getCi(), null);
 
                                 Type type = new TypeToken<ArrayList<ParticipantList>>() {
                                 }.getType();
@@ -271,23 +267,19 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                 }else{
                                     ArrayList<ParticipantList> participantList2=new ArrayList<>(participantList);
 
-                                    Log.d(TAG, "onSuccess: lklk 8"+participantList2.size());
 
                                     for (ParticipantList a:participantList){
-                                        Log.d(TAG, "onSuccess: lklk ioi");
 
-                                        if (a.getJoiningKey().equals(participantList.get(i).getJoiningKey())){
-                                            Log.d(TAG, "onSuccess: lklk yes");
+                                        if (a.getJi().equals(participantList.get(i).getJi())){
                                             participantList2.remove(a);
                                         }
                                     }
-                                    Log.d(TAG, "onSuccess: lklk 9"+participantList2.size());
 
                                     participantList.remove(participantLists.get(i));
 
                                     SharedPreferences.Editor editor = sp.edit();
                                     json = gson.toJson(participantList2);
-                                    editor.putString(mparticipantLists.getContestkey(), json);
+                                    editor.putString(mparticipantLists.getCi(), json);
                                     editor.apply();
 
                                 }
@@ -326,7 +318,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                         Intent i = new Intent(mContext, profile.class);
                         i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                        i.putExtra(mContext.getString(R.string.intent_user),mparticipantLists.getUserid());
+                        i.putExtra(mContext.getString(R.string.intent_user),mparticipantLists.getUi());
                         mContext.startActivity(i);
                     }
                 });
@@ -337,7 +329,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                         Intent i = new Intent(mContext, profile.class);
                         i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                        i.putExtra(mContext.getString(R.string.intent_user), mparticipantLists.getUserid());
+                        i.putExtra(mContext.getString(R.string.intent_user), mparticipantLists.getUi());
                         mContext.startActivity(i);
                     }
                 });
@@ -348,28 +340,28 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                         Intent i = new Intent(mContext, profile.class);
                         i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                        i.putExtra(mContext.getString(R.string.intent_user), mparticipantLists.getUserid());
+                        i.putExtra(mContext.getString(R.string.intent_user), mparticipantLists.getUi());
                         mContext.startActivity(i);
                     }
                 });
                 submission.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        boolean ok=mparticipantLists.getMediaLink().length()>23;
-                        boolean ifNull=mparticipantLists.getMediaLink() == null ||mparticipantLists.getMediaLink().equals("");
+                        boolean ok=mparticipantLists.getMl().length()>23;
+                        boolean ifNull=mparticipantLists.getMl() == null ||mparticipantLists.getMl().equals("");
                         if (ifNull){
                             Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
 
                         }else if (ok) {
-                            if (mparticipantLists.getMediaLink().substring(8, 23).equals("firebasestorage")) {
+                            if (mparticipantLists.getMl().substring(8, 23).equals("firebasestorage")) {
                                 Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
-                                i.putExtra("imageLink", mparticipantLists.getMediaLink());
+                                i.putExtra("imageLink", mparticipantLists.getMl());
                                 i.putExtra("view", "No");
 
                                 mContext.startActivity(i);
                             } else {
                                 try{
-                                    Uri uri = Uri.parse(mparticipantLists.getMediaLink());
+                                    Uri uri = Uri.parse(mparticipantLists.getMl());
                                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                                     mContext.startActivity(intent);
 
@@ -380,7 +372,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                             }
                         }else {
                             try{
-                                Uri uri = Uri.parse(mparticipantLists.getMediaLink());
+                                Uri uri = Uri.parse(mparticipantLists.getMl());
                                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                                 mContext.startActivity(intent);
 
@@ -398,7 +390,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
-                        i.putExtra("imageLink", mparticipantLists.getIdLink());
+                        i.putExtra("imageLink", mparticipantLists.getIl());
                         i.putExtra("view", "No");
 
                         mContext.startActivity(i);
@@ -423,8 +415,8 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         JoinForm joinForm = dataSnapshot.getValue(JoinForm.class);
-                        college1 = joinForm.getCollege();
-                        String hostid = joinForm.getHostId();
+                        college1 = joinForm.getClg();
+                        String hostid = joinForm.getHID();
                         DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference();
                         ref1.child(mContext.getString(R.string.dbname_contests))
                                 .child(hostid)
@@ -460,7 +452,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
 
     public long getItemId(int position) {
         ParticipantList form = participantLists.get(position);
-        return form.getJoiningKey().hashCode();
+        return form.getJi().hashCode();
     }
 
     @Override
@@ -490,16 +482,15 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
 
     private void getparticipantDetails(String userid, TextView username, CircleImageView profile) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        ref.child(mContext.getString(R.string.dbname_user_account_settings))
+        ref.child(mContext.getString(R.string.dbname_users))
                 .child(userid)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user = dataSnapshot.getValue(users.class);
-                        Log.d(TAG, "onDataChange: " + user.getDisplay_name());
-                        name1 = user.getDisplay_name();
-                        username1 = user.getUsername();
-                        profilelink = user.getProfile_photo();
+                        name1 = user.getDn();
+                        username1 = user.getU();
+                        profilelink = user.getPp();
                         try {
 
                             Glide.with(mContext)
@@ -514,7 +505,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
 
                         }
 
-                        username.setText(user.getUsername());
+                        username.setText(user.getU());
 
 
                     }

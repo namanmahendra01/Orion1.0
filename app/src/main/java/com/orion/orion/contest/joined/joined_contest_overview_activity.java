@@ -36,14 +36,11 @@ public class joined_contest_overview_activity extends AppCompatActivity {
         setContentView(R.layout.activity_joined_contest_overview_activity);
         mContext=joined_contest_overview_activity.this;
         Log.d(TAG,"onCreate: started.");
-        mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
-        FrameLayout mFramelayoutl = (FrameLayout) findViewById(R.id.container);
-        RelativeLayout mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayoutParent);
+
         setupFirebaseAuth();
         setupViewPager();
         Intent i =getIntent();
-        String contestkey=i.getStringExtra("contestId");
-        String userid=i.getStringExtra("userId");
+
     }
 
     //    for adding 3 tabs -media,home,message

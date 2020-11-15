@@ -29,22 +29,16 @@ public class contest_evaluation_activity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser mUser;
 
-    private static final int CREATE_CONTEST = 1;
     private ViewPager mViewPager;
-    private String mUid;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contest_view);
-        Log.d(TAG,"onCreate: started.");
         mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
-        FrameLayout mFramelayoutl = (FrameLayout) findViewById(R.id.container);
-        RelativeLayout mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayoutParent);
+
         setupFirebaseAuth();
         setupViewPager();
         Intent i =getIntent();
-        String contestkey=i.getStringExtra("contestId");
-        String userid=i.getStringExtra("userid");
 
     }
 
@@ -72,13 +66,11 @@ public class contest_evaluation_activity extends AppCompatActivity {
     }
 
     private void setupFirebaseAuth() {
-        Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = firebaseAuth -> {
             mUser = firebaseAuth.getCurrentUser();
             if (mUser == null) {
-                Log.d(TAG, "onAuthStateChanged:signed_out");
-                Log.d(TAG, "onAuthStateChanged: navigating to login");
+
                 SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
                 new AlertDialog.Builder(mContext)
                         .setTitle("No user logon found")

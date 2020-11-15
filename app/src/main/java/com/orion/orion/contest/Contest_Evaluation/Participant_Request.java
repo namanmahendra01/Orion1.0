@@ -75,7 +75,6 @@ public class Participant_Request extends AppCompatActivity {
                         participantLists.clear();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             ParticipantList participantList = snapshot.getValue(ParticipantList.class);
-                            Log.d(TAG, "onDataChange: " + participantList.toString());
                             participantLists.add(participantList);
                             Collections.reverse(participantLists);
                             displayParticipant();
@@ -90,7 +89,6 @@ public class Participant_Request extends AppCompatActivity {
     }
 
     private void displayParticipant() {
-        Log.d(TAG, "display first 10 participant");
         paginatedparticipantList = new ArrayList<>();
         if (participantLists != null) {
             try {
@@ -99,7 +97,6 @@ public class Participant_Request extends AppCompatActivity {
                 mResults = 20;
                 for (int i = 0; i < iteration; i++)
                     paginatedparticipantList.add(participantLists.get(i));
-                Log.d(TAG, "participant: sss" + paginatedparticipantList.size());
                 adapterParticipantRequest = new AdapterParticipantRequest(Participant_Request.this, paginatedparticipantList);
                 adapterParticipantRequest.setHasStableIds(true);
                 participantRv.setAdapter(adapterParticipantRequest);
@@ -113,15 +110,12 @@ public class Participant_Request extends AppCompatActivity {
     }
 
     public void displayMoreParticipnat() {
-        Log.d(TAG, "display next 15 participant");
         try {
             if (participantLists.size() > mResults && participantLists.size() > 0) {
                 int iterations;
                 if (participantLists.size() > (mResults + 20)) {
-                    Log.d(TAG, "display next 15 participant");
                     iterations = 20;
                 } else {
-                    Log.d(TAG, "display less tha 15 participant");
                     iterations = participantLists.size() - mResults;
                 }
                 for (int i = mResults; i < mResults + iterations; i++) {

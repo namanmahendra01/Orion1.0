@@ -31,7 +31,7 @@ public class Data {
         this.body = body;
     }
 
-    public String getTitle() {
+    public String getCt() {
         return title;
     }
 

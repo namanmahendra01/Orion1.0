@@ -33,6 +33,7 @@ import com.orion.orion.models.users;
 import com.orion.orion.util.FirebaseMethods;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class CheckContest extends AppCompatActivity {
     private static final String TAG = "ViewContestFragment";
@@ -184,12 +185,12 @@ public class CheckContest extends AppCompatActivity {
                                                 users user = snapshot.getValue(users.class);
 
 
-                                                juryname1.setText(user.getDisplay_name());
-                                                jurypl1.setText(user.getUsername());
-                                                Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                juryname1.setText(user.getDn());
+                                                jurypl1.setText(user.getU());
+                                                Log.d(TAG, "onDataChange: " + user.getDn());
 
                                                 Glide.with(CheckContest.this)
-                                                        .load(user.getProfile_photo())
+                                                        .load(user.getPp())
                                                         .placeholder(R.drawable.load)
                                                         .error(R.drawable.default_image2)
                                                         .placeholder(R.drawable.load)
@@ -226,7 +227,7 @@ public class CheckContest extends AppCompatActivity {
             jurypl3.setVisibility(View.GONE);
             DatabaseReference db = FirebaseDatabase.getInstance().getReference();
             db.child(getString(R.string.dbname_username))
-                    .child(intent.getStringExtra("jname_1"))
+                    .child(Objects.requireNonNull(intent.getStringExtra("jname_1")))
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -240,12 +241,11 @@ public class CheckContest extends AppCompatActivity {
                                                 users user = snapshot.getValue(users.class);
 
 
-                                                juryname1.setText(user.getDisplay_name());
-                                                jurypl1.setText(user.getUsername());
-                                                Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                juryname1.setText(user.getDn());
+                                                jurypl1.setText(user.getU());
 
                                                 Glide.with(CheckContest.this)
-                                                        .load(user.getProfile_photo())
+                                                        .load(user.getPp())
                                                         .placeholder(R.drawable.load)
                                                         .error(R.drawable.default_image2)
                                                         .placeholder(R.drawable.load)
@@ -281,12 +281,11 @@ public class CheckContest extends AppCompatActivity {
                                                 users user = snapshot.getValue(users.class);
 
 
-                                                juryname2.setText(user.getDisplay_name());
-                                                jurypl2.setText(user.getUsername());
-                                                Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                juryname2.setText(user.getDn());
+                                                jurypl2.setText(user.getU());
 
                                                 Glide.with(CheckContest.this)
-                                                        .load(user.getProfile_photo())
+                                                        .load(user.getPp())
                                                         .placeholder(R.drawable.load)
                                                         .error(R.drawable.default_image2)
                                                         .placeholder(R.drawable.load)
@@ -339,12 +338,12 @@ public class CheckContest extends AppCompatActivity {
                                                 users user = snapshot.getValue(users.class);
 
 
-                                                juryname1.setText(user.getDisplay_name());
-                                                jurypl1.setText(user.getUsername());
-                                                Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                juryname1.setText(user.getDn());
+                                                jurypl1.setText(user.getU());
+                                                Log.d(TAG, "onDataChange: " + user.getDn());
 
                                                 Glide.with(CheckContest.this)
-                                                        .load(user.getProfile_photo())
+                                                        .load(user.getPp())
                                                         .placeholder(R.drawable.load)
                                                         .error(R.drawable.default_image2)
                                                         .placeholder(R.drawable.load)
@@ -381,12 +380,12 @@ public class CheckContest extends AppCompatActivity {
                                                 users user = snapshot.getValue(users.class);
 
 
-                                                juryname2.setText(user.getDisplay_name());
-                                                jurypl2.setText(user.getUsername());
-                                                Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                juryname2.setText(user.getDn());
+                                                jurypl2.setText(user.getU());
+                                                Log.d(TAG, "onDataChange: " + user.getDn());
 
                                                 Glide.with(CheckContest.this)
-                                                        .load(user.getProfile_photo())
+                                                        .load(user.getPp())
                                                         .placeholder(R.drawable.load)
                                                         .error(R.drawable.default_image2)
                                                         .placeholder(R.drawable.load)
@@ -423,12 +422,12 @@ public class CheckContest extends AppCompatActivity {
                                                 users user = snapshot.getValue(users.class);
 
 
-                                                juryname3.setText(user.getDisplay_name());
-                                                jurypl3.setText(user.getUsername());
-                                                Log.d(TAG, "onDataChange: " + user.getDisplay_name());
+                                                juryname3.setText(user.getDn());
+                                                jurypl3.setText(user.getU());
+                                                Log.d(TAG, "onDataChange: " + user.getDn());
 
                                                 Glide.with(CheckContest.this)
-                                                        .load(user.getProfile_photo())
+                                                        .load(user.getPp())
                                                         .placeholder(R.drawable.load)
                                                         .error(R.drawable.default_image2)
                                                         .placeholder(R.drawable.load)
@@ -499,49 +498,54 @@ public class CheckContest extends AppCompatActivity {
         newContestKey = db.child(getString(R.string.dbname_contests)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).push().getKey();
         mCreateForm = new CreateForm();
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("entryfee", entryfee.getText().toString());
-        hashMap.put("title", title.getText().toString());
-        hashMap.put("descrip", descrip.getText().toString());
-        hashMap.put("filetype", filetype.getText().toString());
-        hashMap.put("domain", domain.getText().toString());
-        hashMap.put("votetype", voteType.getText().toString());
-        hashMap.put("rule", rules.getText().toString());
-        hashMap.put("regBegin", regBegin.getText().toString());
-        hashMap.put("regEnd", regEnd.getText().toString());
-        hashMap.put("voteBegin", voteBegin.getText().toString());
-        hashMap.put("voteEnd", voteEnd.getText().toString());
-        hashMap.put("winDeclare", windate.getText().toString());
-        hashMap.put("maxLimit", maxPart.getText().toString());
-        hashMap.put("place_1", p1Tv.getText().toString());
-        hashMap.put("place_2", p2Tv.getText().toString());
-        hashMap.put("place_3", p3Tv.getText().toString());
-        hashMap.put("total_prize", totalprize.getText().toString());
-        hashMap.put("jname_1", jurypl1.getText().toString());
-        hashMap.put("jname_2", jurypl2.getText().toString());
-        hashMap.put("jname_3", jurypl3.getText().toString());
-        hashMap.put("host", hostedby.getText().toString());
-        hashMap.put("openFor", openfor.getText().toString());
-        hashMap.put("timestamp", timeStamp);
-        hashMap.put("contestkey", newContestKey);
-        hashMap.put("userid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-        hashMap.put("status", "waiting");
+        hashMap.put(getString(R.string.field_entry_fee), entryfee.getText().toString());
+        hashMap.put(getString(R.string.field_contest_title), title.getText().toString());
+        hashMap.put(getString(R.string.field_description), descrip.getText().toString());
+        hashMap.put(getString(R.string.field_file_type), filetype.getText().toString());
+        hashMap.put(getString(R.string.field_domain), domain.getText().toString());
+        hashMap.put(getString(R.string.field_vote_type), voteType.getText().toString());
+        hashMap.put(getString(R.string.field_rule), rules.getText().toString());
+        hashMap.put(getString(R.string.field_registration_begin), regBegin.getText().toString());
+        hashMap.put(getString(R.string.field_registration_end), regEnd.getText().toString());
+        hashMap.put(getString(R.string.field_voting_begin), voteBegin.getText().toString());
+        hashMap.put(getString(R.string.field_voting_end), voteEnd.getText().toString());
+        hashMap.put(getString(R.string.field_winners_declare), windate.getText().toString());
+        hashMap.put(getString(R.string.field_max_participant_limit), maxPart.getText().toString());
+        hashMap.put(getString(R.string.field_place1_prize), p1Tv.getText().toString());
+        hashMap.put(getString(R.string.field_place2_prize), p2Tv.getText().toString());
+        hashMap.put(getString(R.string.field_place3_prize), p3Tv.getText().toString());
+        hashMap.put(getString(R.string.field_total_prize), totalprize.getText().toString());
+        hashMap.put(getString(R.string.field_jury_name_1), jurypl1.getText().toString());
+        hashMap.put(getString(R.string.field_jury_name_2), jurypl2.getText().toString());
+        hashMap.put(getString(R.string.field_jury_name_3), jurypl3.getText().toString());
+        hashMap.put(getString(R.string.field_host), hostedby.getText().toString());
+        hashMap.put(getString(R.string.field_open_for), openfor.getText().toString());
+        hashMap.put(getString(R.string.field_timestamp), timeStamp);
+        hashMap.put(getString(R.string.field_contest_ID), newContestKey);
+        hashMap.put(getString(R.string.field_user_id), FirebaseAuth.getInstance().getCurrentUser().getUid());
+        hashMap.put(getString(R.string.field_status), "waiting");
+
+
         HashMap<String, Object> hashMap2 = new HashMap<>();
-        hashMap2.put("entryfee", entryfee.getText().toString());
-        hashMap2.put("voteType", voteType.getText().toString());
-        hashMap2.put("timestamp", timeStamp);
-        hashMap2.put("doman", domain.getText().toString());
-        hashMap2.put("userId", FirebaseAuth.getInstance().getCurrentUser().getUid());
-        hashMap2.put("contestId", newContestKey);
-        hashMap2.put("regBegin", regBegin.getText().toString());
-        hashMap2.put("regEnd", regEnd.getText().toString());
-        hashMap2.put("voteBegin", voteBegin.getText().toString());
-        hashMap2.put("voteEnd", voteEnd.getText().toString());
-        hashMap2.put("winDec", windate.getText().toString());
-        hashMap2.put("result", false);
-        hashMap2.put("maxLimit", maxPart.getText().toString());
+        hashMap2.put(getString(R.string.field_entry_fee),entryfee.getText().toString());
+        hashMap2.put(getString(R.string.field_vote_type), voteType.getText().toString());
+        hashMap2.put(getString(R.string.field_timestamp), timeStamp);
+        hashMap2.put(getString(R.string.field_domain), domain.getText().toString());
+        hashMap2.put(getString(R.string.field_user_id), FirebaseAuth.getInstance().getCurrentUser().getUid());
+        hashMap2.put(getString(R.string.field_contest_ID), newContestKey);
+        hashMap2.put(getString(R.string.field_registration_begin), regBegin.getText().toString());
+        hashMap2.put(getString(R.string.field_registration_end), regEnd.getText().toString());
+        hashMap2.put(getString(R.string.field_voting_begin), voteBegin.getText().toString());
+        hashMap2.put(getString(R.string.field_voting_end), voteEnd.getText().toString());
+        hashMap2.put(getString(R.string.field_winners_declare), windate.getText().toString());
+        hashMap2.put(getString(R.string.field_result), false);
+        hashMap2.put(getString(R.string.field_max_participant_limit), maxPart.getText().toString());
+
         db.child(getString(R.string.dbname_contests)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(getString(R.string.created_contest)).child(newContestKey).setValue(hashMap);
-        db.child(getString(R.string.dbname_request)).child("Contests").child(newContestKey).setValue(hashMap2);
+        db.child(getString(R.string.dbname_request)).child(getString(R.string.dbname_contests)).child(newContestKey).setValue(hashMap2);
+
         Toast.makeText(CheckContest.this, "Form Filled", Toast.LENGTH_SHORT).show();
+
         mFirebaseMethods.uploadContest(imageCount, jpic1, null, newContestKey, p1, "");
         mFirebaseMethods.uploadContest(imageCount, jpic2, null, newContestKey, p2, "");
         mFirebaseMethods.uploadContest(imageCount, jpic3, null, newContestKey, p3, "");
@@ -555,7 +559,6 @@ public class CheckContest extends AppCompatActivity {
 
 
     private void setupFirebaseAuth() {
-        Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
         mAuth = FirebaseAuth.getInstance();
@@ -587,7 +590,7 @@ public class CheckContest extends AppCompatActivity {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(getString(R.string.dbname_contests))
                 .child(userid)
-                .child("completed")
+                .child(getString(R.string.field_contest_completed))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -596,7 +599,7 @@ public class CheckContest extends AppCompatActivity {
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                             reference.child(getString(R.string.dbname_contests))
                                     .child(userid)
-                                    .child("reports")
+                                    .child(getString(R.string.field_contest_reports))
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {

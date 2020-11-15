@@ -81,7 +81,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
 
         ContestDetail mcontest = mContestDetail.get(i);
-        String key = mcontest.getContestId();
+        String key = mcontest.getCi();
 
         setgp(mcontest, holder.gp);
 
@@ -114,7 +114,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                 });
 
         ref8.child(mContext.getString(R.string.dbname_users))
-                .child(mcontest.getUserId())
+                .child(mcontest.getUi())
                 .child(mContext.getString(R.string.field_username))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -221,16 +221,16 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
 
 
         DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests));
-        ref2.child(mcontest.getUserId())
+        ref2.child(mcontest.getUi())
                 .child(mContext.getString(R.string.created_contest))
-                .child(mcontest.getContestId())
+                .child(mcontest.getCi())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         CreateForm mCreateForm = dataSnapshot.getValue(CreateForm.class);
-                        juryusername1 = mCreateForm.getJname_1();
-                        juryusername2 = mCreateForm.getJname_2();
-                        juryusername3 = mCreateForm.getJname_3();
+                        juryusername1 = mCreateForm.getJn1();
+                        juryusername2 = mCreateForm.getJn2();
+                        juryusername3 = mCreateForm.getJn3();
 
                     }
 
@@ -267,7 +267,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                 Log.d(TAG, "onTimeReceived: 1  " + timestamp);
 
 
-                String regStart = mcontest.getRegBegin();
+                String regStart = mcontest.getRb();
                 java.text.DateFormat formatter2 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date2 = null;
                 try {
@@ -279,7 +279,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
 
                 //*************************************************************************
 
-                String voteStart = mcontest.getVoteBegin();
+                String voteStart = mcontest.getVb();
                 java.text.DateFormat formatter3 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date3 = null;
                 if (!voteStart.equals("-")) {
@@ -295,7 +295,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
 
                 //*************************************************************************
 
-                String voteEnd = mcontest.getVoteEnd();
+                String voteEnd = mcontest.getVe();
                 java.text.DateFormat formatter4 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date4 = null;
                 if (!voteEnd.equals("-")) {
@@ -311,7 +311,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
 
                 //*************************************************************************
 
-                String regEnd = mcontest.getRegEnd();
+                String regEnd = mcontest.getRe();
                 java.text.DateFormat formatter5 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date5 = null;
                 try {
@@ -341,7 +341,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
 
                                         Log.d(TAG, "run: timeeeee" + timestamp);
 
-                                        if (mcontest.getResult()) {
+                                        if (mcontest.getR()) {
                                             holder.resultBtn.setVisibility(View.VISIBLE);
 
                                         } else {
@@ -351,13 +351,13 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                                             }
                                             if (Long.parseLong(regS) <= Long.parseLong(timestamp) && Long.parseLong(regE) >= Long.parseLong(timestamp)) {
                                                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_participantList));
-                                                ref.child(mcontest.getContestId())
+                                                ref.child(mcontest.getCi())
                                                         .addListenerForSingleValueEvent(new ValueEventListener() {
                                                             @Override
                                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                                 long i = dataSnapshot.getChildrenCount();
-                                                                if (!mcontest.getMaxLimit().equals("Unlimited")) {
-                                                                    if (!String.valueOf(i).equals(mcontest.getMaxLimit())) {
+                                                                if (!mcontest.getMLt().equals("Unlimited")) {
+                                                                    if (!String.valueOf(i).equals(mcontest.getMLt())) {
 
                                                                         holder.participateBtn.setVisibility(View.VISIBLE);
                                                                         holder.reg = "yes";
@@ -466,14 +466,14 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                 if (holder.username.equals(juryusername1)||holder.username.equals(juryusername2)
                         ||holder.username.equals(juryusername3)||holder.username.equals(holder.hostUsername)) {
                     Intent i = new Intent(mContext.getApplicationContext(), JoiningForm.class);
-                    i.putExtra("userId", mcontest.getUserId());
-                    i.putExtra("contestId", mcontest.getContestId());
+                    i.putExtra("userId", mcontest.getUi());
+                    i.putExtra("contestId", mcontest.getCi());
                     i.putExtra("isJuryOrHost","true");
                     mContext.startActivity(i);
                 }else{
                     Intent i = new Intent(mContext.getApplicationContext(), JoiningForm.class);
-                    i.putExtra("userId", mcontest.getUserId());
-                    i.putExtra("contestId", mcontest.getContestId());
+                    i.putExtra("userId", mcontest.getUi());
+                    i.putExtra("contestId", mcontest.getCi());
                     i.putExtra("isJuryOrHost","false");
                     mContext.startActivity(i);
                 }
@@ -486,26 +486,26 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
             @Override
             public void onClick(View v) {
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                ref.child(mContext.getString(R.string.dbname_user_account_settings))
+                ref.child(mContext.getString(R.string.dbname_users))
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 users user = new users();
                                 user = dataSnapshot.getValue(users.class);
-                                String username = user.getUsername();
+                                String username = user.getU();
                                 if (username.equals(juryusername1)) {
                                     Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
-                                    i.putExtra("userId", mcontest.getUserId());
-                                    i.putExtra("contestId", mcontest.getContestId());
+                                    i.putExtra("userId", mcontest.getUi());
+                                    i.putExtra("contestId", mcontest.getCi());
                                     i.putExtra("jury", "jury1");
                                     i.putExtra("comment", "comment1");
                                     mContext.startActivity(i);
 
                                 } else if (username.equals(juryusername2)) {
                                     Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
-                                    i.putExtra("userId", mcontest.getUserId());
-                                    i.putExtra("contestId", mcontest.getContestId());
+                                    i.putExtra("userId", mcontest.getUi());
+                                    i.putExtra("contestId", mcontest.getCi());
                                     i.putExtra("jury", "jury2");
                                     i.putExtra("comment", "comment2");
 
@@ -513,16 +513,16 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
 
                                 } else if (username.equals(juryusername3)) {
                                     Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
-                                    i.putExtra("userId", mcontest.getUserId());
-                                    i.putExtra("contestId", mcontest.getContestId());
+                                    i.putExtra("userId", mcontest.getUi());
+                                    i.putExtra("contestId", mcontest.getCi());
                                     i.putExtra("jury", "jury3");
                                     i.putExtra("comment", "comment3");
                                     mContext.startActivity(i);
 
                                 } else {
                                     Intent i = new Intent(mContext.getApplicationContext(), public_voting_media.class);
-                                    i.putExtra("userId", mcontest.getUserId());
-                                    i.putExtra("contestId", mcontest.getContestId());
+                                    i.putExtra("userId", mcontest.getUi());
+                                    i.putExtra("contestId", mcontest.getCi());
                                     mContext.startActivity(i);
                                 }
                             }
@@ -538,26 +538,26 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
         });
 
 
-        holder.entryFee.setText(mcontest.getEntryfee());
-        holder.domain.setText(mcontest.getDoman());
+        holder.entryFee.setText(mcontest.getEf());
+        holder.domain.setText(mcontest.getD());
 
-        getcontestDetails(mcontest.getUserId(), mcontest.getContestId(), holder.poster
+        getcontestDetails(mcontest.getUi(), mcontest.getCi(), holder.poster
                 , holder.title, holder.host, holder.regEnd, holder.totalP,holder.progress);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (mcontest.getResult()){
+                if (mcontest.getR()){
                     Intent i = new Intent(mContext.getApplicationContext(), ResultDeclaredActivity.class);
-                    i.putExtra("userId",mcontest.getUserId());
-                    i.putExtra("contestId",mcontest.getContestId());
+                    i.putExtra("userId",mcontest.getUi());
+                    i.putExtra("contestId",mcontest.getCi());
 
                     mContext.startActivity(i);
                 }else {
                     Intent i = new Intent(mContext.getApplicationContext(), ViewContestDetails.class);
-                    i.putExtra("userId", mcontest.getUserId());
-                    i.putExtra("contestId", mcontest.getContestId());
+                    i.putExtra("userId", mcontest.getUi());
+                    i.putExtra("contestId", mcontest.getCi());
                     i.putExtra("Vote",holder.vote);
                     i.putExtra("reg", holder.reg);
                     mContext.startActivity(i);
@@ -569,7 +569,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
     private void setgp(ContestDetail mcontest, TextView gp) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(mContext.getString(R.string.dbname_contests))
-                .child(mcontest.getUserId())
+                .child(mcontest.getUi())
                 .child("completed")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -578,7 +578,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                             long y = (long) snapshot.getValue();
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                             reference.child(mContext.getString(R.string.dbname_contests))
-                                    .child(mcontest.getUserId())
+                                    .child(mcontest.getUi())
                                     .child("reports")
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
@@ -615,7 +615,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
     private void ReportPost(ContestDetail mcontest, int p) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(mContext.getString(R.string.dbname_contestlist))
-                .child(mcontest.getContestId())
+                .child(mcontest.getCi())
                 .child("tr")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -628,7 +628,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
 
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                             reference.child(mContext.getString(R.string.dbname_contestlist))
-                                    .child(mcontest.getContestId())
+                                    .child(mcontest.getCi())
                                     .child("tr")
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                     .setValue(true)
@@ -638,7 +638,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
 
                                             DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
                                             reference2.child(mContext.getString(R.string.dbname_contestlist))
-                                                    .child(mcontest.getContestId())
+                                                    .child(mcontest.getCi())
                                                     .child("tr")
                                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
@@ -647,7 +647,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                                                             if ((((i + 1) / p) * 100) > 60) {
                                                                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                                                                 reference.child(mContext.getString(R.string.dbname_contests))
-                                                                        .child(mcontest.getUserId())
+                                                                        .child(mcontest.getUi())
                                                                         .child("reports")
                                                                         .addListenerForSingleValueEvent(new ValueEventListener() {
                                                                             @Override
@@ -656,13 +656,13 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                                                                                     long x = (long) snapshot.getValue();
                                                                                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                                                                                     reference.child(mContext.getString(R.string.dbname_contests))
-                                                                                            .child(mcontest.getUserId())
+                                                                                            .child(mcontest.getUi())
                                                                                             .child("reports")
                                                                                             .setValue(x + 1);
                                                                                 } else {
                                                                                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                                                                                     reference.child(mContext.getString(R.string.dbname_contests))
-                                                                                            .child(mcontest.getUserId())
+                                                                                            .child(mcontest.getUi())
                                                                                             .child("reports")
                                                                                             .setValue(1);
                                                                                 }
@@ -701,7 +701,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
     @Override
     public long getItemId(int position) {
         ContestDetail form = mContestDetail.get(position);
-        return form.getContestId().hashCode();
+        return form.getCi().hashCode();
     }
     @Override
     public int getItemCount() {
@@ -763,13 +763,13 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 CreateForm createForm = dataSnapshot.getValue(CreateForm.class);
-                title.setText(createForm.getTitle());
-                host.setText(createForm.getHost());
-                regend.setText(createForm.getRegEnd());
-                totalp.setText(createForm.getTotal_prize());
-                Log.d(TAG, "onDataChange: image" + createForm.getPoster());
+                title.setText(createForm.getCt());
+                host.setText(createForm.getHst());
+                regend.setText(createForm.getRe());
+                totalp.setText(createForm.getTp());
+                Log.d(TAG, "onDataChange: image" + createForm.getPo());
                 Glide.with(mContext)
-                        .load(createForm.getPoster())
+                        .load(createForm.getPo())
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)
                         .placeholder(R.drawable.load)

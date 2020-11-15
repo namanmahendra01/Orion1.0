@@ -160,21 +160,24 @@ public class PostPhotoActivity extends AppCompatActivity {
         String tags = StringManipilation.getTags(caption);
         String newPhotoKey = myRef.child(mContext.getString(R.string.dbname_user_photos)).push().getKey();
         Photo photo = new Photo();
-        photo.setCaption(caption);
-        photo.setDate_created(sdf.format(new Date()));
-        photo.setImage_path(url);
-        photo.setTags(tags);
-        photo.setUser_id(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
-        photo.setPhoto_id(newPhotoKey);
-        photo.setThumbnail("");
-        photo.setType("photo");
+        photo.setCap(caption);
+        photo.setDc(sdf.format(new Date()));
+        photo.setIp(url);
+        photo.setTg(tags);
+        photo.setUi(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
+        photo.setPi(newPhotoKey);
+        photo.setT("");
+        photo.setTy("photo");
         assert newPhotoKey != null;
         myRef.child(mContext.getString(R.string.dbname_user_photos)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(newPhotoKey).setValue(photo);
         myRef.child(mContext.getString(R.string.dbname_follower)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot snapshot1 : snapshot.getChildren())
-                    myRef.child(mContext.getString(R.string.dbname_users)).child(Objects.requireNonNull(snapshot1.getKey())).child(mContext.getString(R.string.post_updates)).child(newPhotoKey).setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    myRef.child(mContext.getString(R.string.dbname_users)).child(Objects.requireNonNull(snapshot1.getKey()))
+                            .child(mContext.getString(R.string.post_updates))
+                            .child(newPhotoKey)
+                            .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
             }
 
             @Override

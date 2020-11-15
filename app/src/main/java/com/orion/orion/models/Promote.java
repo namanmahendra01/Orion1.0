@@ -3,84 +3,76 @@ package com.orion.orion.models;
 public class Promote {
     public Promote(){}
 
-    String timeStart,timeEnd,photoid,userid,photoLink,storyid,promoterId;
+    String tiS, tiE, pi, ui, ip, stID, pID;
 
-    public Promote(String timeStart, String timeEnd, String photoid, String userid, String photoLink, String storyid, String promoterId) {
-        this.timeStart = timeStart;
-        this.timeEnd = timeEnd;
-        this.photoid = photoid;
-        this.userid = userid;
-        this.photoLink = photoLink;
-        this.storyid = storyid;
-        this.promoterId = promoterId;
-    }
 
-    public String getTimeStart() {
-        return timeStart;
+
+    public String getTiS() {
+        return tiS;
     }
 
     public void setTimeStart(String timeStart) {
-        this.timeStart = timeStart;
+        this.tiS = timeStart;
     }
 
-    public String getTimeEnd() {
-        return timeEnd;
+    public String getTiE() {
+        return tiE;
     }
 
     public void setTimeEnd(String timeEnd) {
-        this.timeEnd = timeEnd;
+        this.tiE = timeEnd;
     }
 
-    public String getPhotoid() {
-        return photoid;
+    public String getPi() {
+        return pi;
     }
 
     public void setPhotoid(String photoid) {
-        this.photoid = photoid;
+        this.pi = photoid;
     }
 
-    public String getUserid() {
-        return userid;
+    public String getUi() {
+        return ui;
     }
 
-    public void setUserid(String userid) {
-        this.userid = userid;
+    public void setUi(String userid) {
+        this.ui = userid;
     }
 
-    public String getPhotoLink() {
-        return photoLink;
+    public String getIp() {
+        return ip;
     }
 
     public void setPhotoLink(String photoLink) {
-        this.photoLink = photoLink;
+        this.ip = photoLink;
     }
 
-    public String getStoryid() {
-        return storyid;
+    public String getStID() {
+        return stID;
     }
 
     public void setStoryid(String storyid) {
-        this.storyid = storyid;
+        this.stID = storyid;
     }
 
-    public String getPromoterId() {
-        return promoterId;
+    public String getPID() {
+        return pID;
     }
 
     public void setPromoterId(String promoterId) {
-        this.promoterId = promoterId;
+        this.pID = promoterId;
     }
 
     @Override
     public String toString() {
         return "Promote{" +
-                "timeStart='" + timeStart + '\'' +
-                ", timeEnd='" + timeEnd + '\'' +
-                ", photoid='" + photoid + '\'' +
-                ", userid='" + userid + '\'' +
-                ", photoLink='" + photoLink + '\'' +
-                ", storyid='" + storyid + '\'' +
-                ", promoterId='" + promoterId + '\'' +
+                "tiS='" + tiS + '\'' +
+                ", tiE='" + tiE + '\'' +
+                ", pi='" + pi + '\'' +
+                ", ui='" + ui + '\'' +
+                ", ip='" + ip + '\'' +
+                ", stID='" + stID + '\'' +
+                ", pID='" + pID + '\'' +
                 '}';
     }
 }

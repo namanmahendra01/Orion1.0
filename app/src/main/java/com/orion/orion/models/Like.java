@@ -1,26 +1,23 @@
 package com.orion.orion.models;
 
 public class Like {
-    public String user_id;
+    public String ui;
 
-    public Like(String user_id) {
-        this.user_id = user_id;
-    }
    public Like() {
     }
 
-    public String getUser_id() {
-        return user_id;
+    public String getUi() {
+        return ui;
     }
 
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
+    public void setUi(String user_id) {
+        this.ui = user_id;
     }
 
     @Override
     public String toString() {
         return "Like{" +
-                "user_id='" + user_id + '\'' +
+                "ui='" + ui + '\'' +
                 '}';
     }
 }

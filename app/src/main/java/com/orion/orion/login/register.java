@@ -270,11 +270,7 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
                 myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        checkifuserexist(username);
-//                        Log.d(TAG, "onDataChange: " + "redirecting to login activity");
-//                        Intent intent = new Intent(register.this, login.class);
-//                        intent.putExtra("CameFromRegister", 1);
-//                        startActivity(intent);
+
                     }
 
                     @Override
@@ -381,23 +377,24 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
 
 
     public void addNewUser(String email, String username, String domain) {
-        users user = new users(userID, email,domain, StringManipilation.condenseUsername(username), "", "", "","false","false","false","","","","","","","");
+        users user = new users(userID, email,domain, StringManipilation.condenseUsername(username), "", "", "","false","false","false","","","","","","","","");
       String username2=StringManipilation.condenseUsername(username);
+        Log.d(TAG, "addNewUser: user"+user);
         myRef.child(mContext.getString(R.string.dbname_users))
                 .child(userID)
                 .setValue(user)
                 .addOnSuccessListener(aVoid -> {
 
-                    myRef.child("username")
+                    myRef.child(getString(R.string.dbname_username))
                             .child(username2)
                             .setValue(userID)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Leaderboard leaderboard = new Leaderboard();
-                                    leaderboard.setUsername(StringManipilation.condenseUsername(username));
-                                    leaderboard.setDomain(domain);
-                                    leaderboard.setProfile_photo("");
+                                    leaderboard.setU(StringManipilation.condenseUsername(username));
+                                    leaderboard.setD(domain);
+                                    leaderboard.setPp("");
                                     myRef.child(mContext.getString(R.string.dbname_leaderboard))
                                             .child(userID)
                                             .setValue(leaderboard)
@@ -407,7 +404,7 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
                                                     SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
                                                         @Override
                                                         public void onTimeReceived(String currentTimeStamp) {
-                                                            leaderboard.setLast_updated(currentTimeStamp);
+                                                            leaderboard.setLu(currentTimeStamp);
                                                             //domain parameter left
                                                             myRef.child(mContext.getString(R.string.dbname_leaderboard))
                                                                     .child(userID)

@@ -23,6 +23,7 @@ import com.orion.orion.models.users;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -63,19 +64,19 @@ public class UserListAdapter extends ArrayAdapter<users> {
         }else{
             holder = (ViewHolder)convertView.getTag();
         }
-        holder.username.setText(mUser.get(position).getUsername());
-        holder.displayName.setText(mUser.get(position).getDisplay_name());
+        holder.username.setText(mUser.get(position).getU());
+        holder.displayName.setText(mUser.get(position).getDn());
 
         DatabaseReference reference= FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(mContext.getString(R.string.dbname_user_account_settings))
-                .child(getItem(position).getUser_id());
+        Query query = reference.child(mContext.getString(R.string.dbname_users))
+                .child(getItem(position).getUi());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
 
                 Glide.with(mContext)
-                        .load(dataSnapshot.getValue(users.class).getProfile_photo())
+                        .load(Objects.requireNonNull(dataSnapshot.getValue(users.class)).getPp())
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)
                         .placeholder(R.drawable.load)

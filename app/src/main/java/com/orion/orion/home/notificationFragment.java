@@ -90,7 +90,7 @@ public class notificationFragment extends Fragment {
         fAuth=FirebaseAuth.getInstance();
         getNotifcationFromSP();
         clearNotification.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
             builder.setMessage("You want to delete all the notification")
                     .setTitle("Are you sure?")
                     .setCancelable(false)
@@ -142,7 +142,7 @@ public class notificationFragment extends Fragment {
     private void checkUpdate() {
         DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
   refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child("Notifications")
+                .child(getString(R.string.field_Notifications))
                 .orderByKey()
                 .limitToLast(1)
           .addValueEventListener(new ValueEventListener() {
@@ -150,12 +150,9 @@ public class notificationFragment extends Fragment {
               public void onDataChange(@NonNull DataSnapshot snapshot) {
                   for (DataSnapshot snapshot1:snapshot.getChildren()) {
                       if (snapshot1.exists()&&notifyList.size()!=0) {
-                          Log.d(TAG, "getNotifcationFromSP: 3");
-                          if (notifyList.get(0).getTimeStamp().equals(snapshot1.getKey())) {
-                              Log.d(TAG, "getNotifcationFromSP: 4");
+                          if (notifyList.get(0).getTim().equals(snapshot1.getKey())) {
                               displayNotification();
                           } else {
-                              Log.d(TAG, "getNotifcationFromSP: 5");
                               updateNotificationList();
                           }
                       }
@@ -178,9 +175,9 @@ public class notificationFragment extends Fragment {
         DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
         refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
 
-                .child("Notifications")
+                .child(getString(R.string.field_Notifications))
                 .orderByKey()
-                .startAt(notifyList.get(notifyList.size()-1).getTimeStamp())
+                .startAt(notifyList.get(notifyList.size()-1).getTim())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -193,7 +190,6 @@ public class notificationFragment extends Fragment {
                                 }
 
                                 Notification notification = snapshot1.getValue(Notification.class);
-                                Log.d(TAG, "getNotifcationFromSP: 6" + notification);
                                 notifyList.add(notification);
                             }
                             Collections.reverse(notifyList);
@@ -220,7 +216,8 @@ public class notificationFragment extends Fragment {
 
     private void readNotification(){
         FirebaseUser user = fAuth.getCurrentUser();
-        DatabaseReference reference =FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("Notifications");
+        DatabaseReference reference =FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users))
+                .child(user.getUid()).child(getString(R.string.field_Notifications));
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

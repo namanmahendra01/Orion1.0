@@ -159,24 +159,30 @@ public class fragment_createContest extends Fragment {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        contestlist.clear();
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        if (dataSnapshot.exists()) {
+                            contestlist.clear();
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-                            CreateForm createForm = snapshot.getValue(CreateForm.class);
+                                CreateForm createForm = snapshot.getValue(CreateForm.class);
 
-                            contestlist.add(createForm);
-                        }
-                        Collections.reverse(contestlist);
+                                contestlist.add(createForm);
+                            }
+                            Collections.reverse(contestlist);
 
 //                        Add newly Created ArrayList to Shared Preferences
-                        SharedPreferences.Editor editor = sp.edit();
-                        String json = gson.toJson(contestlist);
-                        editor.putString("createlist", json);
-                        editor.apply();
+                            SharedPreferences.Editor editor = sp.edit();
+                            String json = gson.toJson(contestlist);
+                            editor.putString("createlist", json);
+                            editor.apply();
 
-                        displaycontest();
+                            displaycontest();
 
+                        }else{
+                            displaycontest();
+
+                        }
                     }
+
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -193,9 +199,12 @@ public class fragment_createContest extends Fragment {
         contestlist = gson.fromJson(json, type);
         if (contestlist == null) {    //        if no arrayList is present
             contestlist = new ArrayList<>();
+            Log.d(TAG, "getCreateListFromSP: 1");
             getContest();             //            make new Arraylist
 
         } else {
+            Log.d(TAG, "getCreateListFromSP: 2");
+
             checkCreateUpdate();       //         Check if new contest is there
 
         }
@@ -206,35 +215,40 @@ public class fragment_createContest extends Fragment {
         DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
 
         refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child("Createdupdates")
+                .child(getString(R.string.field_contest_created_updates))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()){
-                            for (DataSnapshot snapshot1:snapshot.getChildren()){
+                            int x=0;
 
-                                int x=0;
+                            for (DataSnapshot snapshot1:snapshot.getChildren()){
+                                x++;
                                 for (CreateForm a:contestlist){
 
 
-                                    if (a.getContestkey().equals(snapshot1.getKey())){
+                                    if (a.getCi().equals(snapshot1.getKey())){
 
-                                        a.setStatus(snapshot1.getValue().toString());
+                                        a.setSt(snapshot1.getValue().toString());
                                     }
-                                    x++;
+
+                                    if (x==snapshot.getChildrenCount()){
+                                        //    Add newly Created ArrayList to Shared Preferences
+                                        SharedPreferences.Editor editor = sp.edit();
+                                        String json = gson.toJson(contestlist);
+                                        editor.putString("createlist", json);
+                                        editor.apply();
+
+                                        refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                .child(getString(R.string.field_contest_created_updates))
+                                                .removeValue();
+
+                                        checkNewContesUpdate();
+                                    }
+
                                 }
 
-                                //    Add newly Created ArrayList to Shared Preferences
-                                SharedPreferences.Editor editor = sp.edit();
-                                String json = gson.toJson(contestlist);
-                                editor.putString("createlist", json);
-                                editor.apply();
 
-                                refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .child("Createdupdates")
-                                        .removeValue();
-
-                                checkNewContesUpdate();
 
 
                             }
@@ -254,37 +268,41 @@ public class fragment_createContest extends Fragment {
     private void checkNewContesUpdate() {
         DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
         refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child(getString(R.string.field_created_contest))
+                .child(getString(R.string.created_contest))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.getChildrenCount()!=contestlist.size()){
-                            updateCreateList();
+                        if (snapshot.exists()) {
+                            if (snapshot.getChildrenCount() != contestlist.size()) {
+                                updateCreateList();
 
-                        }else{
-                            refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .child(getString(R.string.field_created_contest))
-                                    .orderByKey()
-                                    .limitToLast(1)
-                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            if (snapshot.exists()) {
-                                                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                                                    if (contestlist.get(0).getContestkey().equals(snapshot1.getKey())) {
-                                                        displaycontest();
-                                                    } else {
-                                                        updateCreateList();
+                            } else {
+                                refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(getString(R.string.created_contest))
+                                        .orderByKey()
+                                        .limitToLast(1)
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                if (snapshot.exists()) {
+                                                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                                        if (contestlist.get(0).getCi().equals(snapshot1.getKey())) {
+                                                            displaycontest();
+                                                        } else {
+                                                            updateCreateList();
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
 
-                                        }
-                                    });
+                                            }
+                                        });
+                            }
+                        }else{
+                            displaycontest();
                         }
                     }
 
@@ -303,7 +321,7 @@ public class fragment_createContest extends Fragment {
         DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
         refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
 
-                .child(getString(R.string.field_created_contest))
+                .child(getString(R.string.created_contest))
 
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

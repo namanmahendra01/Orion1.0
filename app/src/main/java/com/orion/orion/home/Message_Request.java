@@ -83,7 +83,6 @@ public class Message_Request extends AppCompatActivity {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     String user = ds.getKey();
                     userlist.add(user);
-                    Log.d(TAG, "getItemId: lol1"+userlist);
 
                 }
 
@@ -92,7 +91,6 @@ public class Message_Request extends AppCompatActivity {
                 recyclerView.setAdapter(adapterMessageRequest);
                 for (int i = 0; i < userlist.size(); i++) {
                     lastMessage(userlist.get(i));
-                    Log.d(TAG, "getItemId: lol2");
 
                 }
             }
@@ -120,12 +118,11 @@ public class Message_Request extends AppCompatActivity {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     if (ds.exists()) {
                         Chat chat = ds.getValue(Chat.class);
-                        lmsg = chat.getMessage();
+                        lmsg = chat.getMsg();
 
                     }
                 }
                 adapterMessageRequest.setLastMessage(uid, lmsg);
-                Log.d(TAG, "getItemId: lol3");
 
                 adapterMessageRequest.notifyDataSetChanged();
             }

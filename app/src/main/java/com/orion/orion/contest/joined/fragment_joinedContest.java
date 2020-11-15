@@ -208,35 +208,39 @@ TextView noPost;
         DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
 
         refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child("Joinedupdates")
+                .child(getString(R.string.field_contest_joined_updates))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()){
+                            int x=0;
                             for (DataSnapshot snapshot1:snapshot.getChildren()){
-
+x++;
                                 for (JoinForm a:contestlist){
 
 
 
-                                    if (a.getJoiningKey().equals(snapshot1.getKey())){
+                                    if (a.getJi().equals(snapshot1.getKey())){
 
-                                        a.setStatus(snapshot1.getValue().toString());
+                                        a.setSt(snapshot1.getValue().toString());
+                                    }
+                                    if(x==snapshot.getChildrenCount()){
+                                        //    Add newly Created ArrayList to Shared Preferences
+                                        SharedPreferences.Editor editor = sp.edit();
+                                        String json = gson.toJson(contestlist);
+                                        editor.putString("joinlist", json);
+                                        editor.apply();
+
+                                        refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                .child(getString(R.string.field_contest_joined_updates))
+                                                .removeValue();
+
+                                        checkNewJoinUpdate();
                                     }
 
                                 }
 
-                                //    Add newly Created ArrayList to Shared Preferences
-                                SharedPreferences.Editor editor = sp.edit();
-                                String json = gson.toJson(contestlist);
-                                editor.putString("joinlist", json);
-                                editor.apply();
 
-                                refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .child("Joinedupdates")
-                                        .removeValue();
-
-                                checkNewJoinUpdate();
 
 
                             }
@@ -262,7 +266,7 @@ TextView noPost;
         DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
 
         refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child(getString(R.string.field_joined_contest))
+                .child(getString(R.string.joined_contest))
                 .orderByKey()
                 .limitToLast(1)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -271,7 +275,7 @@ TextView noPost;
                         if (snapshot.exists()) {
                             for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                                 if (contestlist.size() != 0) {
-                                    if (contestlist.get(0).getJoiningKey().equals(snapshot1.getKey())) {
+                                    if (contestlist.get(0).getJi().equals(snapshot1.getKey())) {
                                         Log.d(TAG, "getJoinListFromSP :5 ");
 
                                         displaycontest();
@@ -304,7 +308,7 @@ TextView noPost;
         contestlist.clear();
             DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
             refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                    .child(getString(R.string.field_joined_contest))
+                    .child(getString(R.string.joined_contest))
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
