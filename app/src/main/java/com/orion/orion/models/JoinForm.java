@@ -5,7 +5,7 @@ import java.util.List;
 public class JoinForm {
     public JoinForm(){}
 
-    String clg, st, ci, tim, ji, il, ml, ui, hID;
+    String clg, st, ci, tim, ji, il, ml, ui, hst;
     private List<juryMarks> jurymarks;
 
 
@@ -60,12 +60,12 @@ public class JoinForm {
     public void setUi(String userid) {
         this.ui = userid;
     }
-    public String getHID() {
-        return hID;
+    public String getHst() {
+        return hst;
     }
 
-    public void setHID(String hostId) {
-        this.hID = hostId;
+    public void setHst(String hostId) {
+        this.hst = hostId;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class JoinForm {
                 ", il='" + il + '\'' +
                 ", ml='" + ml + '\'' +
                 ", ui='" + ui + '\'' +
-                ", hID='" + hID + '\'' +
+                ", hst='" + hst + '\'' +
                 ", jurymarks=" + jurymarks +
                 '}';
     }

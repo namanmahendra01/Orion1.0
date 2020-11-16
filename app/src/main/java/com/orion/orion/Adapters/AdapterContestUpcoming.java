@@ -53,9 +53,8 @@ import static com.android.volley.VolleyLog.TAG;
 public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestUpcoming.ViewHolder> {
 
 
-    private String juryusername1 = "", juryusername2 = "", juryusername3 = "";
     String timestamp = "";
-    String timestamp2 = "";
+
 
     private Context mContext;
     private List<ContestDetail> mContestDetail;
@@ -81,6 +80,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
 
         ContestDetail mcontest = mContestDetail.get(i);
         String key = mcontest.getCi();
+        Log.d(TAG, "onBindViewHolder: "+mcontest);
 
         setgp(mcontest, holder.gp);
 
@@ -225,9 +225,11 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         CreateForm mCreateForm = dataSnapshot.getValue(CreateForm.class);
-                        juryusername1 = mCreateForm.getJn1();
-                        juryusername2 = mCreateForm.getJn2();
-                        juryusername3 = mCreateForm.getJn3();
+
+                        holder.juryusername1 = mCreateForm.getJn1();
+                        Log.d(TAG, "onDataChange: "+holder.juryusername1);
+                        holder.juryusername2 = mCreateForm.getJn2();
+                        holder.juryusername3 = mCreateForm.getJn3();
 
                     }
 
@@ -437,8 +439,8 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
             public void onClick(View v) {
 
 
-                if (holder.username.equals(juryusername1) || holder.username.equals(juryusername2)
-                        || holder.username.equals(juryusername3) || holder.username.equals(holder.hostUsername)) {
+                if (holder.username.equals(holder.juryusername1) || holder.username.equals(holder.juryusername2)
+                        || holder.username.equals(holder.juryusername3) || holder.username.equals(holder.hostUsername)) {
                     Intent i = new Intent(mContext.getApplicationContext(), JoiningForm.class);
                     i.putExtra("userId", mcontest.getUi());
                     i.putExtra("contestId", mcontest.getCi());
@@ -466,7 +468,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
 
                 } else {
 
-                    if (holder.username.equals(juryusername1)) {
+                    if (holder.username.equals(holder.juryusername1)) {
                         Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
                         i.putExtra("userId", mcontest.getUi());
                         i.putExtra("contestId", mcontest.getCi());
@@ -474,7 +476,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
                         i.putExtra("comment", "comment1");
                         mContext.startActivity(i);
 
-                    } else if (holder.username.equals(juryusername2)) {
+                    } else if (holder.username.equals(holder.juryusername2)) {
                         Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
                         i.putExtra("userId", mcontest.getUi());
                         i.putExtra("contestId", mcontest.getCi());
@@ -483,7 +485,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
 
                         mContext.startActivity(i);
 
-                    } else if (holder.username.equals(juryusername3)) {
+                    } else if (holder.username.equals(holder.juryusername3)) {
                         Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
                         i.putExtra("userId", mcontest.getUi());
                         i.putExtra("contestId", mcontest.getCi());
@@ -492,6 +494,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
                         mContext.startActivity(i);
 
                     } else {
+                        Log.d(TAG, "onClick: yessssssssssssss"+holder.username+holder.juryusername1);
                         Intent i = new Intent(mContext.getApplicationContext(), public_voting_media.class);
                         i.putExtra("userId", mcontest.getUi());
                         i.putExtra("contestId", mcontest.getCi());
@@ -685,6 +688,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        private String juryusername1 = "", juryusername2 = "", juryusername3 = "";
 
         private TextView domain, title, regEnd, entryFee, host, totalP, ended, gp;
         private ImageView poster, option, info, progress;

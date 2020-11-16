@@ -208,7 +208,7 @@ TextView noPost;
         DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
 
         refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child(getString(R.string.field_contest_joined_updates))
+                .child(getString(R.string.field_joined_updates))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -232,7 +232,7 @@ x++;
                                         editor.apply();
 
                                         refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .child(getString(R.string.field_contest_joined_updates))
+                                                .child(getString(R.string.field_joined_updates))
                                                 .removeValue();
 
                                         checkNewJoinUpdate();

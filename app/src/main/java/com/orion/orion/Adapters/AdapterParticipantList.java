@@ -416,7 +416,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         JoinForm joinForm = dataSnapshot.getValue(JoinForm.class);
                         college1 = joinForm.getClg();
-                        String hostid = joinForm.getHID();
+                        String hostid = joinForm.getHst();
                         DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference();
                         ref1.child(mContext.getString(R.string.dbname_contests))
                                 .child(hostid)
@@ -425,7 +425,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                 .addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        String openfor = dataSnapshot.child("openFor").getValue().toString();
+                                        String openfor = dataSnapshot.child(mContext.getString(R.string.field_open_for)).getValue().toString();
                                         if (openfor.equals("All")) {
                                             layout.setVisibility(View.GONE);
                                         } else {

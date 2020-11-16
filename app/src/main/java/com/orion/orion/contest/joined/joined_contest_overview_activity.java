@@ -34,6 +34,8 @@ public class joined_contest_overview_activity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joined_contest_overview_activity);
+        mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
+
         mContext=joined_contest_overview_activity.this;
         Log.d(TAG,"onCreate: started.");
 
@@ -43,7 +45,6 @@ public class joined_contest_overview_activity extends AppCompatActivity {
 
     }
 
-    //    for adding 3 tabs -media,home,message
     private void setupViewPager() {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new fragment_joinedContest_details());

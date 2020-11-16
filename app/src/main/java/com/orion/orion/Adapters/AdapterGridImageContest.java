@@ -73,6 +73,8 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
             int width = display.getWidth(); // ((display.getWidth()*20)/100)
             CardView.LayoutParams parms = new CardView.LayoutParams(width/3,width/3);
             holder.image.setLayoutParams(parms);
+            ifCurrentUserVote(holder, participantList.getJi(), participantList.getCi());
+
             Glide.with(mContext)
                     .load(participantList.getMl())
                     .placeholder(R.drawable.load)
@@ -244,6 +246,7 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
         private ImageView image;
         TextView viewSub, num, name;
         private ImageView voteNo, voteYes;
+        CardView card;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -255,6 +258,8 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
             viewSub = itemView.findViewById(R.id.view);
             num = itemView.findViewById(R.id.num);
             name = itemView.findViewById(R.id.name);
+            card = itemView.findViewById(R.id.card);
+
 
 
         }
@@ -272,12 +277,20 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
                         if (dataSnapshot2.exists()) {
-                            holder.voteNo.setVisibility(View.GONE);
-                            holder.voteYes.setVisibility(View.VISIBLE);
+                            if (isImage){
+                                holder.card.setCardBackgroundColor(mContext.getResources().getColor(R.color.yellow));
+
+                            }else{
+                                holder.voteNo.setVisibility(View.GONE);
+                                holder.voteYes.setVisibility(View.VISIBLE);
+                            }
+
 
                         } else {
-                            holder.voteNo.setVisibility(View.VISIBLE);
-                            holder.voteYes.setVisibility(View.GONE);
+                            if (!isImage) {
+                                holder.voteNo.setVisibility(View.VISIBLE);
+                                holder.voteYes.setVisibility(View.GONE);
+                            }
 
                         }
                     }

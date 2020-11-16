@@ -36,7 +36,6 @@ public class activity_view_media extends AppCompatActivity {
 
     private ImageView voteNo;
     private ImageView voteYes;
-    private TextView votingNumber;
     private String mVotingnumber = "";
     private boolean voted = false;
     private String joiningKey = "";
@@ -51,7 +50,6 @@ public class activity_view_media extends AppCompatActivity {
         voteNo = findViewById(R.id.noVote);
         voteYes = findViewById(R.id.yesVote);
         RelativeLayout relativeLayout = findViewById(R.id.relLayout2);
-        votingNumber = findViewById(R.id.votingNumber);
         ImageView progress = findViewById(R.id.progress);
 
         Intent i = getIntent();
@@ -71,7 +69,6 @@ public class activity_view_media extends AppCompatActivity {
 
         if (view!=null && view.equals("No")) {
             relativeLayout.setVisibility(View.GONE);
-            votingNumber.setVisibility(View.GONE);
         } else ifCurrentUserVote();
 
         voteNo.setOnClickListener(v -> {
@@ -81,7 +78,6 @@ public class activity_view_media extends AppCompatActivity {
                 voteNo.setVisibility(View.GONE);
                 voteYes.setVisibility(View.VISIBLE);
                 addVote();
-                NumberofVotes();
             }
         });
         voteYes.setOnClickListener(v -> {
@@ -89,7 +85,6 @@ public class activity_view_media extends AppCompatActivity {
             voteNo.setVisibility(View.VISIBLE);
             voteYes.setVisibility(View.GONE);
             removeVote();
-            NumberofVotes();
         });
     }
 
@@ -104,10 +99,9 @@ public class activity_view_media extends AppCompatActivity {
                 .removeValue();
         reference.child(getString(R.string.dbname_contestlist))
                 .child(contestKey)
-                .child("voterlist")
+                .child(getString(R.string.field_total_voters_list))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .removeValue();
-        NumberofVotes();
         voted=false;
     }
 
@@ -122,10 +116,9 @@ public class activity_view_media extends AppCompatActivity {
                 .setValue(true);
         reference.child(getString(R.string.dbname_contestlist))
                 .child(contestKey)
-                .child("voterlist")
+                .child(getString(R.string.field_total_voters_list))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .setValue(true);
-        NumberofVotes();
     }
 
     private void ifCurrentUserVote() {
@@ -146,7 +139,6 @@ public class activity_view_media extends AppCompatActivity {
                             voteNo.setVisibility(View.VISIBLE);
                             voteYes.setVisibility(View.GONE);
                         }
-                        NumberofVotes();
                     }
 
                     @Override
@@ -171,24 +163,7 @@ public class activity_view_media extends AppCompatActivity {
                 });
     }
 
-    private void NumberofVotes() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbname_participantList))
-                .child(contestKey)
-                .child(joiningKey)
-                .child(getString(R.string.voting_list));
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mVotingnumber = String.valueOf(dataSnapshot.getChildrenCount());
-                votingNumber.setText(mVotingnumber);
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-    }
     private void setupFirebaseAuth() {
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = firebaseAuth -> {

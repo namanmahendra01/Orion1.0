@@ -354,12 +354,18 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                                                             .child(mparticipantLists.getCi())
                                                                             .child(mparticipantLists.getJi())
                                                                             .child(mContext.getString(R.string.juryMarks))
-                                                                            .setValue(hashMap3);
-                                                                    deleteRequest(mparticipantLists.getCi(), mparticipantLists.getJi(), mparticipantLists.getUi());
-                                                                    bottomSheetDialog.dismiss();
+                                                                            .setValue(hashMap3)
+                                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                @Override
+                                                                                public void onSuccess(Void aVoid) {
+                                                                                    deleteRequest(mparticipantLists.getCi(), mparticipantLists.getJi(), mparticipantLists.getUi());
+                                                                                    bottomSheetDialog.dismiss();
 
-                                                                    participantLists.remove(i);
-                                                                    AdapterParticipantRequest.this.notifyItemRemoved(i);
+                                                                                    participantLists.remove(i);
+                                                                                    AdapterParticipantRequest.this.notifyItemRemoved(i);
+                                                                                }
+                                                                            });
+
 
 
                                                                 }
@@ -492,7 +498,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         JoinForm joinForm = dataSnapshot.getValue(JoinForm.class);
                         college1=joinForm.getClg();
-                        String hostid=joinForm.getHID();
+                        String hostid=joinForm.getHst();
                         DatabaseReference ref1 =FirebaseDatabase.getInstance().getReference();
                         ref1.child(mContext.getString(R.string.dbname_contests))
                                 .child(hostid)

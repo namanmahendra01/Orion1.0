@@ -2,6 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:id="@+id/card"
     app:cardBackgroundColor="@color/white"
     app:cardUseCompatPadding="true"
     app:cardCornerRadius="2dp"
@@ -15,13 +16,4 @@
     android:scaleType="centerCrop"
     android:id="@+id/image"
 />
-        <ImageView
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:scaleType="centerCrop"
-            android:id="@+id/progress"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/load"
-    />
 </androidx.cardview.widget.CardView>

@@ -196,7 +196,7 @@ public class fragment_contest_overview extends Fragment {
                                                                 pubBtn.setVisibility(View.VISIBLE);
                                                                 relWinner.setVisibility(View.VISIBLE);
                                                             } else {
-                                                                relWinner.setVisibility(View.INVISIBLE);
+                                                                relWinner.setVisibility(View.GONE);
                                                             }
                                                         }
                                                     });

@@ -57,7 +57,6 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
     String timestamp="";
 
 
-    private String juryusername1 = "", juryusername2 = "", juryusername3 = "";
 
     private Context mContext;
     private List<ContestDetail> mContestDetail;
@@ -228,9 +227,9 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         CreateForm mCreateForm = dataSnapshot.getValue(CreateForm.class);
-                        juryusername1 = mCreateForm.getJn1();
-                        juryusername2 = mCreateForm.getJn2();
-                        juryusername3 = mCreateForm.getJn3();
+                        holder. juryusername1 = mCreateForm.getJn1();
+                        holder. juryusername2 = mCreateForm.getJn2();
+                        holder.juryusername3 = mCreateForm.getJn3();
 
                     }
 
@@ -463,8 +462,8 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
             public void onClick(View v) {
 
 
-                if (holder.username.equals(juryusername1)||holder.username.equals(juryusername2)
-                        ||holder.username.equals(juryusername3)||holder.username.equals(holder.hostUsername)) {
+                if (holder.username.equals(holder.juryusername1)||holder.username.equals(holder.juryusername2)
+                        ||holder.username.equals(holder.juryusername3)||holder.username.equals(holder.hostUsername)) {
                     Intent i = new Intent(mContext.getApplicationContext(), JoiningForm.class);
                     i.putExtra("userId", mcontest.getUi());
                     i.putExtra("contestId", mcontest.getCi());
@@ -494,7 +493,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                                 users user = new users();
                                 user = dataSnapshot.getValue(users.class);
                                 String username = user.getU();
-                                if (username.equals(juryusername1)) {
+                                if (username.equals(holder.juryusername1)) {
                                     Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
                                     i.putExtra("userId", mcontest.getUi());
                                     i.putExtra("contestId", mcontest.getCi());
@@ -502,7 +501,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                                     i.putExtra("comment", "comment1");
                                     mContext.startActivity(i);
 
-                                } else if (username.equals(juryusername2)) {
+                                } else if (username.equals(holder.juryusername2)) {
                                     Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
                                     i.putExtra("userId", mcontest.getUi());
                                     i.putExtra("contestId", mcontest.getCi());
@@ -511,7 +510,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
 
                                     mContext.startActivity(i);
 
-                                } else if (username.equals(juryusername3)) {
+                                } else if (username.equals(holder.juryusername3)) {
                                     Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
                                     i.putExtra("userId", mcontest.getUi());
                                     i.putExtra("contestId", mcontest.getCi());
@@ -709,6 +708,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        private String juryusername1 = "", juryusername2 = "", juryusername3 = "";
 
         private TextView domain, title, regEnd, entryFee, host, totalP, gp;
         private ImageView poster,option,progress,info;

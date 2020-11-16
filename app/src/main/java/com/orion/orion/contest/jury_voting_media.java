@@ -62,7 +62,7 @@ public class jury_voting_media extends AppCompatActivity {
     Gson gson;
     SharedPreferences sp;
     String contestkey, jury, comment;
-    int x = 1;
+    int x = 1,y=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,15 +146,15 @@ public class jury_voting_media extends AppCompatActivity {
                         if (text.equals("")) {
                             et.setError("please fill");
 
+                        }else if ((Integer.parseInt(text) > 10 || Integer.parseInt(text) <= 0)) {
+                            et.setError("marks must be between 1-10 range");
+
                         }
                         if (tex2t.equals("")) {
                             et2.setError("please fill");
 
                         }
-                        if ((Integer.parseInt(text) > 10 || Integer.parseInt(text) <= 0)) {
-                            et.setError("marks must be between 1-10 range");
 
-                        }
 
                     } else {
                         markList = new ArrayList<>(Collections.nCopies(4, "0"));
@@ -247,6 +247,7 @@ public class jury_voting_media extends AppCompatActivity {
                                                         finalList.set(3, tex2t);
 
                                                         //    Add newly Created ArrayList to Shared Preferences
+                                                        Log.d(TAG, "onDataChange: final "+finalList);
                                                         SharedPreferences.Editor editor = sp.edit();
                                                         String json = gson.toJson(finalList);
                                                         editor.putString(joiningKey, json);
@@ -534,6 +535,11 @@ public class jury_voting_media extends AppCompatActivity {
                 t2v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        String json = sp.getString(joiningKey, null);
+
+                        Type type = new TypeToken<ArrayList<String>>() {
+                        }.getType();
+                        markList = gson.fromJson(json, type);
                         boolean ok = markList.get(1).length() > 23;
                         if (ok) {
                             if (markList.get(1).substring(8, 23).equals("firebasestorage")) {
@@ -627,33 +633,26 @@ public class jury_voting_media extends AppCompatActivity {
             }.getType();
             markList = gson.fromJson(json, type);
 
-            TableRow row = (TableRow) juryTable.getChildAt(x);
+            TableRow row = (TableRow) juryTable.getChildAt(y);
             EditText et = (EditText) row.getChildAt(2);
             EditText et2 = (EditText) row.getChildAt(3);
             text = et.getText().toString();
             tex2t = et2.getText().toString();
 
             if (text.equals("") || tex2t.equals("")) {
+                y++;
                 continue;
             } else {
                 markList = new ArrayList<>(Collections.nCopies(4, "0"));
                 addUsernameAndMediaLinktoSP(joiningKey, text, tex2t);
-                x++;
+                y++;
 
             }
 
 
         }
-        x = 1;
-        int tableChild = juryTable.getChildCount();
-        for (int x = 1; x < tableChild; x++) {
-            TableRow row = (TableRow) juryTable.getChildAt(x);
-            EditText et = (EditText) row.getChildAt(2);
-            EditText et2 = (EditText) row.getChildAt(3);
-            String text = et.getText().toString();
-            String tex2t = et2.getText().toString();
-            Log.d(TAG, "onClick: " + text + " " + tex2t);
-        }
+        y = 1;
+
 
 
     }

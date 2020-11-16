@@ -61,7 +61,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
         JoinForm joiningForm= joiningForms.get(i);
         holder.relStatus.setVisibility(View.VISIBLE);
         String key = joiningForm.getCi();
-        String userid=joiningForm.getHID();
+        String userid=joiningForm.getHst();
 
         setgp(userid, holder.gp);
 
@@ -140,7 +140,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
                             builder.setPositiveButton("Report", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    ReportPost(joiningForm.getCi(),joiningForm.getHID(), holder.p);
+                                    ReportPost(joiningForm.getCi(),joiningForm.getHst(), holder.p);
 
                                 }
                             });
@@ -169,7 +169,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
         holder.status.setText(status);
 
 
-        getcontestDetails(joiningForm.getHID(),joiningForm.getCi(),holder.poster
+        getcontestDetails(joiningForm.getHst(),joiningForm.getCi(),holder.poster
                 ,holder.title,holder.host,holder.regEnd,holder.totalP,holder.entryFee,holder.domain,holder.progress);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -177,7 +177,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
             public void onClick(View v) {
                 if (status.equals("waiting") || status.equals("Rejected")) {
                     Intent i = new Intent(mContext.getApplicationContext(), ViewContestDetails.class);
-                    i.putExtra("userId", joiningForm.getHID());
+                    i.putExtra("userId", joiningForm.getHst());
                     i.putExtra("contestId", joiningForm.getCi());
                     i.putExtra("Vote","No");
                     i.putExtra("reg", "No");
@@ -185,7 +185,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
                 }else{
 
                     Intent i = new Intent(mContext.getApplicationContext(), joined_contest_overview_activity.class);
-                    i.putExtra("userId", joiningForm.getHID());
+                    i.putExtra("userId", joiningForm.getHst());
                     i.putExtra("contestId", joiningForm.getCi());
                     i.putExtra("joiningKey", joiningForm.getJi());
 

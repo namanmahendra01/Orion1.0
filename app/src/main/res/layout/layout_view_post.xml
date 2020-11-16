@@ -17,8 +17,6 @@
             >
 
 
-
-
             <RelativeLayout
                 android:id="@+id/relLayout1"
                 android:layout_width="match_parent"
@@ -137,7 +135,7 @@
                     <ImageView
                         android:layout_width="60dp"
                         android:layout_height="60dp"
-                        android:src="@drawable/ic_play_btn"
+                        android:src="@drawable/ic_play_black_logo"
                         android:layout_gravity="center"
                         android:id="@+id/play"/>
 
