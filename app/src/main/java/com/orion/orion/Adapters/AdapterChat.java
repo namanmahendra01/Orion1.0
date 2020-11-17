@@ -9,10 +9,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,6 +23,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
@@ -88,8 +87,8 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
     }
 
     private void DeleteMessage(int position) {
-        String msgID = chatList.get(position).getMID();
-        String hisId = chatList.get(position).getRID();
+        String msgID = chatList.get(position).getmid();
+        String hisId = chatList.get(position).getrid();
         DatabaseReference dbTs1 = FirebaseDatabase.getInstance().getReference();
         dbTs1.child(context.getString(R.string.dbname_Chats))
                 .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
@@ -119,7 +118,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
     @Override
     public long getItemId(int position) {
         Chat chat = chatList.get(position);
-        return chat.getMID().hashCode();
+        return chat.getmid().hashCode();
     }
 
     @Override
@@ -131,7 +130,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
     public int getItemViewType(int position) {
 //        get currently signed user
         fUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (chatList.get(position).getSID().equals(fUser.getUid())) {
+        if (chatList.get(position).getsid().equals(fUser.getUid())) {
             return MSG_TYPE_RIGHT;
 
         } else {

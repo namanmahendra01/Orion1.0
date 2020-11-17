@@ -74,7 +74,7 @@
             android:elevation="2dp"
             android:gravity="center"
             android:orientation="horizontal"
-            android:weightSum="4">
+            android:weightSum="3">
 
             <TextView
                 android:id="@+id/sortedByTime"
@@ -102,18 +102,18 @@
                 android:textColor="@color/black"
                 android:textSize="15.0sp" />
 
-            <TextView
-                android:id="@+id/sortedByType"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:maxLines="1"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:text="Type"
-                android:textColor="@color/black"
-                android:textSize="15.0sp" />
+            <!--            <TextView-->
+            <!--                android:id="@+id/sortedByType"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="match_parent"-->
+            <!--                android:maxLines="1"-->
+            <!--                android:layout_weight="1"-->
+            <!--                android:gravity="center"-->
+            <!--                android:paddingLeft="10dp"-->
+            <!--                android:paddingRight="10dp"-->
+            <!--                android:text="Type"-->
+            <!--                android:textColor="@color/black"-->
+            <!--                android:textSize="15.0sp" />-->
 
             <TextView
                 android:id="@+id/sortedByDomain"

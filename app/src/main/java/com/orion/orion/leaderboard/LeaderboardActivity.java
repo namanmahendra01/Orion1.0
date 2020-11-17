@@ -20,17 +20,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,7 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-import com.orion.orion.Adapters.AdapterItemLeaderboard;
+import com.orion.orion.Adapters.AdapterLeaderboard;
 import com.orion.orion.R;
 import com.orion.orion.dialogs.BottomSheetFilter;
 import com.orion.orion.login.login;
@@ -61,6 +50,17 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 
 public class LeaderboardActivity extends AppCompatActivity implements BottomSheetFilter.BottomSheetListener {
     private static final String TAG = "LeaderboardActivity";
@@ -74,15 +74,15 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView sortedByTime;
     private TextView sortedByLocation;
-    private TextView sortedByType;
+    //    private TextView sortedByType;
     private TextView sortedByDomain;
     private RecyclerView mRecyclerView;
-    private AdapterItemLeaderboard mAdapter;
+    private AdapterLeaderboard mAdapter;
     private DatabaseReference reference;
     //TextView usernameProfile;
     private String time;
     private String locationParameter;
-    private String typeParameter;
+    //    private String typeParameter;
     private String domainParameter;
     //variables
     private ArrayList<ItemLeaderboard> mList;
@@ -213,7 +213,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                             if (currentMonth == postedMonth)
                                                 this_month += rating;
                                                 //previous month in same year
-                                            else if (currentDate == postedMonth + 1)
+                                            else if (currentMonth == postedMonth + 1)
                                                 last_month += rating;
                                         }
                                         //previous month in different year
@@ -640,7 +640,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                 alert.show();
             } else {
                 Log.d(TAG, "checkOrGetLocation: gps provider available");
-                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, location -> {
+                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 30000, 0, location -> {
                     try {
                         Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
                         List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
@@ -699,11 +699,11 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
             BottomSheetFilter bottomSheet = new BottomSheetFilter(locationList);
             bottomSheet.show(getSupportFragmentManager(), "location Filter");
         });
-        sortedByType.setOnClickListener(v -> {
-            String[] typeList = {"Overall", "Posts", "Followers", "Contests"};
-            BottomSheetFilter bottomSheet = new BottomSheetFilter(typeList);
-            bottomSheet.show(getSupportFragmentManager(), "Type Filter");
-        });
+//        sortedByType.setOnClickListener(v -> {
+//            String[] typeList = {"Overall", "Posts", "Followers", "Contests"};
+//            BottomSheetFilter bottomSheet = new BottomSheetFilter(typeList);
+//            bottomSheet.show(getSupportFragmentManager(), "Type Filter");
+//        });
         sortedByDomain.setOnClickListener(v -> {
             String[] domainList = getResources().getStringArray(R.array.domain2);
             BottomSheetFilter bottomSheet = new BottomSheetFilter(domainList);
@@ -743,21 +743,14 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                 YoYo.with(Techniques.ZoomIn).duration(ANIMATION_DURATION).playOn(sortedByLocation);
 //                checkOrGetLocation();
                 break;
-            case "Overall":
-            case "Posts":
-            case "Followers":
-            case "Contests":
-                sortedByType.setText(text);
-                sortedByType.setBackgroundResource(R.drawable.circular_gradient_background);
-                YoYo.with(Techniques.ZoomIn).duration(ANIMATION_DURATION).playOn(sortedByType);
-                break;
-//            case "All":
-//            case "Photography":
-//            case "Film Maker":
-//            case "Musician":
-//            case "Sketch Artist":
-//            case "Writer":
-//            case "Others":
+//            case "Overall":
+//            case "Posts":
+//            case "Followers":
+//            case "Contests":
+//                sortedByType.setText(text);
+//                sortedByType.setBackgroundResource(R.drawable.circular_gradient_background);
+//                YoYo.with(Techniques.ZoomIn).duration(ANIMATION_DURATION).playOn(sortedByType);
+//                break;
             default:
                 sortedByDomain.setText(text);
                 sortedByDomain.setBackgroundResource(R.drawable.circular_gradient_background);
@@ -810,21 +803,21 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 
         }
 
-        //deciding parameter for type
-        switch ((String) sortedByType.getText()) {
-            case "Posts":
-                typeParameter = getString(R.string.field_post);
-                break;
-            case "Followers":
-                typeParameter = getString(R.string.field_followers);
-                break;
-            case "Contests":
-                typeParameter = getString(R.string.field_contest);
-                break;
-            case "Overall":
-            default:
-                typeParameter = "";
-        }
+//        //deciding parameter for type
+//        switch ((String) sortedByType.getText()) {
+//            case "Posts":
+//                typeParameter = getString(R.string.field_post);
+//                break;
+//            case "Followers":
+//                typeParameter = getString(R.string.field_followers);
+//                break;
+//            case "Contests":
+//                typeParameter = getString(R.string.field_contest);
+//                break;
+//            case "Overall":
+//            default:
+//                typeParameter = "";
+//        }
 
         //deciding domain parmaeter
         switch ((String) sortedByDomain.getText()) {
@@ -843,7 +836,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         mAdapter.notifyDataSetChanged();
         String finalTime = time;
         String finalLocationParameter = locationParameter;
-        String finalTypeParameter = typeParameter;
+//        String finalTypeParameter = typeParameter;
 
 
 //        Log.d(TAG, "filter: "+finalTime);
@@ -857,10 +850,10 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //user details
                 int userRating;
-                if (finalTypeParameter.equals(""))
-                    userRating = (int) (long) dataSnapshot.child(finalTime).child(getString(R.string.field_post)).getValue() + (int) (long) dataSnapshot.child(finalTime).child(getString(R.string.field_followers)).getValue() + (int) (long) dataSnapshot.child(finalTime).child(getString(R.string.field_contest)).getValue();
-                else
-                    userRating = (int) (long) dataSnapshot.child(finalTime).child(finalTypeParameter).getValue();
+//                if (finalTypeParameter.equals(""))
+                userRating = (int) (long) dataSnapshot.child(finalTime).child(getString(R.string.field_post)).getValue() + (int) (long) dataSnapshot.child(finalTime).child(getString(R.string.field_followers)).getValue() + (int) (long) dataSnapshot.child(finalTime).child(getString(R.string.field_contest)).getValue();
+//                else
+//                    userRating = (int) (long) dataSnapshot.child(finalTime).child(finalTypeParameter).getValue();
                 int finalUserRating = userRating;
 //                String userDomain = (String) dataSnapshot.child(getString(R.string.field_domain)).getValue();
                 String userUsername = (String) dataSnapshot.child(getString(R.string.field_username)).getValue();
@@ -887,16 +880,16 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                 //calculating total rating and type rating for filter 1 and filter 3
                                 int rating;
                                 assert user_id != null;
-                                if (finalTypeParameter.equals("")) {
-                                    rating = (int) (long) dataSnapshot.child(user_id)
-                                            .child(finalTime)
-                                            .child(getString(R.string.field_post)).getValue() + (int) (long) dataSnapshot.child(user_id)
-                                            .child(finalTime)
-                                            .child(getString(R.string.field_followers)).getValue() + (int) (long) dataSnapshot.child(user_id).child(finalTime).child(getString(R.string.field_contest)).getValue();
+//                                if (finalTypeParameter.equals("")) {
+                                rating = (int) (long) dataSnapshot.child(user_id)
+                                        .child(finalTime)
+                                        .child(getString(R.string.field_post)).getValue() + (int) (long) dataSnapshot.child(user_id)
+                                        .child(finalTime)
+                                        .child(getString(R.string.field_followers)).getValue() + (int) (long) dataSnapshot.child(user_id).child(finalTime).child(getString(R.string.field_contest)).getValue();
 //                                Log.d(TAG, "onDataChange: user_id"+user_id);
 //                                Log.d(TAG, "onDataChange: "+dataSnapshot.child(user_id));
-                                } else
-                                    rating = (int) (long) dataSnapshot.child(user_id).child(finalTime).child(finalTypeParameter).getValue();
+//                                } else
+//                                    rating = (int) (long) dataSnapshot.child(user_id).child(finalTime).child(finalTypeParameter).getValue();
                                 int finalRating = rating;
 
 
@@ -1004,17 +997,17 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         userItemRank = findViewById(R.id.userItemRank);
         sortedByTime = findViewById(R.id.sortedByTime);
         sortedByLocation = findViewById(R.id.sortedByLocation);
-        sortedByType = findViewById(R.id.sortedByType);
+//        sortedByType = findViewById(R.id.sortedByType);
         sortedByDomain = findViewById(R.id.sortedByDomain);
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
         YoYo.with(Techniques.BounceIn).duration(ANIMATION_DURATION).playOn(sortedByTime);
         YoYo.with(Techniques.BounceIn).duration(ANIMATION_DURATION).playOn(sortedByLocation);
-        YoYo.with(Techniques.BounceIn).duration(ANIMATION_DURATION).playOn(sortedByType);
+//        YoYo.with(Techniques.BounceIn).duration(ANIMATION_DURATION).playOn(sortedByType);
         YoYo.with(Techniques.BounceIn).duration(ANIMATION_DURATION).playOn(sortedByDomain);
 //        usernameProfile=findViewById(R.id.username);
 
         mList = new ArrayList<>();
-        mAdapter = new AdapterItemLeaderboard(mList, mContext);
+        mAdapter = new AdapterLeaderboard(mList, mContext);
         mAdapter.setHasStableIds(true);
         mRecyclerView.setAdapter(mAdapter);
         reference = FirebaseDatabase.getInstance().getReference();
@@ -1025,7 +1018,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 
         time = "";
         locationParameter = "";
-        typeParameter = "";
+//        typeParameter = "";
     }
 
     private void setupFirebaseAuth() {

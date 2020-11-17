@@ -15,11 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
@@ -37,7 +32,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.Adapters.AdapterChat;
 import com.orion.orion.R;
 import com.orion.orion.models.Chat;
-import com.orion.orion.models.users;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.SNTPClient;
 
@@ -50,6 +44,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 public class
 Chat_Activity extends AppCompatActivity {
     private static final String TAG = "Chat_Activity";
@@ -57,8 +56,8 @@ Chat_Activity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ImageView mprofileImage;
-    TextView mUsername, accept, decline,sendReqBtn,cancelReqBtn;
-    EditText mMessages,reqMessage;
+    TextView mUsername, accept, decline, sendReqBtn, cancelReqBtn;
+    EditText mMessages, reqMessage;
     int x = 0;
     private int mResults;
     private LinearLayout reqLayout, chatLayout;
@@ -311,7 +310,7 @@ Chat_Activity extends AppCompatActivity {
                                                 for (Chat c : chat1) {
                                                     ref.child(context.getString(R.string.dbname_ChatList))
                                                             .child(key)
-                                                            .child(c.getMID())
+                                                            .child(c.getmid())
                                                             .setValue(c);
                                                 }
                                             }
@@ -603,7 +602,7 @@ Chat_Activity extends AppCompatActivity {
                                                     DatabaseReference DbRef2 = FirebaseDatabase.getInstance().getReference();
                                                     DbRef2.child(getString(R.string.dbname_ChatList))
                                                             .child(snapshot.getValue().toString())
-                                                            .child(chat.getMID())
+                                                            .child(chat.getmid())
                                                             .removeValue();
                                                 } else {
                                                     assert chat != null;

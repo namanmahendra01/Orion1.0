@@ -32,18 +32,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.Constraints;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SimpleItemAnimator;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.bumptech.glide.Glide;
 import com.google.common.reflect.TypeToken;
 import com.google.firebase.auth.FirebaseAuth;
@@ -86,13 +74,26 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.Constraints;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Explore extends AppCompatActivity implements BottomSheetDomain.BottomSheetListener, AdapterGridImageExplore.OnPostItemClickListner {
     private static final String TAG = "Explore";
     private static final int ACTIVITY_NUM = 1;
     private static final Handler handler = new Handler(Looper.getMainLooper());
-    private static int RETRY_DURATION = 1000;
+    private static final int SET_SIZE_DOMAIN = 300;
+    private static final int TOTAL_USER_SIZE = 500;
+    private static final int RETRY_DURATION = 30000;
     int x = 0;
     int prevHeight;
     int height, dummyHeight;
@@ -109,7 +110,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     private String user6;
     private String user7;
     private String user8;
-    private int c = 0;
+    private final int c = 0;
     private RelativeLayout collapse;
     private TextView spinner;
     private EditText mSearchParam;
@@ -162,7 +163,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                     if (paginatedPhotos.size() < fieldPhotos.size()) displayMorePhotos();
                 } else if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     Log.d(TAG, "onScrollStateChanged: top");
-//                    if(collapse.getVisibility()!=View.VISIBLE) exploreRv.post(() -> expand(collapse, 500));
+//                    if(collapse.getVisibility()!=View.VISIBLE) exploreRv.post(() -> expand(collapse, TOTAL_USER_SIZE));
                 }
             }
 
@@ -172,7 +173,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                     // Recycle view scrolling down...
                     Log.d(TAG, "onScrolled: down");
                     if (collapse.getVisibility() == View.VISIBLE) ;
-//                        exploreRv.post(() -> expand(collapse, 500));
+//                        exploreRv.post(() -> expand(collapse, TOTAL_USER_SIZE));
                 }
             }
         });
@@ -363,11 +364,10 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.child(getString(R.string.field_last_updated_topUsers)).getValue() == null) {
-                            reference.child(getString(R.string.db_topUsersParams)).child(getString(R.string.field_overall)).child(getString(R.string.field_completed)).setValue("0/300");
-                            for (String field : fields)
-                                reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue("0/300");
-                            createTopDatabase(getString(R.string.field_overall), 0);
-                            for (String field : fields) createTopDatabase(field, 0);
+                            for (String field : fields) {
+                                reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue("0/SET_SIZE_DOMAIN");
+                                createTopDatabase(field, 0);
+                            }
                         } else {
                             String previousTimeStamp = (String) snapshot.child(getString(R.string.field_last_updated_topUsers)).getValue();
                             //initializing formatting for current date
@@ -402,49 +402,28 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                             }
                             //the week has changed
                             if (elapsedDays > currentDay) {
-                                reference.child(getString(R.string.db_topUsersParams)).child(getString(R.string.field_overall)).child(getString(R.string.field_completed)).setValue("0/300");
-                                for (String field : fields)
-                                    reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue("0/300");
-                                createTopDatabase(getString(R.string.field_overall), 0);
-                                for (String field : fields) createTopDatabase(field, 0);
-                            } else {
                                 for (String field : fields) {
-                                    if (snapshot.child(field).getValue() == null)
-                                        createTopDatabase(field, 0);
-                                    else {
-                                        String str = String.valueOf(snapshot.child(field).child(getString(R.string.field_completed)).getValue());
-                                        if (str.equals("")) createTopDatabase(field, 0);
-                                        else {
-                                            if (!str.equals("300/300")) {
-                                                Log.d(TAG, "checkTopDatabase: flag" + field);
-                                                int index = str.indexOf("/");
-                                                if (index != -1) createTopDatabase(field, 0);
-                                                else {
-                                                    int completed = Integer.parseInt(str.substring(0, index));
-                                                    createTopDatabase(field, completed);
-                                                }
-                                            }
-                                        }
-                                    }
+                                    reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue("0/SET_SIZE_DOMAIN");
+                                    createTopDatabase(field, 0);
                                 }
-                                if (snapshot.child(getString(R.string.field_overall)).getValue() == null)
-                                    createTopDatabase(getString(R.string.field_overall), 0);
+                            } else for (String field : fields)
+                                if (snapshot.child(field).getValue() == null)
+                                    createTopDatabase(field, 0);
                                 else {
-                                    String str = String.valueOf(snapshot.child(getString(R.string.field_overall)).child(getString(R.string.field_completed)).getValue());
-                                    if (str.equals(""))
-                                        createTopDatabase(getString(R.string.field_overall), 0);
+                                    String str = String.valueOf(snapshot.child(field).child(getString(R.string.field_completed)).getValue());
+                                    if (str.equals("")) createTopDatabase(field, 0);
                                     else {
                                         if (!str.equals("300/300")) {
+                                            Log.d(TAG, "checkTopDatabase: field" + field);
                                             int index = str.indexOf("/");
-                                            if (index != -1) createTopDatabase(getString(R.string.field_overall), 0);
+                                            if (index != -1) createTopDatabase(field, 0);
                                             else {
                                                 int completed = Integer.parseInt(str.substring(0, index));
-                                                createTopDatabase(getString(R.string.field_overall), completed);
+                                                createTopDatabase(field, completed);
                                             }
                                         }
                                     }
                                 }
-                            }
                         }
                         reference.child(getString(R.string.db_topUsersParams)).child(getString(R.string.field_last_updated_topUsers)).setValue(currentTimeStamp);
                         checkLastFetched();
@@ -456,6 +435,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                     }
                 });
             }
+
             @Override
             public void onError(Exception ex) {
                 Log.e(SNTPClient.TAG, Objects.requireNonNull(ex.getMessage()));
@@ -472,7 +452,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             Log.d(TAG, "checkLastFetched: field " + field);
             if (previousTimeStamp == null || previousTimeStamp.equals("")) {
                 Log.d(TAG, "checkLastFetched: starting fetching users as previousTimeStamp is null or not found" + field);
-                String firstField = getString(R.string.field_overall);
+                String firstField = "Overall";
                 if (field.equals("Overall")) fetchTopUsers(field, "");
                 else fetchTopUsers(field, firstField);
             } else {
@@ -505,26 +485,25 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
 //                            Log.d(TAG, "checkLastFetched:currentDay" + currentDay);
                         } catch (ParseException e) {
                             e.printStackTrace();
-                            String firstField = getString(R.string.field_overall);
+                            String firstField = "Overall";
                             fetchTopUsers(field, firstField);
                             if (field.equals("Overall"))
                                 fetchTopUsers(field, "");
                         }
                         if (elapsedDays > currentDay) {
-                            String firstField = getString(R.string.field_overall);
-                            fetchTopUsers(field, firstField);
-                            if (field.equals("Overall"))
-                                fetchTopUsers(field, "");
+                            String firstField = "Overall";
+                            if (field.equals("Overall")) fetchTopUsers(field, "");
+                            else fetchTopUsers(field, firstField);
                         }
                     }
+
                     @Override
                     public void onError(Exception ex) {
                         Log.d(TAG, "onError: SNTPClient fetching TopUsers from shared Preferences" + ex.getMessage());
                         Log.d(TAG, "fetching again");
-                        String firstField = getString(R.string.field_overall);
-                        fetchTopUsers(field, firstField);
-                        if (field.equals("Overall"))
-                            fetchTopUsers(field, "");
+                        String firstField = "Overall";
+                        if (field.equals("Overall")) fetchTopUsers(field, "");
+                        else fetchTopUsers(field, firstField);
                     }
                 });
             }
@@ -551,8 +530,8 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                             + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
                     String user_id = singleSnapshot.getKey();
                     assert domain != null;
-                    if (field.equals(getString(R.string.field_overall))) {
-                        //creating top 300 list using insertion sort algorithm
+                    if (field.equals("Overall")) {
+                        //creating top SET_SIZE_DOMAIN list using insertion sort algorithm
                         if (mList.size() == 0) mList.add(new TopUsers(user_id, rating));
                         else {
                             int l = mList.size();
@@ -570,10 +549,10 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                 else if (i == l - 1)
                                     mList.add(new TopUsers(user_id, rating));
                             }
-                            if (mList.size() == 301) mList.remove(300);
+                            if (mList.size() == SET_SIZE_DOMAIN + 1) mList.remove(SET_SIZE_DOMAIN);
                         }
                     } else if (domain.equals(field)) {
-                        //creating top 300 list using insertion sort algorithm
+                        //creating top SET_SIZE_DOMAIN list using insertion sort algorithm
                         if (mList.size() == 0) mList.add(new TopUsers(user_id, rating));
                         else {
                             int l = mList.size();
@@ -591,7 +570,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                 else if (i == l - 1)
                                     mList.add(new TopUsers(user_id, rating));
                             }
-                            if (mList.size() == 301) mList.remove(300);
+                            if (mList.size() == SET_SIZE_DOMAIN + 1) mList.remove(SET_SIZE_DOMAIN);
                         }
                     }
                 }
@@ -600,12 +579,21 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 Log.d(TAG, "createTopDatabase: starting upload for Domain field");
 
                 //adding the list fetched to database
-                for (int i = completed; i < 300; i++) {
+                for (int i = completed; i < SET_SIZE_DOMAIN; i++) {
+                    if (mList.size() == 0) {
+                        reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue("SET_SIZE_DOMAIN/SET_SIZE_DOMAIN");
+                    }
                     String value = "";
-                    if (i < mList.size()) value = mList.get(i).getUi();
-                    Log.d(TAG, "createTopDatabase: key, value" + (i + 1) + ", " + value);
-                    reference.child(getString(R.string.db_topUsersParams)).child(field).child(String.valueOf(i + 1)).setValue(value);
-                    reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue((i + 1) + "/300");
+                    if (i < mList.size()) {
+                        value = mList.get(i).getUi();
+                        Log.d(TAG, "createTopDatabase: key, value" + (i + 1) + ", " + value);
+                        reference.child(getString(R.string.db_topUsersParams)).child(field).child(String.valueOf(i + 1)).setValue(value);
+                        reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue((i + 1) + "/SET_SIZE_DOMAIN");
+                        if (i == mList.size() - 1) {
+                            reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue("SET_SIZE_DOMAIN/SET_SIZE_DOMAIN");
+                            break;
+                        }
+                    }
                 }
             }
 
@@ -635,12 +623,12 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                 Log.d(TAG, "onDataChange: adding first" + firstField + " : " + mTopUsersList.size());
                             }
                         } else {
-                            Log.d(TAG, "fetchTopUsers: no.of users added from primary db mTopUsersList.size() - " + mTopUsersList.size());
-                            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                            assert currentUser != null;
-                            String currentUserID = currentUser.getUid();
-//                            Log.d(TAG, "fetchTopUsers: currentUserID - " + currentUserID);
-                            Query query1 = reference.child(getString(R.string.dbname_leaderboard)).child(currentUserID);
+////                            Log.d(TAG, "fetchTopUsers: no.of users added from primary db mTopUsersList.size() - " + mTopUsersList.size());
+//                            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+//                            assert currentUser != null;
+//                            String currentUserID = currentUser.getUid();
+////                            Log.d(TAG, "fetchTopUsers: currentUserID - " + currentUserID);
+                            Query query1 = reference.child(getString(R.string.dbname_leaderboard)).child(mUser.getUid());
                             query1.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -661,18 +649,20 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                                         String userCity = String.valueOf(singleSnapshot.child(getString(R.string.field_last_known_location)).child(getString(R.string.field_city)).getValue());
 //                                                        Log.d(TAG, "fetchTopUsers: userID : userCity - " + userID + " : " + userCity);
                                                         assert userID != null;
-                                                        if (!userID.equals(currentUserID) && userCity.equals(currentUserCity) && !mTopUsersList.contains(userID)) {
-                                                            int userRating = (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_post)).getValue()
-                                                                    + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).getValue()
-                                                                    + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
+                                                        if (!userID.equals(mUser.getUid()) && userCity.equals(currentUserCity) && !mTopUsersList.contains(userID)) {
+//                                                            int userRating = (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_post)).getValue()
+//                                                                    + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).getValue()
+//                                                                    + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
 //                                                            Log.d(TAG, "fetchTopUsers: userID : userCity : - " + userID + " : " + userCity + " : " + userRating);
                                                             mTopUsersList.add(userID);
                                                             Log.d(TAG, "onDataChange: adding location" + firstField + " : " + mTopUsersList.size());
                                                         }
                                                     }
                                                     Log.d(TAG, "fetchTopUsers: no.of users added from location db mTopUsersList.size() - " + mTopUsersList.size());
-                                                    if (mTopUsersList.size() < 500) {
-                                                        Query query2 = reference.child(getString(R.string.dbname_users)).child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid()).child(getString(R.string.field_domain));
+
+
+                                                    if (mTopUsersList.size() < TOTAL_USER_SIZE) {
+                                                        Query query2 = reference.child(getString(R.string.dbname_users)).child(mUser.getUid()).child(getString(R.string.field_domain));
                                                         query2.addListenerForSingleValueEvent(new ValueEventListener() {
                                                             @Override
                                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -680,9 +670,8 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                                                     String domain = String.valueOf(snapshot.getValue());
                                                                     Log.d(TAG, "fetchTopUsers: domain" + domain);
                                                                     if (!domain.equals("")) {
-                                                                        if (!secondField.equals("")) {
+                                                                        if (!secondField.equals(""))
                                                                             domain = secondField;
-                                                                        }
                                                                         Query query22 = reference.child(getString(R.string.db_topUsersParams)).child(domain);
                                                                         query22.addListenerForSingleValueEvent(new ValueEventListener() {
                                                                             @Override
@@ -812,9 +801,9 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             if (set == null) {
 //                if (field.equals("Overall")) fetchTopUsers(field, "");
 //                else fetchTopUsers(field, "Overall");
-//                handler.postDelayed(this::checkPostsFetched, RETRY_DURATION);
-//                RETRY_DURATION *= 2;
+                handler.postDelayed(this::checkPostsFetched, RETRY_DURATION);
             } else {
+                handler.removeCallbacksAndMessages(this);
                 if (json == null || previousTimeStamp == null || previousTimeStamp.equals(""))
                     getPosts(field, completed);
                 else {
@@ -903,14 +892,13 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.exists())
+                                if (snapshot.exists()) {
                                     for (DataSnapshot singleSnapshot : snapshot.getChildren())
                                         if (singleSnapshot.exists()) {
                                             Photo photo = singleSnapshot.getValue(Photo.class);
                                             boolean exists = false;
                                             for (Photo existingPhoto : fieldPhotos) {
-                                                assert photo != null;
-                                                if (existingPhoto.getPi().equals(photo.getPi())) {
+                                                if (photo.equals(existingPhoto)) {
                                                     exists = true;
                                                     break;
                                                 }
@@ -918,16 +906,17 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                             if (!exists) fieldPhotos.add(photo);
                                         }
 //                                Log.d(TAG, "getPosts: currentTimeSTamp" + currentTimeSTamp);
-                                Gson gson = new Gson();
-                                String json = gson.toJson(fieldPhotos);
+                                    Gson gson = new Gson();
+                                    String json = gson.toJson(fieldPhotos);
 //                                Log.d(TAG, "onDataChange: " + json);
-                                mEditor.putString(field + "_PostsLastUpdated", currentTimeSTamp);
-                                mEditor.putString(field + "_TopPosts", json);
-                                if (finalI == mTopUsersList.size() - 1)
-                                    mEditor.putInt(field + "_completed", mTopUsersList.size());
-                                else mEditor.putInt(field + "_completed", finalI);
-                                mEditor.apply();
-                                Log.d(TAG, "getPosts: uploading " + fieldPhotos.size() + " photos for " + field);
+                                    mEditor.putString(field + "_PostsLastUpdated", currentTimeSTamp);
+                                    mEditor.putString(field + "_TopPosts", json);
+                                    if (finalI == mTopUsersList.size() - 1)
+                                        mEditor.putInt(field + "_completed", mTopUsersList.size());
+                                    else mEditor.putInt(field + "_completed", finalI);
+                                    mEditor.apply();
+                                    Log.d(TAG, "getPosts: uploading " + fieldPhotos.size() + " photos for " + field);
+                                }
                             }
 
                             @Override
@@ -959,7 +948,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-                        if (!singleSnapshot.getValue().toString().equals("")&&!singleSnapshot.getKey().equals(getString(R.string.field_completed))) {
+                        if (!singleSnapshot.getValue().toString().equals("") && !singleSnapshot.getKey().equals(getString(R.string.field_completed))) {
                             topUser8.add(singleSnapshot.getValue().toString());
                         }
                         Log.d(TAG, "getTop8: topUser" + topUser8);
@@ -982,35 +971,35 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 for (int x = 0; x < user_id.size(); x++) {
                     if (x == 0) {
                         user1 = user_id.get(x);
-                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(),star1);
+                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star1);
                     }
                     if (x == 1) {
                         user2 = user_id.get(x);
-                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(),star2);
+                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star2);
                     }
                     if (x == 2) {
                         user3 = user_id.get(x);
-                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(),star3);
+                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star3);
                     }
                     if (x == 3) {
                         user4 = user_id.get(x);
-                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(),star4);
+                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star4);
                     }
                     if (x == 4) {
                         user5 = user_id.get(x);
-                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(),star5);
+                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star5);
                     }
                     if (x == 5) {
                         user6 = user_id.get(x);
-                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(),star6);
+                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star6);
                     }
                     if (x == 6) {
                         user7 = user_id.get(x);
-                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(),star7);
+                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star7);
                     }
                     if (x == 7) {
                         user8 = user_id.get(x);
-                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(),star1);
+                        setImage(snapshot.child(user_id.get(x)).child(getString(R.string.profile_photo)).getValue().toString(), star1);
                     }
                 }
             }
@@ -1042,11 +1031,10 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             if (adapterGridImage != null) adapterGridImage.notifyDataSetChanged();
             Gson gson = new Gson();
             String json = mPreferences.getString(field + "_TopPosts", null);
-            if (json == null || json.equals("")) {
-//                handler.postDelayed(this::displayPhotos, RETRY_DURATION);
-//                RETRY_DURATION *= 2;
-            } else {
-                handler.removeCallbacks(this::displayPhotos);
+            if (json == null || json.equals(""))
+                handler.postDelayed(this::displayPhotos, RETRY_DURATION);
+            else {
+                handler.removeCallbacksAndMessages(this);
                 Type type = new TypeToken<List<Photo>>() {
                 }.getType();
                 fieldPhotos = gson.fromJson(json, type);

@@ -8,11 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +25,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class messagesfragment extends Fragment {
     private static final String TAG = "messagesfragment";
@@ -91,10 +91,10 @@ public class messagesfragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        request.setText("Requests(" + String.valueOf((int)dataSnapshot.getChildrenCount()) + ")");
+                        request.setText("Requests(" + (int) dataSnapshot.getChildrenCount() + ")");
 
                     } else {
-                        request.setText("Requests(" + String.valueOf(0) + ")");
+                        request.setText("Requests(" + 0 + ")");
                     }
 
             }
@@ -199,12 +199,12 @@ public class messagesfragment extends Fragment {
         for (int i = 0; i < chatList.size(); i++) {
 
 
-            if (chatList.get(i).getSID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+            if (chatList.get(i).getsid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
-                messagesfragment.this.userlist2.add(chatList.get(i).getRID());
+                messagesfragment.this.userlist2.add(chatList.get(i).getrid());
             } else {
 
-                messagesfragment.this.userlist2.add(chatList.get(i).getSID());
+                messagesfragment.this.userlist2.add(chatList.get(i).getsid());
 
             }
 

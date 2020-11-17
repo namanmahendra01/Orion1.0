@@ -16,13 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -57,6 +50,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ViewProfileActivity extends AppCompatActivity {
@@ -67,7 +66,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     ArrayList<Photo> imgURLsList;
     ProgressDialog dialog;
     private Context mContext;
-    boolean isFollowing=false;
+    boolean isFollowing = false;
     int rank = 1;
     //firebase
     private FirebaseAuth mAuth;
@@ -138,7 +137,6 @@ public class ViewProfileActivity extends AppCompatActivity {
         mWhatsappLink = findViewById(R.id.whatsapp_link);
 
 
-
         mFollow = findViewById(R.id.followButton);
         mMessage = findViewById(R.id.messageButton);
 
@@ -172,7 +170,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         gridRv.setAdapter(adapterGridImage);
 
         try {
-            Intent i=getIntent();
+            Intent i = getIntent();
             mUser = i.getStringExtra(getString(R.string.intent_user));
             init();
         } catch (NullPointerException e) {
@@ -191,66 +189,68 @@ public class ViewProfileActivity extends AppCompatActivity {
         mFollow.setOnClickListener(v -> {
             YoYo.with(Techniques.FadeIn).duration(500).playOn(mMessage);
             if (isFollowing) {
-                isFollowing=false;
+                isFollowing = false;
 //               remove from following list
-                SharedPreferences sp =getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
-                Gson gson=new Gson();
-                String json =sp.getString("fl",null);
-                Type type= new TypeToken<ArrayList<String>>() {}.getType();
-                ArrayList<String> list= new ArrayList<String>();
-                list=gson.fromJson(json,type);
-                if (list==null){
+                SharedPreferences sp = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                Gson gson = new Gson();
+                String json = sp.getString("fl", null);
+                Type type = new TypeToken<ArrayList<String>>() {
+                }.getType();
+                ArrayList<String> list = new ArrayList<String>();
+                list = gson.fromJson(json, type);
+                if (list == null) {
 
-                }else{
+                } else {
                     list.remove(mUser);
 
                 }
 //                 save following list
-                SharedPreferences.Editor editor=sp.edit();
-                json =gson.toJson(list);
-                editor.putString("fl",json);
+                SharedPreferences.Editor editor = sp.edit();
+                json = gson.toJson(list);
+                editor.putString("fl", json);
                 editor.apply();
 
 
 //              update following list
-                json =sp.getString("removefollowing",null);
-                type= new TypeToken<ArrayList<String>>() {}.getType();
-                ArrayList<String> ulist= new ArrayList<String>();
-                ulist=gson.fromJson(json,type);
-                if (ulist==null){
-                    ulist= new ArrayList<String>();
+                json = sp.getString("removefollowing", null);
+                type = new TypeToken<ArrayList<String>>() {
+                }.getType();
+                ArrayList<String> ulist = new ArrayList<String>();
+                ulist = gson.fromJson(json, type);
+                if (ulist == null) {
+                    ulist = new ArrayList<String>();
                     ulist.add(mUser);
-                }else{
-                    if (!ulist.contains(mUser)){
+                } else {
+                    if (!ulist.contains(mUser)) {
                         ulist.add(mUser);
 
                     }
                 }
 //                save update list
-                editor=sp.edit();
-                json =gson.toJson(ulist);
-                editor.putString("removefollowing",json);
+                editor = sp.edit();
+                json = gson.toJson(ulist);
+                editor.putString("removefollowing", json);
                 editor.apply();
 
 
 //              update following list
-                json =sp.getString("addfollowing",null);
-                type= new TypeToken<ArrayList<String>>() {}.getType();
-                ArrayList<String> ulist2= new ArrayList<String>();
-                ulist2=gson.fromJson(json,type);
-                if (ulist2==null){
+                json = sp.getString("addfollowing", null);
+                type = new TypeToken<ArrayList<String>>() {
+                }.getType();
+                ArrayList<String> ulist2 = new ArrayList<String>();
+                ulist2 = gson.fromJson(json, type);
+                if (ulist2 == null) {
 
-                }else{
-                    if (ulist2.contains(mUser)){
+                } else {
+                    if (ulist2.contains(mUser)) {
                         ulist2.remove(mUser);
 //                save update list
-                        editor=sp.edit();
-                        json =gson.toJson(ulist2);
-                        editor.putString("addfollowing",json);
+                        editor = sp.edit();
+                        json = gson.toJson(ulist2);
+                        editor.putString("addfollowing", json);
                         editor.apply();
                     }
                 }
-
 
 
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mUser).removeValue();
@@ -259,41 +259,40 @@ public class ViewProfileActivity extends AppCompatActivity {
                 mFollow.setText("Follow");
 
             } else {
-
-
 //               addfollowing list
-                isFollowing=true;
-                SharedPreferences sp =getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
-                Gson gson=new Gson();
-                String json =sp.getString("fl",null);
-                Type type= new TypeToken<ArrayList<String>>() {}.getType();
-                ArrayList<String> list= new ArrayList<String>();
-                list=gson.fromJson(json,type);
-                if (list==null){
-                    list= new ArrayList<String>();
+                isFollowing = true;
+                SharedPreferences sp = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                Gson gson = new Gson();
+                String json = sp.getString("fl", null);
+                Type type = new TypeToken<ArrayList<String>>() {
+                }.getType();
+                ArrayList<String> list = new ArrayList<String>();
+                list = gson.fromJson(json, type);
+                if (list == null) {
+                    list = new ArrayList<String>();
                     list.add(mUser);
-                }else{
+                } else {
                     if (!list.contains(mUser)) {
                         list.add(mUser);
                     }
                 }
-
 //                 save following list
-                SharedPreferences.Editor editor=sp.edit();
-                json =gson.toJson(list);
-                editor.putString("fl",json);
+                SharedPreferences.Editor editor = sp.edit();
+                json = gson.toJson(list);
+                editor.putString("fl", json);
                 editor.apply();
 //              update following list
-                json =sp.getString("addfollowing",null);
-                type= new TypeToken<ArrayList<String>>() {}.getType();
+                json = sp.getString("addfollowing", null);
+                type = new TypeToken<ArrayList<String>>() {
+                }.getType();
 
-                ArrayList<String> ulist= new ArrayList<String>();
-                ulist=gson.fromJson(json,type);
-                if (ulist==null){
-                    ulist= new ArrayList<String>();
+                ArrayList<String> ulist = new ArrayList<String>();
+                ulist = gson.fromJson(json, type);
+                if (ulist == null) {
+                    ulist = new ArrayList<String>();
                     ulist.add(mUser);
-                }else{
-                    if (!ulist.contains(mUser)){
+                } else {
+                    if (!ulist.contains(mUser)) {
                         ulist.add(mUser);
 
                     }
@@ -301,26 +300,27 @@ public class ViewProfileActivity extends AppCompatActivity {
 
                 }
 //                save update list
-                editor=sp.edit();
-                json =gson.toJson(ulist);
-                editor.putString("addfollowing",json);
+                editor = sp.edit();
+                json = gson.toJson(ulist);
+                editor.putString("addfollowing", json);
                 editor.apply();
 
 
 //              update following list
-                json =sp.getString("removefollowing",null);
-                type= new TypeToken<ArrayList<String>>() {}.getType();
-                ArrayList<String> ulist2= new ArrayList<String>();
-                ulist2=gson.fromJson(json,type);
-                if (ulist2==null){
+                json = sp.getString("removefollowing", null);
+                type = new TypeToken<ArrayList<String>>() {
+                }.getType();
+                ArrayList<String> ulist2 = new ArrayList<String>();
+                ulist2 = gson.fromJson(json, type);
+                if (ulist2 == null) {
 
-                }else{
-                    if (ulist2.contains(mUser)){
+                } else {
+                    if (ulist2.contains(mUser)) {
                         ulist2.remove(mUser);
 //                save update list
-                        editor=sp.edit();
-                        json =gson.toJson(ulist2);
-                        editor.putString("removefollowing",json);
+                        editor = sp.edit();
+                        json = gson.toJson(ulist2);
+                        editor.putString("removefollowing", json);
                         editor.apply();
                     }
                 }
@@ -434,8 +434,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     intent.setData(uri);
                     mContext.startActivity(intent);
                 }
-            }
-            catch (ActivityNotFoundException e){
+            } catch (ActivityNotFoundException e) {
                 Toast.makeText(mContext, " You don't have any browser to open web page", Toast.LENGTH_LONG).show();
             }
         });
@@ -449,8 +448,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     intent.setData(uri);
                     mContext.startActivity(intent);
                 }
-            }
-            catch (ActivityNotFoundException e){
+            } catch (ActivityNotFoundException e) {
                 Toast.makeText(mContext, " You don't have any browser to open web page", Toast.LENGTH_LONG).show();
             }
         });
@@ -464,8 +462,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     intent.setData(uri);
                     mContext.startActivity(intent);
                 }
-            }
-            catch (ActivityNotFoundException e){
+            } catch (ActivityNotFoundException e) {
                 Toast.makeText(mContext, " You don't have any browser to open web page", Toast.LENGTH_LONG).show();
             }
         });
@@ -687,25 +684,27 @@ public class ViewProfileActivity extends AppCompatActivity {
                 String timestamp = String.valueOf(date.getTime());
 
 //        data to put in notification
-                HashMap<Object,String> hashMap = new HashMap<>();
-                hashMap.put("pId","false");
+                HashMap<Object, String> hashMap = new HashMap<>();
+                hashMap.put("pId", "false");
 
-                hashMap.put(mContext.getString(R.string.field_timestamp),timestamp);
+                hashMap.put(mContext.getString(R.string.field_timestamp), timestamp);
 
-                hashMap.put("pUid",hisUid);
+                hashMap.put("pUid", hisUid);
 
-                hashMap.put(mContext.getString(R.string.field_notification_message),notification);
-                hashMap.put(mContext.getString(R.string.field_if_seen),"false");
+                hashMap.put(mContext.getString(R.string.field_notification_message), notification);
+                hashMap.put(mContext.getString(R.string.field_if_seen), "false");
 
-                hashMap.put("sUid",FirebaseAuth.getInstance().getCurrentUser().getUid());
+                hashMap.put("sUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
                 ref.child(hisUid).child(getString(R.string.field_Notifications)).child(timestamp).setValue(hashMap)
-                        .addOnSuccessListener(aVoid -> { })
+                        .addOnSuccessListener(aVoid -> {
+                        })
                         .addOnFailureListener(e -> {
-                });
+                        });
                 Log.e(SNTPClient.TAG, rawDate);
             }
+
             @Override
             public void onError(Exception ex) {
                 Log.e(SNTPClient.TAG, ex.getMessage());
@@ -722,12 +721,13 @@ public class ViewProfileActivity extends AppCompatActivity {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-if(dataSnapshot.exists()){
-    mFollow.setText("Unfollow");
+                if (dataSnapshot.exists()) {
+                    mFollow.setText("Unfollow");
                     isFollowing = mFollow.getText().equals("Unfollow");
 
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
@@ -747,7 +747,7 @@ if(dataSnapshot.exists()){
         mUsername.setText(userSetting.getU());
         mDomain.setText(userSetting.getD());
 
-        if(userSetting.getDn() ==null || userSetting.getDn().equals(""))
+        if (userSetting.getDn() == null || userSetting.getDn().equals(""))
             mDisplayName.setVisibility(View.GONE);
         else {
             mDisplayName.setText(userSetting.getDn());

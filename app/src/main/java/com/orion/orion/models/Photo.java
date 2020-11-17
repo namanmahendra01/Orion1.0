@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
+
 public class Photo implements Parcelable {
     private String cap;
     private String dc;
@@ -14,7 +16,7 @@ public class Photo implements Parcelable {
     private String ui;
     private String tg;
     private String t;
-    private List<Comment>comment;
+    private List<Comment> comment;
 
 
     public Photo(String cap, String dc, String ip, String pi, String ty, String ui, String tg, String t, List<Comment> comment) {
@@ -29,9 +31,8 @@ public class Photo implements Parcelable {
         this.comment = comment;
     }
 
-    public Photo(){
+    public Photo() {
     }
-
 
     protected Photo(Parcel in) {
         cap = in.readString();
@@ -41,7 +42,16 @@ public class Photo implements Parcelable {
         ui = in.readString();
         tg = in.readString();
         ty = in.readString();
-        t =in.readString();
+        t = in.readString();
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof Photo) {
+            Photo temp = (Photo) obj;
+            return this.pi.equals(temp.pi);
+        }
+        return false;
     }
 
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {
@@ -128,7 +138,7 @@ public class Photo implements Parcelable {
     }
 
     public void setComments(List<Comment> comments) {
-        this.comment= comments;
+        this.comment = comments;
     }
 
     @Override

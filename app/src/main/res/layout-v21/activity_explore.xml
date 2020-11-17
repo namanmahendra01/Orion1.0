@@ -137,10 +137,26 @@
                 </LinearLayout>
             </RelativeLayout>
 
+            <TextView
+                android:layout_below="@+id/topBar"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/noPost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="NO POSTS TO SHOW ¯\\_(ツ)_/¯"
+                android:textStyle="bold"
+                android:textColor="@color/scheme8"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swiperefresh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
                 android:layout_below="@id/topBox"
                 android:background="@drawable/circular_corner_rectangle"
                 android:backgroundTint="@color/white">
@@ -157,21 +173,6 @@
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:spanCount="3" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-            <TextView
-                android:layout_below="@+id/topBar"
-                android:layout_alignParentBottom="true"
-                android:id="@+id/noPost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:gravity="center"
-                android:text="NO POSTS TO SHOW ¯\_(ツ)_/¯"
-                android:textStyle="bold"
-                android:textColor="@color/scheme8"
-                android:textSize="18sp"
-                android:visibility="gone"/>
         </RelativeLayout>
     </RelativeLayout>
 

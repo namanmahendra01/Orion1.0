@@ -1,8 +1,5 @@
 package com.orion.orion;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -80,6 +77,9 @@ import java.util.HashMap;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import static android.view.View.GONE;
 import static com.orion.orion.util.MyApplication.getProxy;
 
@@ -101,7 +101,7 @@ public class ViewPostActivity extends AppCompatActivity {
     long currentPosition = 0;
     SimpleExoPlayer simpleExoPlayer;
 
-    private String mLikesString = "";
+    private final String mLikesString = "";
     private String numberoflike = "0";
     ArrayList<Comment> comments = new ArrayList<>();
 
@@ -122,37 +122,37 @@ public class ViewPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_post);
 
-        mPostImage = (SquareImageView) findViewById(R.id.post_image);
-        bottomNavigationView = (BottomNavigationViewEx) findViewById(R.id.BottomNavViewBar);
-        mBackArrow = (ImageView) findViewById(R.id.backarrow);
-        mEllipses = (ImageView) findViewById(R.id.ivEllipses);
-        mStarWhite = (ImageView) findViewById(R.id.image_star);
-        mStarYellow = (ImageView) findViewById(R.id.image_star_yellow);
-        mProfileImage = (ImageView) findViewById(R.id.profile_photo1);
-        mBackLabel = (TextView) findViewById(R.id.tvbacklabel1);
-        mCaption = (TextView) findViewById(R.id.image_caption);
-        mUsername = (TextView) findViewById(R.id.username1);
-        mTimestamp = (TextView) findViewById(R.id.images_time);
-        mLikes = (TextView) findViewById(R.id.likes_number);
-        mComment = (ImageView) findViewById(R.id.image_shoutout);
-        mCommentnumber = (TextView) findViewById(R.id.comments_number);
-        mcredit = (TextView) findViewById(R.id.credit);
-        promote = (ImageView) findViewById(R.id.promote);
-        promoted = (ImageView) findViewById(R.id.promoted);
-        domain = (TextView) findViewById(R.id.domain12);
-        promoteNum = (TextView) findViewById(R.id.promote_number);
+        mPostImage = findViewById(R.id.post_image);
+        bottomNavigationView = findViewById(R.id.BottomNavViewBar);
+        mBackArrow = findViewById(R.id.backarrow);
+        mEllipses = findViewById(R.id.ivEllipses);
+        mStarWhite = findViewById(R.id.image_star);
+        mStarYellow = findViewById(R.id.image_star_yellow);
+        mProfileImage = findViewById(R.id.profile_photo1);
+        mBackLabel = findViewById(R.id.tvbacklabel1);
+        mCaption = findViewById(R.id.image_caption);
+        mUsername = findViewById(R.id.username1);
+        mTimestamp = findViewById(R.id.images_time);
+        mLikes = findViewById(R.id.likes_number);
+        mComment = findViewById(R.id.image_shoutout);
+        mCommentnumber = findViewById(R.id.comments_number);
+        mcredit = findViewById(R.id.credit);
+        promote = findViewById(R.id.promote);
+        promoted = findViewById(R.id.promoted);
+        domain = findViewById(R.id.domain12);
+        promoteNum = findViewById(R.id.promote_number);
 
         progress = findViewById(R.id.pro);
         progress2 = findViewById(R.id.progress);
 
 
-        play2 = (ImageView) findViewById(R.id.play);
-        mute = (ImageView) findViewById(R.id.mute);
-        unmute = (ImageView) findViewById(R.id.unmute);
+        play2 = findViewById(R.id.play);
+        mute = findViewById(R.id.mute);
+        unmute = findViewById(R.id.unmute);
         playerView = findViewById(R.id.player_view);
         progressBar = findViewById(R.id.progress_bar);
-        duration = (TextView) findViewById(R.id.duration);
-        thumbnail = (SquareImageView) findViewById(R.id.thumbnail);
+        duration = findViewById(R.id.duration);
+        thumbnail = findViewById(R.id.thumbnail);
 
 
 //          Initialize SharedPreference variables
@@ -245,7 +245,6 @@ public class ViewPostActivity extends AppCompatActivity {
             }
         });
 
-
         if (mphoto.getTy().equals("photo")) {
 
             mPostImage.setVisibility(View.VISIBLE);
@@ -263,7 +262,6 @@ public class ViewPostActivity extends AppCompatActivity {
             play2.setVisibility(View.VISIBLE);
             mPostImage.setVisibility(View.GONE);
             playerView.setVisibility(View.VISIBLE);
-
         }
 
 //                   ***********get Video***********
@@ -507,18 +505,14 @@ public class ViewPostActivity extends AppCompatActivity {
             }
         });
 
-
         getCurrentUser();
-
 
         setupFirebaseAuth();
         ifCurrentUserLiked();
         ifCurrentUserPromoted();
         numberofPromote();
-
         getPhototDetail();
         setupWidgets();
-
 
         mStarWhite.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -561,6 +555,7 @@ public class ViewPostActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void ReportPost() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -640,7 +635,7 @@ public class ViewPostActivity extends AppCompatActivity {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
 
         View bottomSheetView = this.getLayoutInflater()
-                .inflate(R.layout.layout_bottom_sheet_promote, (LinearLayout) bottomSheetDialog.findViewById(R.id.layout_bottom_sheet_container));
+                .inflate(R.layout.layout_bottom_sheet_promote, bottomSheetDialog.findViewById(R.id.layout_bottom_sheet_container));
         TextView username = bottomSheetView.findViewById(R.id.usernameBs);
         TextView cancel = bottomSheetView.findViewById(R.id.cancel);
         TextView promote1 = bottomSheetView.findViewById(R.id.promote);
@@ -680,7 +675,7 @@ public class ViewPostActivity extends AppCompatActivity {
                         java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
                         Date date = null;
                         try {
-                            date = (Date) formatter.parse(str_date);
+                            date = formatter.parse(str_date);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
@@ -997,7 +992,7 @@ public class ViewPostActivity extends AppCompatActivity {
                 java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
                 Date date = null;
                 try {
-                    date = (Date) formatter.parse(str_date);
+                    date = formatter.parse(str_date);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

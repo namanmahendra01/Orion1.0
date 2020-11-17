@@ -2,16 +2,12 @@ package com.orion.orion.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.orion.orion.R;
@@ -20,22 +16,24 @@ import com.orion.orion.profile.profile;
 
 import java.util.ArrayList;
 
-import static android.content.ContentValues.TAG;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
-public class AdapterItemLeaderboard extends RecyclerView.Adapter<AdapterItemLeaderboard.ViewHolder> {
+public class AdapterLeaderboard extends RecyclerView.Adapter<AdapterLeaderboard.ViewHolder> {
 
-    private ArrayList<ItemLeaderboard> mList;
+    private final ArrayList<ItemLeaderboard> mList;
     Context mContext;
 
-    public AdapterItemLeaderboard(ArrayList<ItemLeaderboard> mList, Context mContext) {
+    public AdapterLeaderboard(ArrayList<ItemLeaderboard> mList, Context mContext) {
         this.mList = mList;
         this.mContext = mContext;
     }
 
     @NonNull
     @Override
-    public AdapterItemLeaderboard.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == 1) return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_top_leaderboard, parent, false));
+    public AdapterLeaderboard.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == 1)
+            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_top_leaderboard, parent, false));
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_leaderboard, parent, false));
     }
 
@@ -47,7 +45,7 @@ public class AdapterItemLeaderboard extends RecyclerView.Adapter<AdapterItemLead
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AdapterItemLeaderboard.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AdapterLeaderboard.ViewHolder holder, int position) {
         ItemLeaderboard currentItem = mList.get(position);
 
         String rank = Integer.toString(position + 1);

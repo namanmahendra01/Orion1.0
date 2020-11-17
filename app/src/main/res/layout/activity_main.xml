@@ -1,41 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".home.MainActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".home.MainActivity">
+
     <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/container">
+        android:layout_height="match_parent">
 
     </FrameLayout>
 
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/relLayoutParent">
-    <!--top toolbar    -->
     <RelativeLayout
+        android:id="@+id/relLayoutParent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/relLayout1">
-        <include layout="@layout/layout_top_tabs_main"/>
+        android:layout_height="match_parent">
+        <!--top toolbar    -->
+        <RelativeLayout
+            android:id="@+id/relLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    </RelativeLayout>
-    <!--        middle section-->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/relLayout2"
-        android:layout_below="@+id/relLayout1"
-        android:layout_above="@+id/bottom">
+            <include layout="@layout/layout_top_tabs_main" />
 
-<include layout="@layout/layout_center_viewpager" />
+        </RelativeLayout>
+        <!--        middle section-->
+        <RelativeLayout
+            android:id="@+id/relLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottom"
+            android:layout_below="@+id/relLayout1">
+
+            <include layout="@layout/layout_center_viewpager" />
+        </RelativeLayout>
+        <!--    Bottom bar-->
+        <include layout="@layout/layout_bottom_navigation_view" />
     </RelativeLayout>
-<!--    Bottom bar-->
-    <include layout="@layout/layout_bottom_navigation_view" />
-</RelativeLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

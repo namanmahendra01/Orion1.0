@@ -10,11 +10,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,18 +30,23 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 public class CommentActivity extends AppCompatActivity {
     RecyclerView commentRv;
     private ArrayList<Comment> comments;
+    private ArrayList<String> commentID;
     private static final String TAG = "CommentActivity";
 
     private AdapterComment adapterComment;
 
 
-    private ImageView mBackArrow,mCheckMark;
     private EditText mComment;
     private boolean notify = false;
-    private  FirebaseMethods mFirebaseMethods;
+    private FirebaseMethods mFirebaseMethods;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +54,10 @@ public class CommentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_comment);
 
         Intent i = getIntent();
-        String phhotoId = i.getStringExtra("photoId");
+        String photoId = i.getStringExtra("photoId");
         String userId = i.getStringExtra("userId");
-        Log.d(TAG, "onCreate: kol" + phhotoId + userId);
+        Log.d(TAG, "onCreate: kol" + photoId + userId);
 
-        mBackArrow = findViewById(R.id.backarrow);
-        mCheckMark = findViewById(R.id.checkMark);
         mComment = findViewById(R.id.comment);
         mFirebaseMethods = new FirebaseMethods(CommentActivity.this);
 
@@ -74,32 +72,31 @@ public class CommentActivity extends AppCompatActivity {
         linearLayoutManager.setInitialPrefetchItemCount(20);
         commentRv.setLayoutManager(linearLayoutManager);
 
-        comments=new ArrayList<>();
-        adapterComment = new AdapterComment(this,comments);
+        comments = new ArrayList<>();
+        commentID = new ArrayList<>();
+        adapterComment = new AdapterComment(this, comments, commentID, photoId, userId);
         adapterComment.setHasStableIds(true);
         commentRv.setAdapter(adapterComment);
 
-        getComments(phhotoId,userId);
+        getComments(photoId, userId);
 
-
+        ImageView mCheckMark = findViewById(R.id.checkMark);
         mCheckMark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!mComment.getText().toString().equals("")){
+                if (!mComment.getText().toString().equals("")) {
                     notify = true;
-
-                    addNewComment(mComment.getText().toString(),userId,phhotoId);
-
+                    addNewComment(mComment.getText().toString(), userId, photoId);
                     mComment.setText("");
-
                     closeKeyboard();
-                }else{
+                } else {
                     Toast.makeText(CommentActivity.this, "C'mon..Give a Shoutout", Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
 
+        ImageView mBackArrow = findViewById(R.id.backarrow);
         mBackArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,87 +104,64 @@ public class CommentActivity extends AppCompatActivity {
             }
         });
     }
-    private String getTim(){
-        SimpleDateFormat sdf  = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
+
+    private String getTim() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
-        return  sdf.format(new Date());
+        return sdf.format(new Date());
     }
-    private void closeKeyboard(){
-        View view=this.getCurrentFocus();
-        if (view!=null) {
+
+    private void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
             InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(),0);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
 
     }
 
-    private void addNewComment(String newComment, String userId, String phhotoId){
-
+    private void addNewComment(String newComment, String userId, String photoId) {
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
-
-
         String commentID = myRef.push().getKey();
-
         Comment comment = new Comment();
         comment.setC(newComment);
         comment.setDc(getTim());
         comment.setUi(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-
         myRef.child(getString(R.string.dbname_user_photos))
                 .child(userId)
-                .child(phhotoId)
+                .child(photoId)
                 .child(getString(R.string.field_comment))
                 .child(commentID)
                 .setValue(comment);
 
-        final DatabaseReference data = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        final DatabaseReference data = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         data.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 users user = dataSnapshot.getValue(users.class);
-
                 if (notify) {
-                    mFirebaseMethods.sendNotification(userId, user.getU(), "commented on your post","Comment");
+                    mFirebaseMethods.sendNotification(userId, user.getU(), "commented on your post", "Comment");
                 }
                 notify = false;
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
-
-        addToHisNotification(""+userId,phhotoId,"commented on your post");
-
-
-
-
-
+        addToHisNotification("" + userId, photoId, "commented on your post");
     }
-    private void addToHisNotification(String hisUid,String pId,String notification){
 
-        String timestamp=""+System.currentTimeMillis();
-
-
+    private void addToHisNotification(String hisUid, String pId, String notification) {
+        String timestamp = "" + System.currentTimeMillis();
 //        data to put in notification
-        HashMap<Object,String> hashMap = new HashMap<>();
-        hashMap.put("pId",pId);
-
-        hashMap.put(getString(R.string.field_timestamp),timestamp);
-
-        hashMap.put("pUid",hisUid);
-
-        hashMap.put(getString(R.string.field_notification_message),notification);
-        hashMap.put(getString(R.string.field_if_seen),"false");
-
-        hashMap.put("sUid",FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-
-
+        HashMap<Object, String> hashMap = new HashMap<>();
+        hashMap.put("pId", pId);
+        hashMap.put(getString(R.string.field_timestamp), timestamp);
+        hashMap.put("pUid", hisUid);
+        hashMap.put(getString(R.string.field_notification_message), notification);
+        hashMap.put(getString(R.string.field_if_seen), "false");
+        hashMap.put("sUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
         ref.child(hisUid).child(getString(R.string.field_Notifications)).child(timestamp).setValue(hashMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -198,28 +172,26 @@ public class CommentActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
             }
         });
 
     }
-    private void getComments(String phhotoId, String userId) {
+
+    private void getComments(String photoId, String userId) {
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(getString(R.string.dbname_user_photos))
                 .child(userId)
-                .child(phhotoId)
+                .child(photoId)
                 .child(getString(R.string.field_comment))
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         comments.clear();
-                        for (DataSnapshot snapshot1:snapshot.getChildren()){
-
-                            Comment comment=snapshot1.getValue(Comment.class);
+                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                            Comment comment = snapshot1.getValue(Comment.class);
                             comments.add(comment);
-
+                            commentID.add(snapshot1.getKey());
                         }
-
                         adapterComment.notifyDataSetChanged();
                     }
 
@@ -228,7 +200,5 @@ public class CommentActivity extends AppCompatActivity {
 
                     }
                 });
-
-
     }
 }

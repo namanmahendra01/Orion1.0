@@ -2,15 +2,11 @@ package com.orion.orion.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,14 +24,15 @@ import com.orion.orion.models.users;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.android.volley.VolleyLog.TAG;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class AdaterChatList extends RecyclerView.Adapter<AdaterChatList.MyHolder> {
 
         Context context;
 
     List<String> usersList2;
-private HashMap<String,String> LastMessagemap;
+    private final HashMap<String, String> LastMessagemap;
 
 
     public AdaterChatList(Context context, List<String> usersList2) {
@@ -76,9 +73,9 @@ private HashMap<String,String> LastMessagemap;
 
                                          Chat chat = ds.getValue(Chat.class);
                                          if (!chat.getIfs()
-                                                 && chat.getRID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                                                 && chat.getrid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                              holder.notSeen.setVisibility(View.VISIBLE);
-                                         }else {
+                                         } else {
                                              holder.notSeen.setVisibility(View.INVISIBLE);
 
                                          }

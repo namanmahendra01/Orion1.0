@@ -1,75 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     app:cardBackgroundColor="@color/white"
-    app:cardUseCompatPadding="true"
     app:cardCornerRadius="5dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white">
+    app:cardUseCompatPadding="true">
+
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
->
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:id="@+id/commet_profile_image"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="5dp"
-        app:civ_border_color="@color/black"
-        app:civ_border_width="0.5dp"/>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/relLayout1"
-        android:layout_toRightOf="@+id/commet_profile_image"
-        android:layout_marginTop="5dp"
-        >
+        android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="60dp"
-        android:layout_marginBottom="5dp">
-        <TextView
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/relLayout1"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="naman"
-            android:id="@+id/comment_username"
-            android:layout_marginLeft="15dp"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:textStyle="bold"/>
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/commet_profile_image">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="this is a comment"
-            android:layout_marginLeft="15dp"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:layout_below="@+id/comment_username"
-            android:id="@+id/addcomment"/>
+            <ImageButton
+                android:id="@+id/edit"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@color/white"
+                android:src="@drawable/ic_eclipse" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3 D"
-            android:layout_marginLeft="15dp"
-            android:textColor="@color/grey"
-            android:id="@+id/comment_time_posted"
-            android:layout_below="@+id/addcomment"
-            android:textSize="10sp"
-            android:layout_marginTop="5dp"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="60dp"
+                android:layout_marginBottom="5dp">
+
+                <TextView
+                    android:id="@+id/comment_username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:text="naman"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/addcomment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/comment_username"
+                    android:layout_marginLeft="15dp"
+                    android:text="this is a comment"
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/comment_time_posted"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/addcomment"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="5dp"
+                    android:text="3 D"
+                    android:textColor="@color/grey"
+                    android:textSize="10sp" />
 
 
+            </RelativeLayout>
 
+        </RelativeLayout>
 
-    </RelativeLayout>
-
-
-    </RelativeLayout>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/commet_profile_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            app:civ_border_color="@color/black"
+            app:civ_border_width="0.5dp" />
 
     </RelativeLayout>
 

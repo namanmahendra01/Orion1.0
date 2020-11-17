@@ -64,8 +64,6 @@ public class Comment implements Parcelable {
         this.ui = user_id;
     }
 
-
-
     public String getDc() {
         return dc;
     }
