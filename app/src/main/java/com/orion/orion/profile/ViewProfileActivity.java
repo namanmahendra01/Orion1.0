@@ -485,9 +485,14 @@ public class ViewProfileActivity extends AppCompatActivity {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int size = (int) snapshot.getChildrenCount();
-                if (size == 0) mFans.setText("0");
-                else mFans.setText(String.valueOf(size));
+                if (snapshot.exists()) {
+                    int size = (int) snapshot.getChildrenCount();
+                    Log.d(TAG, "setUpInfoBox: fansCount" + size);
+                    if (size == 0) mFans.setText("0");
+                    else mFans.setText(String.valueOf(size));
+                }else{
+                    mFans.setText("0");
+                }
             }
 
             @Override
@@ -502,10 +507,14 @@ public class ViewProfileActivity extends AppCompatActivity {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int size = (int) snapshot.getChildrenCount();
-                Log.d(TAG, "setUpInfoBox: postsCount" + size);
-                if (size == 0) mPosts.setText("0");
-                else mPosts.setText(String.valueOf(size));
+                if (snapshot.exists()) {
+                    int size = (int) snapshot.getChildrenCount();
+                    Log.d(TAG, "setUpInfoBox: postsCount" + size);
+                    if (size == 0) mPosts.setText("0");
+                    else mPosts.setText(String.valueOf(size));
+                }else{
+                    mPosts.setText("0");
+                }
             }
 
             @Override
@@ -516,17 +525,40 @@ public class ViewProfileActivity extends AppCompatActivity {
     }
 
     private void getWins() {
-    }
-
-    private void getCreations() {
-        Query query = myRef.child(getString(R.string.dbname_contests)).child(mUser).child(getString(R.string.created_contest));
+        Query query = myRef.child(getString(R.string.dbname_contests)).child(mUser).child(getString(R.string.field_contest_wins));
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int size = (int) snapshot.getChildrenCount();
+                if (snapshot.exists()) {
+                    long size = (long) snapshot.getValue();
+                    Log.d(TAG, "setUpInfoBox: creations" + size);
 //                mCreations.setText((int) size);
-                if (size == 0) mCreations.setText("0");
-                else mCreations.setText(String.valueOf(size));
+                    mCreations.setText(String.valueOf(size));
+                }else{
+                    mCreations.setText("0");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                mCreations.setText("?");
+            }
+        });
+    }
+
+    private void getCreations() {
+        Query query = myRef.child(getString(R.string.dbname_contests)).child(mUser).child(getString(R.string.field_contest_completed));
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    long size = (long) snapshot.getValue();
+                    Log.d(TAG, "setUpInfoBox: creations" + size);
+//                mCreations.setText((int) size);
+                    mCreations.setText(String.valueOf(size));
+                }else{
+                    mCreations.setText("0");
+                }
             }
 
             @Override
@@ -537,15 +569,19 @@ public class ViewProfileActivity extends AppCompatActivity {
     }
 
     private void getParticipation() {
-        Query query = myRef.child(getString(R.string.dbname_contests)).child(mUser).child(getString(R.string.joined_contest));
+        Query query = myRef.child(getString(R.string.dbname_contests)).child(mUser).child(getString(R.string.field_contest_participated));
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int size = (int) snapshot.getChildrenCount();
-                Log.d(TAG, "setUpInfoBox: participationsCount" + size);
+                if (snapshot.exists()) {
+                    long size = (long) snapshot.getValue();
+                    Log.d(TAG, "setUpInfoBox: participationsCount" + size);
 //                mParticipation.setText((int) size);
-                if (size == 0) mParticipation.setText("0");
-                else mParticipation.setText(String.valueOf(size));
+                    mParticipation.setText(String.valueOf(size));
+                }else{
+                    mParticipation.setText("0");
+
+                }
             }
 
             @Override
@@ -554,7 +590,6 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         });
     }
-
     private void getRank() {
         Query query = myRef.child(getString(R.string.dbname_leaderboard)).child(mUser);
         query.addListenerForSingleValueEvent(new ValueEventListener() {

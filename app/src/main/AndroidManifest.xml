@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".FanFollowList"></activity>
+        <activity android:name=".profile.Account.FanFolllowing.FanFollowList"></activity>
         <!-- Activities -->
         <!-- Login/Signup Section + Intro part -->
         <activity android:name=".Intro.Intro" />

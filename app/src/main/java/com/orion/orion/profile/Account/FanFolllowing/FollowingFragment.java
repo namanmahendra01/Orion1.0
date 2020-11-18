@@ -1,4 +1,4 @@
-package com.orion.orion;
+package com.orion.orion.profile.Account.FanFolllowing;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.Adapters.AdapterFollowFanAdapter;
+import com.orion.orion.R;
 import com.orion.orion.models.ItemFollow;
 
 import java.util.ArrayList;

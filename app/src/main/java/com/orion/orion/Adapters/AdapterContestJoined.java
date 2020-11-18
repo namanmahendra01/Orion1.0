@@ -5,6 +5,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -167,6 +168,11 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
 //
         String status = joiningForm.getSt();
         holder.status.setText(status);
+        if (joiningForm.getSt().equals("Rejected")) {
+            holder.status.setTextColor(Color.RED);
+        } else if (joiningForm.getSt().equals("Accepted")) {
+            holder.status.setTextColor(Color.GREEN);
+        }
 
 
         getcontestDetails(joiningForm.getHst(),joiningForm.getCi(),holder.poster

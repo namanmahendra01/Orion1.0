@@ -53,7 +53,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@+id/profile_photo1"
 
-                    android:text="3 DAYS AGO"
+                    android:text="N DAYS AGO"
                     android:textColor="@color/white"
                     android:textSize="8dp" />
 
@@ -185,17 +185,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:scaleType="centerInside"
                         />
-                    <com.orion.orion.util.SquareImageView
-                        android:id="@+id/progress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:scaleType="centerInside"
-                        android:visibility="gone"
-                        android:src="@drawable/load"
-                        />
+
 
                 </androidx.cardview.widget.CardView>
 
@@ -209,7 +200,7 @@
                   android:layout_marginRight="20dp"
                     android:layout_gravity="end|bottom"
 
-                    android:text="naman"
+                    android:text="username"
 
                     android:textColor="@color/white" />
 
@@ -289,7 +280,7 @@
                     android:layout_below="@+id/comment_layout"
                     android:layout_marginLeft="12dp"
                     android:layout_marginTop="5dp"
-                    android:text="23"
+                    android:text="0"
                     android:textColor="@color/black"
                     android:textSize="15dp" />
 
@@ -301,7 +292,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="5dp"
-                    android:text="24"
+                    android:text="0"
                     android:textColor="@color/black"
                     android:textSize="15dp" />
 
@@ -313,7 +304,7 @@
                     android:layout_alignParentRight="true"
 
                     android:layout_marginRight="5dp"
-                    android:text="23"
+                    android:text="0"
                     android:textColor="@color/black"
                     android:textSize="15dp" />
 
@@ -336,7 +327,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
-                    android:text="naman.mahendra mountain #mountain"
+                    android:text=""
                     android:textColor="@color/black"
                     android:textSize="16dp" />
 

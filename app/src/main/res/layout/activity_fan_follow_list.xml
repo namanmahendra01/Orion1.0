@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+
     android:layout_height="match_parent">
 
     <FrameLayout
@@ -21,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/topBar">
 
-            <include layout="@layout/layout_top_tabs_main" />
+            <include layout="@layout/layout_top_tabs" />
 
         </RelativeLayout>
 
@@ -35,49 +36,8 @@
             <include layout="@layout/layout_center_viewpager" />
         </RelativeLayout>
         <!--        middle section-->
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/topBar"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/white_border">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/profileToolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:id="@+id/backarrow"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginEnd="20dp"
-                        android:src="@drawable/ic_baseline_close_24"
-                        app:tint="@color/black"
-                        tools:ignore="ContentDescription" />
-
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="5dp"
-                        android:text="Fan Follow List"
-                        android:textColor="#000000" />
-
-                </RelativeLayout>
-            </androidx.appcompat.widget.Toolbar>
-
-        </com.google.android.material.appbar.AppBarLayout>
         <!--    Bottom bar-->
-        <include layout="@layout/layout_bottom_navigation_view" />
     </RelativeLayout>
 
 

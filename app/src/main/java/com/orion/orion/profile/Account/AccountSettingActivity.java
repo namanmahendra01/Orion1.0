@@ -12,15 +12,14 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-import com.orion.orion.FanFollowList;
 import com.orion.orion.R;
 import com.orion.orion.login.login;
+import com.orion.orion.profile.Account.FanFolllowing.FanFollowList;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 
 import java.util.ArrayList;
@@ -39,7 +38,6 @@ public class AccountSettingActivity extends AppCompatActivity {
     private FirebaseUser mUser;
 
     private ListView listview;
-    private TextView seeAll;
 
 
     @Override
@@ -50,7 +48,6 @@ public class AccountSettingActivity extends AppCompatActivity {
         mContext = AccountSettingActivity.this;
         listview = findViewById(R.id.lvAccountSettings);
         ImageView backarrow = findViewById(R.id.backarrow);
-        seeAll = findViewById(R.id.seeAll);
 
         setupBottomNavigationView();
         setupFirebaseAuth();
@@ -58,12 +55,12 @@ public class AccountSettingActivity extends AppCompatActivity {
         backarrow.setOnClickListener(v -> finish());
         Log.d(TAG, "onCreate: started");
 
-        seeAll.setOnClickListener(v -> startActivity(new Intent(mContext, FanFollowList.class)));
     }
 
     private void setupSettingList() {
         ArrayList<String> options = new ArrayList<>();
         options.add(getString(R.string.edit_profile));
+        options.add("Fans/Following List");
         options.add("Password Reset");
         options.add("Contest");
         options.add("Contact us");
@@ -78,27 +75,30 @@ public class AccountSettingActivity extends AppCompatActivity {
                     startActivity(new Intent(mContext, EditProfile.class));
                     break;
                 case 1:
-                    startActivity(new Intent(mContext, Password_Reset.class));
+                    startActivity(new Intent(mContext, FanFollowList.class));
                     break;
                 case 2:
-                    startActivity(new Intent(mContext, Contest.class));
+                    startActivity(new Intent(mContext, Password_Reset.class));
                     break;
                 case 3:
+                    startActivity(new Intent(mContext, Contest.class));
+                    break;
+                case 4:
                     String url = "https://api.whatsapp.com/send?phone=" + "919997719032";
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));
                     startActivity(i);
                     break;
-                case 4:
+                case 5:
                     String url2 = "https://forms.gle/QikpZcJHz1h64Zvn6";
                     Intent i2 = new Intent(Intent.ACTION_VIEW);
                     i2.setData(Uri.parse(url2));
                     startActivity(i2);
                     break;
-                case 5:
+                case 6:
                     startActivity(new Intent(mContext, About.class));
                     break;
-                case 6:
+                case 7:
                     new AlertDialog.Builder(mContext)
                             .setTitle("Log Out")
                             .setMessage("Are you sure u want to log out?")

@@ -79,7 +79,7 @@ public class fragment_upcomingContest extends Fragment {
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
     private Spinner domainspinner, entryfeeSpinner;
-    String domain = "All", entryfee = "All";
+    String domain = "Overall", entryfee = "All";
 
 
     private AdapterContestUpcoming contestUpcoming;
@@ -397,7 +397,7 @@ public class fragment_upcomingContest extends Fragment {
     }
 
     private void getContestFiltered(String domain, String entryfee) {
-        if (!domain.equals("All")) {
+        if (!domain.equals("Overall")) {
 
 
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -576,8 +576,23 @@ noPost.setVisibility(View.GONE);
 
         }else{
             bottomProgress.setVisibility(View.GONE);
-
             noPost.setVisibility(View.VISIBLE);
+            if ( upcomingContestRv.getAdapter().getClass().equals( contestUpcoming.getClass())) {
+
+                contestUpcoming = new AdapterContestUpcoming(getContext(), contestlist);
+                contestUpcoming.setHasStableIds(true);
+
+                upcomingContestRv.setAdapter(contestUpcoming);
+
+            }else{
+
+                adapterContestUpcomingGrid = new AdapterContestUpcomingGrid(getContext(), contestlist);
+                adapterContestUpcomingGrid.setHasStableIds(true);
+
+                upcomingContestRv.setAdapter(adapterContestUpcomingGrid);
+
+
+        }
 
         }
     }
