@@ -1,8 +1,10 @@
 package com.orion.orion.profile.Account;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +18,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.orion.orion.R;
 import com.orion.orion.login.login;
+
+import java.io.File;
 
 public class SignOut extends AppCompatActivity {
     private static final String TAG = "SignOut";
@@ -35,15 +39,22 @@ public class SignOut extends AppCompatActivity {
         setupFirebaseAuth();
 
         btnConfirmSignOut.setOnClickListener(v -> {
-            SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
-            settings.edit().clear().apply();
-            PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().clear().apply();
-            mAuth.signOut();
+
+            PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().clear().commit();
+              mAuth.signOut();
+//            clearAppData();
+
             mProgressbar.setVisibility(View.VISIBLE);
             finish();
         });
     }
-
+    private void clearAppData() {
+        File sharedPreferenceFile = new File("/data/data/"+ getPackageName()+ "/shared_prefs/");
+        File[] listFiles = sharedPreferenceFile.listFiles();
+        for (File file : listFiles) {
+            file.delete();
+        }
+    }
     private void setupFirebaseAuth() {
         Log.d(TAG, "setupFirebaseAuth: started");
         mAuth = FirebaseAuth.getInstance();

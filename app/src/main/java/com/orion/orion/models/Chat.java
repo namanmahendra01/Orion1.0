@@ -1,12 +1,13 @@
 package com.orion.orion.models;
 
-public class Chat implements Comparable<Chat> {
+public class Chat implements  Comparable<Chat>{
     String msg, rid, sid, tim, mid;
     boolean ifs;
 
-    public Chat() {
+    public Chat(){
 
     }
+
 
 
     public String getMsg() {
@@ -17,7 +18,7 @@ public class Chat implements Comparable<Chat> {
         this.msg = message;
     }
 
-    public String getrid() {
+    public String getRid() {
         return rid;
     }
 
@@ -25,11 +26,11 @@ public class Chat implements Comparable<Chat> {
         this.rid = receiver;
     }
 
-    public String getsid() {
+    public String getSid() {
         return sid;
     }
 
-    public void setSender(String sender) {
+    public void setSid(String sender) {
         this.sid = sender;
     }
 
@@ -41,7 +42,7 @@ public class Chat implements Comparable<Chat> {
         this.tim = timestamp;
     }
 
-    public String getmid() {
+    public String getMid() {
         return mid;
     }
 
@@ -61,10 +62,10 @@ public class Chat implements Comparable<Chat> {
     public String toString() {
         return "Chat{" +
                 "msg='" + msg + '\'' +
-                ", rid='" + rid + '\'' +
-                ", sid='" + sid + '\'' +
+                ", rID='" + rid + '\'' +
+                ", sID='" + sid + '\'' +
                 ", tim='" + tim + '\'' +
-                ", mid='" + mid + '\'' +
+                ", mID='" + mid + '\'' +
                 ", ifs=" + ifs +
                 '}';
     }

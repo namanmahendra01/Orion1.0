@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,6 +21,7 @@ public class Contest extends AppCompatActivity {
     private Context mContext;
     private static final String TAG = "AboutActivity";
 
+    ImageView backArrow;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
@@ -27,6 +30,15 @@ public class Contest extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contest2);
         mContext=Contest.this;
+
+        backArrow=findViewById(R.id.backarrow);
+
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         setupFirebaseAuth();
     }
     private void setupFirebaseAuth() {

@@ -36,11 +36,13 @@ public class BottomNaavigationViewHelper {
                 switch (item.getItemId()) {
 
                     case R.id.ic_house:
+                        item.setEnabled(false);
                         Intent intent1 = new Intent(context, MainActivity.class);
                         context.startActivity(intent1);
                         break;
 
                     case R.id.ic_notification:
+                        item.setEnabled(false);
 
                         Intent intent2 = new Intent(context, Explore.class);
                         context.startActivity(intent2);
@@ -48,12 +50,14 @@ public class BottomNaavigationViewHelper {
                         break;
 
                     case R.id.ic_contest:
+                        item.setEnabled(false);
 
                         Intent intent3 = new Intent(context, contestMainActivity.class);
                         context.startActivity(intent3);
                         break;
 
                     case R.id.ic_leaderboard:
+                        item.setEnabled(false);
 
                         Intent intent4 = new Intent(context, LeaderboardActivity.class);
                         context.startActivity(intent4);

@@ -208,7 +208,7 @@
     android:id="@+id/warn"
     android:visibility="gone"
 
-android:text="You are already a Participant in this contest."
+android:text="You already filled this form."
     android:layout_alignParentEnd="true"
     android:layout_alignParentBottom="true"
     android:gravity="center"
