@@ -57,8 +57,8 @@ Chat_Activity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ImageView mprofileImage;
-    TextView mUsername, accept, decline,sendReqBtn,cancelReqBtn;
-    EditText mMessages,reqMessage;
+    TextView mUsername, accept, decline, sendReqBtn, cancelReqBtn;
+    EditText mMessages, reqMessage;
     int x = 0;
     private int mResults;
     private LinearLayout reqLayout, chatLayout;
@@ -117,7 +117,6 @@ Chat_Activity extends AppCompatActivity {
         cancelReqBtn = findViewById(R.id.cancelReq);
 
 
-
         mSendBtn = findViewById(R.id.sendBtn);
         mMessages = findViewById(R.id.messageEt);
         mprofileImage = findViewById(R.id.profile_image);
@@ -172,10 +171,10 @@ Chat_Activity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (!snapshot.exists()) {
-                          if(!request.equals("yes")){
-                              sendRequestLayout.setVisibility(View.VISIBLE);
+                            if (!request.equals("yes")) {
+                                sendRequestLayout.setVisibility(View.VISIBLE);
 
-                          }
+                            }
                         }
 
                     }
@@ -308,42 +307,59 @@ Chat_Activity extends AppCompatActivity {
                                             if (x == dataSnapshot.getChildrenCount()) {
                                                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
+                                                int i = 0;
                                                 for (Chat c : chat1) {
+                                                    i++;
+                                                    int finalI = i;
                                                     ref.child(context.getString(R.string.dbname_ChatList))
                                                             .child(key)
-                                                            .child(c.getMID())
-                                                            .setValue(c);
+                                                            .child(c.getMid())
+                                                            .setValue(c)
+                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void aVoid) {
+                                                                    if (finalI == chat1.size()) {
+
+                                                                        ref.child(getString(R.string.dbname_Chats))
+                                                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                                                .child(hisUID)
+                                                                                .setValue(key);
+
+                                                                        ref.child(getString(R.string.dbname_Chats))
+                                                                                .child(hisUID)
+                                                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                                                .setValue(key)
+                                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                    @Override
+                                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                                        if (task.isSuccessful()) {
+
+                                                                                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                                                                                            ref.child(context.getString(R.string.dbname_request))
+                                                                                                    .child(context.getString(R.string.dbname_Chats))
+                                                                                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                                                                    .child(hisUID)
+                                                                                                    .removeValue()
+                                                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                        @Override
+                                                                                                        public void onSuccess(Void aVoid) {
+                                                                                                            finish();
+                                                                                                        }
+                                                                                                    });
+
+                                                                                        }
+                                                                                    }
+                                                                                });
+                                                                    }
+                                                                }
+                                                            });
+
                                                 }
                                             }
 
 
                                         }
 
-
-                                        ref.child(getString(R.string.dbname_Chats))
-                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .child(hisUID)
-                                                .setValue(key);
-
-                                        ref.child(getString(R.string.dbname_Chats))
-                                                .child(hisUID)
-                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .setValue(key)
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful()) {
-
-                                                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                                                            ref.child(context.getString(R.string.dbname_request))
-                                                                    .child(context.getString(R.string.dbname_Chats))
-                                                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                                    .child(hisUID)
-                                                                    .removeValue();
-
-                                                        }
-                                                    }
-                                                });
 
                                     }
 
@@ -373,9 +389,9 @@ Chat_Activity extends AppCompatActivity {
     }
 
     private void sendRequestMessage(String message) {
-        if (message==null||message.equals("")){
+        if (message == null || message.equals("")) {
             Toast.makeText(context, "Type Something!", Toast.LENGTH_SHORT).show();
-        }else {
+        } else {
 
 
             SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
@@ -420,7 +436,6 @@ Chat_Activity extends AppCompatActivity {
 
                         }
                     });
-
 
 
                     Log.e(SNTPClient.TAG, rawDate);
@@ -603,7 +618,7 @@ Chat_Activity extends AppCompatActivity {
                                                     DatabaseReference DbRef2 = FirebaseDatabase.getInstance().getReference();
                                                     DbRef2.child(getString(R.string.dbname_ChatList))
                                                             .child(snapshot.getValue().toString())
-                                                            .child(chat.getMID())
+                                                            .child(chat.getMid())
                                                             .removeValue();
                                                 } else {
                                                     assert chat != null;
@@ -862,15 +877,15 @@ Chat_Activity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot singleSnapshot) {
 
-                    Glide.with(Chat_Activity.this)
-                            .load(singleSnapshot.child(getString(R.string.profile_photo)).getValue().toString())
-                            .placeholder(R.drawable.load)
-                            .error(R.drawable.default_image2)
-                            .placeholder(R.drawable.load)
-                            .thumbnail(0.2f)
-                            .into(mprofileImage);
+                Glide.with(Chat_Activity.this)
+                        .load(singleSnapshot.child(getString(R.string.profile_photo)).getValue().toString())
+                        .placeholder(R.drawable.load)
+                        .error(R.drawable.default_image2)
+                        .placeholder(R.drawable.load)
+                        .thumbnail(0.2f)
+                        .into(mprofileImage);
 
-                    mUsername.setText(singleSnapshot.child(getString(R.string.field_username)).getValue().toString());
+                mUsername.setText(singleSnapshot.child(getString(R.string.field_username)).getValue().toString());
 
 
             }

@@ -88,8 +88,8 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
     }
 
     private void DeleteMessage(int position) {
-        String msgID = chatList.get(position).getMID();
-        String hisId = chatList.get(position).getRID();
+        String msgID = chatList.get(position).getMid();
+        String hisId = chatList.get(position).getRid();
         DatabaseReference dbTs1 = FirebaseDatabase.getInstance().getReference();
         dbTs1.child(context.getString(R.string.dbname_Chats))
                 .child(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())
@@ -119,7 +119,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
     @Override
     public long getItemId(int position) {
         Chat chat = chatList.get(position);
-        return chat.getMID().hashCode();
+        return chat.getMid().hashCode();
     }
 
     @Override
@@ -131,7 +131,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
     public int getItemViewType(int position) {
 //        get currently signed user
         fUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (chatList.get(position).getSID().equals(fUser.getUid())) {
+        if (chatList.get(position).getSid().equals(fUser.getUid())) {
             return MSG_TYPE_RIGHT;
 
         } else {

@@ -233,39 +233,53 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.field_joined_updates))
                                         .child(mparticipantLists.getJi())
-                                        .setValue("Rejected");
-                                db.child(mContext.getString(R.string.dbname_contests))
-                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .child(mContext.getString(R.string.joined_contest))
-                                        .child(mparticipantLists.getJi())
-                                        .child(mContext.getString(R.string.field_status))
-                                        .setValue("Rejected");
+                                        .setValue("Rejected").addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        db.child(mContext.getString(R.string.dbname_contests))
+                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                .child(mContext.getString(R.string.joined_contest))
+                                                .child(mparticipantLists.getJi())
+                                                .child(mContext.getString(R.string.field_status))
+                                                .setValue("Rejected")
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
 
-                                deleteRequest(mparticipantLists.getCi(), mparticipantLists.getJi(), mparticipantLists.getUi());
-                                participantLists.remove(i);
+                                                                        deleteRequest(mparticipantLists.getCi(), mparticipantLists.getJi(), mparticipantLists.getUi());
+                                                                        participantLists.remove(i);
 
-                                AdapterParticipantRequest.this.notifyItemRemoved(i);
+                                                                        AdapterParticipantRequest.this.notifyItemRemoved(i);
 
-                                if (mparticipantLists.getMl() == null || mparticipantLists.getMl().equals("")||!mparticipantLists.getMl().substring(8,23).equals("firebasestorage")) {
+                                                                        if (mparticipantLists.getMl() == null || mparticipantLists.getMl().equals("")||!mparticipantLists.getMl().substring(8,23).equals("firebasestorage")) {
 
-                                }else{
-                                    StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMl());
-                                    photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            // File deleted successfully
-                                            Log.d(TAG, "onSuccess: deleted file");
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception exception) {
-                                            // Uh-oh, an error occurred!
-                                            Log.d(TAG, "onFailure: did not delete file");
-                                        }
-                                    });
-                                }
+                                                                        }else{
+                                                                            StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMl());
+                                                                            photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                @Override
+                                                                                public void onSuccess(Void aVoid) {
+                                                                                    // File deleted successfully
+                                                                                    Log.d(TAG, "onSuccess: deleted file");
+                                                                                }
+                                                                            }).addOnFailureListener(new OnFailureListener() {
+                                                                                @Override
+                                                                                public void onFailure(@NonNull Exception exception) {
+                                                                                    // Uh-oh, an error occurred!
+                                                                                    Log.d(TAG, "onFailure: did not delete file");
+                                                                                }
+                                                                            });
+                                                                        }
 
-                                bottomSheetDialog.dismiss();
+                                                                        bottomSheetDialog.dismiss();
+
+                                                    }
+                                                });
+                                    }
+                                });
+
+
+
+
 
                             }
                         });
@@ -308,11 +322,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                         .child(mparticipantLists.getJi())
                                         .setValue("Accepted");
 
-                                db.child(mContext.getString(R.string.dbname_contestlist))
-                                        .child(mparticipantLists.getCi())
-                                        .child(mContext.getString(R.string.field_Participant_List))
-                                        .child(mparticipantLists.getUi())
-                                        .setValue(true);
+
 
                                 db.child(mContext.getString(R.string.dbname_users))
                                         .child(mparticipantLists.getUi())

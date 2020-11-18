@@ -1,9 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".profile.Account.Contest">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:id="@+id/top"
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="wrap_content">
+    <include
+        layout="@layout/snippet_top_contest_ac_bar"
+        />
+    </RelativeLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_below="@+id/top"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/h2"
+                android:layout_height="wrap_content"
+                android:text="Create Contest Form"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/scheme8"
+                android:textSize="16sp"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/h2"
+                android:layout_marginTop="10dp"
+                android:id="@+id/h3"
+                android:text="1- Poster is mandatory for every contest.\n2-Every details must be genuine otherwise it will lead to rjection of contest\n3-If your contest is entry fee based then you must include payment method in description\n4-Prize money must be genuine."
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/h4"
+                android:layout_height="wrap_content"
+                android:text="After Contest is Live"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_below="@+id/h3"
+                android:textColor="@color/scheme8"
+                android:textSize="16sp"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/h4"
+                android:layout_marginTop="10dp"
+                android:id="@+id/h5"
+                android:text="1-First verify participant and their submissions then only allow them to participate\n2-You must publish your result within 2 days after winner declare date.After 2 days ,it will be declared automatically and it will affect you GP"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/h6"
+                android:layout_height="wrap_content"
+                android:text="Join Contest Form"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_below="@+id/h5"
+                android:textColor="@color/scheme8"
+                android:textSize="16sp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/h6"
+                android:layout_marginTop="10dp"
+                android:id="@+id/h7"
+                android:text="1-All details must be genuine.\n2-Host and Jury members are not allowed to participte.\n3-You can fill the submission form once."
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/h8"
+                android:layout_height="wrap_content"
+                android:text="Judging a Contest"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_below="@+id/h7"
+                android:textColor="@color/scheme8"
+                android:textSize="16sp"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/h8"
+                android:layout_marginTop="10dp"
+                android:id="@+id/h9"
+                android:text="1-Marks must be given between 1-10 rage.\n2-Comments are mandatory.\n3-Be honest while giving marks. "
+                />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/h10"
+        android:layout_height="wrap_content"
+        android:text="GP:Genuine Percentage"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@+id/h9"
+        android:textColor="@color/scheme8"
+        android:textSize="16sp"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/h10"
+        android:layout_marginTop="10dp"
+        android:id="@+id/h11"
+        android:text="GP means genuine percentage which is the percentage of how much genuine a host is.Try to maintain good percentage.Reports on your contest will directly affect your GP. "
+        />
+
+</RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

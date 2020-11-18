@@ -6,6 +6,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -26,6 +27,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Notifications.Token;
 import com.orion.orion.R;
@@ -34,6 +37,8 @@ import com.orion.orion.models.Chat;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 import com.orion.orion.Adapters.SectionPagerAdapter;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity
@@ -175,7 +180,92 @@ public class MainActivity extends AppCompatActivity
         tablayout.getTabAt(2).setIcon(R.drawable.ic_chat_black);
 
 
+        DatabaseReference reference3 = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users))
 
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(getString(R.string.field_unfollowed_Me));
+               reference3 .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            int x=0;
+                            for (DataSnapshot snapshot1:snapshot.getChildren()){
+                                x++;
+                                String mUser=snapshot1.getKey();
+
+                                //               remove from following list
+                                SharedPreferences sp =getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                                Gson gson=new Gson();
+                                String json =sp.getString("fl",null);
+                                Type type= new TypeToken<ArrayList<String>>() {}.getType();
+                                ArrayList<String> list= new ArrayList<String>();
+                                list=gson.fromJson(json,type);
+                                if (list==null){
+
+                                }else{
+                                    list.remove(mUser);
+
+                                }
+//                 save following list
+                                SharedPreferences.Editor editor=sp.edit();
+                                json =gson.toJson(list);
+                                editor.putString("fl",json);
+                                editor.apply();
+
+
+//              update following list
+                                json =sp.getString("removefollowing",null);
+                                type= new TypeToken<ArrayList<String>>() {}.getType();
+                                ArrayList<String> ulist= new ArrayList<String>();
+                                ulist=gson.fromJson(json,type);
+                                if (ulist==null){
+                                    ulist= new ArrayList<String>();
+                                    ulist.add(mUser);
+                                }else{
+                                    if (!ulist.contains(mUser)){
+                                        ulist.add(mUser);
+
+                                    }
+                                }
+//                save update list
+                                editor=sp.edit();
+                                json =gson.toJson(ulist);
+                                editor.putString("removefollowing",json);
+                                editor.apply();
+
+
+//              update following list
+                                json =sp.getString("addfollowing",null);
+                                type= new TypeToken<ArrayList<String>>() {}.getType();
+                                ArrayList<String> ulist2= new ArrayList<String>();
+                                ulist2=gson.fromJson(json,type);
+                                if (ulist2==null){
+
+                                }else{
+                                    if (ulist2.contains(mUser)){
+                                        ulist2.remove(mUser);
+//                save update list
+                                        editor=sp.edit();
+                                        json =gson.toJson(ulist2);
+                                        editor.putString("addfollowing",json);
+                                        editor.apply();
+                                    }
+                                }
+
+
+                                if (x==snapshot.getChildrenCount()){
+                                    reference3.removeValue();
+                                }
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(getString(R.string.dbname_users))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -299,7 +389,9 @@ public class MainActivity extends AppCompatActivity
                                                 if (ds.exists()) {
 
                                                     Chat chat = ds.getValue(Chat.class);
-                                                    if (!chat.getIfs()&&chat.getRID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                                    Log.d(TAG, "onDataChange: "+FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                                    Log.d(TAG, "onDataChange: "+chat.getRid());
+                                                    if (!chat.getIfs()&&chat.getRid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                                         tablayout.getTabAt(2).setIcon(R.drawable.ic_chat_red);
                                                         x[0]++;
                                                     }

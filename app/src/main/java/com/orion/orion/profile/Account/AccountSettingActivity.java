@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -61,7 +62,8 @@ public class AccountSettingActivity extends AppCompatActivity {
         options.add(getString(R.string.edit_profile));
         options.add("Password Reset");
         options.add("Contest");
-        options.add("Help");
+        options.add("Contact us");
+        options.add("Report a Bug/feedback form");
         options.add("About");
         options.add(getString(R.string.sign_out));//fragment 1
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mcontext, android.R.layout.simple_list_item_1, options);
@@ -74,11 +76,21 @@ public class AccountSettingActivity extends AppCompatActivity {
                     break;
                 case 2: startActivity(new Intent(mcontext, Contest.class));
                     break;
-                case 3: startActivity(new Intent(mcontext, Help.class));
+                case 3:
+                    String url = "https://api.whatsapp.com/send?phone=" +"919997719032";
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    startActivity(i);
                     break;
-                case 4: startActivity(new Intent(mcontext, About.class));
+                case 4:
+                    String url2 = "https://forms.gle/QikpZcJHz1h64Zvn6";
+                    Intent i2 = new Intent(Intent.ACTION_VIEW);
+                    i2.setData(Uri.parse(url2));
+                    startActivity(i2);
                     break;
-                case 5: new AlertDialog.Builder(mcontext)
+                case 5: startActivity(new Intent(mcontext, About.class));
+                    break;
+                case 6: new AlertDialog.Builder(mcontext)
                         .setTitle("Log Out")
                         .setMessage("Are you sure u want to log out?")
                         .setPositiveButton(android.R.string.yes, (dialog, which) -> {

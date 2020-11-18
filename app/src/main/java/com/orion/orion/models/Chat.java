@@ -1,7 +1,7 @@
 package com.orion.orion.models;
 
 public class Chat implements  Comparable<Chat>{
-    String msg, rID, sID, tim, mID;
+    String msg, rid, sid, tim, mid;
     boolean ifs;
 
     public Chat(){
@@ -18,20 +18,20 @@ public class Chat implements  Comparable<Chat>{
         this.msg = message;
     }
 
-    public String getRID() {
-        return rID;
+    public String getRid() {
+        return rid;
     }
 
     public void setReceiver(String receiver) {
-        this.rID = receiver;
+        this.rid = receiver;
     }
 
-    public String getSID() {
-        return sID;
+    public String getSid() {
+        return sid;
     }
 
-    public void setSender(String sender) {
-        this.sID = sender;
+    public void setSid(String sender) {
+        this.sid = sender;
     }
 
     public String getTim() {
@@ -42,12 +42,12 @@ public class Chat implements  Comparable<Chat>{
         this.tim = timestamp;
     }
 
-    public String getMID() {
-        return mID;
+    public String getMid() {
+        return mid;
     }
 
     public void setMessageid(String messageid) {
-        this.mID = messageid;
+        this.mid = messageid;
     }
 
     public boolean getIfs() {
@@ -62,10 +62,10 @@ public class Chat implements  Comparable<Chat>{
     public String toString() {
         return "Chat{" +
                 "msg='" + msg + '\'' +
-                ", rID='" + rID + '\'' +
-                ", sID='" + sID + '\'' +
+                ", rID='" + rid + '\'' +
+                ", sID='" + sid + '\'' +
                 ", tim='" + tim + '\'' +
-                ", mID='" + mID + '\'' +
+                ", mID='" + mid + '\'' +
                 ", ifs=" + ifs +
                 '}';
     }

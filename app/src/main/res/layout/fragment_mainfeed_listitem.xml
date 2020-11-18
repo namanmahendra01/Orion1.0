@@ -63,6 +63,7 @@
                     android:gravity="right"
                     android:layout_toLeftOf="@+id/ivEllipses"
                     android:text="Photographer"
+                    android:fontFamily="@font/orion"
                     android:textColor="@color/black"
                     android:maxLines="1"
                     android:textSize="15sp"

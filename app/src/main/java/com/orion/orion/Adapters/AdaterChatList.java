@@ -76,7 +76,7 @@ private HashMap<String,String> LastMessagemap;
 
                                          Chat chat = ds.getValue(Chat.class);
                                          if (!chat.getIfs()
-                                                 && chat.getRID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                                                 && chat.getRid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
                                              holder.notSeen.setVisibility(View.VISIBLE);
                                          }else {
                                              holder.notSeen.setVisibility(View.INVISIBLE);

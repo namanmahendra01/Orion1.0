@@ -163,12 +163,12 @@
     <string name="field_contest_judged">cj</string>
     <string name="field_contest_wins">cw</string>
     <string name="field_contest_participated">cp</string>
-    <string name="field_sender_ID">sID</string>
-    <string name="field_receiver_ID">rID</string>
+    <string name="field_sender_ID">sid</string>
+    <string name="field_receiver_ID">rid</string>
     <string name="field_message">msg</string>
     <string name="field_timestamp">tim</string>
     <string name="field_if_seen">ifs</string>
-    <string name="field_message_ID">mID</string>
+    <string name="field_message_ID">mid</string>
     <string name="field_entry_fee">ef</string>
     <string name="field_contest_ID">ci</string>
     <string name="field_vote_type">vt</string>
@@ -202,11 +202,7 @@
     <string name="field_promoter_ID">pID</string>
     <string name="field_story_ID">stID</string>
     <string name="field_rating">rat</string>
-
-
-
-
-
+    <string name="field_unfollowed_Me">um</string>
 
 
     <string-array name="entryfee">

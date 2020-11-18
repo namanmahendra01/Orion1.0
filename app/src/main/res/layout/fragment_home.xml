@@ -47,6 +47,7 @@
 
                     <RelativeLayout
                         android:id="@+id/domainRl"
+                        android:layout_marginTop="20dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/promo"
@@ -73,6 +74,7 @@
                         android:layout_below="@+id/domainRl"
                         android:layout_centerHorizontal="true"
                         android:text="All"
+                        android:fontFamily="@font/orion"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
 
@@ -124,6 +126,18 @@
                     android:layout_centerHorizontal="true"
                     android:background="@android:color/transparent"
                     android:visibility="visible" />
+                <TextView
+                    android:id="@+id/noPost"
+                    android:layout_below="@+id/rel2"
+                    android:layout_width="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="NO POST TO SHOW"
+                    android:textSize="18sp"
+                    android:visibility="gone" />
             </RelativeLayout>
 
         </ScrollView>
@@ -165,14 +179,5 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/noPost"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:gravity="center"
-        android:text="NO POSTS TO SHOW"
-        android:textSize="18sp"
-        android:visibility="gone" />
+
 </RelativeLayout>

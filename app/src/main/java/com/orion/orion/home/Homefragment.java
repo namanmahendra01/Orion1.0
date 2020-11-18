@@ -15,6 +15,7 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -39,6 +40,7 @@ import com.google.gson.reflect.TypeToken;
 import com.orion.orion.Adapters.AdapterMainFeedContest;
 import com.orion.orion.Adapters.AdapterMainfeed;
 import com.orion.orion.Adapters.AdapterPromote;
+import com.orion.orion.Notifications.Data;
 import com.orion.orion.R;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.ContestDetail;
@@ -93,6 +95,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
     ScrollView scrollView;
     private RecyclerView ListViewRv;
     private AdapterMainfeed mAadapter;
+    RelativeLayout promoteLayout;
     private int mResults;
     public LinearLayout progress;
     TextView username;
@@ -123,6 +126,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         progress = view.findViewById(R.id.pro);
         bottomProgress = view.findViewById(R.id.pro2);
         noPost = view.findViewById(R.id.noPost);
+        promoteLayout = view.findViewById(R.id.promo);
 
 //          Initialize SharedPreference variables
         sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
@@ -544,6 +548,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                         } else {
 //                            No new Post are there,so display photos
+
                             displayPhotos();
                         }
                     }
@@ -1056,6 +1061,8 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
+                            promoteLayout.setVisibility(View.VISIBLE);
+
                             long l = dataSnapshot.getChildrenCount();
                             int t = 0;
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -1078,9 +1085,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                             }
                         } else {
-                            storySeen.setVisibility(View.GONE);
-                            story.setVisibility(View.GONE);
-                            footer.setVisibility(View.VISIBLE);
+                         promoteLayout.setVisibility(View.GONE);
 
                         }
 

@@ -199,12 +199,12 @@ public class messagesfragment extends Fragment {
         for (int i = 0; i < chatList.size(); i++) {
 
 
-            if (chatList.get(i).getSID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+            if (chatList.get(i).getSid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
 
-                messagesfragment.this.userlist2.add(chatList.get(i).getRID());
+                messagesfragment.this.userlist2.add(chatList.get(i).getRid());
             } else {
 
-                messagesfragment.this.userlist2.add(chatList.get(i).getSID());
+                messagesfragment.this.userlist2.add(chatList.get(i).getSid());
 
             }
 
