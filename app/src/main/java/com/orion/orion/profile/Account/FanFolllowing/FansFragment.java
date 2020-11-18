@@ -131,6 +131,7 @@ public class FansFragment extends Fragment {
                     itemFollow.setUsername((String) snapshot.child(getString(R.string.field_username)).getValue());
                     itemFollow.setDisplay_name((String) snapshot.child(getString(R.string.field_display_name)).getValue());
                     itemFollow.setProfileUrl((String) snapshot.child(getString(R.string.profile_photo)).getValue());
+                    swipeRefreshLayout.setRefreshing(false);
                     mLists.add(itemFollow);
                     noList.setVisibility(View.GONE);
                     adapterFollowFanAdapter.notifyDataSetChanged();

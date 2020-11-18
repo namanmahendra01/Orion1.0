@@ -157,7 +157,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 
 //                            if (user.getUid().equals(user_id)) checkOrGetLocation();
 
-                            Log.d(TAG, "updateLeaderboard: USERID: "+user_id);
+                            Log.d(TAG, "updateLeaderboard: USERID: " + user_id);
                             Log.d(TAG, "updateLeaderboard: posts update");
                             //for posts parameters of leaders according the photos
                             Query query1 = reference.child(getString(R.string.dbname_user_photos)).child(user_id);
@@ -436,11 +436,11 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 
                                                 //details entries
                                                 int previousJoinedContests = 0;
-                                                if(dataSnapshot.child(getString(R.string.joined_contest)).getValue()!=null)
-                                                    previousJoinedContests = (int)(long) dataSnapshot.child(getString(R.string.joined_contest)).getValue();
+                                                if (dataSnapshot.child(getString(R.string.joined_contest)).getValue() != null)
+                                                    previousJoinedContests = (int) (long) dataSnapshot.child(getString(R.string.joined_contest)).getValue();
                                                 int previousCreatedContest = 0;
-                                                if(dataSnapshot.child(getString(R.string.created_contest)).getValue()!=null)
-                                                    previousCreatedContest = (int) (long)dataSnapshot.child(getString(R.string.created_contest)).getValue();
+                                                if (dataSnapshot.child(getString(R.string.created_contest)).getValue() != null)
+                                                    previousCreatedContest = (int) (long) dataSnapshot.child(getString(R.string.created_contest)).getValue();
 
                                                 int all_time = 0;
                                                 int yearly = 0;
@@ -803,34 +803,17 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 
         }
 
-//        //deciding parameter for type
-//        switch ((String) sortedByType.getText()) {
-//            case "Posts":
-//                typeParameter = getString(R.string.field_post);
-//                break;
-//            case "Followers":
-//                typeParameter = getString(R.string.field_followers);
-//                break;
-//            case "Contests":
-//                typeParameter = getString(R.string.field_contest);
-//                break;
-//            case "Overall":
-//            default:
-//                typeParameter = "";
-//        }
-
         //deciding domain parmaeter
         switch ((String) sortedByDomain.getText()) {
-            case "All":
-            default:
+            case "Overall":
+            case "Domain":
                 domainParameter = "";
                 break;
-            case "Photography":
-            case "Film Maker":
-            case "Painter":
+            default:
                 domainParameter = (String) sortedByDomain.getText();
                 break;
         }
+        Log.d(TAG, "filter: " + domainParameter);
 
         mList.clear();
         mAdapter.notifyDataSetChanged();
@@ -867,7 +850,6 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-
                             //getting user ids, username and profile photos
                             String user_id = singleSnapshot.getKey();
                             String username = (String) singleSnapshot.child(getString(R.string.field_username)).getValue();
@@ -940,6 +922,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                 swipeRefreshLayout.setRefreshing(false);
                             }
                         }
+                        swipeRefreshLayout.setRefreshing(false);
                     }
 
                     @Override
