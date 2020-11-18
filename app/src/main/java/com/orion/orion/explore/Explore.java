@@ -13,8 +13,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -91,10 +89,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Explore extends AppCompatActivity implements BottomSheetDomain.BottomSheetListener, AdapterGridImageExplore.OnPostItemClickListner {
     private static final String TAG = "Explore";
     private static final int ACTIVITY_NUM = 1;
-    private static final Handler handler = new Handler(Looper.getMainLooper());
+//    private static final Handler handler = new Handler(Looper.getMainLooper());
     private static final int SET_SIZE_DOMAIN = 300;
     private static final int TOTAL_USER_SIZE = 500;
-    private static final int RETRY_DURATION = 30000;
+    //    private static final int RETRY_DURATION = 30000;
     int x = 0;
     int prevHeight;
     int height, dummyHeight;
@@ -134,6 +132,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     //domain
     private BottomSheetDomain bottomSheetDomain;
     private String USER_DOMAIN;
+    private boolean requestedFromCheckPostFetched;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -159,8 +158,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         initTextListener();
         getTop8();
         checkTopDatabase();
-
-
+        requestedFromCheckPostFetched = false;
     }
 
     private void getUserDomain() {
@@ -174,7 +172,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 if (snapshot.exists()) {
                     USER_DOMAIN = (String) snapshot.getValue();
                     bottomSheetDomain = new BottomSheetDomain(true, USER_DOMAIN);
-                    checkLastFetched();
+                    if (requestedFromCheckPostFetched) checkLastFetched();
                 } else
                     Toast.makeText(mContext, "Unable to find Your domain", Toast.LENGTH_LONG).show();
             }
@@ -480,6 +478,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         Log.d(TAG, "checkLastFetched: started");
         if (USER_DOMAIN == null) getUserDomain();
         else {
+            requestedFromCheckPostFetched = true;
             String[] fields = {"Overall", USER_DOMAIN};
             for (String field : fields) {
                 String previousTimeStamp = mPreferences.getString(field + "_fieldLastFetched", null);
@@ -529,7 +528,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                 String firstField = "Overall";
                                 if (field.equals("Overall")) fetchTopUsers(field, "");
                                 else fetchTopUsers(field, firstField);
-                            }
+                            } else if (field.equals(USER_DOMAIN)) checkPostsFetched();
                         }
 
                         @Override
@@ -543,8 +542,79 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                     });
                 }
             }
-            checkPostsFetched();
         }
+    }
+
+    private void checkPostsFetched() {
+        Log.d(TAG, "checkPostsFetched: started");
+        String[] fields = {"Overall", USER_DOMAIN};
+        if (USER_DOMAIN == null) getUserDomain();
+        for (String field : fields) {
+            Gson gson = new Gson();
+            String previousTimeStamp = mPreferences.getString(field + "_PostsLastUpdated", null);
+            String json = mPreferences.getString(field + "_TopPosts", null);
+            Set<String> set = mPreferences.getStringSet(field + "_TopUsers", null);
+            int completed = mPreferences.getInt(field + "_completed", 0);
+            if (set == null) {
+//                handler.postDelayed(() -> checkPostsFetched(), RETRY_DURATION);
+            } else {
+//                handler.removeCallbacksAndMessages(checkPostsFetched(););
+                if (json == null || previousTimeStamp == null || previousTimeStamp.equals("")) {
+                    Log.d(TAG, "checkPostsFetched: starting getPosts as previous timestamp is null - " + field);
+                    getPosts(field, completed);
+                } else {
+                    if (completed < set.size()) getPosts(field, completed);
+                    else {
+                        SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
+                            @Override
+                            public void onTimeReceived(String currentTimeStamp) {
+                                int currentYear = Integer.parseInt(currentTimeStamp.substring(0, 4));
+                                int currentMonth = Integer.parseInt(currentTimeStamp.substring(5, 7));
+                                int currentDate = Integer.parseInt(currentTimeStamp.substring(8, 10));
+//                                String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
+                                String currentDateFormat = currentDate + "/" + currentMonth + "/" + currentYear;
+                                Date date = new Date(currentDateFormat);
+                                int currentDay = date.getDay();
+                                int postedYear = Integer.parseInt(previousTimeStamp.substring(0, 4));
+                                int postedMonth = Integer.parseInt(previousTimeStamp.substring(5, 7));
+                                int postedDate = Integer.parseInt(previousTimeStamp.substring(8, 10));
+//                                String postedTime = previousTimeStamp.substring(12, previousTimeStamp.length() - 1);
+                                String postedDateFormat = postedDate + "/" + postedMonth + "/" + postedYear;
+                                @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
+                                long elapsedDays = 0;
+                                try {
+                                    Date date1 = simpleDateFormat.parse(postedDateFormat);
+                                    Date date2 = simpleDateFormat.parse(currentDateFormat);
+                                    assert date1 != null;
+                                    assert date2 != null;
+                                    elapsedDays = (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                    Log.d(TAG, "checkPostsFetched: starting getPosts as we ran into error - " + field);
+                                    getPosts(field, completed);
+                                }
+                                if (elapsedDays > currentDay) {
+                                    Log.d(TAG, "checkPostsFetched: starting getPosts local database is outdated - " + field);
+                                    getPosts(field, completed);
+                                } else {
+                                    if (field.equals(USER_DOMAIN)) {
+                                        displayPhotos();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onError(Exception ex) {
+                                Log.d(TAG, "onError: SNTPClient fetching TopUsers from shared Preferences" + ex.getMessage());
+                                Log.d(TAG, "checkPostsFetched: starting getPosts as we ran into error - " + field);
+                                getPosts(field, completed);
+                            }
+                        });
+                    }
+                }
+            }
+        }
+        displayPhotos();
     }
 
     private void createTopDatabase(String field, int completed) {
@@ -720,6 +790,8 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                                                                             mEditor.putString(firstField + "_fieldLastFetched", currentTimeSTamp);
                                                                                             mEditor.putStringSet(firstField + "_TopUsers", set);
                                                                                             mEditor.apply();
+                                                                                            if (firstField.equals(USER_DOMAIN))
+                                                                                                checkPostsFetched();
                                                                                             Log.d(TAG, "fetchTopUsers: total users added - " + mTopUsersList.size());
                                                                                         }
 
@@ -797,78 +869,8 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         });
     }
 
-    private void checkPostsFetched() {
-        Log.d(TAG, "checkPostsFetched: started");
-        String[] fields = {"Overall", USER_DOMAIN};
-        if (USER_DOMAIN == null) getUserDomain();
-        for (String field : fields) {
-            Gson gson = new Gson();
-            String previousTimeStamp = mPreferences.getString(field + "_PostsLastUpdated", null);
-            String json = mPreferences.getString(field + "_TopPosts", null);
-            Set<String> set = mPreferences.getStringSet(field + "_TopUsers", null);
-            int completed = mPreferences.getInt(field + "_completed", 0);
-            if (set == null) {
-                handler.postDelayed(this::checkPostsFetched, RETRY_DURATION);
-            } else {
-                handler.removeCallbacks(this::checkPostsFetched);
-                if (json == null || previousTimeStamp == null || previousTimeStamp.equals("")) {
-                    Log.d(TAG, "checkPostsFetched: starting getPosts as previous timestamp is null - " + field);
-                    getPosts(field, completed);
-                } else {
-                    if (completed < set.size()) getPosts(field, completed);
-                    else {
-                        SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
-                            @Override
-                            public void onTimeReceived(String currentTimeStamp) {
-                                int currentYear = Integer.parseInt(currentTimeStamp.substring(0, 4));
-                                int currentMonth = Integer.parseInt(currentTimeStamp.substring(5, 7));
-                                int currentDate = Integer.parseInt(currentTimeStamp.substring(8, 10));
-//                                String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
-                                String currentDateFormat = currentDate + "/" + currentMonth + "/" + currentYear;
-                                Date date = new Date(currentDateFormat);
-                                int currentDay = date.getDay();
-                                int postedYear = Integer.parseInt(previousTimeStamp.substring(0, 4));
-                                int postedMonth = Integer.parseInt(previousTimeStamp.substring(5, 7));
-                                int postedDate = Integer.parseInt(previousTimeStamp.substring(8, 10));
-//                                String postedTime = previousTimeStamp.substring(12, previousTimeStamp.length() - 1);
-                                String postedDateFormat = postedDate + "/" + postedMonth + "/" + postedYear;
-                                @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
-                                long elapsedDays = 0;
-                                try {
-                                    Date date1 = simpleDateFormat.parse(postedDateFormat);
-                                    Date date2 = simpleDateFormat.parse(currentDateFormat);
-                                    assert date1 != null;
-                                    assert date2 != null;
-                                    elapsedDays = (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24);
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                    Log.d(TAG, "checkPostsFetched: starting getPosts as we ran into error - " + field);
-                                    getPosts(field, completed);
-                                }
-                                if (elapsedDays > currentDay) {
-                                    Log.d(TAG, "checkPostsFetched: starting getPosts local database is outdated - " + field);
-                                    getPosts(field, completed);
-                                }
-                            }
-
-                            @Override
-                            public void onError(Exception ex) {
-                                Log.d(TAG, "onError: SNTPClient fetching TopUsers from shared Preferences" + ex.getMessage());
-                                Log.d(TAG, "checkPostsFetched: starting getPosts as we ran into error - " + field);
-                                getPosts(field, completed);
-                            }
-                        });
-                    }
-                }
-            }
-        }
-        displayPhotos();
-        Log.d(TAG, "checkPostsFetched: completed");
-    }
-
     private void getPosts(String field, int startingIndex) {
-        Log.d(TAG, "getPosts: started");
-        Log.d(TAG, "getPosts: field " + field);
+        Log.d(TAG, "getPosts: started for field - " + field);
         Set<String> set = mPreferences.getStringSet(field + "_TopUsers", null);
         if (set == null) {
         } else {
@@ -882,7 +884,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 }.getType();
                 fieldPhotos = gson.fromJson(json, type);
             }
-            Log.d(TAG, "getPosts: photos of size " + fieldPhotos.size() + " for users " + set.size());
+            Log.d(TAG, "getPosts: found photos of size " + fieldPhotos.size() + " for users " + set.size());
             SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
                 @Override
                 public void onTimeReceived(String currentTimeSTamp) {
@@ -901,7 +903,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                             Log.d(TAG, "photo.getPi()" + photo.getPi());
                                             boolean exists = false;
                                             Log.d(TAG, "onDataChange: photo size" + fieldPhotos.size());
-                                            Log.d(TAG, "onDataChange: photo photo" + photo.getPi());
+                                            Log.d(TAG, "onDataChange: photo photo" + photo.getIp());
                                             for (Photo existingPhoto : fieldPhotos) {
                                                 if (photo.equals(existingPhoto)) {
                                                     exists = true;
@@ -918,6 +920,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                         mEditor.putInt(field + "_completed", mTopUsersList.size());
                                     else mEditor.putInt(field + "_completed", finalI);
                                     mEditor.apply();
+                                    displayPhotos();
                                     Log.d(TAG, "getPosts: uploading " + fieldPhotos.size() + " photos for " + field);
                                 }
                             }
@@ -1034,10 +1037,10 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             if (adapterGridImage != null) adapterGridImage.notifyDataSetChanged();
             Gson gson = new Gson();
             String json = mPreferences.getString(field + "_TopPosts", null);
-            if (json == null || json.equals(""))
-                handler.postDelayed(this::displayPhotos, RETRY_DURATION);
-            else {
-                handler.removeCallbacksAndMessages(this);
+            if (json == null || json.equals("")) {
+//                handler.postDelayed(this::displayPhotos, RETRY_DURATION);
+            } else {
+//                handler.removeCallbacksAndMessages(this);
                 Type type = new TypeToken<List<Photo>>() {
                 }.getType();
                 fieldPhotos = gson.fromJson(json, type);
@@ -1121,7 +1124,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     }
 
     private void fetchPhotos() {
-        Log.d(TAG, "displayPhotos: field" + fieldPhotos);
+        Log.d(TAG, "fetchPhotos: fetching photos 0f - " + fieldPhotos.size());
         try {
             if (fieldPhotos.size() != 0) {
                 runOnUiThread(() -> findViewById(R.id.noPost).setVisibility(View.GONE));
