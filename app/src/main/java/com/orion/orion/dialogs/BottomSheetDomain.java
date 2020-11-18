@@ -13,6 +13,7 @@ import com.orion.orion.R;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,13 +28,15 @@ public class BottomSheetDomain extends BottomSheetDialogFragment implements Adap
     RecyclerView domainRv;
     List<String> tags;
     boolean fromExplore;
+    String USER_DOMAIN;
 
     public BottomSheetDomain() {
         fromExplore = false;
     }
 
-    public BottomSheetDomain(boolean fromExplore) {
+    public BottomSheetDomain(boolean fromExplore, String USER_DOMAIN) {
         this.fromExplore = fromExplore;
+        this.USER_DOMAIN = USER_DOMAIN;
     }
 
     @Nullable
@@ -47,8 +50,14 @@ public class BottomSheetDomain extends BottomSheetDialogFragment implements Adap
 
         domainRv.setLayoutManager(linearLayoutManager1);
 
-        tags = Arrays.asList(getResources().getStringArray(R.array.domain2));
-        if (!fromExplore) tags = tags.subList(1, tags.size());
+        if (fromExplore) {
+            tags = new ArrayList<>();
+            tags.add("Overall");
+            tags.add(USER_DOMAIN);
+        } else {
+            tags = Arrays.asList(getResources().getStringArray(R.array.domain2));
+            tags = tags.subList(1, tags.size());
+        }
         AdapterDomain adapterDomain = new AdapterDomain(getContext(), tags, this);
         domainRv.setAdapter(adapterDomain);
         return v;
@@ -67,7 +76,7 @@ public class BottomSheetDomain extends BottomSheetDialogFragment implements Adap
     @Override
     public void onItemClick(int position) {
         mListener.onButtonClicked(tags.get(position));
-        Log.d(TAG, "DOMAIN: "+tags.get(position));
+        Log.d(TAG, "DOMAIN: " + tags.get(position));
         dismiss();
     }
 

@@ -91,8 +91,8 @@ public class FollowingFragment extends Fragment {
                     }
                 } else {
                     swipeRefreshLayout.setRefreshing(false);
-                    noList.setText("LOOKS LIKE YOU ARE NOT A FAN OF ANYONE ¯\\_(ツ)_/¯");
                     noList.setVisibility(View.VISIBLE);
+                    noList.setText("LOOKS LIKE YOU ARE NOT A FAN OF ANYONE ¯\\_(ツ)_/¯");
                 }
             }
 

@@ -36,6 +36,7 @@ import com.bumptech.glide.Glide;
 import com.google.common.reflect.TypeToken;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -130,6 +131,10 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser mUser;
 
+    //domain
+    private BottomSheetDomain bottomSheetDomain;
+    private String USER_DOMAIN;
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -146,6 +151,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         Log.d(TAG, "onCreate: started.");
         setContentView(R.layout.activity_explore);
         setupFirebaseAuth();
+        getUserDomain();
         initWidgets();
         initOnClickListeners();
         setupBottomNavigationView();
@@ -154,31 +160,33 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         getTop8();
         checkTopDatabase();
 
-        exploreRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 
-                super.onScrollStateChanged(recyclerView, newState);
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (paginatedPhotos.size() < fieldPhotos.size()) displayMorePhotos();
-                } else if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    Log.d(TAG, "onScrollStateChanged: top");
-//                    if(collapse.getVisibility()!=View.VISIBLE) exploreRv.post(() -> expand(collapse, TOTAL_USER_SIZE));
-                }
+    }
+
+    private void getUserDomain() {
+        Query query = FirebaseDatabase.getInstance().getReference()
+                .child(getString(R.string.dbname_users))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(getString(R.string.field_domain));
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    USER_DOMAIN = (String) snapshot.getValue();
+                    bottomSheetDomain = new BottomSheetDomain(true, USER_DOMAIN);
+                    checkLastFetched();
+                } else
+                    Toast.makeText(mContext, "Unable to find Your domain", Toast.LENGTH_LONG).show();
             }
 
             @Override
-            public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) {
-                    // Recycle view scrolling down...
-                    Log.d(TAG, "onScrolled: down");
-                    if (collapse.getVisibility() == View.VISIBLE) ;
-//                        exploreRv.post(() -> expand(collapse, TOTAL_USER_SIZE));
-                }
+            public void onCancelled(@NonNull DatabaseError error) {
+                FirebaseCrashlytics.getInstance().log("Error finding USER_DOMAIN Leaderboard" + error.getMessage());
+                Log.e(TAG, "Error finding USER_DOMAIN Leaderboard" + error.getMessage());
+                Log.d(TAG, "Error: fetching again");
+                getUserDomain();
             }
         });
-        swipeRefreshLayout.setOnRefreshListener(this::displayPhotos);
-        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
     }
 
     @SuppressLint("CommitPrefEdits")
@@ -211,6 +219,22 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         up = findViewById(R.id.up);
         down = findViewById(R.id.down);
 
+        View v = collapse;
+        prevHeight = v.getHeight();
+        Log.d(TAG, "initWidgets: " + prevHeight + "  " + dummyHeight);
+        height = 0;
+        GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 2);
+        linearLayoutManager.setItemPrefetchEnabled(true);
+        linearLayoutManager.setInitialPrefetchItemCount(20);
+        exploreRv.setItemViewCacheSize(15);
+        exploreRv.setDrawingCacheEnabled(true);
+        exploreRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+        exploreRv.setLayoutManager(linearLayoutManager);
+    }
+
+    private void initOnClickListeners() {
+        Log.d(TAG, "initOnClickListeners: started");
+
         cross.setOnClickListener(view -> {
             mSearchParam.setText("");
             mUserList.clear();
@@ -227,24 +251,9 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             collapse(collapse, 1000, dummyHeight);
         });
 
-        View v = collapse;
-        prevHeight = v.getHeight();
-        Log.d(TAG, "initWidgets: " + prevHeight + "  " + dummyHeight);
-        height = 0;
-        GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 2);
-        linearLayoutManager.setItemPrefetchEnabled(true);
-        linearLayoutManager.setInitialPrefetchItemCount(20);
-        exploreRv.setItemViewCacheSize(15);
-        exploreRv.setDrawingCacheEnabled(true);
-        exploreRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
-        exploreRv.setLayoutManager(linearLayoutManager);
-    }
-
-    private void initOnClickListeners() {
-        Log.d(TAG, "initOnClickListeners: started");
         spinner.setOnClickListener(v -> {
-            BottomSheetDomain bottomSheetDomain = new BottomSheetDomain(true);
-            bottomSheetDomain.show(getSupportFragmentManager(), "Domain Selection");
+            if (USER_DOMAIN == null) getUserDomain();
+            else bottomSheetDomain.show(getSupportFragmentManager(), "Domain Selection");
         });
         star1.setOnClickListener(v -> jumpToUser(user1));
         star2.setOnClickListener(v -> jumpToUser(user2));
@@ -254,6 +263,30 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         star6.setOnClickListener(v -> jumpToUser(user6));
         star7.setOnClickListener(v -> jumpToUser(user7));
         star8.setOnClickListener(v -> jumpToUser(user8));
+        exploreRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NotNull RecyclerView recyclerView, int newState) {
+
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (paginatedPhotos.size() < fieldPhotos.size()) displayMorePhotos();
+                } else if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    Log.d(TAG, "onScrollStateChanged: top");
+//                    if(collapse.getVisibility()!=View.VISIBLE) exploreRv.post(() -> expand(collapse, TOTAL_USER_SIZE));
+                }
+            }
+
+            @Override
+            public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    Log.d(TAG, "onScrolled: down");
+                    if (collapse.getVisibility() == View.VISIBLE) ;
+//                        exploreRv.post(() -> expand(collapse, TOTAL_USER_SIZE));
+                }
+            }
+        });
+        swipeRefreshLayout.setOnRefreshListener(this::displayPhotos);
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
         Log.d(TAG, "initOnClickListeners: completed");
     }
 
@@ -265,7 +298,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             startActivity(i);
         }
     }
-
 
     public void collapse(final View v, int duration, int targetHeight) {
         final boolean expand = v.getVisibility() != View.VISIBLE;
@@ -403,7 +435,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                             //the week has changed
                             if (elapsedDays > currentDay) {
                                 for (String field : fields) {
-                                    reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue("0/SET_SIZE_DOMAIN");
+                                    reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue("0/300");
                                     createTopDatabase(field, 0);
                                 }
                             } else for (String field : fields)
@@ -414,7 +446,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                     if (str.equals("")) createTopDatabase(field, 0);
                                     else {
                                         if (!str.equals("300/300")) {
-                                            Log.d(TAG, "checkTopDatabase: field" + field);
                                             int index = str.indexOf("/");
                                             if (index != -1) createTopDatabase(field, 0);
                                             else {
@@ -424,6 +455,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                         }
                                     }
                                 }
+
                         }
                         reference.child(getString(R.string.db_topUsersParams)).child(getString(R.string.field_last_updated_topUsers)).setValue(currentTimeStamp);
                         checkLastFetched();
@@ -446,70 +478,73 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
 
     private void checkLastFetched() {
         Log.d(TAG, "checkLastFetched: started");
-        String[] fields = getResources().getStringArray(R.array.domain2);
-        for (String field : fields) {
-            String previousTimeStamp = mPreferences.getString(field + "_fieldLastFetched", null);
-            Log.d(TAG, "checkLastFetched: field " + field);
-            if (previousTimeStamp == null || previousTimeStamp.equals("")) {
-                Log.d(TAG, "checkLastFetched: starting fetching users as previousTimeStamp is null or not found" + field);
-                String firstField = "Overall";
-                if (field.equals("Overall")) fetchTopUsers(field, "");
-                else fetchTopUsers(field, firstField);
-            } else {
-                SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
-                    @Override
-                    public void onTimeReceived(String currentTimeStamp) {
-                        int currentYear = Integer.parseInt(currentTimeStamp.substring(0, 4));
-                        int currentMonth = Integer.parseInt(currentTimeStamp.substring(5, 7));
-                        int currentDate = Integer.parseInt(currentTimeStamp.substring(8, 10));
+        if (USER_DOMAIN == null) getUserDomain();
+        else {
+            String[] fields = {"Overall", USER_DOMAIN};
+            for (String field : fields) {
+                String previousTimeStamp = mPreferences.getString(field + "_fieldLastFetched", null);
+                if (previousTimeStamp == null || previousTimeStamp.equals("")) {
+                    Log.d(TAG, "checkLastFetched: starting fetching users as previousTimeStamp is null or not found - " + field);
+                    String firstField = "Overall";
+                    if (field.equals("Overall")) fetchTopUsers(field, "");
+                    else fetchTopUsers(field, firstField);
+                } else {
+                    SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
+                        @Override
+                        public void onTimeReceived(String currentTimeStamp) {
+                            int currentYear = Integer.parseInt(currentTimeStamp.substring(0, 4));
+                            int currentMonth = Integer.parseInt(currentTimeStamp.substring(5, 7));
+                            int currentDate = Integer.parseInt(currentTimeStamp.substring(8, 10));
 //                        String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
-                        String currentDateFormat = currentDate + "/" + currentMonth + "/" + currentYear;
-                        Date date = new Date(currentDateFormat);
-                        int currentDay = date.getDay();
-                        int postedYear = Integer.parseInt(previousTimeStamp.substring(0, 4));
-                        int postedMonth = Integer.parseInt(previousTimeStamp.substring(5, 7));
-                        int postedDate = Integer.parseInt(previousTimeStamp.substring(8, 10));
+                            String currentDateFormat = currentDate + "/" + currentMonth + "/" + currentYear;
+                            Date date = new Date(currentDateFormat);
+                            int currentDay = date.getDay();
+                            int postedYear = Integer.parseInt(previousTimeStamp.substring(0, 4));
+                            int postedMonth = Integer.parseInt(previousTimeStamp.substring(5, 7));
+                            int postedDate = Integer.parseInt(previousTimeStamp.substring(8, 10));
 //                        String postedTime = previousTimeStamp.substring(12, previousTimeStamp.length() - 1);
-                        String postedDateFormat = postedDate + "/" + postedMonth + "/" + postedYear;
-                        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
-                        long elapsedDays = 0;
-                        try {
-                            Date date1 = simpleDateFormat.parse(postedDateFormat);
-                            Date date2 = simpleDateFormat.parse(currentDateFormat);
+                            String postedDateFormat = postedDate + "/" + postedMonth + "/" + postedYear;
+                            @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
+                            long elapsedDays = 0;
+                            try {
+                                Date date1 = simpleDateFormat.parse(postedDateFormat);
+                                Date date2 = simpleDateFormat.parse(currentDateFormat);
 //                            Log.d(TAG, "checkLastFetched: date1 " + date1);
 //                            Log.d(TAG, "checkLastFetched: date2 " + date2);
-                            assert date1 != null;
-                            assert date2 != null;
-                            elapsedDays = (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24);
+                                assert date1 != null;
+                                assert date2 != null;
+                                elapsedDays = (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24);
 //                            Log.d(TAG, "checkLastFetched:elapsedDays" + elapsedDays);
 //                            Log.d(TAG, "checkLastFetched:currentDay" + currentDay);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                            String firstField = "Overall";
-                            fetchTopUsers(field, firstField);
-                            if (field.equals("Overall"))
-                                fetchTopUsers(field, "");
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                                Log.d(TAG, "checkLastFetched: starting fetching users as we ran into error finding timestamp - " + field);
+                                String firstField = "Overall";
+                                fetchTopUsers(field, firstField);
+                                if (field.equals("Overall"))
+                                    fetchTopUsers(field, "");
+                            }
+                            if (elapsedDays > currentDay) {
+                                Log.d(TAG, "checkLastFetched: starting fetching users as database is of last week - " + field);
+                                String firstField = "Overall";
+                                if (field.equals("Overall")) fetchTopUsers(field, "");
+                                else fetchTopUsers(field, firstField);
+                            }
                         }
-                        if (elapsedDays > currentDay) {
+
+                        @Override
+                        public void onError(Exception ex) {
+                            Log.d(TAG, "onError: SNTPClient fetching TopUsers from shared Preferences" + ex.getMessage());
+                            Log.d(TAG, "fetching again");
                             String firstField = "Overall";
                             if (field.equals("Overall")) fetchTopUsers(field, "");
                             else fetchTopUsers(field, firstField);
                         }
-                    }
-
-                    @Override
-                    public void onError(Exception ex) {
-                        Log.d(TAG, "onError: SNTPClient fetching TopUsers from shared Preferences" + ex.getMessage());
-                        Log.d(TAG, "fetching again");
-                        String firstField = "Overall";
-                        if (field.equals("Overall")) fetchTopUsers(field, "");
-                        else fetchTopUsers(field, firstField);
-                    }
-                });
+                    });
+                }
             }
+            checkPostsFetched();
         }
-        checkPostsFetched();
-        Log.d(TAG, "checkLastFetched: completed");
     }
 
     private void createTopDatabase(String field, int completed) {
@@ -581,16 +616,16 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 //adding the list fetched to database
                 for (int i = completed; i < SET_SIZE_DOMAIN; i++) {
                     if (mList.size() == 0) {
-                        reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue("SET_SIZE_DOMAIN/SET_SIZE_DOMAIN");
+                        reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue("300/300");
                     }
                     String value = "";
                     if (i < mList.size()) {
                         value = mList.get(i).getUi();
                         Log.d(TAG, "createTopDatabase: key, value" + (i + 1) + ", " + value);
                         reference.child(getString(R.string.db_topUsersParams)).child(field).child(String.valueOf(i + 1)).setValue(value);
-                        reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue((i + 1) + "/SET_SIZE_DOMAIN");
+                        reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue((i + 1) + "/300");
                         if (i == mList.size() - 1) {
-                            reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue("SET_SIZE_DOMAIN/SET_SIZE_DOMAIN");
+                            reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue("300/300");
                             break;
                         }
                     }
@@ -605,8 +640,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     }
 
     private void fetchTopUsers(String firstField, String secondField) {
-        Log.d(TAG, "fetchTopUsers: started");
-        Log.d(TAG, "fetchTopUsers: field " + firstField + "," + secondField);
+        Log.d(TAG, "fetchTopUsers: started for fields " + firstField + "," + secondField);
         ArrayList<String> mTopUsersList = new ArrayList<>();
         Query query = reference.child(getString(R.string.db_topUsersParams)).child(firstField);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -618,16 +652,10 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                         String userID = String.valueOf(singleSnapshot.getValue());
                         assert key != null;
                         if (!key.equals(getString(R.string.field_completed))) {
-                            if (!userID.equals("") && !mTopUsersList.contains(userID)) {
+                            if (!userID.equals("") && !mTopUsersList.contains(userID) && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userID))
                                 mTopUsersList.add(userID);
-                                Log.d(TAG, "onDataChange: adding first" + firstField + " : " + mTopUsersList.size());
-                            }
                         } else {
-////                            Log.d(TAG, "fetchTopUsers: no.of users added from primary db mTopUsersList.size() - " + mTopUsersList.size());
-//                            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-//                            assert currentUser != null;
-//                            String currentUserID = currentUser.getUid();
-////                            Log.d(TAG, "fetchTopUsers: currentUserID - " + currentUserID);
+                            Log.d(TAG, "fetchTopUsers: users added by first field - " + mTopUsersList.size());
                             Query query1 = reference.child(getString(R.string.dbname_leaderboard)).child(mUser.getUid());
                             query1.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -638,7 +666,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                         int currentUserRating = (int) (long) snapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_post)).getValue()
                                                 + (int) (long) snapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).getValue()
                                                 + (int) (long) snapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
-                                        Log.d(TAG, "fetchTopUsers: currentUserCity : currentUserRating - " + currentUserCity + " : " + currentUserRating);
+                                        Log.d(TAG, "fetchTopUsers: location - " + currentUserCity + " : " + currentUserRating);
                                         Query query11 = reference.child(getString(R.string.dbname_leaderboard));
                                         query11.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
@@ -647,18 +675,13 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                                     for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
                                                         String userID = singleSnapshot.getKey();
                                                         String userCity = String.valueOf(singleSnapshot.child(getString(R.string.field_last_known_location)).child(getString(R.string.field_city)).getValue());
-//                                                        Log.d(TAG, "fetchTopUsers: userID : userCity - " + userID + " : " + userCity);
                                                         assert userID != null;
                                                         if (!userID.equals(mUser.getUid()) && userCity.equals(currentUserCity) && !mTopUsersList.contains(userID)) {
-//                                                            int userRating = (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_post)).getValue()
-//                                                                    + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).getValue()
-//                                                                    + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
-//                                                            Log.d(TAG, "fetchTopUsers: userID : userCity : - " + userID + " : " + userCity + " : " + userRating);
-                                                            mTopUsersList.add(userID);
-                                                            Log.d(TAG, "onDataChange: adding location" + firstField + " : " + mTopUsersList.size());
+                                                            if (!userID.equals("") && !mTopUsersList.contains(userID) && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userID))
+                                                                mTopUsersList.add(userID);
                                                         }
                                                     }
-                                                    Log.d(TAG, "fetchTopUsers: no.of users added from location db mTopUsersList.size() - " + mTopUsersList.size());
+                                                    Log.d(TAG, "fetchTopUsers: users added via location - " + mTopUsersList.size());
 
 
                                                     if (mTopUsersList.size() < TOTAL_USER_SIZE) {
@@ -668,7 +691,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                                 if (snapshot.exists()) {
                                                                     String domain = String.valueOf(snapshot.getValue());
-                                                                    Log.d(TAG, "fetchTopUsers: domain" + domain);
                                                                     if (!domain.equals("")) {
                                                                         if (!secondField.equals(""))
                                                                             domain = secondField;
@@ -681,29 +703,24 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                                                                         String key = singleSnapshot.getKey();
                                                                                         String userID = String.valueOf(singleSnapshot.getValue());
                                                                                         assert key != null;
-                                                                                        Log.d(TAG, "onDataChange: adding left" + firstField + " : " + mTopUsersList);
-
                                                                                         if (!key.equals(getString(R.string.field_completed))) {
                                                                                             if (!userID.equals("") && !mTopUsersList.contains(userID)) {
-                                                                                                Log.d(TAG, "onDataChange: adding left" + firstField + " : " + mTopUsersList);
-                                                                                                mTopUsersList.add(userID);
+                                                                                                Log.d(TAG, "fetchTopUsers: adding left" + firstField + " : " + mTopUsersList);
+                                                                                                if (!userID.equals("") && !mTopUsersList.contains(userID) && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userID))
+                                                                                                    mTopUsersList.add(userID);
                                                                                             }
                                                                                         }
                                                                                     }
-                                                                                    Log.d(TAG, "fetchTopUsers: no.of users added from secondary db mTopUsersList.size() - " + mTopUsersList.size());
+                                                                                    Log.d(TAG, "fetchTopUsers: users added via second field - " + mTopUsersList.size());
                                                                                     SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
                                                                                         @Override
                                                                                         public void onTimeReceived(String currentTimeSTamp) {
                                                                                             Set<String> set = new HashSet<>(mTopUsersList);
                                                                                             Log.d(TAG, "fetchTopUsers: adding set of " + set.size() + " on field " + firstField);
-//                                                                                            Log.d(TAG, "fetchTopUsers: adding finalDomain" + firstField);
-//                                                                                            Log.d(TAG, "fetchTopUsers: adding currentTimeSTamp" + currentTimeSTamp);
-//                                                                                            Log.d(TAG, "fetchTopUsers: set size" + set.size());
                                                                                             mEditor.putString(firstField + "_fieldLastFetched", currentTimeSTamp);
                                                                                             mEditor.putStringSet(firstField + "_TopUsers", set);
                                                                                             mEditor.apply();
-                                                                                            Log.d(TAG, "fetchTopUsers: fetch complete for field " + firstField + " staring posts fetch");
-//                                                                                            getPosts(firstField, 0);
+                                                                                            Log.d(TAG, "fetchTopUsers: total users added - " + mTopUsersList.size());
                                                                                         }
 
                                                                                         @Override
@@ -737,9 +754,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                                             public void onTimeReceived(String currentTimeSTamp) {
                                                                 Set<String> set = new HashSet<>(mTopUsersList);
                                                                 Log.d(TAG, "fetchTopUsers: adding set of " + set.size() + " on field " + firstField);
-//                                                                                            Log.d(TAG, "fetchTopUsers: adding finalDomain" + firstField);
-//                                                                                            Log.d(TAG, "fetchTopUsers: adding currentTimeSTamp" + currentTimeSTamp);
-//                                                                                            Log.d(TAG, "fetchTopUsers: set size" + set.size());
                                                                 mEditor.putString(firstField + "_fieldLastFetched", currentTimeSTamp);
                                                                 mEditor.putStringSet(firstField + "_TopUsers", set);
                                                                 mEditor.apply();
@@ -781,34 +795,26 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
 
             }
         });
-        Log.d(TAG, "fetchTopUsers: completed");
     }
 
     private void checkPostsFetched() {
         Log.d(TAG, "checkPostsFetched: started");
-        String[] fields = getResources().getStringArray(R.array.domain2);
+        String[] fields = {"Overall", USER_DOMAIN};
+        if (USER_DOMAIN == null) getUserDomain();
         for (String field : fields) {
-            Log.d(TAG, "checkPostsFetched: field " + field);
             Gson gson = new Gson();
             String previousTimeStamp = mPreferences.getString(field + "_PostsLastUpdated", null);
             String json = mPreferences.getString(field + "_TopPosts", null);
             Set<String> set = mPreferences.getStringSet(field + "_TopUsers", null);
             int completed = mPreferences.getInt(field + "_completed", 0);
-//            Log.d(TAG, "checkPostsFetched: set" + set);
-//            Log.d(TAG, "checkPostsFetched: json" + json);
-//            Log.d(TAG, "checkPostsFetched: previousTimeStamp" + previousTimeStamp);
-//            Log.d(TAG, "checkPostsFetched: completed - " + completed+" of "+set.size());
             if (set == null) {
-//                if (field.equals("Overall")) fetchTopUsers(field, "");
-//                else fetchTopUsers(field, "Overall");
                 handler.postDelayed(this::checkPostsFetched, RETRY_DURATION);
             } else {
-                handler.removeCallbacksAndMessages(this);
-                if (json == null || previousTimeStamp == null || previousTimeStamp.equals(""))
+                handler.removeCallbacks(this::checkPostsFetched);
+                if (json == null || previousTimeStamp == null || previousTimeStamp.equals("")) {
+                    Log.d(TAG, "checkPostsFetched: starting getPosts as previous timestamp is null - " + field);
                     getPosts(field, completed);
-                else {
-//                Type type = new TypeToken<List<Photo>>() {}.getType();
-//                ArrayList<Photo> fieldPhotos = gson.fromJson(json, type);
+                } else {
                     if (completed < set.size()) getPosts(field, completed);
                     else {
                         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
@@ -831,24 +837,24 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                 try {
                                     Date date1 = simpleDateFormat.parse(postedDateFormat);
                                     Date date2 = simpleDateFormat.parse(currentDateFormat);
-//                                    Log.d(TAG, "checkPostsFetched: date1 " + date1);
-//                                    Log.d(TAG, "checkPostsFetched: date1 " + date2);
                                     assert date1 != null;
                                     assert date2 != null;
                                     elapsedDays = (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24);
-//                                    Log.d(TAG, "checkPostsFetched: elapsedDays " + elapsedDays);
-//                                    Log.d(TAG, "checkPostsFetched: currentDay " + currentDay);
                                 } catch (ParseException e) {
                                     e.printStackTrace();
+                                    Log.d(TAG, "checkPostsFetched: starting getPosts as we ran into error - " + field);
                                     getPosts(field, completed);
                                 }
-                                if (elapsedDays > currentDay) getPosts(field, completed);
+                                if (elapsedDays > currentDay) {
+                                    Log.d(TAG, "checkPostsFetched: starting getPosts local database is outdated - " + field);
+                                    getPosts(field, completed);
+                                }
                             }
 
                             @Override
                             public void onError(Exception ex) {
                                 Log.d(TAG, "onError: SNTPClient fetching TopUsers from shared Preferences" + ex.getMessage());
-                                Log.d(TAG, "fetching again");
+                                Log.d(TAG, "checkPostsFetched: starting getPosts as we ran into error - " + field);
                                 getPosts(field, completed);
                             }
                         });
@@ -865,10 +871,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         Log.d(TAG, "getPosts: field " + field);
         Set<String> set = mPreferences.getStringSet(field + "_TopUsers", null);
         if (set == null) {
-//            if (field.equals("Overall")) fetchTopUsers(field, "");
-//            else fetchTopUsers(field, "Overall");
-//            handler.postDelayed(() -> getPosts(field, startingIndex), RETRY_DURATION);
-//            RETRY_DURATION *= 2;
         } else {
             ArrayList<String> mTopUsersList = new ArrayList<>(set);
             Gson gson = new Gson();
@@ -886,7 +888,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 public void onTimeReceived(String currentTimeSTamp) {
                     for (int i = startingIndex; i < mTopUsersList.size(); i++) {
                         String userId = mTopUsersList.get(i);
-//                        Log.d(TAG, "checkPosts: fetching for index " + i + " and userId " + userId);
+                        Log.d(TAG, "getPosts: fetching for index " + i + " and userId " + userId);
                         Query query = reference.child(getString(R.string.dbname_user_photos)).child(userId);
                         int finalI = i;
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -896,6 +898,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                     for (DataSnapshot singleSnapshot : snapshot.getChildren())
                                         if (singleSnapshot.exists()) {
                                             Photo photo = singleSnapshot.getValue(Photo.class);
+                                            Log.d(TAG, "photo.getPi()" + photo.getPi());
                                             boolean exists = false;
                                             Log.d(TAG, "onDataChange: photo size" + fieldPhotos.size());
                                             Log.d(TAG, "onDataChange: photo photo" + photo.getPi());
@@ -907,10 +910,8 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                             }
                                             if (!exists) fieldPhotos.add(photo);
                                         }
-//                                Log.d(TAG, "getPosts: currentTimeSTamp" + currentTimeSTamp);
                                     Gson gson = new Gson();
                                     String json = gson.toJson(fieldPhotos);
-//                                Log.d(TAG, "onDataChange: " + json);
                                     mEditor.putString(field + "_PostsLastUpdated", currentTimeSTamp);
                                     mEditor.putString(field + "_TopPosts", json);
                                     if (finalI == mTopUsersList.size() - 1)
@@ -1042,7 +1043,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 fieldPhotos = gson.fromJson(json, type);
                 Log.d(TAG, "displayPhotos: photos retrieved " + fieldPhotos.size());
                 Query query = reference.child(getString(R.string.explore_update));
-                String finalField = field;
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -1071,13 +1071,9 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                     try {
                                         Date date1 = simpleDateFormat.parse(postedDateFormat);
                                         Date date2 = simpleDateFormat.parse(currentDateFormat);
-//                                    Log.d(TAG, "checkPostsFetched: date1 " + date1);
-//                                    Log.d(TAG, "checkPostsFetched: date1 " + date2);
                                         assert date1 != null;
                                         assert date2 != null;
                                         elapsedDays = (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24);
-//                                    Log.d(TAG, "checkPostsFetched: elapsedDays " + elapsedDays);
-//                                    Log.d(TAG, "checkPostsFetched: currentDay " + currentDay);
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                         fetchPhotos();
@@ -1096,12 +1092,11 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                         Log.d(TAG, "displayPhotos: " + fieldPhotos2.size());
                                         Gson gson = new Gson();
                                         String json = gson.toJson(fieldPhotos2);
-//                                Log.d(TAG, "onDataChange: " + json);
-                                        mEditor.putString(finalField + "_PostsLastUpdated", currentTimeStamp);
-                                        mEditor.putString(finalField + "_TopPosts", json);
-                                        mEditor.putInt(finalField + "_completed", fieldPhotos2.size());
+                                        mEditor.putString(field + "_PostsLastUpdated", currentTimeStamp);
+                                        mEditor.putString(field + "_TopPosts", json);
+                                        mEditor.putInt(field + "_completed", fieldPhotos2.size());
                                         mEditor.apply();
-                                        Log.d(TAG, "displayPhotos: uploading after deletion" + fieldPhotos2.size() + " photos for " + finalField);
+                                        Log.d(TAG, "displayPhotos: uploading after deletion" + fieldPhotos2.size() + " photos for " + field);
                                     }
                                     fetchPhotos();
                                 }
@@ -1138,7 +1133,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 for (int i = 0; i < fieldPhotos.size(); i++) {
                     if (i == fieldPhotos.size() - 1 || i == 8) {
                         Log.d(TAG, "displayPhotos: paginatedPhotos" + paginatedPhotos.size());
-                        adapterGridImage = new AdapterGridImageExplore(mContext, paginatedPhotos, this::onItemClick);
+                        adapterGridImage = new AdapterGridImageExplore(mContext, paginatedPhotos, this);
                         ((SimpleItemAnimator) exploreRv.getItemAnimator()).setSupportsChangeAnimations(false);
                         swipeRefreshLayout.setRefreshing(false);
                         adapterGridImage.setHasStableIds(true);

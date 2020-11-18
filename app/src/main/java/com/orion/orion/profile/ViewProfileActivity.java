@@ -210,7 +210,6 @@ public class ViewProfileActivity extends AppCompatActivity {
                 editor.putString("fl", json);
                 editor.apply();
 
-
 //              update following list
                 json = sp.getString("removefollowing", null);
                 type = new TypeToken<ArrayList<String>>() {
@@ -257,7 +256,6 @@ public class ViewProfileActivity extends AppCompatActivity {
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_follower)).child(mUser).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_users)).child(mUser).child(getString(R.string.changedFollowers)).setValue("true");
                 mFollow.setText("Follow");
-
             } else {
 //               addfollowing list
                 isFollowing = true;

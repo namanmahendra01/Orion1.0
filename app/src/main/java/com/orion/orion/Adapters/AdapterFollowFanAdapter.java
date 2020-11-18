@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -92,7 +91,6 @@ public class AdapterFollowFanAdapter extends RecyclerView.Adapter<AdapterFollowF
         } else holder.removeButton.setVisibility(View.GONE);
         holder.username.setText(itemFollow.getUsername());
         holder.followButton.setOnClickListener(v -> {
-            Toast.makeText(mContext, "Button Clicked", Toast.LENGTH_LONG).show();
             //unfollowing
             if (itemFollow.isFollowing()) {
                 myRef.child(mContext.getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(itemFollow.getUserId()).removeValue();
