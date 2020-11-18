@@ -243,7 +243,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     private void initOnClickListeners() {
         Log.d(TAG, "initOnClickListeners: started");
         spinner.setOnClickListener(v -> {
-            BottomSheetDomain bottomSheetDomain = new BottomSheetDomain();
+            BottomSheetDomain bottomSheetDomain = new BottomSheetDomain(true);
             bottomSheetDomain.show(getSupportFragmentManager(), "Domain Selection");
         });
         star1.setOnClickListener(v -> jumpToUser(user1));
@@ -897,6 +897,8 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                         if (singleSnapshot.exists()) {
                                             Photo photo = singleSnapshot.getValue(Photo.class);
                                             boolean exists = false;
+                                            Log.d(TAG, "onDataChange: photo size" + fieldPhotos.size());
+                                            Log.d(TAG, "onDataChange: photo photo" + photo.getPi());
                                             for (Photo existingPhoto : fieldPhotos) {
                                                 if (photo.equals(existingPhoto)) {
                                                     exists = true;

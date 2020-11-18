@@ -244,7 +244,7 @@
 
     </string-array>
     <string-array name="domain2">
-        <item>All</item>
+        <item>Overall</item>
         <item>Speaker</item>
         <item>Chef</item>
         <item>Cinematographer</item>

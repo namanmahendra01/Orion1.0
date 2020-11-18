@@ -88,7 +88,21 @@ public class FansFragment extends Fragment {
                         ItemFollow itemFollow = new ItemFollow();
                         itemFollow.setUserId(singleSnapshot.getKey());
                         itemFollow.setFan(true);
-                        addToList(itemFollow);
+                        Query query1 = myRef.child(getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(itemFollow.getUserId());
+                        query1.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) itemFollow.setFollowing(true);
+                                addToList(itemFollow);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                swipeRefreshLayout.setRefreshing(false);
+                                noList.setText("LOOKS LIKE WE RAN INTO ISSUE ¯\\_(ツ)_/¯");
+                                noList.setVisibility(View.VISIBLE);
+                            }
+                        });
                     }
                 } else {
                     swipeRefreshLayout.setRefreshing(false);

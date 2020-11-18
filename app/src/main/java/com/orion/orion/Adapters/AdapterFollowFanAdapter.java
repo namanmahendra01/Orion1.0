@@ -85,8 +85,8 @@ public class AdapterFollowFanAdapter extends RecyclerView.Adapter<AdapterFollowF
                 myRef.child(mContext.getString(R.string.dbname_follower)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(itemFollow.getUserId()).removeValue();
                 myRef.child(mContext.getString(R.string.dbname_following)).child(itemFollow.getUserId()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
                 myRef.child(mContext.getString(R.string.dbname_users)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mContext.getString(R.string.changedFollowers)).setValue("true");
-                myRef.child(mContext.getString(R.string.dbname_users)).child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .child(mContext.getString(R.string.field_removed_Follower)).child(itemFollow.getUserId()).setValue(true);
+                myRef.child(mContext.getString(R.string.dbname_users)).child(itemFollow.getUserId()).child(mContext.getString(R.string.field_unfollowed_Me))
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
                 holder.removeButton.setVisibility(View.GONE);
             });
         } else holder.removeButton.setVisibility(View.GONE);

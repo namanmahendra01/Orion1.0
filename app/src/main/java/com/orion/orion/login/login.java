@@ -3,7 +3,6 @@ package com.orion.orion.login;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -23,11 +22,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,11 +30,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.orion.orion.R;
 import com.orion.orion.home.MainActivity;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class login extends AppCompatActivity {
     private static final String TAG = "activity_login";
@@ -59,7 +56,7 @@ public class login extends AppCompatActivity {
     private Button btnLogin;
     private TextView linkSignup;
     private TextView forgotPassword;
-    private String cameFromSignup="2";
+    private final String cameFromSignup = "2";
     Intent intent;
     String justRegistered;
 
@@ -77,11 +74,11 @@ public class login extends AppCompatActivity {
         Log.d(TAG, "onCreate: started.");
 
 //          Initialize SharedPreference variables
-        sp =getSharedPreferences("Login", Context.MODE_PRIVATE);
+        sp = getSharedPreferences("Login", Context.MODE_PRIVATE);
         gson = new Gson();
-        justRegistered=sp.getString("yes","");
+        justRegistered = sp.getString("yes", "");
 
-        Log.d(TAG, "onCreate: 333"+justRegistered);
+        Log.d(TAG, "onCreate: 333" + justRegistered);
 
         initializeWidgets();
         setupFirebaseAuth();
@@ -149,6 +146,8 @@ public class login extends AppCompatActivity {
                 mPassword.requestFocus();
             } else {
                 mProgressBar.setVisibility(View.VISIBLE);
+                mEmail.setFocusable(false);
+                mPassword.setFocusable(false);
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(login.this, task -> {
                     FirebaseUser user = mAuth.getCurrentUser();
                     if (task.isSuccessful()) {
@@ -173,7 +172,11 @@ public class login extends AppCompatActivity {
                                 new AlertDialog.Builder(mContext)
                                         .setTitle("Sorry")
                                         .setMessage("Email is not verified \n Check your email inbox")
-                                        .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss())
+                                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                                            dialog.dismiss();
+                                            mEmail.setFocusableInTouchMode(true);
+                                            mPassword.setFocusableInTouchMode(true);
+                                        })
                                         .show();
                                 mProgressBar.setVisibility(View.GONE);
                                 mAuth.signOut();
@@ -189,7 +192,11 @@ public class login extends AppCompatActivity {
                         new AlertDialog.Builder(mContext)
                                 .setTitle("Sorry")
                                 .setMessage("We ran into an error \n Please try again later")
-                                .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss())
+                                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                                    dialog.dismiss();
+                                    mEmail.setFocusableInTouchMode(true);
+                                    mPassword.setFocusableInTouchMode(true);
+                                })
                                 .show();
                         YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mEmail);
                         YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mPassword);
@@ -220,9 +227,9 @@ public class login extends AppCompatActivity {
                             (dialog, id) -> {
                                 // get user input and set it to result
                                 // edit text
-                                if (userInput.getText()!=null && userInput.getText().length()!=0){
+                                if (userInput.getText() != null && userInput.getText().length() != 0) {
                                     FirebaseAuth.getInstance().setLanguageCode("en"); // Set to English
-                                    FirebaseAuth.getInstance().getInstance().sendPasswordResetEmail(String.valueOf(userInput.getText()))
+                                    FirebaseAuth.getInstance().sendPasswordResetEmail(String.valueOf(userInput.getText()))
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
@@ -243,7 +250,7 @@ public class login extends AppCompatActivity {
 
                                                 }
                                             });
-                                }else{
+                                } else {
                                     Toast.makeText(mContext, "Please enter Something!", Toast.LENGTH_LONG).show();
 
                                 }
