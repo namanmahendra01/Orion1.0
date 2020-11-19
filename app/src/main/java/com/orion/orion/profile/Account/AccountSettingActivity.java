@@ -1,5 +1,6 @@
 package com.orion.orion.profile.Account;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.R;
+import com.orion.orion.WebViewActivity;
 import com.orion.orion.login.login;
 import com.orion.orion.profile.Account.FanFolllowing.FanFollowList;
 import com.orion.orion.util.BottomNaavigationViewHelper;
@@ -54,9 +56,9 @@ public class AccountSettingActivity extends AppCompatActivity {
         setupSettingList();
         backarrow.setOnClickListener(v -> finish());
         Log.d(TAG, "onCreate: started");
-
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void setupSettingList() {
         ArrayList<String> options = new ArrayList<>();
         options.add(getString(R.string.edit_profile));
@@ -71,6 +73,7 @@ public class AccountSettingActivity extends AppCompatActivity {
         options.add(getString(R.string.sign_out));//fragment 1
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, options);
         listview.setAdapter((adapter));
+        Intent redirect = new Intent(mContext, WebViewActivity.class);
         listview.setOnItemClickListener((parent, view, position, id) -> {
             switch (position) {
                 case 0:
@@ -98,16 +101,18 @@ public class AccountSettingActivity extends AppCompatActivity {
                     startActivity(i2);
                     break;
                 case 6:
-                    String url3 = getString(R.string.Privacy_Policy);
-                    Intent i3 = new Intent(Intent.ACTION_VIEW);
-                    i3.setData(Uri.parse(url3));
-                    startActivity(i3);
+                    redirect.putExtra("url", getString(R.string.Privacy_Policy));
+                    startActivity(redirect);
                     break;
                 case 7:
-                    String url4 =getString(R.string.Terms_and_Condition);
-                    Intent i4 = new Intent(Intent.ACTION_VIEW);
-                    i4.setData(Uri.parse(url4));
-                    startActivity(i4);
+                    redirect.putExtra("url", getString(R.string.Terms_and_Condition));
+                    startActivity(redirect);
+
+//                    String url4 =getString(R.string.Terms_and_Condition);
+//                    Intent i4 = new Intent(Intent.ACTION_VIEW);
+//                    i4.setData(Uri.parse(url4));
+//                    startActivity(i4);
+
                     break;
                 case 8:
                     startActivity(new Intent(mContext, About.class));

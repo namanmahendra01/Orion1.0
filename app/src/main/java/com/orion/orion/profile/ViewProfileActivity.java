@@ -1,5 +1,6 @@
 package com.orion.orion.profile;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -100,6 +101,9 @@ public class ViewProfileActivity extends AppCompatActivity {
     private TextView mCreations;
     private TextView mParticipation;
 
+    private TextView judges;
+    private TextView gp;
+
     private TextView mDisplayName;
     private TextView mDescription;
     private TextView mLink1;
@@ -146,6 +150,9 @@ public class ViewProfileActivity extends AppCompatActivity {
         mCreations = findViewById(R.id.creations);
         mParticipation = findViewById(R.id.participations);
         mRank = findViewById(R.id.rank);
+
+        judges = findViewById(R.id.judge);
+        gp = findViewById(R.id.gp);
 
         mDisplayName = findViewById(R.id.display_name);
         mDescription = findViewById(R.id.description);
@@ -473,9 +480,53 @@ public class ViewProfileActivity extends AppCompatActivity {
         getWins();
         getCreations();
         getParticipation();
+        getGP();
+        getJudges();
         mRank.setText(String.valueOf(rank));
 //        getRank();
         dialog.dismiss();
+    }
+
+    private void getJudges() {
+    }
+
+    private void getGP() {
+        Query query = myRef.child(mContext.getString(R.string.dbname_contests))
+                .child(mAuth.getCurrentUser().getUid())
+                .child("completed");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    long y = (long) snapshot.getValue();
+                    myRef.child(mContext.getString(R.string.dbname_contests))
+                            .child(mAuth.getCurrentUser().getUid())
+                            .child("reports")
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        long x = (long) snapshot.getValue();
+                                        gp.setText((100 - (((x * 100) / y))) + "%");
+                                    } else gp.setText("100%");
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    gp.setText("100%");
+                                }
+                            });
+
+                } else gp.setText("100%");
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void getFans() {

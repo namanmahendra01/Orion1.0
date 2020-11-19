@@ -4,10 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -15,16 +12,10 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -44,6 +35,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.orion.orion.R;
+import com.orion.orion.WebViewActivity;
 import com.orion.orion.dialogs.BottomSheetDomain;
 import com.orion.orion.models.Leaderboard;
 import com.orion.orion.models.users;
@@ -52,6 +44,11 @@ import com.orion.orion.util.SNTPClient;
 import com.orion.orion.util.StringManipilation;
 
 import java.util.TimeZone;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class register extends AppCompatActivity implements BottomSheetDomain.BottomSheetListener {
 
@@ -83,7 +80,7 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
     private FirebaseMethods firebaseMethods;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
-    private String append = "";
+    private final String append = "";
 
     //    SP
     Gson gson;
@@ -127,25 +124,17 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
         mProgressBar.setVisibility(View.GONE);
         domain = "";
 
-        policy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                jumpToLink(getString(R.string.Privacy_Policy));
-            }
+        Intent redirect = new Intent(mContext, WebViewActivity.class);
+
+        policy.setOnClickListener(view -> {
+            redirect.putExtra("url", getString(R.string.Privacy_Policy));
+            startActivity(redirect);
         });
-        terms.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                jumpToLink(getString(R.string.Terms_and_Condition));
-            }
+        terms.setOnClickListener(view -> {
+            redirect.putExtra("url", getString(R.string.Terms_and_Condition));
+            startActivity(redirect);
         });
 
-    }
-
-    private void jumpToLink(String s) {
-        Intent i4 = new Intent(Intent.ACTION_VIEW);
-        i4.setData(Uri.parse(s));
-        startActivity(i4);
     }
 
     private boolean checkInputs(String email, String username, String password, String confirmPassword, String domain) {
