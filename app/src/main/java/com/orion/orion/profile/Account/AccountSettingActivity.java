@@ -65,6 +65,8 @@ public class AccountSettingActivity extends AppCompatActivity {
         options.add("Contest");
         options.add("Contact us");
         options.add("Report a Bug/feedback form");
+        options.add("Privacy Policy");
+        options.add("Terms and Conditions");
         options.add("About");
         options.add(getString(R.string.sign_out));//fragment 1
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, options);
@@ -96,9 +98,21 @@ public class AccountSettingActivity extends AppCompatActivity {
                     startActivity(i2);
                     break;
                 case 6:
-                    startActivity(new Intent(mContext, About.class));
+                    String url3 = getString(R.string.Privacy_Policy);
+                    Intent i3 = new Intent(Intent.ACTION_VIEW);
+                    i3.setData(Uri.parse(url3));
+                    startActivity(i3);
                     break;
                 case 7:
+                    String url4 =getString(R.string.Terms_and_Condition);
+                    Intent i4 = new Intent(Intent.ACTION_VIEW);
+                    i4.setData(Uri.parse(url4));
+                    startActivity(i4);
+                    break;
+                case 8:
+                    startActivity(new Intent(mContext, About.class));
+                    break;
+                case 9:
                     new AlertDialog.Builder(mContext)
                             .setTitle("Log Out")
                             .setMessage("Are you sure u want to log out?")
@@ -143,7 +157,7 @@ public class AccountSettingActivity extends AppCompatActivity {
                 SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
                 new AlertDialog.Builder(mContext)
                         .setTitle("No user logon found")
-                        .setMessage("We will be logging u out. \n Please try to log in again")
+                        .setMessage("We will be logging you out. \n Please try to log in again")
                         .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                             Intent intent = new Intent(mContext, login.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);

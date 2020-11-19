@@ -45,10 +45,16 @@ import com.orion.orion.Adapters.AdapterContestUpcoming;
 import com.orion.orion.Adapters.AdapterContestUpcomingGrid;
 import com.orion.orion.R;
 import com.orion.orion.models.ContestDetail;
+import com.orion.orion.util.SNTPClient;
+import com.orion.orion.util.StringManipilation;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Objects;
+import java.util.TimeZone;
 
 
 public class fragment_upcomingContest extends Fragment {
@@ -79,7 +85,7 @@ public class fragment_upcomingContest extends Fragment {
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
     private Spinner domainspinner, entryfeeSpinner;
-    String domain = "Overall", entryfee = "All";
+    String domain = "Overall", entryfee = "Overall";
 
 
     private AdapterContestUpcoming contestUpcoming;
@@ -397,102 +403,155 @@ public class fragment_upcomingContest extends Fragment {
     }
 
     private void getContestFiltered(String domain, String entryfee) {
-        if (!domain.equals("Overall")) {
+        final String[] timestamp = new String[1];
+        SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
+                    @Override
+                    public void onTimeReceived(String rawDate) {
+                        // rawDate -> 2019-11-05T17:51:01+0530
 
-
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-            reference.child(getString(R.string.dbname_contestlist))
-                    .orderByChild(getString(R.string.field_domain)).equalTo(domain)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            contestlist.clear();
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
-
-                                contestlist.add(contestDetail);
-                            }
-                            if (!entryfee.equals("All")) {
-
-                                contestlist3.clear();
-                                for (int x = 0; x < contestlist.size(); x++) {
-                                    ContestDetail contestDetail = contestlist.get(x);
-                                    if (entryfee.equals("Free")) {
-                                        if (contestDetail.getEf().equals(entryfee)) {
-
-                                            contestlist3.add(contestDetail);
-                                        }
-                                    }
-                                    if (!entryfee.equals("Free"))
-                                        if (!contestDetail.getEf().equals("Free")) {
-                                            contestlist3.add(contestDetail);
-                                        }
-                                }
-                                contestlist.clear();
-                                contestlist.addAll(contestlist3);
-                                Collections.reverse(contestlist);
-                                displaycontest();
-                            } else {
-                                Collections.reverse(contestlist);
-
-                                displaycontest();                            }
-
-
+                        //*************************************************************************
+                        String currentTime = StringManipilation.getTime(rawDate);
+                        java.text.DateFormat formatter1 = new SimpleDateFormat("dd-MM-yyyy");
+                        Date date1 = null;
+                        try {
+                            date1 = (Date) formatter1.parse(currentTime);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
                         }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        timestamp[0] = String.valueOf(date1.getTime());
 
-                        }
-                    });
+                        if (!domain.equals("Overall")) {
 
-        } else {
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-            reference.child(getString(R.string.dbname_contestlist))
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            contestlist.clear();
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
 
-                                contestlist.add(contestDetail);
-                            }
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                            reference.child(getString(R.string.dbname_contestlist))
+                                    .orderByChild(getString(R.string.field_domain)).equalTo(domain)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            contestlist.clear();
+                                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-                            if (!entryfee.equals("All")) {
-                                contestlist3.clear();
-                                for (int x = 0; x < contestlist.size(); x++) {
-                                    ContestDetail contestDetail = contestlist.get(x);
-                                    if (entryfee.equals("Free")) {
-                                        if (contestDetail.getEf().equals(entryfee)) {
+                                                String resDate = snapshot.child(getString(R.string.field_winners_declare)).getValue().toString();
+                                                java.text.DateFormat formatter5 = new SimpleDateFormat("dd-MM-yyyy");
+                                                Date date5 = null;
+                                                try {
+                                                    date5 = (Date) formatter5.parse(resDate);
+                                                } catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                String resDate2 = String.valueOf(date5.getTime());
+                                                if ((Long.parseLong(resDate2)+604800000) >= Long.parseLong(timestamp[0])) {
+                                                    ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
 
-                                            contestlist3.add(contestDetail);
+                                                    contestlist.add(contestDetail);
+                                                }
+                                            }
+                                            if (!entryfee.equals("Overall")) {
+
+                                                contestlist3.clear();
+                                                for (int x = 0; x < contestlist.size(); x++) {
+                                                    ContestDetail contestDetail = contestlist.get(x);
+                                                    if (entryfee.equals("Free")) {
+                                                        if (contestDetail.getEf().equals(entryfee)) {
+
+                                                            contestlist3.add(contestDetail);
+                                                        }
+                                                    }
+                                                    if (!entryfee.equals("Free"))
+                                                        if (!contestDetail.getEf().equals("Free")) {
+                                                            contestlist3.add(contestDetail);
+                                                        }
+                                                }
+                                                contestlist.clear();
+                                                contestlist.addAll(contestlist3);
+                                                Collections.reverse(contestlist);
+                                                displaycontest();
+                                            } else {
+                                                Collections.reverse(contestlist);
+
+                                                displaycontest();
+                                            }
+
+
                                         }
-                                    }
-                                    if (!entryfee.equals("Free"))
-                                        if (!contestDetail.getEf().equals("Free")) {
-                                            contestlist3.add(contestDetail);
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
                                         }
-                                }
-                                contestlist.clear();
-                                contestlist.addAll(contestlist3);
-                                Collections.reverse(contestlist);
-                                displaycontest();
-                            } else {
-                                Collections.reverse(contestlist);
-                                displaycontest();
-                            }
+                                    });
+
+                        } else {
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                            reference.child(getString(R.string.dbname_contestlist))
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            contestlist.clear();
+                                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                                String resDate = snapshot.child(getString(R.string.field_winners_declare)).getValue().toString();
+                                                java.text.DateFormat formatter5 = new SimpleDateFormat("dd-MM-yyyy");
+                                                Date date5 = null;
+                                                try {
+                                                    date5 = (Date) formatter5.parse(resDate);
+                                                } catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                String resDate2 = String.valueOf(date5.getTime());
+                                                if ((Long.parseLong(resDate2) + 604800000) >= Long.parseLong(timestamp[0])) {
+                                                    ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
+
+                                                    contestlist.add(contestDetail);
+                                                }
+                                            }
+
+                                            if (!entryfee.equals("Overall")) {
+                                                contestlist3.clear();
+                                                for (int x = 0; x < contestlist.size(); x++) {
+                                                    ContestDetail contestDetail = contestlist.get(x);
+                                                    if (entryfee.equals("Free")) {
+                                                        if (contestDetail.getEf().equals(entryfee)) {
+
+                                                            contestlist3.add(contestDetail);
+                                                        }
+                                                    }
+                                                    if (!entryfee.equals("Free"))
+                                                        if (!contestDetail.getEf().equals("Free")) {
+                                                            contestlist3.add(contestDetail);
+                                                        }
+                                                }
+                                                contestlist.clear();
+                                                contestlist.addAll(contestlist3);
+                                                Collections.reverse(contestlist);
+                                                displaycontest();
+                                            } else {
+                                                Collections.reverse(contestlist);
+                                                displaycontest();
+                                            }
 
 
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
                         }
+                    }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                        }
-                    });
+
+
+
+
+        @Override
+        public void onError(Exception ex) {
+            Log.e(SNTPClient.TAG, ex.getMessage());
         }
-
+    });
 
     }
 

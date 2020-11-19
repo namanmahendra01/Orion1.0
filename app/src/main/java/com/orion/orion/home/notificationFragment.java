@@ -89,6 +89,7 @@ public class notificationFragment extends Fragment {
 
         fAuth=FirebaseAuth.getInstance();
         getNotifcationFromSP();
+
         clearNotification.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
             builder.setMessage("You want to delete all the notification")
@@ -107,7 +108,9 @@ public class notificationFragment extends Fragment {
                             adapterNotification2.notifyDataSetChanged();
                         }
                         FirebaseUser user = fAuth.getCurrentUser();
-                        DatabaseReference reference =FirebaseDatabase.getInstance().getReference("users").child(user.getUid()).child("Notifications");
+                        DatabaseReference reference =FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users))
+                                .child(user.getUid())
+                                .child(getString(R.string.field_Notifications));
                         reference.removeValue();
                         //delete from database here then refresh for u naman
                         displayMoreNotification();
@@ -128,12 +131,10 @@ public class notificationFragment extends Fragment {
         }.getType();
         notifyList = gson.fromJson(json, type);
         if (notifyList == null||notifyList.size()==0) {    //        if no arrayList is present
-            Log.d(TAG, "getNotifcationFromSP: 1");
             notifyList = new ArrayList<>();
             readNotification();  //            make new Arraylist
 
         } else {
-            Log.d(TAG, "getNotifcationFromSP: 2");
             checkUpdate();
         }
 
@@ -251,7 +252,6 @@ public class notificationFragment extends Fragment {
         });
     }
     private void displayNotification() {
-        Log.d(TAG, "display first 10 Notification");
         paginatedNotifications = new ArrayList<>();
         if (notifyList != null) {
 
@@ -277,15 +277,12 @@ public class notificationFragment extends Fragment {
     }
 
     public void displayMoreNotification() {
-        Log.d(TAG, "display next 20 photo");
         try {
             if (notifyList.size() > mResults && notifyList.size() > 0) {
                 int iterations;
                 if (notifyList.size() > (mResults + 20)) {
-                    Log.d(TAG, "display next 20 photo");
                     iterations = 20;
                 } else {
-                    Log.d(TAG, "display less tha 20 photo");
                     iterations = notifyList.size() - mResults;
                 }
                 for (int i = mResults; i < mResults + iterations; i++) {

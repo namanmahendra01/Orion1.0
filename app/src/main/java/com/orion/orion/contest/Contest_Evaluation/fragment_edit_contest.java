@@ -571,7 +571,7 @@ public class fragment_edit_contest extends Fragment {
         DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
 
         Query userquery = ref
-                .child(getString(R.string.field_username))
+                .child(getString(R.string.dbname_username))
                 .child(toString);
         userquery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

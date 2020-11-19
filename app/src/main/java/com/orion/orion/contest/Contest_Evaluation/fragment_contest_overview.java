@@ -315,7 +315,7 @@ public class fragment_contest_overview extends Fragment {
                                                 DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
 
                                                 Query userquery = ref
-                                                        .child(getString(R.string.field_username))
+                                                        .child(getString(R.string.dbname_username))
                                                         .child(t1v.getText().toString());
                                                 userquery.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
@@ -424,7 +424,7 @@ public class fragment_contest_overview extends Fragment {
                                                 DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
 
                                                 Query userquery = ref
-                                                        .child(getString(R.string.field_username))
+                                                        .child(getString(R.string.dbname_username))
                                                         .child(t1v.getText().toString());
                                                 userquery.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override

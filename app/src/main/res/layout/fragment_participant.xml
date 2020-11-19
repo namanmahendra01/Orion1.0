@@ -24,7 +24,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Participants: 23"
+                android:text="Participants: 0"
                 android:textColor="@color/white"
                 android:layout_margin="10dp"
                 android:layout_alignParentLeft="true"
@@ -51,6 +51,7 @@
         android:layout_width="match_parent"
         android:layout_below="@id/relRequest"
         android:layout_height="wrap_content"
+        android:paddingTop="10dp"
         android:id="@+id/recycler_view4">
 
     </androidx.recyclerview.widget.RecyclerView>

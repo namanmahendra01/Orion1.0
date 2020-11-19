@@ -665,6 +665,7 @@ public class ViewContestDetails extends AppCompatActivity {
         jurypic1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "onClick: ooo");
 
                 juryProfile(jurypl1.getText().toString());
 
@@ -843,10 +844,11 @@ public class ViewContestDetails extends AppCompatActivity {
     }
 
     private void juryProfile(String toString) {
+        Log.d(TAG, "juryProfile: "+toString);
         DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
 
         Query userquery = ref
-                .child(getString(R.string.field_username))
+                .child(getString(R.string.dbname_username))
                 .child(toString);
         userquery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -854,6 +856,8 @@ public class ViewContestDetails extends AppCompatActivity {
 
                 if (dataSnapshot.exists()) {
                     username = dataSnapshot.getValue().toString();
+                    Log.d(TAG, "juryProfile: "+username);
+
 
                     Intent i = new Intent(ViewContestDetails.this, profile.class);
                     i.putExtra(getString(R.string.calling_activity), getString(R.string.home));

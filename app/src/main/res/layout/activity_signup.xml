@@ -140,32 +140,63 @@
         android:paddingLeft="25dp"
         android:paddingRight="25dp"
         android:orientation="vertical"
-        android:weightSum="5">
+       >
         <TextView
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
-            android:text="By creating this account, you agree to our Terms and Use and Privacy Policy"
+            android:text="By creating this account, you agree to our Terms and Conditions and Privacy Policy"
             android:minLines="2"
             android:gravity="center_horizontal"
             android:textColor="@color/grey"
             android:textSize="12sp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
         <TextView
-            android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
-            android:layout_marginEnd="50dp"
-            android:text="See Terms and Policy"
-            android:id="@+id/policy"
+            android:text="See"
 
             android:minLines="1"
-            android:gravity="center_horizontal"
-            android:textColor="#03A9F4"
+            android:textColor="@color/black"
             android:textSize="12sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+
+                android:text="Terms and Conditions"
+                android:id="@+id/terms"
+                android:minLines="1"
+                android:textColor="#03A9F4"
+                android:textSize="12sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:text="or"
+
+                android:minLines="1"
+                android:textColor="@color/black"
+                android:textSize="12sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+
+                android:text="Privacy policy"
+                android:id="@+id/policy"
+                android:minLines="1"
+                android:textColor="#03A9F4"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
         <androidx.appcompat.widget.AppCompatButton
             android:layout_width="match_parent"
             android:layout_height="60dp"

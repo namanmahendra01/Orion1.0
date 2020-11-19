@@ -1,5 +1,6 @@
 package com.orion.orion.Adapters;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,6 +25,7 @@ import com.orion.orion.contest.Contest_Evaluation.activity_view_media;
 import com.orion.orion.models.ParticipantList;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
+import com.orion.orion.util.SNTPClient;
 
 import java.util.List;
 
@@ -61,17 +64,43 @@ public class AdapterWinners extends RecyclerView.Adapter<AdapterWinners.ViewHold
                  holder.media.setOnClickListener(new View.OnClickListener() {
                      @Override
                      public void onClick(View view) {
-                         if (mparticipantList.getMl().substring(8,23).equals("firebasestorage")) {
-                             Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
-                             i.putExtra("imageLink", mparticipantList.getMl());
-                             i.putExtra("view", "No");
+                         boolean ok=mparticipantList.getMl().length()>23;
+                         boolean ifNull=mparticipantList.getMl() == null || mparticipantList.getMl().equals("");
+                         if (ifNull){
+                             Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
 
-                             mContext.startActivity(i);
-                         }else{
-                             Uri uri = Uri.parse(mparticipantList.getMl());
-                             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                             mContext.startActivity(intent);
+                         }else if (ok) {
+                             if (mparticipantList.getMl().substring(8, 23).equals("firebasestorage")) {
+                                 Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
+                                 i.putExtra("imageLink", mparticipantList.getMl());
+                                 i.putExtra("view", "No");
+
+                                 mContext.startActivity(i);
+                             } else {
+
+                                 try{
+                                     Uri uri = Uri.parse(mparticipantList.getMl());
+                                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                     mContext.startActivity(intent);
+
+                                 }catch (ActivityNotFoundException e){
+                                     Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
+                                     Log.e(SNTPClient.TAG, "onClick: "+ e.getMessage());
+                                 }
+                             }
+                         }else {
+
+                             try{
+                                 Uri uri = Uri.parse(mparticipantList.getMl());
+                                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                 mContext.startActivity(intent);
+
+                             }catch (ActivityNotFoundException e){
+                                 Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
+                                 Log.e(SNTPClient.TAG, "onClick: "+ e.getMessage());
+                             }
                          }
+
                      }
                  });
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -68,7 +69,8 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
     private EditText mConfirmPassword;
     private TextView domainSelection;
     private String userID;
-    private TextView mPleasewait;
+    private TextView terms;
+    private TextView policy;
     private Button btnregister;
     private TextView linkLogin;
     private FusedLocationProviderClient fusedLocationClient;
@@ -118,10 +120,32 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
         domainSelection = findViewById(R.id.domain_selection);
         btnregister = findViewById(R.id.btn_register);
         linkLogin = findViewById(R.id.link_login);
+        policy = findViewById(R.id.policy);
+        terms = findViewById(R.id.terms);
+
         mContext = register.this;
         mProgressBar.setVisibility(View.GONE);
         domain = "";
 
+        policy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                jumpToLink(getString(R.string.Privacy_Policy));
+            }
+        });
+        terms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                jumpToLink(getString(R.string.Terms_and_Condition));
+            }
+        });
+
+    }
+
+    private void jumpToLink(String s) {
+        Intent i4 = new Intent(Intent.ACTION_VIEW);
+        i4.setData(Uri.parse(s));
+        startActivity(i4);
     }
 
     private boolean checkInputs(String email, String username, String password, String confirmPassword, String domain) {

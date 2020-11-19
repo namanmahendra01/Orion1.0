@@ -203,6 +203,8 @@
     <string name="field_story_ID">stID</string>
     <string name="field_rating">rat</string>
     <string name="field_unfollowed_Me">um</string>
+    <string name="Privacy_Policy">https://drive.google.com/file/d/1Kat9jq_H9vXxNWXmKfP4N3XerfpfHkw5/view?usp=sharing</string>
+    <string name="Terms_and_Condition">https://drive.google.com/file/d/1t8XtHgyhvhWlWPlqoG8MREP56kFuEhPL/view?usp=sharing</string>
 
 
     <string-array name="entryfee">
@@ -212,7 +214,7 @@
     </string-array>
 
     <string-array name="entryfee2">
-        <item>All</item>
+        <item>Overall</item>
         <item>Free</item>
         <item>Paid</item>
     </string-array>
