@@ -347,15 +347,40 @@ public class ProfileActivity extends AppCompatActivity {
         getCreations();
         getParticipation();
         getGP();
+        getJudges();
         mRank.setText(String.valueOf(rank));
         getRank();
         dialog.dismiss();
     }
 
+    private void getJudges() {
+            Query query = myRef.child(getString(R.string.dbname_contests))
+                    .child(mAuth.getCurrentUser().getUid())
+                    .child(getString(R.string.field_contest_judged));
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        long size = (long) snapshot.getValue();
+//                mCreations.setText((int) size);
+                        judges.setText(String.valueOf(size));
+                    }else{
+                        judges.setText("0");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    mCreations.setText("?");
+                }
+            });
+
+    }
+
     private void getGP() {
         Query query = myRef.child(mContext.getString(R.string.dbname_contests))
                 .child(mAuth.getCurrentUser().getUid())
-                .child("completed");
+                .child(getString(R.string.field_contest_completed));
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -364,7 +389,7 @@ public class ProfileActivity extends AppCompatActivity {
                     long y = (long) snapshot.getValue();
                     myRef.child(mContext.getString(R.string.dbname_contests))
                             .child(mAuth.getCurrentUser().getUid())
-                            .child("reports")
+                            .child(getString(R.string.field_contest_reports))
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
