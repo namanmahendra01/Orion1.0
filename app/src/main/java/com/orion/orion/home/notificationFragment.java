@@ -127,7 +127,6 @@ public class notificationFragment extends Fragment {
         if (notifyList == null || notifyList.size() == 0) {    //        if no arrayList is present
             notifyList = new ArrayList<>();
             readNotification();  //            make new Arraylist
-
         } else {
             checkUpdate();
         }
@@ -252,17 +251,22 @@ public class notificationFragment extends Fragment {
 
             try {
                 int iteration = notifyList.size();
-                if (iteration > 10) {
-                    iteration = 10;
+                if (iteration == 0) {
+                    emptyNotification.setVisibility(View.VISIBLE);
+                } else {
+                    emptyNotification.setVisibility(View.GONE);
+                    if (iteration > 10) {
+                        iteration = 10;
+                    }
+                    mResults = 10;
+                    for (int i = 0; i < iteration; i++) {
+                        paginatedNotifications.add(notifyList.get(i));
+                    }
+                    adapterNotification2 = new AdapterNotification2(getContext(), paginatedNotifications);
+                    adapterNotification2.setHasStableIds(true);
+                    notificationRv.setAdapter(adapterNotification2);
+                    x++;
                 }
-                mResults = 10;
-                for (int i = 0; i < iteration; i++) {
-                    paginatedNotifications.add(notifyList.get(i));
-                }
-                adapterNotification2 = new AdapterNotification2(getContext(), paginatedNotifications);
-                adapterNotification2.setHasStableIds(true);
-                notificationRv.setAdapter(adapterNotification2);
-                x++;
             } catch (NullPointerException e) {
                 Log.e(TAG, "Null pointer exception" + e.getMessage());
             } catch (IndexOutOfBoundsException e) {
@@ -275,17 +279,12 @@ public class notificationFragment extends Fragment {
         try {
             if (notifyList.size() > mResults && notifyList.size() > 0) {
                 int iterations;
-                if (notifyList.size() == 0) {
-                    emptyNotification.setVisibility(View.GONE);
-                } else {
-                    emptyNotification.setVisibility(View.VISIBLE);
-                    if (notifyList.size() > (mResults + 20)) iterations = 20;
-                    else iterations = notifyList.size() - mResults;
-                    for (int i = mResults; i < mResults + iterations; i++)
-                        paginatedNotifications.add(notifyList.get(i));
-                    notificationRv.post(() -> adapterNotification2.notifyItemRangeInserted(mResults, iterations));
-                    mResults = mResults + iterations;
-                }
+                if (notifyList.size() > (mResults + 20)) iterations = 20;
+                else iterations = notifyList.size() - mResults;
+                for (int i = mResults; i < mResults + iterations; i++)
+                    paginatedNotifications.add(notifyList.get(i));
+                notificationRv.post(() -> adapterNotification2.notifyItemRangeInserted(mResults, iterations));
+                mResults = mResults + iterations;
             }
         } catch (NullPointerException e) {
             Log.e(TAG, "Null pointer exception" + e.getMessage());

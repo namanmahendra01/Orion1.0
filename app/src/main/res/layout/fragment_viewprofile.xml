@@ -21,52 +21,6 @@
             android:layout_height="wrap_content">
 
             <!--        Top portion        -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/linearLayout1"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:background="@drawable/pink_round_button"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ImageView
-                        android:id="@+id/back"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/ic_back_black_arrow"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profile_photo"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_gravity="center"
-                    android:backgroundTint="@color/white"
-                    android:scaleType="centerCrop"
-                    app:civ_border_color="@color/white"
-                    app:civ_border_width="4dp"
-                    app:layout_constraintBottom_toBottomOf="@id/linearLayout1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/linearLayout1" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
             <LinearLayout
                 android:id="@+id/contactButtons"
                 android:layout_width="match_parent"
@@ -110,7 +64,6 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!--    Profile Links   -->
             <LinearLayout
                 android:id="@id/linearLayout2"
                 android:layout_width="match_parent"
@@ -172,21 +125,21 @@
 
             </LinearLayout>
 
-            <!--    Buttons     -->
+            <!--    Profile Links   -->
             <RelativeLayout
                 android:id="@+id/profile_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/profileLinks"
+                android:layout_below="@id/contactButtons"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
+                android:layout_marginLeft="5dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="5dp"
-                android:layout_marginLeft="5dp"
                 android:layout_marginBottom="10dp"
-                android:visibility="visible"
                 android:background="@drawable/info_container"
-                android:elevation="5dp">
+                android:elevation="5dp"
+                android:visibility="visible">
 
                 <LinearLayout
                     android:id="@+id/info_lines"
@@ -271,6 +224,7 @@
 
                         </LinearLayout>
 
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -345,6 +299,7 @@
 
                         </LinearLayout>
 
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -385,6 +340,12 @@
 
                         </LinearLayout>
 
+                        <View
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
+                            android:background="#EEEEEE" />
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -413,11 +374,7 @@
 
                         </LinearLayout>
 
-                        <View
-                            android:layout_width="2dp"
-                            android:layout_height="match_parent"
-                            android:layout_margin="5dp"
-                            android:background="#EEEEEE" />
+
 
                     </LinearLayout>
 
@@ -492,6 +449,7 @@
 
                         </LinearLayout>
 
+
                     </LinearLayout>
 
 
@@ -499,8 +457,7 @@
 
             </RelativeLayout>
 
-
-            <!--    Info Grids  -->
+            <!--    Buttons     -->
             <RelativeLayout
                 android:id="@+id/profileLinks"
                 android:layout_width="match_parent"
@@ -571,7 +528,7 @@
             </RelativeLayout>
 
 
-            <!--    Judge GPs   -->
+            <!--    Info Grids  -->
             <TextView
                 android:id="@+id/conct"
                 android:layout_width="wrap_content"
@@ -583,30 +540,81 @@
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
-            <TextView
-                android:id="@+id/domain"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center"
-                android:fontFamily="@font/orion"
-                android:text="Domain"
-                android:textColor="@color/white"
-                android:textSize="30sp" />
 
-            <!--        About               -->
-            <TextView
-                android:id="@+id/username"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout1"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/domain"
-                android:layout_centerHorizontal="true"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:text="Username"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true">
 
-                android:textColor="@color/black"
-                android:textSize="18sp" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/linearLayout1"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:background="@drawable/pink_round_button"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/back"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/ic_back_black_arrow"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/domain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/orion"
+                        android:text="Domain"
+                        android:textColor="@color/white"
+                        android:textSize="30sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/domain"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:text="Username"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/domain" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile_photo"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/white"
+                    android:scaleType="centerCrop"
+                    app:civ_border_color="@color/white"
+                    app:civ_border_width="4dp"
+                    app:layout_constraintBottom_toBottomOf="@id/linearLayout1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/linearLayout1" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <!--        Image Grid          -->
             <androidx.recyclerview.widget.RecyclerView
