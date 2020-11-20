@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -14,11 +15,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -37,7 +33,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.Adapters.AdapterChat;
 import com.orion.orion.R;
 import com.orion.orion.models.Chat;
-import com.orion.orion.models.users;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.SNTPClient;
 
@@ -49,6 +44,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class
 Chat_Activity extends AppCompatActivity {
@@ -97,11 +97,21 @@ Chat_Activity extends AppCompatActivity {
 
     private boolean notify = false;
 
+    private void disableEmojiInTitle() {
+        InputFilter emojiFilter = (source, start, end, dest, dstart, dend) -> {
+            for (int index = start; index < end - 1; index++) {
+                int type = Character.getType(source.charAt(index));
+                if (type == Character.SURROGATE) return "";
+            }
+            return null;
+        };
+        mMessages.setFilters(new InputFilter[]{emojiFilter});
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat_);
+        setContentView(R.layout.activity_chat);
 
         mUsername = findViewById(R.id.username);
         accept = findViewById(R.id.accept);
@@ -136,6 +146,7 @@ Chat_Activity extends AppCompatActivity {
         linearLayoutManager.setStackFromEnd(true);
         linearLayoutManager.setReverseLayout(true);
 
+        disableEmojiInTitle();
 
 //        recycler properties
 
@@ -386,6 +397,7 @@ Chat_Activity extends AppCompatActivity {
             }
         });
         seenMessage();
+
     }
 
     private void sendRequestMessage(String message) {
