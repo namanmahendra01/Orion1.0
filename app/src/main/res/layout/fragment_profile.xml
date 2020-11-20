@@ -21,15 +21,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/menu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_margin="10dp"
-                android:background="@drawable/ic_whilte_eclipse"
-                app:tint="@color/black" />
-
             <!--        Top portion        -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout1"
@@ -47,8 +38,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
-
-
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -69,6 +58,15 @@
                     app:layout_constraintTop_toBottomOf="@id/linearLayout1" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageView
+                android:id="@+id/menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_whilte_eclipse"
+                app:tint="@color/black" />
 
             <LinearLayout
                 android:id="@id/linearLayout2"

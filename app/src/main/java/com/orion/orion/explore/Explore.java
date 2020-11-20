@@ -47,7 +47,6 @@ import com.orion.orion.Adapters.AdapterGridImageExplore;
 import com.orion.orion.Adapters.UserListAdapter;
 import com.orion.orion.R;
 import com.orion.orion.ViewPostActivity;
-import com.orion.orion.dialogs.BottomSheetDomain;
 import com.orion.orion.login.login;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.Photo;
@@ -86,10 +85,10 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class Explore extends AppCompatActivity implements BottomSheetDomain.BottomSheetListener, AdapterGridImageExplore.OnPostItemClickListner {
+public class Explore extends AppCompatActivity implements AdapterGridImageExplore.OnPostItemClickListner {
     private static final String TAG = "Explore";
     private static final int ACTIVITY_NUM = 1;
-//    private static final Handler handler = new Handler(Looper.getMainLooper());
+    //    private static final Handler handler = new Handler(Looper.getMainLooper());
     private static final int SET_SIZE_DOMAIN = 300;
     private static final int TOTAL_USER_SIZE = 500;
     //    private static final int RETRY_DURATION = 30000;
@@ -111,7 +110,8 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     private String user8;
     private final int c = 0;
     private RelativeLayout collapse;
-    private TextView spinner;
+    private TextView overall;
+    private TextView domain;
     private EditText mSearchParam;
     private ListView mListView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -130,9 +130,10 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     private FirebaseUser mUser;
 
     //domain
-    private BottomSheetDomain bottomSheetDomain;
     private String USER_DOMAIN;
+    private String SELECTED_FILTER;
     private boolean requestedFromCheckPostFetched;
+    private boolean requestedFromSelectListener;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -159,6 +160,8 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         getTop8();
         checkTopDatabase();
         requestedFromCheckPostFetched = false;
+        requestedFromSelectListener = false;
+        SELECTED_FILTER = "Overall";
     }
 
     private void getUserDomain() {
@@ -171,8 +174,15 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     USER_DOMAIN = (String) snapshot.getValue();
-                    bottomSheetDomain = new BottomSheetDomain(true, USER_DOMAIN);
-                    if (requestedFromCheckPostFetched) checkLastFetched();
+                    domain.setText(USER_DOMAIN);
+                    if (requestedFromCheckPostFetched && requestedFromSelectListener) {
+                        SELECTED_FILTER = USER_DOMAIN;
+                        checkLastFetched();
+                    } else if (requestedFromCheckPostFetched) checkLastFetched();
+                    else if (requestedFromSelectListener) {
+                        SELECTED_FILTER = USER_DOMAIN;
+                        displayPhotos(SELECTED_FILTER);
+                    }
                 } else
                     Toast.makeText(mContext, "Unable to find Your domain", Toast.LENGTH_LONG).show();
             }
@@ -211,7 +221,8 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         star6 = findViewById(R.id.circleImageView5);
         star7 = findViewById(R.id.circleImageView);
         star8 = findViewById(R.id.circleImageView8);
-        spinner = findViewById(R.id.spinnerDo);
+        overall = findViewById(R.id.overall);
+        domain = findViewById(R.id.domain);
         collapse = findViewById(R.id.collapse);
         cross = findViewById(R.id.cross);
         up = findViewById(R.id.up);
@@ -249,9 +260,27 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
             collapse(collapse, 1000, dummyHeight);
         });
 
-        spinner.setOnClickListener(v -> {
+        overall.setOnClickListener(v -> {
+            overall.setTextColor(getResources().getColor(R.color.scheme8));
+            domain.setTextColor(getResources().getColor(R.color.black));
+            swipeRefreshLayout.setRefreshing(true);
+            displayPhotos(SELECTED_FILTER);
+            overall.setClickable(false);
+            domain.setClickable(true);
+        });
+        domain.setOnClickListener(v -> {
+            domain.setTextColor(getResources().getColor(R.color.scheme8));
+            overall.setTextColor(getResources().getColor(R.color.black));
+            requestedFromSelectListener = true;
             if (USER_DOMAIN == null) getUserDomain();
-            else bottomSheetDomain.show(getSupportFragmentManager(), "Domain Selection");
+            else {
+                swipeRefreshLayout.setRefreshing(true);
+                requestedFromSelectListener = false;
+                SELECTED_FILTER = USER_DOMAIN;
+                displayPhotos(SELECTED_FILTER);
+                overall.setClickable(true);
+                domain.setClickable(false);
+            }
         });
         star1.setOnClickListener(v -> jumpToUser(user1));
         star2.setOnClickListener(v -> jumpToUser(user2));
@@ -283,8 +312,27 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 }
             }
         });
-        swipeRefreshLayout.setOnRefreshListener(this::displayPhotos);
-        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light, android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        swipeRefreshLayout.setColorSchemeResources(
+                R.color.scheme1,
+                R.color.scheme2,
+                R.color.scheme3,
+                R.color.scheme4,
+                R.color.scheme5,
+                R.color.scheme6,
+                R.color.scheme7,
+                R.color.scheme8,
+                R.color.scheme9,
+                R.color.scheme10,
+                R.color.scheme11,
+                R.color.scheme12
+        );
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(true);
+                displayPhotos(SELECTED_FILTER);
+            }
+        });
         Log.d(TAG, "initOnClickListeners: completed");
     }
 
@@ -476,9 +524,10 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
 
     private void checkLastFetched() {
         Log.d(TAG, "checkLastFetched: started");
+        requestedFromCheckPostFetched = true;
         if (USER_DOMAIN == null) getUserDomain();
         else {
-            requestedFromCheckPostFetched = true;
+            requestedFromCheckPostFetched = false;
             String[] fields = {"Overall", USER_DOMAIN};
             for (String field : fields) {
                 String previousTimeStamp = mPreferences.getString(field + "_fieldLastFetched", null);
@@ -598,7 +647,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                     getPosts(field, completed);
                                 } else {
                                     if (field.equals(USER_DOMAIN)) {
-                                        displayPhotos();
+                                        displayPhotos(SELECTED_FILTER);
                                     }
                                 }
                             }
@@ -614,7 +663,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 }
             }
         }
-        displayPhotos();
+//        displayPhotos(SELECTED_FILTER);
     }
 
     private void createTopDatabase(String field, int completed) {
@@ -920,7 +969,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                                         mEditor.putInt(field + "_completed", mTopUsersList.size());
                                     else mEditor.putInt(field + "_completed", finalI);
                                     mEditor.apply();
-                                    displayPhotos();
+                                    displayPhotos(SELECTED_FILTER);
                                     Log.d(TAG, "getPosts: uploading " + fieldPhotos.size() + " photos for " + field);
                                 }
                             }
@@ -940,12 +989,6 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
         }
     }
 
-    @Override
-    public void onButtonClicked(String text) {
-        spinner.setText(text);
-        swipeRefreshLayout.setRefreshing(true);
-        displayPhotos();
-    }
 
     private void getTop8() {
         Query query = reference.child(getString(R.string.db_topUsersParams)).child(getString(R.string.field_overall)).limitToFirst(8);
@@ -1027,10 +1070,10 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 .into(imageView);
     }
 
-    private void displayPhotos() {
+    private void displayPhotos(String field) {
+        requestedFromSelectListener = false;
         findViewById(R.id.noPost).setVisibility(View.GONE);
         if (swipeRefreshLayout.isRefreshing()) {
-            String field = spinner.getText().toString();
             Log.d(TAG, "displayPhotos: started" + field);
             paginatedPhotos.clear();
             fieldPhotos.clear();
@@ -1124,7 +1167,7 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
     }
 
     private void fetchPhotos() {
-        Log.d(TAG, "fetchPhotos: fetching photos 0f - " + fieldPhotos.size());
+        Log.d(TAG, "fetchPhotos: fetching photos of - " + fieldPhotos.size());
         try {
             if (fieldPhotos.size() != 0) {
                 runOnUiThread(() -> findViewById(R.id.noPost).setVisibility(View.GONE));
@@ -1134,15 +1177,16 @@ public class Explore extends AppCompatActivity implements BottomSheetDomain.Bott
                 }
                 paginatedPhotos = new ArrayList<>();
                 for (int i = 0; i < fieldPhotos.size(); i++) {
+                    paginatedPhotos.add(fieldPhotos.get(i));
                     if (i == fieldPhotos.size() - 1 || i == 8) {
-                        Log.d(TAG, "displayPhotos: paginatedPhotos" + paginatedPhotos.size());
+                        Log.d(TAG, "fetchPhotos: paginatedPhotos - " + paginatedPhotos.size());
                         adapterGridImage = new AdapterGridImageExplore(mContext, paginatedPhotos, this);
                         ((SimpleItemAnimator) exploreRv.getItemAnimator()).setSupportsChangeAnimations(false);
                         swipeRefreshLayout.setRefreshing(false);
                         adapterGridImage.setHasStableIds(true);
                         exploreRv.post(() -> exploreRv.setAdapter(adapterGridImage));
                         break;
-                    } else paginatedPhotos.add(fieldPhotos.get(i));
+                    }
                 }
             } else runOnUiThread(() -> {
                 swipeRefreshLayout.setRefreshing(false);

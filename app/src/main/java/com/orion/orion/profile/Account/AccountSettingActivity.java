@@ -19,7 +19,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.R;
-import com.orion.orion.WebViewActivity;
 import com.orion.orion.login.login;
 import com.orion.orion.profile.Account.FanFolllowing.FanFollowList;
 import com.orion.orion.util.BottomNaavigationViewHelper;
@@ -73,7 +72,6 @@ public class AccountSettingActivity extends AppCompatActivity {
         options.add(getString(R.string.sign_out));//fragment 1
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mContext, android.R.layout.simple_list_item_1, options);
         listview.setAdapter((adapter));
-        Intent redirect = new Intent(mContext, WebViewActivity.class);
         listview.setOnItemClickListener((parent, view, position, id) -> {
             switch (position) {
                 case 0:
@@ -101,18 +99,16 @@ public class AccountSettingActivity extends AppCompatActivity {
                     startActivity(i2);
                     break;
                 case 6:
-                    redirect.putExtra("url", getString(R.string.Privacy_Policy));
-                    startActivity(redirect);
+                    String url3 = getString(R.string.Privacy_Policy);
+                    Intent i3 = new Intent(Intent.ACTION_VIEW);
+                    i3.setData(Uri.parse(url3));
+                    startActivity(i3);
                     break;
                 case 7:
-                    redirect.putExtra("url", getString(R.string.Terms_and_Condition));
-                    startActivity(redirect);
-
-//                    String url4 =getString(R.string.Terms_and_Condition);
-//                    Intent i4 = new Intent(Intent.ACTION_VIEW);
-//                    i4.setData(Uri.parse(url4));
-//                    startActivity(i4);
-
+                    String url4 = getString(R.string.Terms_and_Condition);
+                    Intent i4 = new Intent(Intent.ACTION_VIEW);
+                    i4.setData(Uri.parse(url4));
+                    startActivity(i4);
                     break;
                 case 8:
                     startActivity(new Intent(mContext, About.class));

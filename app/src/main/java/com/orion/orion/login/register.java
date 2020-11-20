@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,7 +36,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.orion.orion.R;
-import com.orion.orion.WebViewActivity;
 import com.orion.orion.dialogs.BottomSheetDomain;
 import com.orion.orion.models.Leaderboard;
 import com.orion.orion.models.users;
@@ -124,17 +124,16 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
         mProgressBar.setVisibility(View.GONE);
         domain = "";
 
-        Intent redirect = new Intent(mContext, WebViewActivity.class);
 
-        policy.setOnClickListener(view -> {
-            redirect.putExtra("url", getString(R.string.Privacy_Policy));
-            startActivity(redirect);
-        });
-        terms.setOnClickListener(view -> {
-            redirect.putExtra("url", getString(R.string.Terms_and_Condition));
-            startActivity(redirect);
-        });
+        policy.setOnClickListener(view -> startRedirect(getString(R.string.Privacy_Policy)));
+        terms.setOnClickListener(view -> startRedirect(getString(R.string.Terms_and_Condition)));
 
+    }
+
+    private void startRedirect(String url) {
+        Intent i2 = new Intent(Intent.ACTION_VIEW);
+        i2.setData(Uri.parse(url));
+        startActivity(i2);
     }
 
     private boolean checkInputs(String email, String username, String password, String confirmPassword, String domain) {

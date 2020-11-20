@@ -39,7 +39,7 @@
     <ListView
         android:id="@+id/listview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="10dp"
         android:layout_below="@+id/relLayout1"
         android:visibility="visible" />
 
@@ -107,32 +107,38 @@
                 android:layout_height="wrap_content">
 
                 <LinearLayout
-                    android:id="@+id/domain"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:gravity="center_horizontal"
                     android:nestedScrollingEnabled="false"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingStart="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="10dp"
+                    android:paddingBottom="5dp"
+                    android:weightSum="2">
 
                     <TextView
+                        android:id="@+id/overall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:text="Domain   "
-                        android:textColor="@color/black"
-                        android:textSize="20sp" />
-
-                    <TextView
-                        android:id="@+id/spinnerDo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:entries="@array/domain2"
+                        android:layout_gravity="center_vertical|start"
+                        android:layout_weight="1"
                         android:text="Overall"
+                        android:textColor="@color/scheme8"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/domain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="end"
+                        android:entries="@array/domain2"
+                        android:text="Domain"
                         android:textColor="@color/black"
-                        android:textSize="20sp" />
+                        android:textSize="24sp" />
 
                 </LinearLayout>
             </RelativeLayout>
