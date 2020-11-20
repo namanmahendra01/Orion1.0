@@ -456,7 +456,7 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(mContext.getString(R.string.dbname_contests))
                 .child(mcontest.getUi())
-                .child("completed")
+                .child(mContext.getString(R.string.field_contest_completed))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -465,7 +465,7 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                             reference.child(mContext.getString(R.string.dbname_contests))
                                     .child(mcontest.getUi())
-                                    .child("reports")
+                                    .child(mContext.getString(R.string.field_contest_reports))
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {

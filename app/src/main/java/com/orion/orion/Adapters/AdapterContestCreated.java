@@ -171,13 +171,13 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
 
     private void setgp(String userid, TextView gp) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child(mContext.getString(R.string.dbname_contests)).child(userid).child("completed").addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.child(mContext.getString(R.string.dbname_contests)).child(userid).child(mContext.getString(R.string.field_contest_completed)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     long y = (long) snapshot.getValue();
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                    reference.child(mContext.getString(R.string.dbname_contests)).child(userid).child("reports").addListenerForSingleValueEvent(new ValueEventListener() {
+                    reference.child(mContext.getString(R.string.dbname_contests)).child(userid).child(mContext.getString(R.string.field_contest_reports)).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.exists()) {
@@ -205,31 +205,33 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
 
     private void ReportPost(String contestId, String userid, int p) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child(mContext.getString(R.string.dbname_contestlist)).child(contestId).child("tr").addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.child(mContext.getString(R.string.dbname_contestlist)).child(contestId).child(mContext.getString(R.string.field_contest_report_list)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChild(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid())) {
                     Toast.makeText(mContext, "You already reported this contest.", Toast.LENGTH_SHORT).show();
                 } else {
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                    reference.child(mContext.getString(R.string.dbname_contestlist)).child(contestId).child("tr").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true).addOnCompleteListener(task -> {
+                    reference.child(mContext.getString(R.string.dbname_contestlist)).child(contestId).child(mContext.getString(R.string.field_contest_report_list))
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .setValue(true).addOnCompleteListener(task -> {
                         DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
-                        reference2.child(mContext.getString(R.string.dbname_contestlist)).child(contestId).child("tr").addListenerForSingleValueEvent(new ValueEventListener() {
+                        reference2.child(mContext.getString(R.string.dbname_contestlist)).child(contestId).child(mContext.getString(R.string.field_contest_report_list)).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot1) {
                                 long i = snapshot1.getChildrenCount();
                                 if ((((i + 1) / p) * 100) > 60) {
                                     DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
-                                    reference1.child(mContext.getString(R.string.dbname_contests)).child(userid).child("reports").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    reference1.child(mContext.getString(R.string.dbname_contests)).child(userid).child(mContext.getString(R.string.field_contest_reports)).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot1) {
                                             if (snapshot1.exists()) {
                                                 long x = (long) snapshot1.getValue();
                                                 DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
-                                                reference1.child(mContext.getString(R.string.dbname_contests)).child(userid).child("reports").setValue(x + 1);
+                                                reference1.child(mContext.getString(R.string.dbname_contests)).child(userid).child(mContext.getString(R.string.field_contest_reports)).setValue(x + 1);
                                             } else {
                                                 DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
-                                                reference1.child(mContext.getString(R.string.dbname_contests)).child(userid).child("reports").setValue(0);
+                                                reference1.child(mContext.getString(R.string.dbname_contests)).child(userid).child(mContext.getString(R.string.field_contest_reports)).setValue(0);
                                             }
                                         }
 

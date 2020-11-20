@@ -130,7 +130,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist));
         ref.child(key)
-                .child("participantlist")
+                .child(mContext.getString(R.string.field_Participant_List))
 
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -138,7 +138,6 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             holder.ok = true;
-                            Log.d(TAG, "onClick: lkj1" + holder.ok);
 
                         }
 
@@ -154,7 +153,6 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(mContext, holder.option);
                 popupMenu.getMenuInflater().inflate(R.menu.post_menu_contest, popupMenu.getMenu());
-                Log.d(TAG, "onClick: lkj" + holder.ok);
                 if (!holder.ok) {
                     popupMenu.getMenu().getItem(2).setVisible(false);
 
@@ -568,7 +566,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(mContext.getString(R.string.dbname_contests))
                 .child(mcontest.getUi())
-                .child("completed")
+                .child(mContext.getString(R.string.field_contest_completed))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -577,7 +575,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                             reference.child(mContext.getString(R.string.dbname_contests))
                                     .child(mcontest.getUi())
-                                    .child("reports")
+                                    .child(mContext.getString(R.string.field_contest_reports))
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -614,7 +612,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(mContext.getString(R.string.dbname_contestlist))
                 .child(mcontest.getCi())
-                .child("tr")
+                .child(mContext.getString(R.string.field_contest_report_list))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -627,7 +625,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                             reference.child(mContext.getString(R.string.dbname_contestlist))
                                     .child(mcontest.getCi())
-                                    .child("tr")
+                                    .child(mContext.getString(R.string.field_contest_report_list))
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                     .setValue(true)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -637,7 +635,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                                             DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
                                             reference2.child(mContext.getString(R.string.dbname_contestlist))
                                                     .child(mcontest.getCi())
-                                                    .child("tr")
+                                                    .child(mContext.getString(R.string.field_contest_report_list))
                                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -646,7 +644,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                                                                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                                                                 reference.child(mContext.getString(R.string.dbname_contests))
                                                                         .child(mcontest.getUi())
-                                                                        .child("reports")
+                                                                        .child(mContext.getString(R.string.field_contest_reports))
                                                                         .addListenerForSingleValueEvent(new ValueEventListener() {
                                                                             @Override
                                                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -655,13 +653,13 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                                                                                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                                                                                     reference.child(mContext.getString(R.string.dbname_contests))
                                                                                             .child(mcontest.getUi())
-                                                                                            .child("reports")
+                                                                                            .child(mContext.getString(R.string.field_contest_reports))
                                                                                             .setValue(x + 1);
                                                                                 } else {
                                                                                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                                                                                     reference.child(mContext.getString(R.string.dbname_contests))
                                                                                             .child(mcontest.getUi())
-                                                                                            .child("reports")
+                                                                                            .child(mContext.getString(R.string.field_contest_reports))
                                                                                             .setValue(1);
                                                                                 }
                                                                             }

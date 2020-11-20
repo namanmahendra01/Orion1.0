@@ -169,14 +169,13 @@ public class ViewContestDetails extends AppCompatActivity {
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contestlist));
         ref.child(contestId)
-                .child("participantlist")
+                .child(getString(R.string.field_Participant_List))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                            ok = true;
-                            Log.d(TAG, "onClick: lkj1" + ok);
 
                         }
 
@@ -844,7 +843,6 @@ public class ViewContestDetails extends AppCompatActivity {
     }
 
     private void juryProfile(String toString) {
-        Log.d(TAG, "juryProfile: "+toString);
         DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
 
         Query userquery = ref
