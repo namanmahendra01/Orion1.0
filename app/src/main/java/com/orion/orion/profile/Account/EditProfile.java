@@ -29,10 +29,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -60,6 +56,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 public class EditProfile extends AppCompatActivity {
     private static final String TAG = "EditProfile";
@@ -196,7 +196,7 @@ public class EditProfile extends AppCompatActivity {
         mGmailLink.setOnClickListener(v -> {
             title.setText("Add/Edit your email address");
             editComment.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-            if (gmail != null && !gmail.equals("")) {
+            if (gmail != null || !gmail.equals("")) {
                 buttonSubmit.setText("EDIT");
                 editComment.setText(gmail);
             } else editComment.setHint("Enter email address to add");
@@ -216,10 +216,13 @@ public class EditProfile extends AppCompatActivity {
         mInstagramLink.setOnClickListener(v -> {
             title.setText("Add/Edit your Instagram username");
             editComment.setInputType(InputType.TYPE_CLASS_TEXT);
-            if (instagramProfile != null && !instagramProfile.equals("")) {
+            if (instagramProfile != null || !instagramProfile.equals("")) {
                 buttonSubmit.setText("EDIT");
                 editComment.setText(instagramProfile);
-            } else editComment.setHint("Enter profile link to add");
+            } else {
+                editComment.setText(instagramProfile);
+                editComment.setHint("Enter profile link to add");
+            }
             buttonSubmit.setOnClickListener(view -> {
                 String text = String.valueOf(editComment.getText());
                 instagramProfile = text;
@@ -236,10 +239,13 @@ public class EditProfile extends AppCompatActivity {
         mFacebookLink.setOnClickListener(v -> {
             title.setText("Add/Edit your Facebook unique id");
             editComment.setInputType(InputType.TYPE_CLASS_TEXT);
-            if (facebookProfile != null && !facebookProfile.equals("")) {
+            if (facebookProfile != null || !facebookProfile.equals("")) {
                 buttonSubmit.setText("EDIT");
                 editComment.setText(facebookProfile);
-            } else editComment.setHint("Enter profile link to add");
+            } else {
+                editComment.setText(facebookProfile);
+                editComment.setHint("Enter profile link to add");
+            }
             buttonSubmit.setOnClickListener(view -> {
                 String text = String.valueOf(editComment.getText());
                 facebookProfile = text;
@@ -256,9 +262,12 @@ public class EditProfile extends AppCompatActivity {
         mTwitterLink.setOnClickListener(v -> {
             title.setText("Add/Edit your Twitter id");
             editComment.setInputType(InputType.TYPE_CLASS_TEXT);
-            if (twitterProfile != null && !twitterProfile.equals("")) {
+            if (twitterProfile != null || !twitterProfile.equals("")) {
                 buttonSubmit.setText("EDIT");
                 editComment.setText(twitterProfile);
+            } else {
+                editComment.setText(twitterProfile);
+                editComment.setHint("Enter profile link to add");
             }
             buttonSubmit.setOnClickListener(view -> {
                 String text = String.valueOf(editComment.getText());
@@ -276,10 +285,13 @@ public class EditProfile extends AppCompatActivity {
         mWhatsappLink.setOnClickListener(v -> {
             title.setText("Add/Edit your Whats app no");
             editComment.setInputType(InputType.TYPE_CLASS_PHONE);
-            if (whatsappNo != null && !whatsappNo.equals("")) {
+            if (whatsappNo != null || !whatsappNo.equals("")) {
                 buttonSubmit.setText("EDIT");
                 editComment.setText(whatsappNo);
-            } else editComment.setHint("Enter contact no. to add");
+            } else {
+                editComment.setText(whatsappNo);
+                editComment.setHint("Enter contact no. to add");
+            }
             buttonSubmit.setOnClickListener(view -> {
                 String text = String.valueOf(editComment.getText());
                 whatsappNo = text;

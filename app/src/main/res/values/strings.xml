@@ -46,7 +46,6 @@
     <string name="rule">Chairs (chairs, armchairs, lounge chairs, stools, benches and sofas): The main material shall be wood and upholstery. Beech, ash, oak, or walnut should be the wood species utilized, in either solid or plywood version. The Kvadrat textile collections should be used for upholstered pieces. The use of other materials such as metal, thermopolymer, and aluminum will also be accepted. Tables (meeting table, living tables and occasional tables): The principal material shall be “Solid Textile Board by Really” – a high-density material manufactured from Kvadrat textiles at the end of their life-cycle. The use of other materials such as wood, plywood, laminate, glass, metal, thermopolymer, and natural stones will be accepted. All designs presented should be new, not having been marketed or disclosed prior to the date of the Contest.</string>
 
 
-
     <!-- Databses names-->
     <string name="dbname_users">users</string>
     <string name="dbname_contests">Contests</string>
@@ -63,7 +62,6 @@
     <string name="dbname_ChatList">ChatList</string>
     <string name="db_topUsersParams">db_topUsersParams</string>
     <string name="dbname_username">username</string>
-
 
 
     <!-- Field Names -->

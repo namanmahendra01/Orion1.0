@@ -1,5 +1,6 @@
 package com.orion.orion.profile.Account;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -54,9 +55,9 @@ public class AccountSettingActivity extends AppCompatActivity {
         setupSettingList();
         backarrow.setOnClickListener(v -> finish());
         Log.d(TAG, "onCreate: started");
-
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void setupSettingList() {
         ArrayList<String> options = new ArrayList<>();
         options.add(getString(R.string.edit_profile));
@@ -104,7 +105,7 @@ public class AccountSettingActivity extends AppCompatActivity {
                     startActivity(i3);
                     break;
                 case 7:
-                    String url4 =getString(R.string.Terms_and_Condition);
+                    String url4 = getString(R.string.Terms_and_Condition);
                     Intent i4 = new Intent(Intent.ACTION_VIEW);
                     i4.setData(Uri.parse(url4));
                     startActivity(i4);

@@ -1,5 +1,6 @@
 package com.orion.orion.profile;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
@@ -115,6 +116,9 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView mParticipation;
     private TextView mRank;
 
+    private TextView judges;
+    private TextView gp;
+
     private TextView noPost;
 
     private TextView mDisplayName;
@@ -163,6 +167,9 @@ public class ProfileActivity extends AppCompatActivity {
         mCreations = findViewById(R.id.creations);
         mParticipation = findViewById(R.id.participations);
         mRank = findViewById(R.id.rank);
+
+        judges = findViewById(R.id.judge);
+        gp = findViewById(R.id.gp);
 
         mDisplayName = findViewById(R.id.display_name);
         mDescription = findViewById(R.id.description);
@@ -277,7 +284,6 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
         mLink1.setOnClickListener(v -> {
             try {
                 Uri uri = Uri.parse(String.valueOf(mLink1.getText()));
@@ -320,7 +326,6 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(mContext, " You don't have any browser to open web page", Toast.LENGTH_LONG).show();
             }
         });
-
         share_btn.setOnClickListener(v -> {
             YoYo.with(Techniques.FadeIn).duration(500).playOn(share_btn);
             if (checkPermissionArray(Permissions.PERMISSIONS)) {
@@ -341,9 +346,49 @@ public class ProfileActivity extends AppCompatActivity {
         getWins();
         getCreations();
         getParticipation();
+        getGP();
         mRank.setText(String.valueOf(rank));
         getRank();
         dialog.dismiss();
+    }
+
+    private void getGP() {
+        Query query = myRef.child(mContext.getString(R.string.dbname_contests))
+                .child(mAuth.getCurrentUser().getUid())
+                .child("completed");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    long y = (long) snapshot.getValue();
+                    myRef.child(mContext.getString(R.string.dbname_contests))
+                            .child(mAuth.getCurrentUser().getUid())
+                            .child("reports")
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        long x = (long) snapshot.getValue();
+                                        gp.setText((100 - (((x * 100) / y))) + "%");
+                                    } else gp.setText("100%");
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    gp.setText("100%");
+                                }
+                            });
+
+                } else gp.setText("100%");
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void getFans() {
@@ -356,7 +401,7 @@ public class ProfileActivity extends AppCompatActivity {
                     Log.d(TAG, "setUpInfoBox: fansCount" + size);
                     if (size == 0) mFans.setText("0");
                     else mFans.setText(String.valueOf(size));
-                }else{
+                } else {
                     mFans.setText("0");
                 }
             }
@@ -378,7 +423,7 @@ public class ProfileActivity extends AppCompatActivity {
                     Log.d(TAG, "setUpInfoBox: postsCount" + size);
                     if (size == 0) mPosts.setText("0");
                     else mPosts.setText(String.valueOf(size));
-                }else{
+                } else {
                     mPosts.setText("0");
                 }
             }
@@ -399,8 +444,8 @@ public class ProfileActivity extends AppCompatActivity {
                     long size = (long) snapshot.getValue();
                     Log.d(TAG, "setUpInfoBox: creations" + size);
 //                mCreations.setText((int) size);
-                 mCreations.setText(String.valueOf(size));
-                }else{
+                    mCreations.setText(String.valueOf(size));
+                } else {
                     mCreations.setText("0");
                 }
             }
@@ -422,7 +467,7 @@ public class ProfileActivity extends AppCompatActivity {
                     Log.d(TAG, "setUpInfoBox: creations" + size);
 //                mCreations.setText((int) size);
                     mCreations.setText(String.valueOf(size));
-                }else{
+                } else {
                     mCreations.setText("0");
                 }
             }
@@ -444,7 +489,7 @@ public class ProfileActivity extends AppCompatActivity {
                     Log.d(TAG, "setUpInfoBox: participationsCount" + size);
 //                mParticipation.setText((int) size);
                     mParticipation.setText(String.valueOf(size));
-                }else{
+                } else {
                     mParticipation.setText("0");
 
                 }
@@ -742,31 +787,31 @@ public class ProfileActivity extends AppCompatActivity {
                     Photo photo = new Photo();
                     Map<String, Object> objectMap = (Map<String, Object>) singleSnapshot.getValue();
 
-                        photo.setCap(objectMap.get(getString(R.string.field_caption)).toString());
-                        photo.setTg(objectMap.get(getString(R.string.field_tags)).toString());
-                        photo.setPi(objectMap.get(getString(R.string.field_photo_id)).toString());
-                        photo.setUi(objectMap.get(getString(R.string.field_user_id)).toString());
-                        photo.setDc(objectMap.get(getString(R.string.field_date_createdr)).toString());
-                        photo.setIp(objectMap.get(getString(R.string.field_image_path)).toString());
-                        if (objectMap.get(getString(R.string.thumbnail)) != null)
-                            photo.setT(objectMap.get(getString(R.string.thumbnail)).toString());
-                        photo.setTy(objectMap.get(getString(R.string.type)).toString());
-                        ArrayList<Comment> comments = new ArrayList<>();
-                        for (DataSnapshot dSnapshot : singleSnapshot.child(getString(R.string.field_comment)).getChildren()) {
-                            Comment comment = new Comment();
-                            comment.setUi(dSnapshot.getValue(Comment.class).getUi());
-                            comment.setC(dSnapshot.getValue(Comment.class).getC());
-                            comment.setDc(dSnapshot.getValue(Comment.class).getDc());
-                            comments.add(comment);
-                        }
-                        photo.setComments(comments);
-                        List<Like> likeList = new ArrayList<Like>();
-                        for (DataSnapshot dSnapshot : singleSnapshot.child(getString(R.string.field_likes)).getChildren()) {
-                            Like like = new Like();
-                            like.setUi(dSnapshot.getValue(Like.class).getUi());
-                            likeList.add(like);
-                        }
-                        photos.add(photo);
+                    photo.setCap(objectMap.get(getString(R.string.field_caption)).toString());
+                    photo.setTg(objectMap.get(getString(R.string.field_tags)).toString());
+                    photo.setPi(objectMap.get(getString(R.string.field_photo_id)).toString());
+                    photo.setUi(objectMap.get(getString(R.string.field_user_id)).toString());
+                    photo.setDc(objectMap.get(getString(R.string.field_date_createdr)).toString());
+                    photo.setIp(objectMap.get(getString(R.string.field_image_path)).toString());
+                    if (objectMap.get(getString(R.string.thumbnail)) != null)
+                        photo.setT(objectMap.get(getString(R.string.thumbnail)).toString());
+                    photo.setTy(objectMap.get(getString(R.string.type)).toString());
+                    ArrayList<Comment> comments = new ArrayList<>();
+                    for (DataSnapshot dSnapshot : singleSnapshot.child(getString(R.string.field_comment)).getChildren()) {
+                        Comment comment = new Comment();
+                        comment.setUi(dSnapshot.getValue(Comment.class).getUi());
+                        comment.setC(dSnapshot.getValue(Comment.class).getC());
+                        comment.setDc(dSnapshot.getValue(Comment.class).getDc());
+                        comments.add(comment);
+                    }
+                    photo.setComments(comments);
+                    List<Like> likeList = new ArrayList<Like>();
+                    for (DataSnapshot dSnapshot : singleSnapshot.child(getString(R.string.field_likes)).getChildren()) {
+                        Like like = new Like();
+                        like.setUi(dSnapshot.getValue(Like.class).getUi());
+                        likeList.add(like);
+                    }
+                    photos.add(photo);
 
                 }
                 imgURLsList.addAll(photos);
