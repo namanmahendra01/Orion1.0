@@ -31,11 +31,8 @@
         android:layout_height="250dp"
         android:layout_centerInParent="true"
         android:layout_centerVertical="true"
-        android:alpha="0.7"
-        android:elevation="5dp"
+        android:alpha="0.5"
         android:src="@drawable/notification_bell"
-        app:civ_border_overlay="true"
-        app:civ_circle_background_color="#E5E6EB" />
-
+        app:civ_border_overlay="true" />
 
 </RelativeLayout>
