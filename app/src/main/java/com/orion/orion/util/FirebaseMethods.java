@@ -1,7 +1,5 @@
 package com.orion.orion.util;
 
-import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -49,9 +47,6 @@ import com.orion.orion.contest.create.CheckContest;
 import com.orion.orion.contest.joined.JoiningForm;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.ParticipantList;
-import com.orion.orion.models.Photo;
-import com.orion.orion.profile.PostPhotoActivity;
-import com.orion.orion.profile.ProfileActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,9 +55,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -70,7 +62,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TimeZone;
 
 public class FirebaseMethods {
@@ -538,39 +529,69 @@ public class FirebaseMethods {
             ref.child(mContext.getString(R.string.dbname_contestlist))
                     .child(Conteskey)
                     .child(mContext.getString(R.string.field_result))
-                    .setValue(true);
-
-            ref.child(mContext.getString(R.string.dbname_contests))
-                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                    .child(mContext.getString(R.string.field_contest_completed))
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                    .setValue(true)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.exists()) {
-                                long x = (long) snapshot.getValue();
-                                ref.child(mContext.getString(R.string.dbname_contests))
-                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .child(mContext.getString(R.string.field_contest_completed))
-                                        .setValue(x + 1);
-                            } else {
-                                ref.child(mContext.getString(R.string.dbname_contests))
-                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .child(mContext.getString(R.string.field_contest_completed))
-                                        .setValue(1);
-                            }
-                        }
+                        public void onSuccess(Void aVoid) {
+                            ref.child(mContext.getString(R.string.dbname_contests))
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .child(mContext.getString(R.string.field_contest_completed))
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if (snapshot.exists()) {
+                                                long x = (long) snapshot.getValue();
+                                                ref.child(mContext.getString(R.string.dbname_contests))
+                                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                        .child(mContext.getString(R.string.field_contest_completed))
+                                                        .setValue(x + 1)
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                               publishResutFurther(manual, Conteskey,participantLists,
+                                                                   progress,activity,  winnerList);
+                                                            }
+                                                        });
+                                            } else {
+                                                ref.child(mContext.getString(R.string.dbname_contests))
+                                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                        .child(mContext.getString(R.string.field_contest_completed))
+                                                        .setValue(1).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                       publishResutFurther(manual, Conteskey, participantLists, progress, activity, winnerList);
+                                                    }
+                                                });
+                                            }
+                                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
 
+                                        }
+                                    });
                         }
                     });
+
+
         }else{
             ref.child(mContext.getString(R.string.dbname_contestlist))
                     .child(Conteskey)
                     .child(mContext.getString(R.string.field_result))
-                    .setValue(true);
+                    .setValue(true)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            publishResutFurther(manual, Conteskey, participantLists, progress, activity, winnerList);
+                        }
+                    });
         }
+
+
+    }
+
+    public void publishResutFurther(boolean manual, String Conteskey, ArrayList<ParticipantList> participantLists, LinearLayout progress, FragmentActivity activity, ArrayList<ParticipantList> winnerList) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
         ref.child(mContext.getString(R.string.dbname_contests))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -579,36 +600,36 @@ public class FirebaseMethods {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (!snapshot.child("jname_1").getValue().toString().equals("")){
+                        if (!snapshot.child(mContext.getString(R.string.field_jury_name_1)).getValue().toString().equals("")){
                             ref.child(mContext.getString(R.string.dbname_username))
-                                    .child(snapshot.child("jname_1").getValue().toString())
+                                    .child(snapshot.child(mContext.getString(R.string.field_jury_name_1)).getValue().toString())
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if (snapshot.exists()){
-                                                    DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
-                                                            .child(snapshot.getValue().toString())
-                                                            .child(mContext.getString(R.string.field_contest_judged));
+                                                DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
+                                                        .child(snapshot.getValue().toString())
+                                                        .child(mContext.getString(R.string.field_contest_judged));
 
-                                                          ref2.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                @Override
-                                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                    if (snapshot.exists()) {
-                                                                        long l = (long) snapshot.getValue();
-                                                                        ref2.setValue(l+1);
-                                                                    }else{
-                                                                        ref2.setValue(1);
-                                                                    }
+                                                ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        if (snapshot.exists()) {
+                                                            long l = (long) snapshot.getValue();
+                                                            ref2.setValue(l+1);
+                                                        }else{
+                                                            ref2.setValue(1);
+                                                        }
 
-                                                                }
+                                                    }
 
-                                                                @Override
-                                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                                                }
-                                                            });
+                                                    }
+                                                });
 
-                                                }
+                                            }
 
 
                                         }
@@ -619,36 +640,36 @@ public class FirebaseMethods {
                                         }
                                     });
                         }
-                        if (!snapshot.child("jname_2").getValue().toString().equals("")){
+                        if (!snapshot.child(mContext.getString(R.string.field_jury_name_2)).getValue().toString().equals("")){
                             ref.child(mContext.getString(R.string.dbname_username))
-                                    .child(snapshot.child("jname_2").getValue().toString())
+                                    .child(snapshot.child(mContext.getString(R.string.field_jury_name_2)).getValue().toString())
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if (snapshot.exists()){
-                                                    DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
-                                                            .child(snapshot.getValue().toString())
-                                                            .child(mContext.getString(R.string.field_contest_judged));
+                                                DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
+                                                        .child(snapshot.getValue().toString())
+                                                        .child(mContext.getString(R.string.field_contest_judged));
 
-                                                    ref2.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                            if (snapshot.exists()) {
-                                                                long l = (long) snapshot.getValue();
-                                                                ref2.setValue(l+1);
-                                                            }else{
-                                                                ref2.setValue(1);
-                                                            }
-
+                                                ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        if (snapshot.exists()) {
+                                                            long l = (long) snapshot.getValue();
+                                                            ref2.setValue(l+1);
+                                                        }else{
+                                                            ref2.setValue(1);
                                                         }
 
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError error) {
+                                                    }
 
-                                                        }
-                                                    });
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                                }
+                                                    }
+                                                });
+
+                                            }
 
                                         }
 
@@ -658,36 +679,36 @@ public class FirebaseMethods {
                                         }
                                     });
                         }
-                        if (!snapshot.child("jname_3").getValue().toString().equals("")){
+                        if (!snapshot.child(mContext.getString(R.string.field_jury_name_3)).getValue().toString().equals("")){
                             ref.child(mContext.getString(R.string.dbname_username))
-                                    .child(snapshot.child("jname_3").getValue().toString())
+                                    .child(snapshot.child(mContext.getString(R.string.field_jury_name_3)).getValue().toString())
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if (snapshot.exists()){
-                                                    DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
-                                                            .child(snapshot.getValue().toString())
-                                                            .child(mContext.getString(R.string.field_contest_judged));
+                                                DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
+                                                        .child(snapshot.getValue().toString())
+                                                        .child(mContext.getString(R.string.field_contest_judged));
 
-                                                    ref2.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                            if (snapshot.exists()) {
-                                                                long l = (long) snapshot.getValue();
-                                                                ref2.setValue(l+1);
-                                                            }else{
-                                                                ref2.setValue(1);
-                                                            }
-
+                                                ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        if (snapshot.exists()) {
+                                                            long l = (long) snapshot.getValue();
+                                                            ref2.setValue(l+1);
+                                                        }else{
+                                                            ref2.setValue(1);
                                                         }
 
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError error) {
+                                                    }
 
-                                                        }
-                                                    });
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                                }
+                                                    }
+                                                });
+
+                                            }
 
                                         }
 
@@ -714,6 +735,7 @@ public class FirebaseMethods {
                         .child(mContext.getString(R.string.field_contest_wins));
 
                 int finalX = x;
+                int finalX1 = x;
                 ref3.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot1) {
@@ -724,7 +746,14 @@ public class FirebaseMethods {
                             ref3.setValue(1);
 
                         }
+                        if (finalX1 ==winnerList.size()){
+                            sendNotyToParticipants(participantLists,progress);
+
+                        }
                     }
+
+
+
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
@@ -733,12 +762,22 @@ public class FirebaseMethods {
                 });
 
             }
+            if (winnerList.size()==0){
+                sendNotyToParticipants(participantLists, progress);
             }
+
+
+        }
+
+    }
+
+    private void sendNotyToParticipants(ArrayList<ParticipantList> participantLists, LinearLayout progress) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
         if (participantLists.size() != 0) {
             for (int x = 0; x < participantLists.size(); x++) {
 
-                  sendNotification(participantLists.get(x).getUi(), "", "Result has been declared of a contest.Check your ranking now.", "Result Declared");
+                sendNotification(participantLists.get(x).getUi(), "", "Result has been declared of a contest.Check your ranking now.", "Result Declared");
 
 
                 addToHisNotification("" + participantLists.get(x).getUi(), "Result has been declared of a contest.Check your ranking now.");

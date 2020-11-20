@@ -6,9 +6,9 @@
     <!-- User Permmissions needed -->
     <application
         android:name=".util.MyApplication"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/orion_logo_png"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/orion_logo_png"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"

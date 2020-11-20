@@ -266,6 +266,7 @@ public class MainActivity extends AppCompatActivity
 
                     }
                 });
+
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(getString(R.string.dbname_users))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -309,35 +310,38 @@ public class MainActivity extends AppCompatActivity
 
                     tablayout.getTabAt(0).setIcon(R.drawable.ic_bell_black);
 
-
-                    DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-                    db.child(getString(R.string.dbname_users))
-                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .child(getString(R.string.field_Notifications))
-                            .orderByChild(getString(R.string.field_if_seen))
-                            .equalTo("false")
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (snapshot.exists()) {
-                                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                                            if (tablayout.getSelectedTabPosition() == 0) {
-                                                db.child(getString(R.string.dbname_users))
-                                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                        .child(getString(R.string.field_Notifications))
-                                                        .child(snapshot1.getKey())
-                                                        .child(getString(R.string.field_if_seen))
-                                                        .setValue("true");
+                    tablayout.postDelayed((Runnable) () -> {
+                        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+                        db.child(getString(R.string.dbname_users))
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .child(getString(R.string.field_Notifications))
+                                .orderByChild(getString(R.string.field_if_seen))
+                                .equalTo("false")
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()) {
+                                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                                if (tablayout.getSelectedTabPosition() == 0) {
+                                                    db.child(getString(R.string.dbname_users))
+                                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                            .child(getString(R.string.field_Notifications))
+                                                            .child(snapshot1.getKey())
+                                                            .child(getString(R.string.field_if_seen))
+                                                            .setValue("true");
+                                                }
                                             }
                                         }
                                     }
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                }
-                            });
+                                    }
+                                });
+                    }, 10);
+
+
                 }
                 if (tablayout.getSelectedTabPosition()==2){
                     checkMessageSeen(context);
@@ -389,8 +393,6 @@ public class MainActivity extends AppCompatActivity
                                                 if (ds.exists()) {
 
                                                     Chat chat = ds.getValue(Chat.class);
-                                                    Log.d(TAG, "onDataChange: "+FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                                    Log.d(TAG, "onDataChange: "+chat.getRid());
                                                     if (!chat.getIfs()&&chat.getRid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                                         tablayout.getTabAt(2).setIcon(R.drawable.ic_chat_red);
                                                         x[0]++;

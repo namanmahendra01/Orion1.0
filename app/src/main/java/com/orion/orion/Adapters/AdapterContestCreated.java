@@ -101,9 +101,8 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
                 } else if (item.getItemId() == R.id.ic_house1) {
                     String message =
                             "https://play.google.com/store/apps/details?id=" + mContext.getPackageName() +
-                                    "Download ORION and share,participate in your domains contests."
-                                    + "Enter Contest key " + key + " in Contest"
-                                    + "Vote or Participate";
+                                    "\nDownload ORION to Participate and Vote in contests or share you skill."
+                                    + "\nEnter Contest key( *" + key + "* )in Contest Search to vote for this contest";
                     Intent share = new Intent(Intent.ACTION_SEND);
                     share.setType("text/plain");
                     share.putExtra(Intent.EXTRA_TEXT, message);
