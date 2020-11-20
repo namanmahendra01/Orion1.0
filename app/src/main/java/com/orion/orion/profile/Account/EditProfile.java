@@ -374,17 +374,17 @@ public class EditProfile extends AppCompatActivity {
             builder.setTitle("Are you sure")
                     .setMessage("You will discard all the changes you made?")
                     .setCancelable(false)
-                    .setPositiveButton("Yes", (dialog, id) -> finish())
+                    .setPositiveButton("Go back", (dialog, id) -> finish())
                     .setNegativeButton("No", (dialog, id) -> dialog.cancel())
                     .show();
         });
         checkmark.setOnClickListener(v -> {
             androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
             builder.setTitle("Are you sure")
-                    .setMessage("Would you not like to check changes once again?")
+                    .setMessage("Save changes you made?")
                     .setCancelable(false)
-                    .setPositiveButton("Yes", (dialog, id) -> dialog.cancel())
-                    .setNegativeButton("No", (dialog, id) -> saveProfileSetting())
+                    .setPositiveButton("Save", (dialog, id) -> saveProfileSetting())
+                    .setNegativeButton("No", (dialog, id) -> dialog.cancel())
                     .show();
         });
     }

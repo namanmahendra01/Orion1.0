@@ -62,7 +62,7 @@
                     android:layout_marginLeft="10dp"
                     android:gravity="right"
                     android:layout_toLeftOf="@+id/ivEllipses"
-                    android:text="Photographer"
+                    android:text=""
                     android:fontFamily="@font/orion"
                     android:textColor="@color/black"
                     android:maxLines="1"
@@ -328,14 +328,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                   />
-                    <com.orion.orion.util.SquareImageView
-                        android:id="@+id/progress"
-                        android:visibility="gone"
-                        android:src="@drawable/load"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        />
+
 
  <TextView
                         android:id="@+id/credit"

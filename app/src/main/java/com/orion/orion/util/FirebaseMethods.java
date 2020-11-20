@@ -617,6 +617,7 @@ public class FirebaseMethods {
                                                         if (snapshot.exists()) {
                                                             long l = (long) snapshot.getValue();
                                                             ref2.setValue(l+1);
+                                                            Log.d(TAG, "onDataChange: cgy 1");
                                                         }else{
                                                             ref2.setValue(1);
                                                         }
@@ -726,8 +727,11 @@ public class FirebaseMethods {
 
                     }
                 });
+        Log.d(TAG, "onDataChange: cgy 3"+winnerList+" "+participantLists);
 
         if (winnerList.size() != 0) {
+            Log.d(TAG, "onDataChange: cgy 2");
+
 
             for (int x = 0; x < winnerList.size(); x++) {
                 DatabaseReference ref3 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
@@ -741,15 +745,30 @@ public class FirebaseMethods {
                     public void onDataChange(@NonNull DataSnapshot snapshot1) {
                         if (snapshot1.exists()){
                             long l= (long)snapshot1.getValue();
-                            ref3.setValue(l+1);
+                            ref3.setValue(l+1)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            if (finalX1 ==winnerList.size()-1){
+                                                sendNotyToParticipants(participantLists,progress);
+
+                                            }
+                                        }
+                                    });
                         }else{
-                            ref3.setValue(1);
+                            ref3.setValue(1)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            if (finalX1 ==winnerList.size()-1){
+                                                sendNotyToParticipants(participantLists,progress);
+
+                                            }
+                                        }
+;                                    });
 
                         }
-                        if (finalX1 ==winnerList.size()){
-                            sendNotyToParticipants(participantLists,progress);
 
-                        }
                     }
 
 
@@ -773,8 +792,11 @@ public class FirebaseMethods {
 
     private void sendNotyToParticipants(ArrayList<ParticipantList> participantLists, LinearLayout progress) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        Log.d(TAG, "onDataChange: cgy 5");
 
         if (participantLists.size() != 0) {
+            Log.d(TAG, "onDataChange: cgy 4");
+
             for (int x = 0; x < participantLists.size(); x++) {
 
                 sendNotification(participantLists.get(x).getUi(), "", "Result has been declared of a contest.Check your ranking now.", "Result Declared");
@@ -796,6 +818,7 @@ public class FirebaseMethods {
                                             .child(mContext.getString(R.string.field_contest_participated))
                                             .setValue(l+ 1);
                                     if (finalX==participantLists.size()-1){
+                                        Log.d(TAG, "onDataChange: cgy 7");
 
                                         progress.setVisibility(View.GONE);
                                     }
@@ -805,6 +828,8 @@ public class FirebaseMethods {
                                             .child(mContext.getString(R.string.field_contest_participated))
                                             .setValue(1);
                                     if (finalX==participantLists.size()-1){
+                                        Log.d(TAG, "onDataChange: cgy 8");
+
                                         progress.setVisibility(View.GONE);
 
                                     }
@@ -820,6 +845,8 @@ public class FirebaseMethods {
 
             }
         }else {
+            Log.d(TAG, "onDataChange: cgy 6");
+
             progress.setVisibility(View.GONE);
 
         }
@@ -841,7 +868,6 @@ public class FirebaseMethods {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                Log.d(TAG, "onCreateView: timestampyesss" + date.getTime());
                 String timestamp = String.valueOf(date.getTime());
 
 

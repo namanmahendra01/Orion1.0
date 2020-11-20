@@ -76,7 +76,7 @@
             android:layout_marginBottom="20dp"
             android:backgroundTint="@color/white"
 
-            android:hint="Enter and Interesting Title or Caption"
+            android:hint="Enter Caption"
             android:imeOptions="actionNext"
             android:inputType="textFilter"
             android:textColor="@color/black"

@@ -493,7 +493,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                         profilelink = user.getPp();
                         try {
 
-                            Glide.with(mContext)
+                            Glide.with(mContext.getApplicationContext())
                                     .load(profilelink)
                                     .placeholder(R.drawable.load)
                                     .error(R.drawable.default_image2)

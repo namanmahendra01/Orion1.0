@@ -154,7 +154,6 @@ public class ViewPostActivity extends AppCompatActivity {
         duration = findViewById(R.id.duration);
         thumbnail = findViewById(R.id.thumbnail);
 
-
 //          Initialize SharedPreference variables
         sp = getApplicationContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
@@ -256,11 +255,13 @@ public class ViewPostActivity extends AppCompatActivity {
                     .placeholder(R.drawable.load)
                     .into(mPostImage);
             playerView.setVisibility(GONE);
+            thumbnail.setVisibility(GONE);
 
         } else {
             unmute.setVisibility(View.VISIBLE);
             play2.setVisibility(View.VISIBLE);
             mPostImage.setVisibility(View.GONE);
+            thumbnail.setVisibility(View.VISIBLE);
             playerView.setVisibility(View.VISIBLE);
         }
 

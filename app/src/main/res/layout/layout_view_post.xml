@@ -95,7 +95,10 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
                     app:cardBackgroundColor="@color/white"
+                    android:outlineAmbientShadowColor="@color/white"
+
                     app:cardCornerRadius="10dp"
                    >
                     <com.orion.orion.util.SquareImageView

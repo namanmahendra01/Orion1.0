@@ -89,7 +89,7 @@
     <string name="thumbnail">t</string>
     <string name="type">ty</string>
     <string name="field_last_updated_topUsers">luu</string>
-    <string name="field_overall">o</string>
+    <string name="field_overall">Overall</string>
     <string name="field_completed">cmp</string>
     <string name="contest_update">cu</string>
     <string name="changedFollowers">cf</string>

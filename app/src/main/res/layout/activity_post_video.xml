@@ -74,7 +74,7 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/rectangular_border"
             android:backgroundTint="@color/white"
-            android:hint="Enter Title or Caption"
+            android:hint="Enter Caption"
             android:imeOptions="actionNext"
             android:inputType="textFilter"
             android:textColor="@color/black"
@@ -93,7 +93,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/captionLine"
+            android:layout_margin="10dp"
             android:orientation="horizontal"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
             android:weightSum="3">
 
             <TextView
@@ -101,32 +104,34 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_margin="20dp"
                 android:layout_weight="1.5"
 
-                android:text="Pick a Thumbnail:"
-                android:textColor="#03A9F4"
-                android:textSize="15sp" />
+                android:text="Pick Thumbnail:"
+                android:textColor="#000000"
+                android:textSize="18sp" />
 
             <ImageView
                 android:id="@+id/thumbnailButton"
-                android:layout_width="0dp"
-                android:layout_height="20sp"
+                android:layout_width="20dp"
+                android:layout_gravity="center|center_vertical"
+                android:layout_height="30sp"
                 android:layout_centerVertical="true"
-                android:layout_marginTop="20dp"
                 android:layout_weight="0.5"
                 android:background="@color/scheme8"
                 android:src="@drawable/ic_add" />
 
-            <ImageView
-                android:id="@+id/thumbnailImage"
-                android:layout_width="20dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="20dp"
-                android:layout_weight="1"
-                android:src="@drawable/ic_star_black" />
+
         </LinearLayout>
+        <ImageView
+            android:id="@+id/thumbnailImage"
+            android:layout_width="40dp"
+            android:layout_below="@+id/relThumbnail"
+            android:layout_height="40dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/videoBox"

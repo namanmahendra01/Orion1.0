@@ -602,9 +602,9 @@ public class ViewProfileActivity extends AppCompatActivity {
                     long size = (long) snapshot.getValue();
                     Log.d(TAG, "setUpInfoBox: creations" + size);
 //                mCreations.setText((int) size);
-                    mCreations.setText(String.valueOf(size));
+                    mWins.setText(String.valueOf(size));
                 }else{
-                    mCreations.setText("0");
+                    mWins.setText("0");
                 }
             }
 

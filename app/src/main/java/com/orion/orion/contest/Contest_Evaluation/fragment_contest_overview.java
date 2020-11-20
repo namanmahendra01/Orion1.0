@@ -185,31 +185,36 @@ public class fragment_contest_overview extends Fragment {
                                                 synchronized (this) {
                                                     wait(1000);
 
-                                                    getActivity().runOnUiThread(() -> {
-                                                        if (result) {
-                                                            pubBtn2.setVisibility(View.VISIBLE);
-                                                            relWinner.setVisibility(View.VISIBLE);
-                                                        } else {
-                                                            if ((Long.parseLong(winD) + 172800000) < Long.parseLong(timestamp)) {
-                                                                publishResultAutomatically();
-                                                            } else if (Long.parseLong(winD) <= Long.parseLong(timestamp)) {
-                                                                pubBtn.setVisibility(View.VISIBLE);
+                                                    if (getActivity() != null) {
+                                                        getActivity().runOnUiThread(() -> {
+                                                            if (result) {
+                                                                pubBtn2.setVisibility(View.VISIBLE);
                                                                 relWinner.setVisibility(View.VISIBLE);
                                                             } else {
-                                                                relWinner.setVisibility(View.GONE);
+                                                                if ((Long.parseLong(winD) + 172800000) < Long.parseLong(timestamp)) {
+                                                                    publishResultAutomatically();
+                                                                } else if (Long.parseLong(winD) <= Long.parseLong(timestamp)) {
+                                                                    pubBtn.setVisibility(View.VISIBLE);
+                                                                    relWinner.setVisibility(View.VISIBLE);
+                                                                } else {
+                                                                    relWinner.setVisibility(View.GONE);
+                                                                }
                                                             }
-                                                        }
-                                                    });
+                                                        });
+                                                    }
                                                 }
-                                            } catch (InterruptedException e) {
-                                                e.printStackTrace();
+                                                } catch(InterruptedException e){
+                                                    e.printStackTrace();
+                                                }
                                             }
+
+                                            ;
                                         }
 
                                         ;
-                                    };
                                     thread.start();
-                                }
+                                    }
+
                             }
 
                             @Override
@@ -258,6 +263,7 @@ public class fragment_contest_overview extends Fragment {
                             x++;
                             participantLists.add(snapshot.getValue(ParticipantList.class));
                             if (x == dataSnapshot.getChildrenCount()) {
+                                Log.d(TAG, "onDataChange: cgy kok");
                                 getWinners(participantLists, false);
                             }
                         }
@@ -271,14 +277,20 @@ public class fragment_contest_overview extends Fragment {
     }
 
     private void getWinners(ArrayList<ParticipantList> participantLists, boolean manual) {
+        Log.d(TAG, "getWinners: cgy lol");
+        participantLists2.clear();
         Collections.sort(participantLists, (o1, o2) -> Integer.compare(o1.getTs(), o2.getTs()));
         Collections.reverse(participantLists);
         try {
             for (int x = 0; x < 3; x++) {
                 participantLists2.add(participantLists.get(x));
+                if (x==participantLists.size()-1){
+                    break;
+                }
             }
         } catch (IndexOutOfBoundsException e) {
         }
+        Log.d(TAG, "getWinners: cgy"+participantLists2.size());
         mFirebaseMethods.publishResut(manual, Conteskey, participantLists, progress, getActivity(), participantLists2);
         pubBtn2.setVisibility(View.VISIBLE);
         relWinner.setVisibility(View.VISIBLE);
@@ -586,6 +598,7 @@ public class fragment_contest_overview extends Fragment {
         if (participantLists == null) {    //        if no arrayList is present
             participantLists = new ArrayList<>();
         }
+        Log.d(TAG, "getParticipantListFromSP: cgy"+participantLists.size());
         getRank();
         juryMarksTable(Conteskey);
         juryAndPublicMarksTable(Conteskey);
