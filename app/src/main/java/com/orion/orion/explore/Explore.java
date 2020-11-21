@@ -264,6 +264,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
             overall.setTextColor(getResources().getColor(R.color.scheme8));
             domain.setTextColor(getResources().getColor(R.color.black));
             swipeRefreshLayout.setRefreshing(true);
+            SELECTED_FILTER = "Overall";
             displayPhotos(SELECTED_FILTER);
             overall.setClickable(false);
             domain.setClickable(true);
@@ -534,8 +535,8 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                 if (previousTimeStamp == null || previousTimeStamp.equals("")) {
                     Log.d(TAG, "checkLastFetched: starting fetching users as previousTimeStamp is null or not found - " + field);
                     String firstField = "Overall";
-                    if (field.equals("Overall")) fetchTopUsers(field, "");
-                    else fetchTopUsers(field, firstField);
+                    if (field.equals("Overall")) fetchTopUsers(field);
+                    else fetchTopUsers(field);
                 } else {
                     SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
                         @Override
@@ -567,16 +568,13 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                             } catch (ParseException e) {
                                 e.printStackTrace();
                                 Log.d(TAG, "checkLastFetched: starting fetching users as we ran into error finding timestamp - " + field);
-                                String firstField = "Overall";
-                                fetchTopUsers(field, firstField);
+                                fetchTopUsers(field);
                                 if (field.equals("Overall"))
-                                    fetchTopUsers(field, "");
+                                    fetchTopUsers(field);
                             }
                             if (elapsedDays > currentDay) {
                                 Log.d(TAG, "checkLastFetched: starting fetching users as database is of last week - " + field);
-                                String firstField = "Overall";
-                                if (field.equals("Overall")) fetchTopUsers(field, "");
-                                else fetchTopUsers(field, firstField);
+                                fetchTopUsers(field);
                             } else if (field.equals(USER_DOMAIN)) checkPostsFetched();
                         }
 
@@ -584,9 +582,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                         public void onError(Exception ex) {
                             Log.d(TAG, "onError: SNTPClient fetching TopUsers from shared Preferences" + ex.getMessage());
                             Log.d(TAG, "fetching again");
-                            String firstField = "Overall";
-                            if (field.equals("Overall")) fetchTopUsers(field, "");
-                            else fetchTopUsers(field, firstField);
+                            fetchTopUsers(field);
                         }
                     });
                 }
@@ -604,12 +600,9 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
             String json = mPreferences.getString(field + "_TopPosts", null);
             Set<String> set = mPreferences.getStringSet(field + "_TopUsers", null);
             int completed = mPreferences.getInt(field + "_completed", 0);
-            if (set == null) {
-//                handler.postDelayed(() -> checkPostsFetched(), RETRY_DURATION);
-            } else {
-//                handler.removeCallbacksAndMessages(checkPostsFetched(););
+            if (set != null) {
                 if (json == null || previousTimeStamp == null || previousTimeStamp.equals("")) {
-                    Log.d(TAG, "checkPostsFetched: starting getPosts as previous timestamp is null - " + field);
+                    Log.d(TAG, "checkPostsFetched: fetching photos as previous timestamp is null - " + field);
                     getPosts(field, completed);
                 } else {
                     if (completed < set.size()) getPosts(field, completed);
@@ -639,11 +632,11 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                                     elapsedDays = (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24);
                                 } catch (ParseException e) {
                                     e.printStackTrace();
-                                    Log.d(TAG, "checkPostsFetched: starting getPosts as we ran into error - " + field);
+                                    Log.d(TAG, "checkPostsFetched: fetching photos as we ran into error - " + field);
                                     getPosts(field, completed);
                                 }
                                 if (elapsedDays > currentDay) {
-                                    Log.d(TAG, "checkPostsFetched: starting getPosts local database is outdated - " + field);
+                                    Log.d(TAG, "checkPostsFetched: fetching photos local database is outdated - " + field);
                                     getPosts(field, completed);
                                 } else {
                                     if (field.equals(USER_DOMAIN)) {
@@ -655,7 +648,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                             @Override
                             public void onError(Exception ex) {
                                 Log.d(TAG, "onError: SNTPClient fetching TopUsers from shared Preferences" + ex.getMessage());
-                                Log.d(TAG, "checkPostsFetched: starting getPosts as we ran into error - " + field);
+                                Log.d(TAG, "checkPostsFetched:fetching photos as we ran into error - " + field);
                                 getPosts(field, completed);
                             }
                         });
@@ -758,8 +751,8 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
         });
     }
 
-    private void fetchTopUsers(String firstField, String secondField) {
-        Log.d(TAG, "fetchTopUsers: started for fields " + firstField + "," + secondField);
+    private void fetchTopUsers(String firstField) {
+        Log.d(TAG, firstField + ": fetchTopUsers: started");
         ArrayList<String> mTopUsersList = new ArrayList<>();
         Query query = reference.child(getString(R.string.db_topUsersParams)).child(firstField);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -774,7 +767,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                             if (!userID.equals("") && !mTopUsersList.contains(userID) && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userID))
                                 mTopUsersList.add(userID);
                         } else {
-                            Log.d(TAG, "fetchTopUsers: users added by first field - " + mTopUsersList.size());
+                            Log.d(TAG, firstField + ": fetchTopUsers: size after first field - " + mTopUsersList.size());
                             Query query1 = reference.child(getString(R.string.dbname_leaderboard)).child(mUser.getUid());
                             query1.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
@@ -785,7 +778,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                                         int currentUserRating = (int) (long) snapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_post)).getValue()
                                                 + (int) (long) snapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).getValue()
                                                 + (int) (long) snapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
-                                        Log.d(TAG, "fetchTopUsers: location - " + currentUserCity + " : " + currentUserRating);
+                                        Log.d(TAG, firstField + ": fetchTopUsers: location - " + currentUserCity + " : " + currentUserRating);
                                         Query query11 = reference.child(getString(R.string.dbname_leaderboard));
                                         query11.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
@@ -800,99 +793,99 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                                                                 mTopUsersList.add(userID);
                                                         }
                                                     }
-                                                    Log.d(TAG, "fetchTopUsers: users added via location - " + mTopUsersList.size());
+                                                    Log.d(TAG, firstField + ": fetchTopUsers: size after location - " + mTopUsersList.size());
 
+//                                                    if (mTopUsersList.size() < TOTAL_USER_SIZE) {
+//                                                        Query query2 = reference.child(getString(R.string.dbname_users)).child(mUser.getUid()).child(getString(R.string.field_domain));
+//                                                        query2.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                            @Override
+//                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                                                if (snapshot.exists()) {
+//                                                                    String domain = String.valueOf(snapshot.getValue());
+//                                                                    if (!domain.equals("")) {
+//                                                                        if (!secondField.equals(""))
+//                                                                            domain = secondField;
+//                                                                        Query query22 = reference.child(getString(R.string.db_topUsersParams)).child(domain);
+//                                                                        query22.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                                            @Override
+//                                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                                                                if (snapshot.exists()) {
+//                                                                                    for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
+//                                                                                        String key = singleSnapshot.getKey();
+//                                                                                        String userID = String.valueOf(singleSnapshot.getValue());
+//                                                                                        assert key != null;
+//                                                                                        if (!key.equals(getString(R.string.field_completed))) {
+//                                                                                            if (!userID.equals("") && !mTopUsersList.contains(userID)) {
+//                                                                                                Log.d(TAG, "fetchTopUsers: adding left" + firstField + " : " + mTopUsersList);
+//                                                                                                if (!userID.equals("") && !mTopUsersList.contains(userID) && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userID))
+//                                                                                                    mTopUsersList.add(userID);
+//                                                                                            }
+//                                                                                        }
+//                                                                                    }
+//                                                                                    Log.d(TAG, "fetchTopUsers: users added via second field - " + mTopUsersList.size());
+//                                                                                    SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
+//                                                                                        @Override
+//                                                                                        public void onTimeReceived(String currentTimeSTamp) {
+//                                                                                            Set<String> set = new HashSet<>(mTopUsersList);
+//                                                                                            Log.d(TAG, "fetchTopUsers: adding set of " + set.size() + " on field " + firstField);
+//                                                                                            mEditor.putString(firstField + "_fieldLastFetched", currentTimeSTamp);
+//                                                                                            mEditor.putStringSet(firstField + "_TopUsers", set);
+//                                                                                            mEditor.apply();
+//                                                                                            if (firstField.equals(USER_DOMAIN))
+//                                                                                                checkPostsFetched();
+//                                                                                            Log.d(TAG, "fetchTopUsers: total users added - " + mTopUsersList.size());
+//                                                                                        }
+//
+//                                                                                        @Override
+//                                                                                        public void onError(Exception ex) {
+//                                                                                            Log.d(TAG, "onError: SNTPClient updating shared preferences" + ex.getMessage());
+//                                                                                        }
+//                                                                                    });
+//
+//                                                                                }
+//                                                                            }
+//
+//                                                                            @Override
+//                                                                            public void onCancelled(@NonNull DatabaseError error) {
+//
+//                                                                            }
+//                                                                        });
+//                                                                    }
+//                                                                }
+//
+//                                                            }
+//
+//                                                            @Override
+//                                                            public void onCancelled(@NonNull DatabaseError error) {
+//
+//                                                            }
+//                                                        });
+//                                                    } else {
+//                                                    Log.d(TAG, "fetchTopUsers: users added via second field - " + firstField + " -> " + mTopUsersList.size());
+                                                    SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
+                                                        @Override
+                                                        public void onTimeReceived(String currentTimeSTamp) {
+                                                            Set<String> set = new HashSet<>(mTopUsersList);
+                                                            mEditor.putString(firstField + "_fieldLastFetched", currentTimeSTamp);
+                                                            mEditor.putStringSet(firstField + "_TopUsers", set);
+                                                            mEditor.apply();
+                                                            if (firstField.equals(USER_DOMAIN))
+                                                                checkPostsFetched();
+                                                            Log.d(TAG, firstField + ": fetchTopUsers: added set of  - " + set.size());
+                                                        }
 
-                                                    if (mTopUsersList.size() < TOTAL_USER_SIZE) {
-                                                        Query query2 = reference.child(getString(R.string.dbname_users)).child(mUser.getUid()).child(getString(R.string.field_domain));
-                                                        query2.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                            @Override
-                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                if (snapshot.exists()) {
-                                                                    String domain = String.valueOf(snapshot.getValue());
-                                                                    if (!domain.equals("")) {
-                                                                        if (!secondField.equals(""))
-                                                                            domain = secondField;
-                                                                        Query query22 = reference.child(getString(R.string.db_topUsersParams)).child(domain);
-                                                                        query22.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                            @Override
-                                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                                if (snapshot.exists()) {
-                                                                                    for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-                                                                                        String key = singleSnapshot.getKey();
-                                                                                        String userID = String.valueOf(singleSnapshot.getValue());
-                                                                                        assert key != null;
-                                                                                        if (!key.equals(getString(R.string.field_completed))) {
-                                                                                            if (!userID.equals("") && !mTopUsersList.contains(userID)) {
-                                                                                                Log.d(TAG, "fetchTopUsers: adding left" + firstField + " : " + mTopUsersList);
-                                                                                                if (!userID.equals("") && !mTopUsersList.contains(userID) && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userID))
-                                                                                                    mTopUsersList.add(userID);
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                    Log.d(TAG, "fetchTopUsers: users added via second field - " + mTopUsersList.size());
-                                                                                    SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
-                                                                                        @Override
-                                                                                        public void onTimeReceived(String currentTimeSTamp) {
-                                                                                            Set<String> set = new HashSet<>(mTopUsersList);
-                                                                                            Log.d(TAG, "fetchTopUsers: adding set of " + set.size() + " on field " + firstField);
-                                                                                            mEditor.putString(firstField + "_fieldLastFetched", currentTimeSTamp);
-                                                                                            mEditor.putStringSet(firstField + "_TopUsers", set);
-                                                                                            mEditor.apply();
-                                                                                            if (firstField.equals(USER_DOMAIN))
-                                                                                                checkPostsFetched();
-                                                                                            Log.d(TAG, "fetchTopUsers: total users added - " + mTopUsersList.size());
-                                                                                        }
-
-                                                                                        @Override
-                                                                                        public void onError(Exception ex) {
-                                                                                            Log.d(TAG, "onError: SNTPClient updating shared preferences" + ex.getMessage());
-                                                                                        }
-                                                                                    });
-
-                                                                                }
-                                                                            }
-
-                                                                            @Override
-                                                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                }
-
-                                                            }
-
-                                                            @Override
-                                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                                            }
-                                                        });
-                                                    } else {
-                                                        Log.d(TAG, "fetchTopUsers: mTopUsersList.size() - " + mTopUsersList.size());
-                                                        SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
-                                                            @Override
-                                                            public void onTimeReceived(String currentTimeSTamp) {
-                                                                Set<String> set = new HashSet<>(mTopUsersList);
-                                                                Log.d(TAG, "fetchTopUsers: adding set of " + set.size() + " on field " + firstField);
-                                                                mEditor.putString(firstField + "_fieldLastFetched", currentTimeSTamp);
-                                                                mEditor.putStringSet(firstField + "_TopUsers", set);
-                                                                mEditor.apply();
-                                                                Log.d(TAG, "fetchTopUsers: fetch complete for field " + firstField + " staring posts fetch");
-                                                            }
-
-                                                            @Override
-                                                            public void onError(Exception ex) {
-                                                                Log.d(TAG, "onError: SNTPClient updating shared preferences" + ex.getMessage());
-                                                            }
-                                                        });
-                                                    }
+                                                        @Override
+                                                        public void onError(Exception ex) {
+                                                            Log.d(TAG, firstField + ": onError: SNTPClient updating shared preferences: " + ex.getMessage());
+                                                        }
+                                                    });
                                                 }
+//                                                }
                                             }
 
                                             @Override
                                             public void onCancelled(@NonNull DatabaseError error) {
-
+                                                Log.d(TAG, firstField + ": onCancelled: Error: " + error.getMessage());
                                             }
                                         });
 
@@ -901,28 +894,44 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
-
+                                    Log.d(TAG, firstField + ": onCancelled: Error: " + error.getMessage());
                                 }
 
                             });
 
                         }
                     }
-                }
+                } else
+                    SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
+                        @Override
+                        public void onTimeReceived(String currentTimeSTamp) {
+                            Set<String> set = new HashSet<>(mTopUsersList);
+                            mEditor.putString(firstField + "_fieldLastFetched", currentTimeSTamp);
+                            mEditor.putStringSet(firstField + "_TopUsers", set);
+                            mEditor.apply();
+                            if (firstField.equals(USER_DOMAIN))
+                                checkPostsFetched();
+                            Log.d(TAG, firstField + ": fetchTopUsers: added set of  - " + set.size());
+                        }
+
+                        @Override
+                        public void onError(Exception ex) {
+                            Log.d(TAG, firstField + ": onError: SNTPClient updating shared preferences: " + ex.getMessage());
+                        }
+                    });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.d(TAG, firstField + ": onCancelled: Error: " + error.getMessage());
             }
         });
     }
 
     private void getPosts(String field, int startingIndex) {
-        Log.d(TAG, "getPosts: started for field - " + field);
+        Log.d(TAG, field + ": getPosts: started");
         Set<String> set = mPreferences.getStringSet(field + "_TopUsers", null);
-        if (set == null) {
-        } else {
+        if (set != null) {
             ArrayList<String> mTopUsersList = new ArrayList<>(set);
             Gson gson = new Gson();
             String json = mPreferences.getString(field + "_TopPosts", null);
@@ -933,13 +942,22 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                 }.getType();
                 fieldPhotos = gson.fromJson(json, type);
             }
-            Log.d(TAG, "getPosts: found photos of size " + fieldPhotos.size() + " for users " + set.size());
+            Log.d(TAG, field + ": getPosts: found photos of size  - " + fieldPhotos.size() + " for users - " + set.size());
             SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
                 @Override
                 public void onTimeReceived(String currentTimeSTamp) {
-                    for (int i = startingIndex; i < mTopUsersList.size(); i++) {
+                    if (mTopUsersList.size() == 0) {
+                        Gson gson = new Gson();
+                        String json = gson.toJson(fieldPhotos);
+                        mEditor.putString(field + "_PostsLastUpdated", currentTimeSTamp);
+                        mEditor.putString(field + "_TopPosts", json);
+                        mEditor.putInt(field + "_completed", 0);
+                        mEditor.apply();
+                        displayPhotos(SELECTED_FILTER);
+                        Log.d(TAG, field + ": getPosts: uploading photos of - " + fieldPhotos.size());
+                    } else for (int i = startingIndex; i < mTopUsersList.size(); i++) {
                         String userId = mTopUsersList.get(i);
-                        Log.d(TAG, "getPosts: fetching for index " + i + " and userId " + userId);
+                        Log.d(TAG, field + ": getPosts: fetching userId - " + userId);
                         Query query = reference.child(getString(R.string.dbname_user_photos)).child(userId);
                         int finalI = i;
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -949,10 +967,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                                     for (DataSnapshot singleSnapshot : snapshot.getChildren())
                                         if (singleSnapshot.exists()) {
                                             Photo photo = singleSnapshot.getValue(Photo.class);
-                                            Log.d(TAG, "photo.getPi()" + photo.getPi());
                                             boolean exists = false;
-                                            Log.d(TAG, "onDataChange: photo size" + fieldPhotos.size());
-                                            Log.d(TAG, "onDataChange: photo photo" + photo.getIp());
                                             for (Photo existingPhoto : fieldPhotos) {
                                                 if (photo.equals(existingPhoto)) {
                                                     exists = true;
@@ -970,12 +985,13 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                                     else mEditor.putInt(field + "_completed", finalI);
                                     mEditor.apply();
                                     displayPhotos(SELECTED_FILTER);
-                                    Log.d(TAG, "getPosts: uploading " + fieldPhotos.size() + " photos for " + field);
+                                    Log.d(TAG, field + ": getPosts: uploading photos of size - " + fieldPhotos.size());
                                 }
                             }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
+                                Log.d(TAG, field + ": getPosts: Error - " + error.getMessage());
 
                             }
                         });
@@ -984,6 +1000,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
 
                 @Override
                 public void onError(Exception ex) {
+                    Log.d(TAG, field + ": getPosts: Error - " + ex.getMessage());
                 }
             });
         }
@@ -996,12 +1013,10 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-                        if (!singleSnapshot.getValue().toString().equals("") && !singleSnapshot.getKey().equals(getString(R.string.field_completed))) {
+                    for (DataSnapshot singleSnapshot : snapshot.getChildren())
+                        if (!singleSnapshot.getValue().toString().equals("") && !singleSnapshot.getKey().equals(getString(R.string.field_completed)))
                             topUser8.add(singleSnapshot.getValue().toString());
-                        }
-                        Log.d(TAG, "getTop8: topUser" + topUser8);
-                    }
+                    Log.d(TAG, "getTop8: topUser" + topUser8);
                     getStarImage(topUser8);
                 }
             }
@@ -1060,7 +1075,6 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
     }
 
     private void setImage(String link, CircleImageView imageView) {
-
         Glide.with(Explore.this)
                 .load(link)
                 .placeholder(R.drawable.load)
@@ -1074,26 +1088,24 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
         requestedFromSelectListener = false;
         findViewById(R.id.noPost).setVisibility(View.GONE);
         if (swipeRefreshLayout.isRefreshing()) {
-            Log.d(TAG, "displayPhotos: started" + field);
+            Log.d(TAG, field + ": displayPhotos: started");
             paginatedPhotos.clear();
             fieldPhotos.clear();
             if (adapterGridImage != null) adapterGridImage.notifyDataSetChanged();
             Gson gson = new Gson();
             String json = mPreferences.getString(field + "_TopPosts", null);
-            if (json == null || json.equals("")) {
-//                handler.postDelayed(this::displayPhotos, RETRY_DURATION);
-            } else {
-//                handler.removeCallbacksAndMessages(this);
+            Log.d(TAG, field + ": displayPhotos: json     " + json);
+            if (json != null && !json.equals("")) {
                 Type type = new TypeToken<List<Photo>>() {
                 }.getType();
                 fieldPhotos = gson.fromJson(json, type);
-                Log.d(TAG, "displayPhotos: photos retrieved " + fieldPhotos.size());
+                Log.d(TAG, field + ": photos retrieved " + fieldPhotos.size());
                 Query query = reference.child(getString(R.string.explore_update));
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.child(getString(R.string.field_last_updated)).exists()) {
-                            Log.d(TAG, "displayPhotos: checking if posts need to be deleted");
+                            Log.d(TAG, field + ": displayPhotos: checking if posts need to be deleted");
                             String previousTimeStamp = String.valueOf(snapshot.child(getString(R.string.field_last_updated)).getValue());
                             SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
                                 @Override
@@ -1126,7 +1138,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                                     }
 
                                     if (elapsedDays <= currentDay) {
-                                        Log.d(TAG, "displayPhotos: deleting posts");
+                                        Log.d(TAG, field + ": displayPhotos: deleting posts");
                                         ArrayList<Photo> fieldPhotos2 = new ArrayList<>(fieldPhotos);
                                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                                             for (Photo photo : fieldPhotos)
@@ -1135,22 +1147,22 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                                                     break;
                                                 }
                                         }
-                                        Log.d(TAG, "displayPhotos: " + fieldPhotos2.size());
+                                        Log.d(TAG, field + ": displayPhotos: " + fieldPhotos2.size());
                                         Gson gson = new Gson();
                                         String json = gson.toJson(fieldPhotos2);
                                         mEditor.putString(field + "_PostsLastUpdated", currentTimeStamp);
                                         mEditor.putString(field + "_TopPosts", json);
                                         mEditor.putInt(field + "_completed", fieldPhotos2.size());
                                         mEditor.apply();
-                                        Log.d(TAG, "displayPhotos: uploading after deletion" + fieldPhotos2.size() + " photos for " + field);
+                                        Log.d(TAG, field + ": displayPhotos: uploading after deletion" + fieldPhotos2.size() + " photos for " + field);
                                     }
                                     fetchPhotos();
                                 }
 
                                 @Override
                                 public void onError(Exception ex) {
-                                    Log.d(TAG, "onError: SNTPClient fetching TopUsers from shared Preferences" + ex.getMessage());
-                                    Log.d(TAG, "fetching again");
+                                    Log.d(TAG, field + ": onError: SNTPClient fetching TopUsers from shared Preferences" + ex.getMessage());
+                                    Log.d(TAG, field + ": fetching again");
                                     fetchPhotos();
                                 }
                             });
@@ -1195,9 +1207,12 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
 
         } catch (NullPointerException e) {
             Log.e(TAG, "Null pointer exception" + e.getMessage());
-
+            swipeRefreshLayout.setRefreshing(false);
+            findViewById(R.id.noPost).setVisibility(View.VISIBLE);
         } catch (IndexOutOfBoundsException e) {
             Log.e(TAG, "index out of bound" + e.getMessage());
+            swipeRefreshLayout.setRefreshing(false);
+            findViewById(R.id.noPost).setVisibility(View.VISIBLE);
         }
     }
 

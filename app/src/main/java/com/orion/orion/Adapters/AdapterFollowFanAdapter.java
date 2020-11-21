@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -99,6 +100,35 @@ public class AdapterFollowFanAdapter extends RecyclerView.Adapter<AdapterFollowF
                 myRef.child(mContext.getString(R.string.dbname_users)).child(itemFollow.getUserId()).child(mContext.getString(R.string.changedFollowers)).setValue("true");
                 holder.followButton.setText("Follow");
                 itemFollow.setFollowing(false);
+                myRef.child(mContext.getString(R.string.dbname_users))
+                        .child(itemFollow.getUserId())
+                        .child(mContext.getString(R.string.field_Notifications))
+                        .orderByKey()
+                        .limitToLast(3)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        if (dataSnapshot.exists() && dataSnapshot.child(mContext.getString(R.string.field_notification_message)).getValue().equals("becomes your FAN!")
+                                                && dataSnapshot.child("sUid").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                            myRef.child(mContext.getString(R.string.dbname_users))
+                                                    .child(itemFollow.getUserId())
+                                                    .child(mContext.getString(R.string.field_Notifications))
+                                                    .child(dataSnapshot.getKey()).removeValue()
+                                                    .addOnSuccessListener(aVoid -> Toast.makeText(mContext, "Notification Deleted", Toast.LENGTH_SHORT).show())
+                                                    .addOnFailureListener(e -> Toast.makeText(mContext, "Notification not Deleted", Toast.LENGTH_SHORT).show());
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
             }
             //follow
             else {

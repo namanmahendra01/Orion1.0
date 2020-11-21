@@ -263,6 +263,35 @@ public class ViewProfileActivity extends AppCompatActivity {
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_follower)).child(mUser).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_users)).child(mUser).child(getString(R.string.changedFollowers)).setValue("true");
                 mFollow.setText("Follow");
+                myRef.child(mContext.getString(R.string.dbname_users))
+                        .child(mUser)
+                        .child(mContext.getString(R.string.field_Notifications))
+                        .orderByKey()
+                        .limitToLast(3)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        if (dataSnapshot.exists() && dataSnapshot.child(mContext.getString(R.string.field_notification_message)).getValue().equals("becomes your FAN!")
+                                                && dataSnapshot.child("sUid").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                            myRef.child(mContext.getString(R.string.dbname_users))
+                                                    .child(mUser)
+                                                    .child(mContext.getString(R.string.field_Notifications))
+                                                    .child(dataSnapshot.getKey()).removeValue()
+                                                    .addOnSuccessListener(aVoid -> Toast.makeText(mContext, "Notification Deleted", Toast.LENGTH_SHORT).show())
+                                                    .addOnFailureListener(e -> Toast.makeText(mContext, "Notification not Deleted", Toast.LENGTH_SHORT).show());
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
             } else {
 //               addfollowing list
                 isFollowing = true;
