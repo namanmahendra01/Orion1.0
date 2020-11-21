@@ -3,7 +3,7 @@ package com.orion.orion.models;
 public class ContestDetail {
 
 
-    String ef, d, ui, ci, vt, tim, rb, re, vb, ve, wd, mLt;
+    String ef, d, ui, ci, vt, tim, rb, re, vb, ve, wd, mlt;
     Boolean r;
 
  public ContestDetail(){}
@@ -104,12 +104,12 @@ public class ContestDetail {
         this.r = result;
     }
 
-    public String getMLt() {
-        return mLt;
+    public String getMlt() {
+        return mlt;
     }
 
-    public void setMLt(String maxLimit) {
-        this.mLt = maxLimit;
+    public void setMlt(String maxLimit) {
+        this.mlt = maxLimit;
     }
 
     @Override
@@ -126,7 +126,7 @@ public class ContestDetail {
                 ", vb='" + vb + '\'' +
                 ", ve='" + ve + '\'' +
                 ", wd='" + wd + '\'' +
-                ", mLt='" + mLt + '\'' +
+                ", mlt='" + mlt + '\'' +
                 ", r=" + r +
                 '}';
     }

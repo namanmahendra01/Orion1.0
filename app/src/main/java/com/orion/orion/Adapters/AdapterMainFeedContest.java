@@ -198,8 +198,8 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
                                                             @Override
                                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                                 long i = dataSnapshot.getChildrenCount();
-                                                                if (!contestDetail.getMLt().equals("Unlimited")) {
-                                                                    if (!String.valueOf(i).equals(contestDetail.getMLt())) {
+                                                                if (!contestDetail.getMlt().equals("Unlimited")) {
+                                                                    if (!String.valueOf(i).equals(contestDetail.getMlt())) {
 
                                                                         holder.reg = "yes";
                                                                     } else {

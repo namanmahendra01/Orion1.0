@@ -73,7 +73,7 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
         ContestDetail mcontest = mContestDetail.get(i);
-        getNumberofParticipants(mcontest.getCi(), mcontest.getMLt());
+        getNumberofParticipants(mcontest.getCi(), mcontest.getMlt());
         String key = mcontest.getCi();
         setgp(mcontest, holder.gp);
 
@@ -299,8 +299,8 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
                                                             @Override
                                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                                 long i = dataSnapshot.getChildrenCount();
-                                                                if (!mcontest.getMLt().equals("Unlimited")) {
-                                                                    if (!String.valueOf(i).equals(mcontest.getMLt())) {
+                                                                if (!mcontest.getMlt().equals("Unlimited")) {
+                                                                    if (!String.valueOf(i).equals(mcontest.getMlt())) {
 
                                                                         holder.reg = "yes";
                                                                     } else {

@@ -6,14 +6,14 @@ public class CreateForm {
     }
 
     String ef, ct, des, po, ft, d, vt, rul, rb, re,
-            vb, ve, wd, mLt, p1, p2, p3, tp,
+            vb, ve, wd, mlt, p1, p2, p3, tp,
             jn1, jn2, jn3, jp1, jp2, jp3, tim, ci,
             hst, of, ui, st;
 
     public CreateForm(String ef, String ct, String des, String po,
                       String ft, String d, String vt, String rul, String rb,
 
-                      String re, String vb, String ve, String wd, String mLt, String p1,
+                      String re, String vb, String ve, String wd, String mlt, String p1,
                       String p2, String p3, String tp, String jn1, String jn2, String jn3,
 
                       String jp1, String jp2, String jp3, String tim, String ci, String hst, String of, String ui, String st) {
@@ -30,7 +30,7 @@ public class CreateForm {
         this.vb = vb;
         this.ve = ve;
         this.wd = wd;
-        this.mLt = mLt;
+        this.mlt = mlt;
         this.p1 = p1;
         this.p2 = p2;
         this.p3 = p3;
@@ -155,12 +155,12 @@ public class CreateForm {
 
 
 
-    public String getMLt() {
-        return mLt;
+    public String getMlt() {
+        return mlt;
     }
 
-    public void setMLt(String maxLimit) {
-        this.mLt = maxLimit;
+    public void setMlt(String maxLimit) {
+        this.mlt = maxLimit;
     }
 
 
@@ -290,7 +290,7 @@ public class CreateForm {
                 ", vb='" + vb + '\'' +
                 ", ve='" + ve + '\'' +
                 ", wd='" + wd + '\'' +
-                ", mLt='" + mLt + '\'' +
+                ", mlt='" + mlt + '\'' +
                 ", p1='" + p1 + '\'' +
                 ", p2='" + p2 + '\'' +
                 ", p3='" + p3 + '\'' +

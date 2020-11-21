@@ -123,11 +123,11 @@ public class fragment_contest_detail_result extends Fragment {
                     prizeLinear.setVisibility(View.VISIBLE);
 
                 }
-                if (mCreateForm.getMLt().equals("")){
+                if (mCreateForm.getMlt().equals("")){
                     maxPart.setText("Unlimited");
 
                 }else{
-                    maxPart.setText(mCreateForm.getMLt());
+                    maxPart.setText(mCreateForm.getMlt());
 
                 }
                 if (mCreateForm.getVb().equals("")){

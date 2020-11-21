@@ -26,7 +26,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.orion.orion.R;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.users;
@@ -58,7 +57,6 @@ public class CheckContest extends AppCompatActivity {
 
 
     //firebase
-    private FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private FirebaseMethods mFirebaseMethods;
     private FirebaseAuth.AuthStateListener mAuthListener;

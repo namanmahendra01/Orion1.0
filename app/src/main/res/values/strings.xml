@@ -8,7 +8,7 @@
     </declare-styleable>
 
     <dimen name="progress_bar_height">2dp</dimen>
-    <string name="app_name">orion</string>
+    <string name="app_name">Orion</string>
 
     <!--    Databases-->
 
@@ -172,7 +172,7 @@
     <string name="field_registration_end">re</string>
     <string name="field_voting_begin">vb</string>
     <string name="field_voting_end">ve</string>
-    <string name="field_max_participant_limit">mLt</string>
+    <string name="field_max_participant_limit">mlt</string>
     <string name="field_winners_declare">wd</string>
     <string name="field_file_type">ft</string>
     <string name="field_total_prize">tp</string>

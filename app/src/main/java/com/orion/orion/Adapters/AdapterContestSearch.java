@@ -352,8 +352,8 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                                                             @Override
                                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                                 long i = dataSnapshot.getChildrenCount();
-                                                                if (!mcontest.getMLt().equals("Unlimited")) {
-                                                                    if (!String.valueOf(i).equals(mcontest.getMLt())) {
+                                                                if (!mcontest.getMlt().equals("Unlimited")) {
+                                                                    if (!String.valueOf(i).equals(mcontest.getMlt())) {
 
                                                                         holder.participateBtn.setVisibility(View.VISIBLE);
                                                                         holder.reg = "yes";
