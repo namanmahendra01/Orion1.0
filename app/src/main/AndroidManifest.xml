@@ -15,7 +15,6 @@
         tools:targetApi="m">
         <activity android:name=".profile.Account.FanFolllowing.FanFollowList" /> <!-- Activities -->
         <!-- Login/Signup Section + Intro part -->
-        <activity android:name=".Intro.Intro" />
         <activity
             android:name=".login.login"
             android:noHistory="true">
@@ -25,7 +24,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".login.register" /> <!-- Home Section -->
+        <activity android:name=".login.register"
+            android:noHistory="true"/>
+        <!-- Home Section -->
         <activity android:name=".home.Message_Request" />
         <activity
             android:name=".home.MainActivity"
@@ -66,9 +67,8 @@
         <activity android:name=".profile.Account.EditProfile" />
         <activity android:name=".profile.Account.Password_Reset" />
         <activity android:name=".profile.Account.Contest" />
-        <activity android:name=".profile.Account.Help" />
         <activity android:name=".profile.Account.About" />
-        <activity android:name=".profile.Account.SignOut" />
+
         <activity
             android:name=".profile.PostVideoActivity"
             android:theme="@style/MyMaterialThemeProfile" />

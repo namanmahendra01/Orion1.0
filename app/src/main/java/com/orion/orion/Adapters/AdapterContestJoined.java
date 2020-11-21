@@ -318,7 +318,6 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
                                             long i = snapshot.getChildrenCount();
                                             if ((((i + 1) / p) * 100) > 60) {
                                                 DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
-                                                        .child(mContext.getString(R.string.dbname_contests))
                                                         .child(userId)
                                                         .child(mContext.getString(R.string.field_contest_reports));
                                                 reference1.addListenerForSingleValueEvent(new ValueEventListener() {

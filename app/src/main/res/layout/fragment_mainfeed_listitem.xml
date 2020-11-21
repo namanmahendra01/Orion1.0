@@ -38,7 +38,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="6dp"
-                    android:src="@drawable/ic_eclipse_white" />
+                    android:src="@drawable/ic_eclipse" />
 
                 <TextView
                     android:id="@+id/username"

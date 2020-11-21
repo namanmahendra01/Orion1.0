@@ -381,7 +381,7 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
                     editor.apply();
                     Intent intent = new Intent(register.this, login.class);
                     startActivity(intent);
-                    Toast.makeText(mContext, " Verification Mail sent. Please Verify!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, " Verification mail sent. Please verify!", Toast.LENGTH_LONG).show();
                 }
             });
         }

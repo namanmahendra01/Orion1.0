@@ -316,6 +316,12 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                         .child(mContext.getString(R.string.field_status))
                                         .setValue("Accepted");
 
+                                db.child(mContext.getString(R.string.dbname_contestlist))
+                                        .child(mparticipantLists.getCi())
+                                        .child(mContext.getString(R.string.field_Participant_List))
+                                        .child(mparticipantLists.getUi())
+                                        .setValue(true);
+
                                 db.child(mContext.getString(R.string.dbname_contests))
                                         .child(mparticipantLists.getUi())
                                         .child(mContext.getString(R.string.field_joined_updates))

@@ -18,7 +18,7 @@
         app:civ_border_color="@color/black"
         android:layout_centerVertical="true"
         app:civ_border_width="0.5dp"
-        android:src="@drawable/ic_media"/>
+      />
 
 
         <RelativeLayout

@@ -308,7 +308,7 @@ android:visibility="gone"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/rectangular_border"
                 android:padding="5dp"
-                android:text="@string/descrip" />
+               />
             </RelativeLayout>
 
         <RelativeLayout
@@ -343,7 +343,7 @@ android:visibility="gone"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/rectangular_border"
                 android:padding="5dp"
-                android:text="@string/rule" />
+                 />
         </RelativeLayout>
             <TextView
                 android:id="@+id/details"

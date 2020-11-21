@@ -220,7 +220,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="world photo"
+                    android:text="Title"
                     android:layout_gravity="center_horizontal"
                     android:padding="5dp"
                     android:id="@+id/titleD"
@@ -268,7 +268,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/domainD"
                     android:textColor="@color/black"
-                    android:text="Photoraphy"/>
+                    android:text=""/>
                 <RelativeLayout
 
                     android:layout_width="match_parent"
@@ -290,7 +290,7 @@
                         android:textColor="@color/black"
 
                         android:layout_toRightOf="@+id/regend"
-                        android:text="3/5/77"/>
+                        android:text=""/>
                 </RelativeLayout>
             </LinearLayout>
 
@@ -315,7 +315,7 @@
                     android:id="@+id/entryfeeD"
                     android:textColor="@color/black"
 
-                    android:text="100"/>
+                    android:text=""/>
                 <RelativeLayout
 
                     android:layout_width="match_parent"
@@ -336,7 +336,7 @@
                         android:layout_toRightOf="@+id/hosted"
                         android:id="@+id/hostD"
                         android:textColor="@color/black"
-                        android:text="Naman"/>
+                        android:text=""/>
                 </RelativeLayout>
             </LinearLayout>
 

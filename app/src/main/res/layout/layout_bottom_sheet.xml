@@ -24,7 +24,7 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_star"
+
             android:layout_gravity="center_horizontal"
             android:id="@+id/profileBs"/>
         <TextView

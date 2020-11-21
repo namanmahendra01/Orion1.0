@@ -608,90 +608,76 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                 });
     }
 
+
     private void ReportPost(ContestDetail mcontest, int p) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child(mContext.getString(R.string.dbname_contestlist))
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist))
                 .child(mcontest.getCi())
-                .child(mContext.getString(R.string.field_contest_report_list))
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                            Toast.makeText(mContext, "You already reported this contest.", Toast.LENGTH_SHORT).show();
+                .child(mContext.getString(R.string.field_contest_report_list));
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChild(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                    Toast.makeText(mContext, "You already reported this contest.", Toast.LENGTH_SHORT).show();
 
-                        } else {
+                } else {
 
 
-                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                            reference.child(mContext.getString(R.string.dbname_contestlist))
-                                    .child(mcontest.getCi())
-                                    .child(mContext.getString(R.string.field_contest_report_list))
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .setValue(true)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    reference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .setValue(true)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-
-                                            DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference();
-                                            reference2.child(mContext.getString(R.string.dbname_contestlist))
-                                                    .child(mcontest.getCi())
-                                                    .child(mContext.getString(R.string.field_contest_report_list))
-                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                            long i = snapshot.getChildrenCount();
-                                                            if ((((i + 1) / p) * 100) > 60) {
-                                                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                                                                reference.child(mContext.getString(R.string.dbname_contests))
-                                                                        .child(mcontest.getUi())
-                                                                        .child(mContext.getString(R.string.field_contest_reports))
-                                                                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                            @Override
-                                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                                if (snapshot.exists()) {
-                                                                                    long x = (long) snapshot.getValue();
-                                                                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                                                                                    reference.child(mContext.getString(R.string.dbname_contests))
-                                                                                            .child(mcontest.getUi())
-                                                                                            .child(mContext.getString(R.string.field_contest_reports))
-                                                                                            .setValue(x + 1);
-                                                                                } else {
-                                                                                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                                                                                    reference.child(mContext.getString(R.string.dbname_contests))
-                                                                                            .child(mcontest.getUi())
-                                                                                            .child(mContext.getString(R.string.field_contest_reports))
-                                                                                            .setValue(1);
-                                                                                }
-                                                                            }
-
-                                                                            @Override
-                                                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                                                            }
-                                                                        });
-                                                            }
-
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            long i = snapshot.getChildrenCount();
+                                            if ((((i + 1) / p) * 100) > 60) {
+                                                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
+                                                        .child(mcontest.getUi())
+                                                        .child(mContext.getString(R.string.field_contest_reports));
+                                                reference1.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        if (snapshot.exists()) {
+                                                            long x = (long) snapshot.getValue();
+                                                            reference1
+                                                                    .setValue(x + 1);
+                                                        } else {
+                                                            reference1
+                                                                    .setValue(1);
                                                         }
+                                                    }
 
-                                                        @Override
-                                                        public void onCancelled(@NonNull DatabaseError error) {
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                                        }
-                                                    });
+                                                    }
+                                                });
+                                            }
 
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
 
                                         }
                                     });
 
-                        }
-                    }
+
+                                }
+                            });
+
+                }
+            }
 
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+            }
+        });
     }
 
     @Override

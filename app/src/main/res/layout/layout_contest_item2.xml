@@ -81,7 +81,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="naman"
+            android:text="title"
             android:layout_gravity="center"
             android:gravity="center"
             android:id="@+id/titleD"
@@ -105,7 +105,7 @@
                 /> <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="naman"
+            android:text=""
             android:layout_gravity="center"
             android:id="@+id/domainD"
             android:textSize="10sp"
@@ -127,7 +127,7 @@
                 /> <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="20"
+            android:text=""
             android:id="@+id/entryfeeD"
                 android:layout_toRightOf="@+id/entryfee"
 
