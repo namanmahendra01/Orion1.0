@@ -109,7 +109,6 @@
             android:id="@+id/search"
             android:layout_below="@id/relparent"
             android:layout_margin="10dp"
-
             android:hint="Enter contest Key"
             android:gravity="center"
             android:background="@drawable/rectangular_round_searchbar"

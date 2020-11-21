@@ -68,7 +68,7 @@ dependencies {
     implementation 'com.daimajia.androidanimations:library:2.4@aar'
 
 
-//exoplayer
+    //exoplayer
     implementation 'com.google.android.exoplayer:exoplayer:2.11.7'
     implementation 'com.danikula:videocache:2.7.1'
 
@@ -80,5 +80,5 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.1'
 
     //    update
-    implementation 'com.google.android.play:core:1.6.1'
+    implementation 'com.google.android.play:core:1.8.3'
 }

@@ -24,8 +24,9 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
                     android:text="Jury"
-                    android:textStyle="bold"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -34,15 +35,20 @@
                     android:gravity="center_horizontal"
 
                     android:text="Marks"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
 
-                    android:text="comment"
-                    android:textColor="@color/black" />
+                    android:text="Comments"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
 
 
@@ -68,6 +74,7 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
 
+                    android:text="-"
                     android:textColor="@color/black" />
                 <TextView
                     android:layout_width="wrap_content"
@@ -104,6 +111,7 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
 
+                    android:text="-"
                     android:textColor="@color/black" />
                 <TextView
                     android:layout_width="wrap_content"
@@ -137,6 +145,7 @@
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
 
+                    android:text="-"
                     android:textColor="@color/black" />
                 <TextView
                     android:layout_width="wrap_content"
