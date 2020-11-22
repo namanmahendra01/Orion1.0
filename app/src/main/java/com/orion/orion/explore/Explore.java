@@ -22,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -161,7 +160,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
         checkTopDatabase();
         requestedFromCheckPostFetched = false;
         requestedFromSelectListener = false;
-        SELECTED_FILTER = "Overall";
+        SELECTED_FILTER = getString(R.string.OVERALL);
     }
 
     private void getUserDomain() {
@@ -252,19 +251,19 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
         up.setOnClickListener(view -> {
             up.setVisibility(View.GONE);
             down.setVisibility(View.VISIBLE);
-            collapse(collapse, 1000, 0);
+            collapse(collapse, 1000);
         });
         down.setOnClickListener(view -> {
             up.setVisibility(View.VISIBLE);
             down.setVisibility(View.GONE);
-            collapse(collapse, 1000, dummyHeight);
+            collapse(collapse, 1000);
         });
 
         overall.setOnClickListener(v -> {
             overall.setTextColor(getResources().getColor(R.color.scheme8));
             domain.setTextColor(getResources().getColor(R.color.black));
             swipeRefreshLayout.setRefreshing(true);
-            SELECTED_FILTER = "Overall";
+            SELECTED_FILTER = getString(R.string.OVERALL);
             displayPhotos(SELECTED_FILTER);
             overall.setClickable(false);
             domain.setClickable(true);
@@ -296,21 +295,12 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
             public void onScrollStateChanged(@NotNull RecyclerView recyclerView, int newState) {
 
                 super.onScrollStateChanged(recyclerView, newState);
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE)
                     if (paginatedPhotos.size() < fieldPhotos.size()) displayMorePhotos();
-                } else if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    Log.d(TAG, "onScrollStateChanged: top");
-//                    if(collapse.getVisibility()!=View.VISIBLE) exploreRv.post(() -> expand(collapse, TOTAL_USER_SIZE));
-                }
             }
 
             @Override
             public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0) {
-                    Log.d(TAG, "onScrolled: down");
-                    if (collapse.getVisibility() == View.VISIBLE) ;
-//                        exploreRv.post(() -> expand(collapse, TOTAL_USER_SIZE));
-                }
             }
         });
         swipeRefreshLayout.setColorSchemeResources(
@@ -327,12 +317,9 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                 R.color.scheme11,
                 R.color.scheme12
         );
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(true);
-                displayPhotos(SELECTED_FILTER);
-            }
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            swipeRefreshLayout.setRefreshing(true);
+            displayPhotos(SELECTED_FILTER);
         });
         Log.d(TAG, "initOnClickListeners: completed");
     }
@@ -346,7 +333,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
         }
     }
 
-    public void collapse(final View v, int duration, int targetHeight) {
+    public void collapse(final View v, int duration) {
         final boolean expand = v.getVisibility() != View.VISIBLE;
         prevHeight = v.getHeight();
         if (x == 0) {
@@ -444,7 +431,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.child(getString(R.string.field_last_updated_topUsers)).getValue() == null) {
                             for (String field : fields) {
-                                reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue("0/SET_SIZE_DOMAIN");
+                                reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue("0/" + SET_SIZE_DOMAIN);
                                 createTopDatabase(field, 0);
                             }
                         } else {
@@ -461,7 +448,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                             int postedYear = Integer.parseInt(previousTimeStamp.substring(0, 4));
                             int postedMonth = Integer.parseInt(previousTimeStamp.substring(5, 7));
                             int postedDate = Integer.parseInt(previousTimeStamp.substring(8, 10));
-                            String postedTime = previousTimeStamp.substring(12, previousTimeStamp.length() - 1);
+//                            String postedTime = previousTimeStamp.substring(12, previousTimeStamp.length() - 1);
                             String postedDateFormat = postedDate + "/" + postedMonth + "/" + postedYear;
 
                             @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
@@ -529,14 +516,12 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
         if (USER_DOMAIN == null) getUserDomain();
         else {
             requestedFromCheckPostFetched = false;
-            String[] fields = {"Overall", USER_DOMAIN};
+            String[] fields = {getString(R.string.OVERALL), USER_DOMAIN};
             for (String field : fields) {
                 String previousTimeStamp = mPreferences.getString(field + "_fieldLastFetched", null);
                 if (previousTimeStamp == null || previousTimeStamp.equals("")) {
                     Log.d(TAG, "checkLastFetched: starting fetching users as previousTimeStamp is null or not found - " + field);
-                    String firstField = "Overall";
-                    if (field.equals("Overall")) fetchTopUsers(field);
-                    else fetchTopUsers(field);
+                    fetchTopUsers(field);
                 } else {
                     SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
                         @Override
@@ -569,7 +554,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                                 e.printStackTrace();
                                 Log.d(TAG, "checkLastFetched: starting fetching users as we ran into error finding timestamp - " + field);
                                 fetchTopUsers(field);
-                                if (field.equals("Overall"))
+                                if (field.equals(getString(R.string.OVERALL)))
                                     fetchTopUsers(field);
                             }
                             if (elapsedDays > currentDay) {
@@ -592,10 +577,9 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
 
     private void checkPostsFetched() {
         Log.d(TAG, "checkPostsFetched: started");
-        String[] fields = {"Overall", USER_DOMAIN};
+        String[] fields = {getString(R.string.OVERALL), USER_DOMAIN};
         if (USER_DOMAIN == null) getUserDomain();
         for (String field : fields) {
-            Gson gson = new Gson();
             String previousTimeStamp = mPreferences.getString(field + "_PostsLastUpdated", null);
             String json = mPreferences.getString(field + "_TopPosts", null);
             Set<String> set = mPreferences.getStringSet(field + "_TopUsers", null);
@@ -677,7 +661,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                             + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
                     String user_id = singleSnapshot.getKey();
                     assert domain != null;
-                    if (field.equals("Overall")) {
+                    if (field.equals(getString(R.string.OVERALL))) {
                         //creating top SET_SIZE_DOMAIN list using insertion sort algorithm
                         if (mList.size() == 0) mList.add(new TopUsers(user_id, rating));
                         else {
@@ -730,7 +714,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                     if (mList.size() == 0) {
                         reference.child(getString(R.string.db_topUsersParams)).child(field).child(getString(R.string.field_completed)).setValue("300/300");
                     }
-                    String value = "";
+                    String value;
                     if (i < mList.size()) {
                         value = mList.get(i).getUi();
                         Log.d(TAG, "createTopDatabase: key, value" + (i + 1) + ", " + value);
@@ -1113,7 +1097,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                                     int currentYear = Integer.parseInt(currentTimeStamp.substring(0, 4));
                                     int currentMonth = Integer.parseInt(currentTimeStamp.substring(5, 7));
                                     int currentDate = Integer.parseInt(currentTimeStamp.substring(8, 10));
-                                    String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
+//                                    String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
                                     String currentDateFormat = currentDate + "/" + currentMonth + "/" + currentYear;
                                     Date date = new Date(currentDateFormat);
                                     int currentDay = date.getDay();
@@ -1121,7 +1105,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                                     int postedYear = Integer.parseInt(previousTimeStamp.substring(0, 4));
                                     int postedMonth = Integer.parseInt(previousTimeStamp.substring(5, 7));
                                     int postedDate = Integer.parseInt(previousTimeStamp.substring(8, 10));
-                                    String postedTime = previousTimeStamp.substring(12, previousTimeStamp.length() - 1);
+//                                    String postedTime = previousTimeStamp.substring(12, previousTimeStamp.length() - 1);
                                     String postedDateFormat = postedDate + "/" + postedMonth + "/" + postedYear;
 
                                     @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
@@ -1310,15 +1294,12 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
     private void updateUserList() {
         mAdapter = new UserListAdapter(Explore.this, R.layout.layout_user_listitem, mUserList);
         mListView.setAdapter(mAdapter);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "selected user" + mUserList.get(position).toString());
-                Intent intent = new Intent(Explore.this, profile.class);
-                intent.putExtra(getString(R.string.calling_activity), getString(R.string.search_activity));
-                intent.putExtra(getString(R.string.intent_user), mUserList.get(position).getUi());
-                startActivity(intent);
-            }
+        mListView.setOnItemClickListener((parent, view, position, id) -> {
+            Log.d(TAG, "selected user" + mUserList.get(position).toString());
+            Intent intent = new Intent(Explore.this, profile.class);
+            intent.putExtra(getString(R.string.calling_activity), getString(R.string.search_activity));
+            intent.putExtra(getString(R.string.intent_user), mUserList.get(position).getUi());
+            startActivity(intent);
         });
 
     }

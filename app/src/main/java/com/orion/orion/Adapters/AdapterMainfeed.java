@@ -248,7 +248,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                 .child(photo.getUi())
                 .child(photo.getPi())
                 .child(mContext.getString(R.string.field_comment));
-        query  .addValueEventListener(new ValueEventListener() {
+        query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()){
@@ -271,6 +271,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         holder.timeDate.setText(photo.getDc().substring(0, 10));
         holder.caption.setText(photo.getCap());
 
+
 //        get post
 
 
@@ -282,7 +283,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             holder.image.setVisibility(View.VISIBLE);
             holder.play2.setVisibility(View.GONE);
             holder.playerView.setVisibility(GONE);
-
             Glide.with(holder.itemView.getContext())
                     .load(photo.getIp())
                     .placeholder(R.drawable.load)
@@ -291,18 +291,18 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                     .thumbnail(0.2f)
                     .into(holder.image);
         } else {
+            holder.thumbnail.setVisibility(View.VISIBLE);
+            holder.unmute.setVisibility(View.VISIBLE);
+            holder.play2.setVisibility(View.VISIBLE);
+            holder.image.setVisibility(View.GONE);
+            holder.playerView.setVisibility(View.VISIBLE);
             Glide.with(holder.itemView.getContext())
                     .load(photo.getT())
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)
                     .placeholder(R.drawable.load)
                     .thumbnail(0.25f)
-                    .into(holder.image);
-            holder.unmute.setVisibility(View.VISIBLE);
-            holder.play2.setVisibility(View.VISIBLE);
-            holder.image.setVisibility(View.GONE);
-            holder.playerView.setVisibility(View.VISIBLE);
-
+                    .into(holder.thumbnail);
         }
 
 
@@ -526,10 +526,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                 holder.unmute.setVisibility(View.VISIBLE);
                 if (simpleExoPlayer != null) {
                     simpleExoPlayer.setVolume(AudioManager.STREAM_MUSIC);
-
                 }
-
-
             }
         });
         holder.unmute.setOnClickListener(new View.OnClickListener() {
@@ -714,6 +711,38 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                 holder.yellowstar.setVisibility(View.GONE);
                 removeLike(holder, photo);
                 NumberOfLikes(holder, photo);
+                reference.child(mContext.getString(R.string.dbname_users))
+                        .child(photo.getUi())
+                        .child(mContext.getString(R.string.field_Notifications))
+                        .orderByKey()
+                        .limitToLast(3)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        if (dataSnapshot.exists()
+                                                && dataSnapshot.child(mContext.getString(R.string.field_notification_message)).getValue().equals("Liked your post")
+                                                && dataSnapshot.child("sUid").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                && dataSnapshot.child("pUid").getValue().equals(photo.getUi())
+                                                && dataSnapshot.child("pId").getValue().equals(photo.getPi())) {
+                                            reference.child(mContext.getString(R.string.dbname_users))
+                                                    .child(photo.getUi())
+                                                    .child(mContext.getString(R.string.field_Notifications))
+                                                    .child(dataSnapshot.getKey()).removeValue()
+                                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "onDataChange: Notification Deleted"))
+                                                    .addOnFailureListener(e -> Log.d(TAG, "onDataChange: Notification not Deleted"));
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
 
 
             }
