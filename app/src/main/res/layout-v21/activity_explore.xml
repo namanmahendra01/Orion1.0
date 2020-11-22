@@ -39,7 +39,7 @@
     <ListView
         android:id="@+id/listview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="10dp"
         android:layout_below="@+id/relLayout1"
         android:visibility="visible" />
 
@@ -143,20 +143,6 @@
                 </LinearLayout>
             </RelativeLayout>
 
-            <TextView
-                android:layout_below="@+id/topBar"
-                android:layout_alignParentBottom="true"
-                android:id="@+id/noPost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:gravity="center"
-                android:text="NO POSTS TO SHOW ¯\\_(ツ)_/¯"
-                android:textStyle="bold"
-                android:textColor="@color/scheme8"
-                android:textSize="18sp"
-                android:visibility="gone" />
 
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/swiperefresh"
@@ -179,6 +165,22 @@
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:spanCount="3" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            <!--     This should stay in bottom to be visible on top of others       -->
+            <TextView
+                android:layout_alignParentBottom="true"
+                android:id="@+id/noPost"
+                android:layout_below="@+id/topBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="NO POSTS TO SHOW ¯\\_(ツ)_/¯"
+                android:textStyle="bold"
+                android:textColor="@color/scheme8"
+                android:textSize="18sp"
+                android:visibility="gone" />
         </RelativeLayout>
     </RelativeLayout>
 
