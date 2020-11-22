@@ -27,7 +27,9 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -110,6 +112,7 @@ public class PostVideoActivity extends AppCompatActivity {
     private DatabaseReference myRef;
 
     private final Context mContext = PostVideoActivity.this;
+    private RelativeLayout rootView;
     private ImageView back;
     private ExtendedFloatingActionButton fab;
     private TextView progress;
@@ -171,7 +174,16 @@ public class PostVideoActivity extends AppCompatActivity {
                     .setNegativeButton("Stay", (dialog, id) -> dialog.cancel())
                     .show();
         });
+        rootView = findViewById(R.id.relLayout);
+        rootView.setOnClickListener(v -> {
+            if(v.getId()!=inputCaption.getId()){
+                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                assert imm != null;
+                imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
+            }
+        });
         fab.setOnClickListener(v -> {
+            fab.setEnabled(false);
             VideoCompressor.cancel();
             if (simpleExoPlayer != null) simpleExoPlayer.release();
             progress.setVisibility(View.INVISIBLE);
@@ -183,9 +195,7 @@ public class PostVideoActivity extends AppCompatActivity {
             if (thumbnail.getVisibility() == View.VISIBLE) thumbnail.setImageURI(null);
             pickVideo();
         });
-        post.setOnClickListener(v -> {
-            postVideo();
-        });
+        post.setOnClickListener(v -> postVideo());
         mute.setOnClickListener(view -> {
             if (simpleExoPlayer != null) {
                 mute.setVisibility(View.GONE);
@@ -260,7 +270,6 @@ public class PostVideoActivity extends AppCompatActivity {
             Log.d(TAG, "postVideo: size" + size / 1024 / 1024 + "MB");
             uploadVideo();
         } else {
-
             if (videoUri == null)
                 Toast.makeText(mContext, "No video to upload :(", Toast.LENGTH_SHORT).show();
             else if(caption.length()>=150)
@@ -656,8 +665,8 @@ public class PostVideoActivity extends AppCompatActivity {
     @SuppressLint("DefaultLocale")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        fab.setEnabled(true);
         if (resultCode == Activity.RESULT_OK) {
-
             if (requestCode == REQUEST_SELECT_VIDEO) {
                 if (data != null && data.getData() != null) {
                     Uri uri = data.getData();

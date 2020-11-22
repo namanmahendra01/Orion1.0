@@ -233,7 +233,6 @@
                     android:elevation="5dp"
                     android:outlineAmbientShadowColor="@color/white">
                     <com.orion.orion.util.SquareImageView
-                        android:id="@+id/frame"
                         android:visibility="visible"
                         android:src="@drawable/square"
                         android:layout_width="match_parent"

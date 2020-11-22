@@ -186,6 +186,7 @@ public class EditProfile extends AppCompatActivity {
     private void initOnClicks() {
         mchangeprofilephoto.setOnClickListener(v -> {
             if (checkPermissionArray(Permissions.PERMISSIONS)) {
+                mchangeprofilephoto.setEnabled(false);
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -553,6 +554,7 @@ public class EditProfile extends AppCompatActivity {
     @TargetApi(19)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mchangeprofilephoto.setEnabled(true);
         String imgPath = "";
         if (data != null && data.getData() != null && resultCode == RESULT_OK) {
             Uri uri = data.getData();

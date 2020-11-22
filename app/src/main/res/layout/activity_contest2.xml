@@ -30,7 +30,7 @@
                 android:text="Create Contest Form"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
-                android:textColor="@color/scheme8"
+                android:textColor="@color/colorPrimary"
                 android:textSize="16sp"
                 />
             <TextView
@@ -49,7 +49,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_below="@+id/h3"
-                android:textColor="@color/scheme8"
+                android:textColor="@color/colorPrimary"
                 android:textSize="16sp"
                 />
             <TextView
@@ -69,7 +69,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_below="@+id/h5"
-                android:textColor="@color/scheme8"
+                android:textColor="@color/colorPrimary"
                 android:textSize="16sp"
                 />
 
@@ -89,7 +89,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_below="@+id/h7"
-                android:textColor="@color/scheme8"
+                android:textColor="@color/colorPrimary"
                 android:textSize="16sp"
                 />
 
@@ -110,7 +110,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:layout_below="@+id/h9"
-        android:textColor="@color/scheme8"
+        android:textColor="@color/colorPrimary"
         android:textSize="16sp"
         />
 
@@ -119,7 +119,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/h10"
         android:layout_marginTop="10dp"
-        android:id="@+id/h11"
         android:text="GP means genuine percentage which is the percentage of how much genuine a host is.Try to maintain good percentage.Reports on your contest will directly affect your GP. "
         />
 

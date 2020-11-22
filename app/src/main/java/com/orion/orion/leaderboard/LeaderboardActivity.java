@@ -710,8 +710,10 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
             bottomSheet.show(getSupportFragmentManager(), "Type Filter");
         });
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            mRecyclerView.setVisibility(View.GONE);
-            filter();
+            if(!swipeRefreshLayout.isRefreshing()) {
+                mRecyclerView.setVisibility(View.GONE);
+                filter();
+            }
         });
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
@@ -885,7 +887,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                             String userLocation = (String) dataSnapshot.getValue();
                                             String testLocation = (String) singleSnapshot.child(getString(R.string.field_last_known_location)).child(finalLocationParameter).getValue();
                                             assert testLocation != null;
-                                            if (testLocation.equals(userLocation))
+                                            if (testLocation.equals(userLocation) && !user_id.equals(getString(R.string.ORION_USER)))
                                                 rank = addToLeaderboard(rank, finalUserRating, username, finalRating, profileUrl, user_id);
 
                                             mRecyclerView.setVisibility(View.VISIBLE);
@@ -909,7 +911,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                     });
                                 }
                                 //for rest cases where location will not be a parameter
-                                else
+                                else if (!user_id.equals(getString(R.string.ORION_USER)))
                                     rank = addToLeaderboard(rank, finalUserRating, username, finalRating, profileUrl, user_id);
 
                                 mRecyclerView.setVisibility(View.VISIBLE);

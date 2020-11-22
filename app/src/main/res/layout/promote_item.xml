@@ -21,7 +21,7 @@
         android:visibility="gone"
         android:layout_height="65dp"
         app:civ_border_width="2dp"
-        app:civ_border_color="@color/scheme8"
+        app:civ_border_color="@color/colorPrimary"
         android:layout_gravity="center"
         android:src="@drawable/load"
 android:layout_marginTop="5dp"

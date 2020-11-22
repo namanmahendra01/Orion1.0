@@ -260,7 +260,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
         });
 
         overall.setOnClickListener(v -> {
-            overall.setTextColor(getResources().getColor(R.color.scheme8));
+            overall.setTextColor(getResources().getColor(R.color.colorPrimary));
             domain.setTextColor(getResources().getColor(R.color.black));
             swipeRefreshLayout.setRefreshing(true);
             SELECTED_FILTER = getString(R.string.OVERALL);
@@ -269,7 +269,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
             domain.setClickable(true);
         });
         domain.setOnClickListener(v -> {
-            domain.setTextColor(getResources().getColor(R.color.scheme8));
+            domain.setTextColor(getResources().getColor(R.color.colorPrimary));
             overall.setTextColor(getResources().getColor(R.color.black));
             requestedFromSelectListener = true;
             if (USER_DOMAIN == null) getUserDomain();
@@ -304,22 +304,24 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
             }
         });
         swipeRefreshLayout.setColorSchemeResources(
-                R.color.scheme1,
+                R.color.black,
                 R.color.scheme2,
-                R.color.scheme3,
-                R.color.scheme4,
+                R.color.purple,
+                R.color.dark_orange,
                 R.color.scheme5,
                 R.color.scheme6,
                 R.color.scheme7,
-                R.color.scheme8,
+                R.color.colorPrimary,
                 R.color.scheme9,
-                R.color.scheme10,
-                R.color.scheme11,
-                R.color.scheme12
+                R.color.brown,
+                R.color.yellow,
+                R.color.red
         );
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            swipeRefreshLayout.setRefreshing(true);
-            displayPhotos(SELECTED_FILTER);
+            if(!swipeRefreshLayout.isRefreshing()) {
+                swipeRefreshLayout.setRefreshing(true);
+                displayPhotos(SELECTED_FILTER);
+            }
         });
         Log.d(TAG, "initOnClickListeners: completed");
     }
@@ -748,7 +750,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                         String userID = String.valueOf(singleSnapshot.getValue());
                         assert key != null;
                         if (!key.equals(getString(R.string.field_completed))) {
-                            if (!userID.equals("") && !mTopUsersList.contains(userID) && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userID))
+                            if (!userID.equals("") && !mTopUsersList.contains(userID) && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userID) && !userID.equals(getString(R.string.ORION_USER)))
                                 mTopUsersList.add(userID);
                         } else {
                             Log.d(TAG, firstField + ": fetchTopUsers: size after first field - " + mTopUsersList.size());
@@ -773,7 +775,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                                                         String userCity = String.valueOf(singleSnapshot.child(getString(R.string.field_last_known_location)).child(getString(R.string.field_city)).getValue());
                                                         assert userID != null;
                                                         if (!userID.equals(mUser.getUid()) && userCity.equals(currentUserCity) && !mTopUsersList.contains(userID)) {
-                                                            if (!userID.equals("") && !mTopUsersList.contains(userID) && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userID))
+                                                            if (!userID.equals("") && !mTopUsersList.contains(userID) && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userID) && !userID.equals(getString(R.string.ORION_USER)))
                                                                 mTopUsersList.add(userID);
                                                         }
                                                     }
