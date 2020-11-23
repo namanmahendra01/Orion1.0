@@ -78,17 +78,21 @@ public class FollowingFragment extends Fragment {
     }
 
     private void fetchList() {
-        Query query = myRef.child(getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        Query query = myRef.child(getString(R.string.dbname_following))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-                        ItemFollow itemFollow = new ItemFollow();
-                        itemFollow.setUserId(singleSnapshot.getKey());
-                        itemFollow.setFollowing(true);
-                        itemFollow.setUserId(singleSnapshot.getKey());
-                        addToList(itemFollow);
+                        String UserId=singleSnapshot.getKey();
+                        assert UserId != null;
+                        if (!UserId.equals(getString(R.string.orion_team_user_id))) {
+                            ItemFollow itemFollow = new ItemFollow();
+                            itemFollow.setUserId(UserId);
+                            itemFollow.setFollowing(true);
+                            addToList(itemFollow);
+                        }
                     }
                 } else {
                     swipeRefreshLayout.setRefreshing(false);

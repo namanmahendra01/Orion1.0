@@ -160,7 +160,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
         checkTopDatabase();
         requestedFromCheckPostFetched = false;
         requestedFromSelectListener = false;
-        SELECTED_FILTER = getString(R.string.OVERALL);
+        SELECTED_FILTER = getString(R.string.field_overall);
     }
 
     private void getUserDomain() {
@@ -263,7 +263,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
             overall.setTextColor(getResources().getColor(R.color.colorPrimary));
             domain.setTextColor(getResources().getColor(R.color.black));
             swipeRefreshLayout.setRefreshing(true);
-            SELECTED_FILTER = getString(R.string.OVERALL);
+            SELECTED_FILTER = getString(R.string.field_overall);
             displayPhotos(SELECTED_FILTER);
             overall.setClickable(false);
             domain.setClickable(true);
@@ -518,7 +518,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
         if (USER_DOMAIN == null) getUserDomain();
         else {
             requestedFromCheckPostFetched = false;
-            String[] fields = {getString(R.string.OVERALL), USER_DOMAIN};
+            String[] fields = {getString(R.string.field_overall), USER_DOMAIN};
             for (String field : fields) {
                 String previousTimeStamp = mPreferences.getString(field + "_fieldLastFetched", null);
                 if (previousTimeStamp == null || previousTimeStamp.equals("")) {
@@ -556,7 +556,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                                 e.printStackTrace();
                                 Log.d(TAG, "checkLastFetched: starting fetching users as we ran into error finding timestamp - " + field);
                                 fetchTopUsers(field);
-                                if (field.equals(getString(R.string.OVERALL)))
+                                if (field.equals(getString(R.string.field_overall)))
                                     fetchTopUsers(field);
                             }
                             if (elapsedDays > currentDay) {
@@ -579,7 +579,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
 
     private void checkPostsFetched() {
         Log.d(TAG, "checkPostsFetched: started");
-        String[] fields = {getString(R.string.OVERALL), USER_DOMAIN};
+        String[] fields = {getString(R.string.field_overall), USER_DOMAIN};
         if (USER_DOMAIN == null) getUserDomain();
         for (String field : fields) {
             String previousTimeStamp = mPreferences.getString(field + "_PostsLastUpdated", null);
@@ -663,7 +663,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                             + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
                     String user_id = singleSnapshot.getKey();
                     assert domain != null;
-                    if (field.equals(getString(R.string.OVERALL))) {
+                    if (field.equals(getString(R.string.field_overall))) {
                         //creating top SET_SIZE_DOMAIN list using insertion sort algorithm
                         if (mList.size() == 0) mList.add(new TopUsers(user_id, rating));
                         else {
@@ -750,7 +750,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                         String userID = String.valueOf(singleSnapshot.getValue());
                         assert key != null;
                         if (!key.equals(getString(R.string.field_completed))) {
-                            if (!userID.equals("") && !mTopUsersList.contains(userID) && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userID) && !userID.equals(getString(R.string.ORION_USER)))
+                            if (!userID.equals("") && !mTopUsersList.contains(userID) && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userID) && !userID.equals(getString(R.string.orion_team_user_id)))
                                 mTopUsersList.add(userID);
                         } else {
                             Log.d(TAG, firstField + ": fetchTopUsers: size after first field - " + mTopUsersList.size());
@@ -775,7 +775,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                                                         String userCity = String.valueOf(singleSnapshot.child(getString(R.string.field_last_known_location)).child(getString(R.string.field_city)).getValue());
                                                         assert userID != null;
                                                         if (!userID.equals(mUser.getUid()) && userCity.equals(currentUserCity) && !mTopUsersList.contains(userID)) {
-                                                            if (!userID.equals("") && !mTopUsersList.contains(userID) && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userID) && !userID.equals(getString(R.string.ORION_USER)))
+                                                            if (!userID.equals("") && !mTopUsersList.contains(userID) && !FirebaseAuth.getInstance().getCurrentUser().getUid().equals(userID) && !userID.equals(getString(R.string.orion_team_user_id)))
                                                                 mTopUsersList.add(userID);
                                                         }
                                                     }

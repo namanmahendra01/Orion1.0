@@ -40,3 +40,14 @@
 -keep class com.orion.orion** { *; }
 -keep class package.model.* { *; }
 -keepattributes Annotation,Signature
+
+-keepclassmembers,allowshrinking,allowobfuscation class com.android.volley.NetworkDispatcher {
+    void processRequest();
+}
+-keepclassmembers,allowshrinking,allowobfuscation class com.android.volley.CacheDispatcher {
+    void processRequest();
+}
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+}

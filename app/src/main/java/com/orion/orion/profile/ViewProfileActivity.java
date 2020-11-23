@@ -185,6 +185,12 @@ public class ViewProfileActivity extends AppCompatActivity {
             Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
             getSupportFragmentManager().popBackStack();
         }
+        Log.d(TAG, "onCreate: yess2  "+mUser+"  "+getString(R.string.orion_team_user_id));
+
+        if (mUser.equals(getString(R.string.orion_team_user_id))){
+            Log.d(TAG, "onCreate: yess");
+            mFollow.setEnabled(false);
+        }
         setupFirebaseAuth();
         isFolllowing();
 

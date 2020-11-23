@@ -217,9 +217,10 @@
 
                 <RelativeLayout
                     android:id="@+id/starlayout"
-                    android:layout_width="60dp"
-                    android:layout_height="match_parent"
-                    android:layout_centerHorizontal="true">
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    >
 
                     <ImageView
                         android:id="@+id/image_star"
@@ -242,8 +243,9 @@
 
                 <RelativeLayout
                     android:id="@+id/comment_layout"
-                    android:layout_width="60dp"
-                    android:layout_height="match_parent">
+                    android:layout_width="wrap_content"
+                    android:layout_marginEnd="15dp"
+                    android:layout_height="wrap_content">
 
                     <ImageView
                         android:id="@+id/image_shoutout"
@@ -257,20 +259,20 @@
                 <RelativeLayout
                     android:id="@+id/promotion"
                     android:layout_width="wrap_content"
+                    android:layout_alignParentRight="true"
+
                     android:layout_height="wrap_content">
 
                     <ImageView
                         android:id="@+id/promote"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:layout_alignParentRight="true"
                         android:src="@drawable/ic_promote_black" />
 
                     <ImageView
                         android:id="@+id/promoted"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
-                        android:layout_alignParentRight="true"
                         android:src="@drawable/ic_promote_yellow"
                         android:visibility="gone" />
                 </RelativeLayout>
@@ -319,7 +321,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/relLayout2"
-                android:layout_marginBottom="30dp"
                 android:padding="10dp">
 
 
@@ -336,7 +337,21 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/commentLayout"
+                android:layout_below="@id/relLayout3"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="30dp">
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/recyclerComment"/>
+
+
+            </RelativeLayout>
 
 
         </RelativeLayout>

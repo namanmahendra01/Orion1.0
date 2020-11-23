@@ -125,8 +125,11 @@
                         android:layout_gravity="center_vertical|start"
                         android:layout_weight="1"
                         android:text="Overall"
+                        android:fontFamily="@font/orion"
+
+                        android:textAllCaps="true"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="24sp" />
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/domain"
@@ -135,10 +138,13 @@
                         android:layout_weight="1"
                         android:layout_gravity="center_vertical"
                         android:gravity="end"
+                        android:fontFamily="@font/orion"
+                        android:textAllCaps="true"
                         android:entries="@array/domain2"
                         android:text="Domain"
+
                         android:textColor="@color/black"
-                        android:textSize="24sp" />
+                        android:textSize="20sp" />
 
                 </LinearLayout>
             </RelativeLayout>

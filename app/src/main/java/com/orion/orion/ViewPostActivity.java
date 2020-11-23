@@ -61,6 +61,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.orion.orion.Adapters.AdapterComment;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.Photo;
 import com.orion.orion.models.users;
@@ -79,6 +80,8 @@ import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static android.view.View.GONE;
 import static com.orion.orion.util.MyApplication.getProxy;
@@ -116,6 +119,11 @@ public class ViewPostActivity extends AppCompatActivity {
     LinearLayout progress;
     private users mCurrentUser;
     private boolean likeByCurrentsUser2;
+    RecyclerView commentRv;
+    private ArrayList<Comment> comment2;
+    private ArrayList<String> commentID;
+    private AdapterComment adapterComment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +171,26 @@ public class ViewPostActivity extends AppCompatActivity {
         comments = i.getParcelableArrayListExtra("comments");
 
         duration.setVisibility(View.GONE);
+
+
+        commentRv = findViewById(R.id.recyclerComment);
+        commentRv.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        commentRv.setItemViewCacheSize(9);
+        commentRv.setDrawingCacheEnabled(true);
+        commentRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+        linearLayoutManager.setItemPrefetchEnabled(true);
+        linearLayoutManager.setInitialPrefetchItemCount(20);
+        commentRv.setLayoutManager(linearLayoutManager);
+
+        comments = new ArrayList<>();
+        commentID = new ArrayList<>();
+        adapterComment = new AdapterComment(this, comments, commentID, mphoto.getPi(), mphoto.getUi());
+        adapterComment.setHasStableIds(true);
+        commentRv.setAdapter(adapterComment);
+
+        getComments( mphoto.getPi(), mphoto.getUi());
+
 
 
         mEllipses.setOnClickListener(new View.OnClickListener() {
@@ -642,6 +670,31 @@ public class ViewPostActivity extends AppCompatActivity {
         });
         builder.create().show();
 
+    }
+
+    private void getComments(String photoId, String userId) {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+        db.child(getString(R.string.dbname_user_photos))
+                .child(userId)
+                .child(photoId)
+                .child(getString(R.string.field_comment))
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        comments.clear();
+                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                            Comment comment = snapshot1.getValue(Comment.class);
+                            comments.add(comment);
+                            commentID.add(snapshot1.getKey());
+                        }
+                        adapterComment.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
 
     private void numberofPromote() {

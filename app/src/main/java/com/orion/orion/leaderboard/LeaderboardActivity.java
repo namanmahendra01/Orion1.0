@@ -887,7 +887,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                             String userLocation = (String) dataSnapshot.getValue();
                                             String testLocation = (String) singleSnapshot.child(getString(R.string.field_last_known_location)).child(finalLocationParameter).getValue();
                                             assert testLocation != null;
-                                            if (testLocation.equals(userLocation) && !user_id.equals(getString(R.string.ORION_USER)))
+                                            if (testLocation.equals(userLocation) && !user_id.equals(getString(R.string.orion_team_user_id)))
                                                 rank = addToLeaderboard(rank, finalUserRating, username, finalRating, profileUrl, user_id);
 
                                             mRecyclerView.setVisibility(View.VISIBLE);
@@ -911,7 +911,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                     });
                                 }
                                 //for rest cases where location will not be a parameter
-                                else if (!user_id.equals(getString(R.string.ORION_USER)))
+                                else if (!user_id.equals(getString(R.string.orion_team_user_id)))
                                     rank = addToLeaderboard(rank, finalUserRating, username, finalRating, profileUrl, user_id);
 
                                 mRecyclerView.setVisibility(View.VISIBLE);

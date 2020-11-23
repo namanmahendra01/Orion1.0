@@ -424,7 +424,27 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
                                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                         @Override
                                                                         public void onSuccess(Void aVoid) {
-                                                                            sendverification();
+                                                                            myRef.child(mContext.getString(R.string.dbname_following))
+                                                                                    .child(userID)
+                                                                                    .child(getString(R.string.orion_team_user_id))
+                                                                                    .setValue(true)
+                                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                        @Override
+                                                                                        public void onSuccess(Void aVoid) {
+                                                                                            myRef.child(mContext.getString(R.string.dbname_follower))
+                                                                                                    .child(getString(R.string.orion_team_user_id))
+                                                                                                    .child(userID)
+                                                                                                    .setValue(true)
+                                                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                                                        @Override
+                                                                                                        public void onSuccess(Void aVoid) {
+                                                                                                            sendverification();
+
+                                                                                                        }
+                                                                                                    });
+
+                                                                                        }
+                                                                                    });
                                                                         }
                                                                     }).addOnFailureListener(new OnFailureListener() {
                                                                 @Override
