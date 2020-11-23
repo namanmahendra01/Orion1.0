@@ -54,18 +54,18 @@ public class FollowingFragment extends Fragment {
         mRecyclerView.setAdapter(adapterFollowFanAdapter);
         swipeRefreshLayout.setRefreshing(true);
         swipeRefreshLayout.setColorSchemeResources(
-                R.color.scheme1,
+                R.color.black,
                 R.color.scheme2,
-                R.color.scheme3,
-                R.color.scheme4,
+                R.color.purple,
+                R.color.dark_orange,
                 R.color.scheme5,
                 R.color.scheme6,
                 R.color.scheme7,
-                R.color.scheme8,
+                R.color.colorPrimary,
                 R.color.scheme9,
-                R.color.scheme10,
-                R.color.scheme11,
-                R.color.scheme12
+                R.color.brown,
+                R.color.yellow,
+                R.color.red
         );
         fetchList();
 

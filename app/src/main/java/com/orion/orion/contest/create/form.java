@@ -76,8 +76,6 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
     boolean isKitKat;
     int layoutActive = 1;
 
-
-
     //Widgets
     private ScrollView layout1;
     private ScrollView layout2;
@@ -251,6 +249,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                     .show();
         });
         selectPoster.setOnClickListener(v -> {
+            selectPoster.setEnabled(false);
             selectedImage = 1;
             if (checkPermissionArray(Permissions.PERMISSIONS)) {
                 isKitKat = true;
@@ -1357,6 +1356,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
     @TargetApi(19)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        selectPoster.setEnabled(true);
         String imgPath = "";
         if (data != null && data.getData() != null && resultCode == RESULT_OK) {
             Uri uri = data.getData();

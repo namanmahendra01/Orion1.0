@@ -143,7 +143,6 @@ public class ViewPostActivity extends AppCompatActivity {
         promoteNum = findViewById(R.id.promote_number);
 
         progress = findViewById(R.id.pro);
-        progress2 = findViewById(R.id.progress);
 
 
         play2 = findViewById(R.id.play);
@@ -287,7 +286,8 @@ public class ViewPostActivity extends AppCompatActivity {
                                     .error(R.drawable.default_image2)
                                     .placeholder(R.drawable.load)
                                     .thumbnail(0.25f)
-                                    .into(thumbnail);                           }
+                                    .into(thumbnail);
+                        }
 
                     }
 
@@ -524,21 +524,57 @@ public class ViewPostActivity extends AppCompatActivity {
                 mStarYellow.setVisibility(View.VISIBLE);
                 addlike();
                 NumberOfLikes();
-
-
             }
         });
         mStarYellow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "yellowstar clicked");
-
                 mStarWhite.setVisibility(View.VISIBLE);
                 mStarYellow.setVisibility(View.GONE);
                 removeLike();
                 NumberOfLikes();
+                if (!mphoto.getUi().equals(mAuth.getCurrentUser().getUid()))
+                    Log.d(TAG, "onClick: preparing to remove like");
+                myRef.child(getString(R.string.dbname_users))
+                        .child(mphoto.getUi())
+                        .child(getString(R.string.field_Notifications))
+                        .orderByKey()
+                        .limitToLast(3)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        if (dataSnapshot.exists()
+                                                && dataSnapshot.child(getString(R.string.field_notification_message)).getValue().equals("Liked your post")
+                                                && dataSnapshot.child("sUid").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                && dataSnapshot.child("pUid").getValue().equals(mphoto.getUi())
+                                                && dataSnapshot.child("pId").getValue().equals(mphoto.getPi())) {
+                                            Log.d(TAG, "onDataChange: " + dataSnapshot);
+                                            Log.d(TAG, "onDataChange: "+(dataSnapshot.exists()
+                                                    && dataSnapshot.child(getString(R.string.field_notification_message)).getValue().equals("Liked your post")
+                                                    && dataSnapshot.child("sUid").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                    && dataSnapshot.child("pUid").getValue().equals(mphoto.getUi())
+                                                    && dataSnapshot.child("pId").getValue().equals(mphoto.getPi())
+                                            ));
+                                            myRef.child(getString(R.string.dbname_users))
+                                                    .child(mphoto.getUi())
+                                                    .child(getString(R.string.field_Notifications))
+                                                    .child(dataSnapshot.getKey()).removeValue()
+                                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "onDataChange: Notification Deleted"))
+                                                    .addOnFailureListener(e -> Log.d(TAG, "onDataChange: Notification not Deleted"));
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
 
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
+                            }
+                        });
             }
         });
         promote.setOnClickListener(new View.OnClickListener() {
@@ -696,7 +732,6 @@ public class ViewPostActivity extends AppCompatActivity {
                         hashMap.put(getString(R.string.field_promoter_ID), FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
-
                         db1.child(getString(R.string.dbname_promote))
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                 .child(mphoto.getPi())
@@ -769,7 +804,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
                     private void deleteFurther() {
 
-                        if( !mphoto.getTy().equals("photo")){
+                        if (!mphoto.getTy().equals("photo")) {
                             StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mphoto.getT());
                             photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -819,12 +854,12 @@ public class ViewPostActivity extends AppCompatActivity {
 
                                                         photoList = gson.fromJson(json, type);
                                                         mymediaList = gson.fromJson(json2, type);
-                                                        ArrayList<Photo> photoList2 =new ArrayList<>();
-                                                        ArrayList<Photo> mymediaList2= new ArrayList<>();
-                                                        if( photoList != null) {
+                                                        ArrayList<Photo> photoList2 = new ArrayList<>();
+                                                        ArrayList<Photo> mymediaList2 = new ArrayList<>();
+                                                        if (photoList != null) {
                                                             photoList2 = new ArrayList<>(photoList);
                                                         }
-                                                        if (mymediaList != null){
+                                                        if (mymediaList != null) {
                                                             mymediaList2 = new ArrayList<>(mymediaList);
                                                         }
 
@@ -879,7 +914,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
                                         addOnFailureListener(new OnFailureListener() {
                                             @Override
-                                            public void onFailure (@NonNull Exception exception){
+                                            public void onFailure(@NonNull Exception exception) {
                                                 // Uh-oh, an error occurred!
                                                 Log.d(VolleyLog.TAG, "onFailure: did not delete file");
                                             }
@@ -889,7 +924,7 @@ public class ViewPostActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onCancelled (@NonNull DatabaseError error){
+                    public void onCancelled(@NonNull DatabaseError error) {
 
                     }
                 });
@@ -900,7 +935,7 @@ public class ViewPostActivity extends AppCompatActivity {
     @SuppressLint("ClickableViewAccessibility")
 
 
-    private void getCurrentUser () {
+    private void getCurrentUser() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference
                 .child(getString(R.string.dbname_users))
@@ -908,12 +943,8 @@ public class ViewPostActivity extends AppCompatActivity {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    mCurrentUser = dataSnapshot.getValue(users.class);
-
-
-
+                mCurrentUser = dataSnapshot.getValue(users.class);
             }
-
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -922,7 +953,7 @@ public class ViewPostActivity extends AppCompatActivity {
         });
     }
 
-    private void NumberOfLikes () {
+    private void NumberOfLikes() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(getString(R.string.dbname_user_photos))
                 .child(mphoto.getUi())
@@ -945,7 +976,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
     }
 
-    private void ifCurrentUserLiked () {
+    private void ifCurrentUserLiked() {
         Log.d(TAG, " checking current user liked or not");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(getString(R.string.dbname_user_photos))
@@ -981,7 +1012,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
     }
 
-    private void addToHisNotification (String hisUid, String pId, String notification){
+    private void addToHisNotification(String hisUid, String pId, String notification) {
 
         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
             @Override
@@ -1002,17 +1033,17 @@ public class ViewPostActivity extends AppCompatActivity {
 
 
 //        data to put in notification
-                HashMap<Object,String> hashMap = new HashMap<>();
-                hashMap.put("pId",pId);
+                HashMap<Object, String> hashMap = new HashMap<>();
+                hashMap.put("pId", pId);
 
-                hashMap.put(getString(R.string.field_timestamp),timestamp);
+                hashMap.put(getString(R.string.field_timestamp), timestamp);
 
-                hashMap.put("pUid",hisUid);
+                hashMap.put("pUid", hisUid);
 
-                hashMap.put(getString(R.string.field_notification_message),notification);
-                hashMap.put(getString(R.string.field_if_seen),"false");
+                hashMap.put(getString(R.string.field_notification_message), notification);
+                hashMap.put(getString(R.string.field_if_seen), "false");
 
-                hashMap.put("sUid",FirebaseAuth.getInstance().getCurrentUser().getUid());
+                hashMap.put("sUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
@@ -1043,9 +1074,8 @@ public class ViewPostActivity extends AppCompatActivity {
 
     }
 
-    private void addlike () {
+    private void addlike() {
         Log.d(TAG, " like add");
-
         DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
         reference1.child(getString(R.string.dbname_user_photos))
                 .child(mphoto.getUi())
@@ -1055,14 +1085,12 @@ public class ViewPostActivity extends AppCompatActivity {
                 .child(getString(R.string.field_user_id))
                 .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
         NumberOfLikes();
-        addToHisNotification("" + mphoto.getUi(), mphoto.getPi(), "Liked your post");
-
-
+        if (!mphoto.getUi().equals(mAuth.getCurrentUser().getUid()))
+            addToHisNotification("" + mphoto.getUi(), mphoto.getPi(), "Liked your post");
     }
 
-    private void removeLike () {
+    private void removeLike() {
         Log.d(TAG, " like removed");
-
         DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
         reference1.child(getString(R.string.dbname_user_photos))
                 .child(mphoto.getUi())
@@ -1075,7 +1103,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
     }
 
-    private void ifCurrentUserPromoted () {
+    private void ifCurrentUserPromoted() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference.child(getString(R.string.dbname_user_photos))
                 .child(mphoto.getUi())
@@ -1107,7 +1135,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
     }
 
-    private void getPhototDetail () {
+    private void getPhototDetail() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         Query query = reference
                 .child(getString(R.string.dbname_users))
@@ -1138,7 +1166,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
 
     @SuppressLint("ClickableViewAccessibility")
-    private void setupWidgets () {
+    private void setupWidgets() {
         mTimestamp.setText(mphoto.getDc().substring(0, 10));
 
         mBackArrow.setOnClickListener(new View.OnClickListener() {
@@ -1168,7 +1196,7 @@ public class ViewPostActivity extends AppCompatActivity {
     }
 
 
-    private void setupFirebaseAuth () {
+    private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
@@ -1191,7 +1219,7 @@ public class ViewPostActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStart () {
+    public void onStart() {
         super.onStart();
 
         mAuth.addAuthStateListener(mAuthListener);
@@ -1200,7 +1228,7 @@ public class ViewPostActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStop () {
+    public void onStop() {
         super.onStop();
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
@@ -1208,7 +1236,7 @@ public class ViewPostActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause () {
+    protected void onPause() {
         super.onPause();
         if (simpleExoPlayer != null) {
             simpleExoPlayer.release();
@@ -1216,7 +1244,7 @@ public class ViewPostActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy () {
+    protected void onDestroy() {
         super.onDestroy();
         if (simpleExoPlayer != null) {
             simpleExoPlayer.release();

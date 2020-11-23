@@ -8,7 +8,6 @@
         android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:id="@+id/rel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
@@ -44,7 +43,7 @@
                 android:layout_below="@+id/relLayout"
                 android:layout_marginTop="30dp"
                 android:text="Voters List"
-                android:textColor="@color/scheme8"
+                android:textColor="@color/colorPrimary"
                 android:textSize="18sp" />
 
             <TextView
@@ -52,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Jury Marks "
-                android:textColor="@color/scheme8"
+                android:textColor="@color/colorPrimary"
                 android:textSize="18sp" />
         </RelativeLayout>
     </ScrollView>

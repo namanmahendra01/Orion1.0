@@ -35,7 +35,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="13"
                 android:padding="3dp"
-                app:civ_border_color="@color/orange"
+                app:civ_border_color="@color/light_orange"
                 app:civ_border_width="1dp" />
 
             <TextView
@@ -56,7 +56,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="24"
                 android:gravity="center"
-                android:textColor="@color/orange"
+                android:textColor="@color/light_orange"
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>

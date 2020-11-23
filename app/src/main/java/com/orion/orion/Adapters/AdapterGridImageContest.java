@@ -279,7 +279,6 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
                         if (dataSnapshot2.exists()) {
                             if (isImage){
                                 holder.card.setCardBackgroundColor(mContext.getResources().getColor(R.color.yellow));
-
                             }else{
                                 holder.voteNo.setVisibility(View.GONE);
                                 holder.voteYes.setVisibility(View.VISIBLE);

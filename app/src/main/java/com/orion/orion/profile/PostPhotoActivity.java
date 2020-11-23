@@ -2,6 +2,7 @@ package com.orion.orion.profile;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Context;
@@ -16,14 +17,13 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -56,16 +56,22 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 public class PostPhotoActivity extends AppCompatActivity {
 
 
     private static final String TAG = "PostPhotoActivity";
     private final Context mContext = PostPhotoActivity.this;
     //firebase
+    private RelativeLayout rootView;
     private FirebaseAuth mAuth;
     private FirebaseMethods mFirebaseMethods;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
+    private ExtendedFloatingActionButton fab;
 
     private ProgressDialog dialog;
     private EditText mCaption;
@@ -85,13 +91,22 @@ public class PostPhotoActivity extends AppCompatActivity {
         setupFirebaseAuth();
         mFirebaseMethods = new FirebaseMethods(PostPhotoActivity.this);
 
-        ExtendedFloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
         ImageView backArrow = findViewById(R.id.backarrow);
         TextView post = findViewById(R.id.post);
         mCaption = findViewById(R.id.inputCaption);
         image = findViewById(R.id.imageshare);
 
+        rootView = findViewById(R.id.relLayout);
+        rootView.setOnClickListener(v -> {
+            if(v.getId()!=mCaption.getId()){
+                InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                assert imm != null;
+                imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
+            }
+        });
         fab.setOnClickListener(v -> {
+            fab.setEnabled(false);
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("*/*");
@@ -108,13 +123,13 @@ public class PostPhotoActivity extends AppCompatActivity {
                     .show();
         });
         post.setOnClickListener(v -> {
-            dialog = ProgressDialog.show(mContext, "", "Uploading...  ", true);
             String caption = mCaption.getText().toString();
             Log.d(TAG, "onCreate: imgURL" + imgURL);
             Log.d(TAG, "onCreate: imageCount" + imageCount);
-            if (imgURL!=null && !imgURL.equals("")){
+            if (imgURL != null && !imgURL.equals("")) {
+                dialog = ProgressDialog.show(mContext, "", "Uploading...  ", true);
                 uploadNewPhoto(caption, imageCount, imgURL);
-            }else{
+            } else {
                 Toast.makeText(PostPhotoActivity.this, "Please Select Image First.", Toast.LENGTH_SHORT).show();
             }
         });
@@ -125,7 +140,7 @@ public class PostPhotoActivity extends AppCompatActivity {
         FilePaths filepaths = new FilePaths();
         String user_id = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(filepaths.FIREBASE_IMAGE_STORAGE + "/" + user_id + "/post" + (imageCount + 1));
-        String imgUrl2= mFirebaseMethods.compressImage(imgURL);
+        String imgUrl2 = mFirebaseMethods.compressImage(imgURL);
         Bitmap bm = ImageManager.getBitmap(imgUrl2);
         byte[] bytes;
         bytes = ImageManager.getBytesFromBitmap(bm, 100);
@@ -191,6 +206,7 @@ public class PostPhotoActivity extends AppCompatActivity {
     @TargetApi(19)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        fab.setEnabled(true);
         String imgPath = "";
         if (data != null && data.getData() != null && resultCode == RESULT_OK) {
             Uri uri = data.getData();
@@ -221,7 +237,7 @@ public class PostPhotoActivity extends AppCompatActivity {
                                 Integer.valueOf(lastFolder);
                                 isDigit = true;
                             } catch (NumberFormatException | NullPointerException ex) {
-                                Log.e(TAG, "onActivityResult: "+ex.getMessage() );
+                                Log.e(TAG, "onActivityResult: " + ex.getMessage());
                             }
                             rawUserId = isDigit ? lastFolder : "";
                             if (TextUtils.isEmpty(rawUserId)) rv.add(rawEmulatedStorageTarget);
@@ -307,13 +323,13 @@ public class PostPhotoActivity extends AppCompatActivity {
         Log.d(TAG, "setImage next " + imgPath);
         imgURL = imgPath;
         String mAppend = "file:/";
-
         Glide.with(PostPhotoActivity.this)
                 .load(imgURL)
                 .placeholder(R.drawable.load)
                 .error(R.drawable.default_image2)
                 .placeholder(R.drawable.load)
-                .into(image);     }
+                .into(image);
+    }
 
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");

@@ -25,14 +25,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/scheme8"/>
+            android:background="@color/colorPrimary"/>
         <View
             android:id="@+id/active2"
             android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/scheme8"
+            android:background="@color/colorPrimary"
             />
         <View
             android:id="@+id/active3"
@@ -40,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/scheme8"
+            android:background="@color/colorPrimary"
             />
     </LinearLayout>
 
@@ -296,7 +296,6 @@
 
                 <!--Voting Type-->
                 <LinearLayout
-                    android:id="@+id/line7"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
@@ -842,7 +841,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/PH"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:orientation="horizontal">
@@ -947,7 +945,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="start|center"
-                        android:textColor="@color/orange"
+                        android:textColor="@color/light_orange"
                         android:textSize="18sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -1052,7 +1050,7 @@
         android:layout_marginRight="15dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/circular_button"
-        android:backgroundTint="@color/scheme8"
+        android:backgroundTint="@color/colorPrimary"
         android:elevation="5dp"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"

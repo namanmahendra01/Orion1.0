@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -48,7 +49,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="15dp"
                     android:text="Post"
-                    android:textColor="@color/scheme8"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="18sp" />
 
 
@@ -99,7 +100,6 @@
             android:weightSum="3">
 
             <TextView
-                android:id="@+id/thumbtext"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -116,7 +116,7 @@
                 android:layout_height="30sp"
                 android:layout_centerVertical="true"
                 android:layout_weight="0.5"
-                android:background="@color/scheme8"
+                android:background="@color/colorPrimary"
                 android:src="@drawable/ic_add" />
 
 
@@ -249,10 +249,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
+            android:layout_marginBottom="25dp"
             android:text="Pick Video"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            app:backgroundTint="@color/scheme8"
+            app:backgroundTint="@color/colorPrimary"
             app:icon="@drawable/ic_baseline_video_library_24"
             app:iconTint="@color/white" />
 

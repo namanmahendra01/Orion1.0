@@ -41,7 +41,7 @@
                 android:gravity="center_vertical|end"
                 android:paddingRight="25dp"
                 android:textSize="24sp"
-                android:textColor="@color/scheme8"
+                android:textColor="@color/colorPrimary"
                 android:paddingStart="25dp"/>
 
         </LinearLayout>
@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/userItem"
         android:background="@drawable/pink_round_button"
-        android:backgroundTint="@color/scheme8"
+        android:backgroundTint="@color/colorPrimary"
         android:gravity="center"
         android:paddingTop="10dp"
         android:paddingBottom="5dp">

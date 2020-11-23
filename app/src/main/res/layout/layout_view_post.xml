@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
 
-                android:background="@color/scheme8">
+                android:background="@color/colorPrimary">
 
 
                 <ImageView
@@ -75,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/qwe"
-                app:cardBackgroundColor="@color/scheme8"
+                app:cardBackgroundColor="@color/colorPrimary"
                 android:layout_below="@+id/relLayout1"
              >
 
@@ -102,7 +102,6 @@
                     app:cardCornerRadius="10dp"
                    >
                     <com.orion.orion.util.SquareImageView
-                        android:id="@+id/frame"
                         android:visibility="visible"
                         android:src="@drawable/square"
                         android:layout_width="match_parent"

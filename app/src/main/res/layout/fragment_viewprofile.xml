@@ -43,7 +43,7 @@
                     android:layout_marginRight="15dp"
                     android:layout_weight="40"
                     android:background="@drawable/circular_button"
-                    android:backgroundTint="@color/scheme8"
+                    android:backgroundTint="@color/colorPrimary"
                     android:gravity="center"
                     android:text="Become a Fan"
                     android:textColor="@color/white"
@@ -142,7 +142,6 @@
                 android:visibility="visible">
 
                 <LinearLayout
-                    android:id="@+id/info_lines"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
@@ -174,7 +173,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|bottom"
                                 android:text="0"
-                                android:textColor="@color/scheme8"
+                                android:textColor="@color/colorPrimary"
                                 android:textSize="20sp" />
 
                             <TextView
@@ -209,7 +208,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|bottom"
                                 android:text="0"
-                                android:textColor="@color/scheme8"
+                                android:textColor="@color/colorPrimary"
                                 android:textSize="20sp" />
 
                             <TextView
@@ -249,7 +248,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|bottom"
                                 android:text="0"
-                                android:textColor="@color/scheme8"
+                                android:textColor="@color/colorPrimary"
                                 android:textSize="20sp" />
 
                             <TextView
@@ -284,7 +283,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|bottom"
                                 android:text="0"
-                                android:textColor="@color/scheme8"
+                                android:textColor="@color/colorPrimary"
                                 android:textSize="20sp" />
 
                             <TextView
@@ -324,7 +323,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|bottom"
                                 android:text="0"
-                                android:textColor="@color/scheme8"
+                                android:textColor="@color/colorPrimary"
                                 android:textSize="20sp" />
 
                             <TextView
@@ -359,7 +358,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|bottom"
                                 android:text="0"
-                                android:textColor="@color/scheme8"
+                                android:textColor="@color/colorPrimary"
                                 android:textSize="20sp" />
 
                             <TextView
@@ -399,7 +398,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|bottom"
                                 android:text="0"
-                                android:textColor="@color/scheme8"
+                                android:textColor="@color/colorPrimary"
                                 android:textSize="20sp" />
 
                             <TextView
@@ -434,7 +433,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|bottom"
                                 android:text="0"
-                                android:textColor="@color/scheme8"
+                                android:textColor="@color/colorPrimary"
                                 android:textSize="20sp" />
 
                             <TextView
@@ -471,7 +470,6 @@
 
 
                 <LinearLayout
-                    android:id="@+id/linksLine"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"

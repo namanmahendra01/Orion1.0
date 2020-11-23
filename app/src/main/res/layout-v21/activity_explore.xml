@@ -125,7 +125,7 @@
                         android:layout_gravity="center_vertical|start"
                         android:layout_weight="1"
                         android:text="Overall"
-                        android:textColor="@color/scheme8"
+                        android:textColor="@color/colorPrimary"
                         android:textSize="24sp" />
 
                     <TextView
@@ -178,7 +178,7 @@
                 android:gravity="center"
                 android:text="NO POSTS TO SHOW ¯\\_(ツ)_/¯"
                 android:textStyle="bold"
-                android:textColor="@color/scheme8"
+                android:textColor="@color/colorPrimary"
                 android:textSize="18sp"
                 android:visibility="gone" />
         </RelativeLayout>

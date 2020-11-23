@@ -329,6 +329,7 @@ public class ProfileActivity extends AppCompatActivity {
         share_btn.setOnClickListener(v -> {
             YoYo.with(Techniques.FadeIn).duration(500).playOn(share_btn);
             if (checkPermissionArray(Permissions.PERMISSIONS)) {
+
                 DialogPostSelection dialogPostSelection = new DialogPostSelection(ProfileActivity.this);
                 dialogPostSelection.show();
             } else verifyPermission(Permissions.PERMISSIONS);

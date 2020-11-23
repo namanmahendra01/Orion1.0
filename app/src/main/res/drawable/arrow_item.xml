@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+<layer-list xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:width="250dp"
-        android:height="60dp">
+        android:width="375dp"
+        android:height="40dp"
+        android:right="24dp">
         <shape>
-            <solid android:color="@color/scheme8" />
+            <solid android:color="@color/colorPrimary" />
         </shape>
     </item>
 
+    <item
+        android:width="28dp"
+        android:height="28dp"
+        android:left="375dp">
+        <rotate
+            android:fromDegrees="45"
+            android:pivotX="0"
+            android:pivotY="0">
+            <shape>
+                <solid android:color="@color/colorPrimary" />
+            </shape>
+        </rotate>
+    </item>
 
 </layer-list>

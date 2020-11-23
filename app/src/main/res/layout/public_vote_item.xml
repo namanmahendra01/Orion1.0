@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/r1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/winner"
@@ -55,7 +54,7 @@
                 android:layout_weight="0.5"
                 android:gravity="start|center_vertical"
                 android:text="View"
-                android:textColor="@color/dot_dark_screen3"
+                android:textColor="@color/light_blue"
                 android:textSize="15sp" />
             <RelativeLayout
                 android:id="@+id/relLayout2"

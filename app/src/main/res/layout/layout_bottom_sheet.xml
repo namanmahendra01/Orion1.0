@@ -18,7 +18,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/scheme8"
+        android:background="@color/colorPrimary"
         android:layout_marginBottom="10dp"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
