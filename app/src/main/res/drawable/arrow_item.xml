@@ -7,7 +7,7 @@
         android:height="40dp"
         android:right="24dp">
         <shape>
-            <solid android:color="@color/colorPrimary" />
+            <solid android:color="@color/black" />
         </shape>
     </item>
 
@@ -20,7 +20,7 @@
             android:pivotX="0"
             android:pivotY="0">
             <shape>
-                <solid android:color="@color/colorPrimary" />
+                <solid android:color="@color/black" />
             </shape>
         </rotate>
     </item>

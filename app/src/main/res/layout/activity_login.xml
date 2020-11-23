@@ -5,14 +5,13 @@
     android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="20dp"
-    android:background="@color/white">
+    android:background="@color/black">
 
     <ImageView
         android:id="@+id/appIcon"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="80dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="40dp"
         android:layout_centerHorizontal="true"
         android:contentDescription="@null"
         android:src="@drawable/orion_login"
@@ -47,7 +46,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+               >
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/input_email"
                 android:layout_width="match_parent"
@@ -62,22 +64,20 @@
                 android:padding="10dp"
                 android:textSize="18sp"
                 android:imeOptions="actionNext"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="15dp"
-
-                android:weightSum="10">
+                app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/input_password"
                     android:layout_width="match_parent"
-                    android:layout_weight="1"
+                    android:layout_marginTop="20dp"
                     android:background="@drawable/rectangular_border"
-
                     android:layout_height="60dp"
+                    app:endIconMode="password_toggle"
                     android:padding="10dp"
                     android:inputType="textPassword"
                     android:hint="Password"
@@ -85,34 +85,21 @@
                     android:maxLength="16"
                     android:textColorHint="@color/grey"
                     android:textColor="@color/black"
+                    app:passwordToggleEnabled="true"
                     android:textSize="18sp"
                     android:imeOptions="actionDone"/>
-                <ImageView
-                    android:id="@+id/show_pass_btn"
-                    android:tag="0"
-                    android:layout_width="match_parent"
-                    android:layout_weight="9"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center|bottom"
-                    android:layout_marginBottom="15dp"
-                    android:src="@drawable/ic_visibility_off"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            </LinearLayout>
             <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="15dp"
-                android:layout_alignParentBottom="true"
-                android:layout_below="@+id/input_password"
                 android:text="Login"
-
                 android:id="@+id/btn_login"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:textStyle="bold"
-
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:background="@drawable/white_round_button"/>
             <LinearLayout
@@ -129,7 +116,7 @@
                     android:layout_below="@+id/btn_login"
                     android:maxLines="2"
                     android:text="Forgot your password?"
-                    android:textColor="@color/grey"
+                    android:textColor="@color/white"
                     android:textSize="16sp"
                     />
                 <TextView
@@ -149,7 +136,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="bottom|center_horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp"
+            android:gravity="center_horizontal"
             >
 
             <TextView
@@ -163,7 +152,7 @@
                 android:maxLines="2"
                 android:minLines="2"
                 android:text="Don't have an account yet?"
-                android:textColor="@color/grey"
+                android:textColor="@color/white"
                 android:textSize="16sp"
                 />
             <TextView

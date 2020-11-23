@@ -22,13 +22,14 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="#FFFFFF"
+                    android:background="@drawable/rectangular_border"
                     android:text=" Publish Result "
                     android:id="@+id/pubBtn"
                     android:gravity="center"
                     android:padding="10dp"
                     android:layout_margin="20dp"
                     android:visibility="gone"
+
                     android:layout_marginTop="5dp"
                     android:layout_centerHorizontal="true"
                     android:textColor="@color/black" />
@@ -36,17 +37,17 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="#8BC34A"
+                    android:background="@drawable/rectangular_border"
                     android:text=" Result Published "
                     android:id="@+id/pubBtn2"
                     android:gravity="center"
                     android:padding="10dp"
 
                     android:layout_margin="20dp"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:layout_marginTop="5dp"
                     android:layout_centerHorizontal="true"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/colorPrimary" />
             </RelativeLayout>
 
             <RelativeLayout

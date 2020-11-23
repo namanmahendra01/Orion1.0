@@ -10,7 +10,7 @@
       android:strokeColor="#00000000"/>
   <path
       android:pathData="M239.582,208.332L62.5,208.332L0,270.832L0,41.668C0,18.656 18.656,0 41.668,0L239.582,0C262.594,0 281.25,18.656 281.25,41.668L281.25,166.668C281.25,189.676 262.594,208.332 239.582,208.332"
-      android:fillColor="#000000"
+      android:fillColor="@color/white"
       android:fillType="nonZero"
       android:strokeColor="#00000000"/>
 </vector>

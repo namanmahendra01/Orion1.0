@@ -90,7 +90,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
     LinearLayout promo;
     private ImageView star, starFill;
-    TextView domaintv, footer, noPost;
+    TextView domaintv, noPost;
     SwipeRefreshLayout postReferesh;
     ScrollView scrollView;
     private RecyclerView ListViewRv;
@@ -120,13 +120,12 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         storySeen = view.findViewById(R.id.story_photo_seen);
         story = view.findViewById(R.id.story_photo);
         promo = view.findViewById(R.id.promo2);
-        footer = view.findViewById(R.id.footer);
         scrollView = view.findViewById(R.id.parent_scroll);
         postReferesh = view.findViewById(R.id.post_refresh);
         progress = view.findViewById(R.id.pro);
         bottomProgress = view.findViewById(R.id.pro2);
         noPost = view.findViewById(R.id.noPost);
-        promoteLayout = view.findViewById(R.id.promo);
+        promoteLayout = view.findViewById(R.id.itemLayout);
 
 //          Initialize SharedPreference variables
         sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
@@ -1025,12 +1024,12 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user = dataSnapshot.getValue(users.class);
+                        promoteLayout.setVisibility(View.VISIBLE);
 
                         Glide.with(Homefragment.this)
                                 .load(user.getPp())
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)
-                                .placeholder(R.drawable.load)
                                 .thumbnail(0.25f)
                                 .into(story);
 
@@ -1038,7 +1037,6 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                                 .load(user.getPp())
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)
-                                .placeholder(R.drawable.load)
                                 .thumbnail(0.25f)
                                 .into(storyseen);
 
@@ -1062,6 +1060,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             promoteLayout.setVisibility(View.VISIBLE);
+                            Log.d(TAG, "onDataChange: visible");
 
                             long l = dataSnapshot.getChildrenCount();
                             int t = 0;
@@ -1070,21 +1069,20 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                                 if ((snapshot.child(getString(R.string.field_view)).child(FirebaseAuth.getInstance()
                                         .getCurrentUser().getUid()).exists())) {
                                     t++;
-                                    break;
                                 }
                             }
                             if (t == l) {
+
                                 storySeen.setVisibility(View.VISIBLE);
                                 story.setVisibility(View.GONE);
-                                footer.setVisibility(View.GONE);
 
                             } else if (t == 0) {
                                 storySeen.setVisibility(View.GONE);
                                 story.setVisibility(View.VISIBLE);
-                                footer.setVisibility(View.GONE);
 
                             }
-                        } else {
+                        }
+                        else{
                          promoteLayout.setVisibility(View.GONE);
 
                         }

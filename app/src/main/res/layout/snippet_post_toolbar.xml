@@ -2,7 +2,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/colorPrimaryDark"
+        android:background="#EF7F7D"
         >
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"

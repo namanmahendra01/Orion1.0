@@ -24,7 +24,7 @@
             android:gravity="center"
             android:letterSpacing="0.2"
             android:text="ORION TOP-8"
-            android:textColor="#FFC107"
+            android:textColor="@color/colorPrimary"
             android:textStyle="bold" />
 
         <androidx.constraintlayout.widget.ConstraintLayout

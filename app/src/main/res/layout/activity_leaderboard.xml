@@ -54,7 +54,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/userItem"
         android:background="@drawable/pink_round_button"
-        android:backgroundTint="@color/colorPrimary"
         android:gravity="center"
         android:paddingTop="10dp"
         android:paddingBottom="5dp">

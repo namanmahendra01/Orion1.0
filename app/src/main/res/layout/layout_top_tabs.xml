@@ -4,22 +4,22 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/white"
+        android:background="@color/black"
         android:layout_alignParentTop="true">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:background="@color/white"
+            android:background="@color/black"
             android:layout_height="wrap_content">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFFFFF"
-                app:tabTextColor="#2C2A2A"
+                android:background="@color/black"
+                app:tabTextColor="@color/white"
 
-                app:tabSelectedTextColor="#f29492"
+                app:tabSelectedTextColor="@color/colorPrimary"
 
                 app:tabIndicatorColor="#E3706E">
 

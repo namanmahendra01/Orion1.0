@@ -52,7 +52,6 @@ public class login extends AppCompatActivity {
     private RelativeLayout afterAnimationView;
     private EditText mEmail;
     private EditText mPassword;
-    private ImageView showPasswordToggle;
     private Button btnLogin;
     private TextView linkSignup;
     private TextView forgotPassword;
@@ -103,7 +102,6 @@ public class login extends AppCompatActivity {
         mProgressBar.setVisibility(View.GONE);
         mEmail = findViewById(R.id.input_email);
         mPassword = findViewById(R.id.input_password);
-        showPasswordToggle = findViewById(R.id.show_pass_btn);
         btnLogin = findViewById(R.id.btn_login);
         linkSignup = findViewById(R.id.link_signup);
         forgotPassword = findViewById(R.id.forgotPassword);
@@ -118,15 +116,7 @@ public class login extends AppCompatActivity {
             imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
         });
 
-        showPasswordToggle.setOnClickListener(v -> {
-            if (mPassword.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())) {
-                showPasswordToggle.setImageResource(R.drawable.ic_visibility_on);
-                mPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-            } else {
-                showPasswordToggle.setImageResource(R.drawable.ic_visibility_off);
-                mPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            }
-        });
+
 
         btnLogin.setOnClickListener(v -> {
             mProgressBar.setVisibility(View.VISIBLE);
