@@ -39,9 +39,10 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textAllCaps="true"
+
         android:layout_gravity="center"
         android:fontFamily="@font/orion"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="20sp"
        />
 </androidx.cardview.widget.CardView>
