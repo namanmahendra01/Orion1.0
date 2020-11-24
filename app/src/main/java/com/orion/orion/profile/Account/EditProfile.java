@@ -85,9 +85,9 @@ public class EditProfile extends AppCompatActivity {
     private EditText mdescription;
     private EditText mExternalLinks;
     private ImageView mAddLink;
-    private RelativeLayout link1Container;
-    private RelativeLayout link2Container;
-    private RelativeLayout link3Container;
+    private LinearLayout link1Container;
+    private LinearLayout link2Container;
+    private LinearLayout link3Container;
     private TextView mLink1;
     private ImageView mLink1delete;
     private TextView mLink2;

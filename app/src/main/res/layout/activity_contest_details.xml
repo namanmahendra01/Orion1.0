@@ -57,7 +57,7 @@
                     android:id="@+id/hostedbyTv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Naman"
+                    android:text=""
                     android:textColor="@color/black"
                     android:textSize="17sp"
                      />
@@ -80,7 +80,7 @@
                     android:id="@+id/usernameCreator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Naman"
+                    android:text=""
                     android:textColor="@color/black"
                     android:textSize="17sp"
                     />
@@ -267,7 +267,7 @@ android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/posterIv"
                 android:gravity="center"
-                android:text="KIET PHOTOGRAPHY CONTEST"
+                android:text=""
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold" />

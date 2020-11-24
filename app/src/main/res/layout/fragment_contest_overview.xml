@@ -44,7 +44,7 @@
                     android:padding="10dp"
 
                     android:layout_margin="20dp"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:layout_marginTop="5dp"
                     android:layout_centerHorizontal="true"
                     android:textColor="@color/colorPrimary" />

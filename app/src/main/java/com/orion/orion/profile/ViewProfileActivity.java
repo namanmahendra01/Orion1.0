@@ -234,6 +234,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     ulist.add(mUser);
                 } else {
                     if (!ulist.contains(mUser)) {
+                        Log.d(TAG, "onCreate: check9"+ulist);
                         ulist.add(mUser);
 
                     }
@@ -254,8 +255,11 @@ public class ViewProfileActivity extends AppCompatActivity {
                 if (ulist2 == null) {
 
                 } else {
+                    Log.d(TAG, "onCreate: checkk1"+ulist2);
                     if (ulist2.contains(mUser)) {
                         ulist2.remove(mUser);
+                        Log.d(TAG, "onCreate: checkk2"+ulist2);
+
 //                save update list
                         editor = sp.edit();
                         json = gson.toJson(ulist2);
@@ -321,49 +325,79 @@ public class ViewProfileActivity extends AppCompatActivity {
                 json = gson.toJson(list);
                 editor.putString("fl", json);
                 editor.apply();
-//              update following list
-                json = sp.getString("addfollowing", null);
-                type = new TypeToken<ArrayList<String>>() {
-                }.getType();
-
-                ArrayList<String> ulist = new ArrayList<String>();
-                ulist = gson.fromJson(json, type);
-                if (ulist == null) {
-                    ulist = new ArrayList<String>();
-                    ulist.add(mUser);
-                } else {
-                    if (!ulist.contains(mUser)) {
-                        ulist.add(mUser);
-
-                    }
 
 
-                }
-//                save update list
-                editor = sp.edit();
-                json = gson.toJson(ulist);
-                editor.putString("addfollowing", json);
-                editor.apply();
-
-
-//              update following list
+                //              update following list
                 json = sp.getString("removefollowing", null);
                 type = new TypeToken<ArrayList<String>>() {
                 }.getType();
                 ArrayList<String> ulist2 = new ArrayList<String>();
                 ulist2 = gson.fromJson(json, type);
                 if (ulist2 == null) {
+                    Log.d(TAG, "onCreate: checkk4");
+                    //              update following list
+                    json = sp.getString("addfollowing", null);
+                    type = new TypeToken<ArrayList<String>>() {
+                    }.getType();
 
+                    ArrayList<String> ulist = new ArrayList<String>();
+                    ulist = gson.fromJson(json, type);
+                    if (ulist == null) {
+                        ulist = new ArrayList<String>();
+                        ulist.add(mUser);
+                    } else {
+                        if (!ulist.contains(mUser)) {
+                            ulist.add(mUser);
+
+                        }
+
+
+                    }
+//                save update list
+                    editor = sp.edit();
+                    json = gson.toJson(ulist);
+                    editor.putString("addfollowing", json);
+                    editor.apply();
                 } else {
                     if (ulist2.contains(mUser)) {
                         ulist2.remove(mUser);
 //                save update list
+                        Log.d(TAG, "onCreate: checkk5");
+
                         editor = sp.edit();
                         json = gson.toJson(ulist2);
                         editor.putString("removefollowing", json);
                         editor.apply();
+                    }else{
+                        Log.d(TAG, "onCreate: checkk6");
+
+                        //              update following list
+                        json = sp.getString("addfollowing", null);
+                        type = new TypeToken<ArrayList<String>>() {
+                        }.getType();
+
+                        ArrayList<String> ulist = new ArrayList<String>();
+                        ulist = gson.fromJson(json, type);
+                        if (ulist == null) {
+                            ulist = new ArrayList<String>();
+                            ulist.add(mUser);
+                        } else {
+                            if (!ulist.contains(mUser)) {
+                                ulist.add(mUser);
+
+                            }
+
+
+                        }
+//                save update list
+                        editor = sp.edit();
+                        json = gson.toJson(ulist);
+                        editor.putString("addfollowing", json);
+                        editor.apply();
+
                     }
                 }
+
 
 
                 notify = true;

@@ -50,7 +50,7 @@ public class fragment_edit_contest extends Fragment {
     private TextView regEnd;
     private TextView voteBegin;
     private TextView voteEnd;
-    private TextView domain;
+    private TextView domain,userTv;
     private TextView openfor;
     private TextView juryname1;
     private TextView juryname2;
@@ -125,6 +125,8 @@ public class fragment_edit_contest extends Fragment {
         p1Tv = view.findViewById(R.id.p1Tv);
         p2Tv = view.findViewById(R.id.p2Tv);
         p3Tv = view.findViewById(R.id.p3Tv);
+        userTv = view.findViewById(R.id.usernameCreator);
+
         prizeLinear = view.findViewById(R.id.prizell);
         Button saveBtn = view.findViewById(R.id.save);
         TextView gp = view.findViewById(R.id.gp);
@@ -137,6 +139,7 @@ public class fragment_edit_contest extends Fragment {
         rules.setVisibility(View.VISIBLE);
         descripTv.setVisibility(View.GONE);
         rulesTv.setVisibility(View.GONE);
+
         Bundle b1 = getActivity().getIntent().getExtras();
         Contestkey = b1.getString("contestId");
         userid = b1.getString("userid");
@@ -547,6 +550,22 @@ public class fragment_edit_contest extends Fragment {
                 Log.d(TAG, "afterTextChanged: " + descrip2);
             }
         });
+        DatabaseReference ref8 = FirebaseDatabase.getInstance().getReference();
+        ref8.child(getString(R.string.dbname_users))
+                .child(userid)
+                .child(getString(R.string.field_username))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String username = dataSnapshot.getValue().toString();
+                        userTv.setText(username);
+
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
 
         saveBtn.setOnClickListener(v -> {

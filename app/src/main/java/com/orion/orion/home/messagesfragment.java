@@ -39,7 +39,6 @@ public class messagesfragment extends Fragment {
 
     //firebase
     private FirebaseAuth mAuth;
-    private FirebaseMethods mFirebaseMethods;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference myRef;
     private DatabaseReference myRef2;
@@ -58,7 +57,6 @@ public class messagesfragment extends Fragment {
     List<String> paginateduserList;
 
 
-    List<users> accountlist;
     AdaterChatList adaterChatList;
 
 
