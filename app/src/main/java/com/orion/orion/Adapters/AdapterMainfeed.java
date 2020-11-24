@@ -104,7 +104,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             if (simpleExoPlayer != null) {
                 simpleExoPlayer.release();
             }
-
         }
 
 

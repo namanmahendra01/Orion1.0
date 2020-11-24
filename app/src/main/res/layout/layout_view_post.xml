@@ -340,7 +340,6 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/commentLayout"
                 android:layout_below="@id/relLayout3"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="30dp">

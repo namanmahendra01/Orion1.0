@@ -710,7 +710,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                             int rating = (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_post)).getValue()
                                     + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).getValue()
                                     + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
-                            if (rating > userRating && !mUser.equals(singleSnapshot.getKey()))
+                            if (rating > userRating && !mUser.equals(singleSnapshot.getKey())  && !mUser.equals(getString(R.string.orion_team_user_id)))
                                 updateRank();
                         }
                     }

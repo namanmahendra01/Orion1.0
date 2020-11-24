@@ -709,16 +709,24 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
             BottomSheetFilter bottomSheet = new BottomSheetFilter(domainList);
             bottomSheet.show(getSupportFragmentManager(), "Type Filter");
         });
+        swipeRefreshLayout.setColorSchemeResources(
+                R.color.black,
+                R.color.scheme2,
+                R.color.purple,
+                R.color.dark_orange,
+                R.color.scheme5,
+                R.color.scheme6,
+                R.color.scheme7,
+                R.color.colorPrimary,
+                R.color.scheme9,
+                R.color.brown,
+                R.color.yellow,
+                R.color.red
+        );
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            if(!swipeRefreshLayout.isRefreshing()) {
-                mRecyclerView.setVisibility(View.GONE);
-                filter();
-            }
+            mRecyclerView.setVisibility(View.GONE);
+            filter();
         });
-        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
     }
 
     @Override

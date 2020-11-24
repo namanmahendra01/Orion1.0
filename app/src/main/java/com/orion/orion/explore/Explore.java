@@ -30,7 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.reflect.TypeToken;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -41,6 +40,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Adapters.AdapterGridImageExplore;
 import com.orion.orion.Adapters.UserListAdapter;
@@ -318,10 +318,9 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                 R.color.red
         );
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            if(!swipeRefreshLayout.isRefreshing()) {
-                swipeRefreshLayout.setRefreshing(true);
-                displayPhotos(SELECTED_FILTER);
-            }
+            Log.d(TAG, "initOnClickListeners: starting");
+            swipeRefreshLayout.setRefreshing(true);
+            displayPhotos(SELECTED_FILTER);
         });
         Log.d(TAG, "initOnClickListeners: completed");
     }
@@ -991,7 +990,6 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
             });
         }
     }
-
 
     private void getTop8() {
         Query query = reference.child(getString(R.string.db_topUsersParams)).child(getString(R.string.field_overall)).limitToFirst(8);

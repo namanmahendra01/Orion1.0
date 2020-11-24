@@ -13,19 +13,25 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".profile.Account.FanFolllowing.FanFollowList" /> <!-- Activities -->
-        <!-- Login/Signup Section + Intro part -->
+        <!-- Activities -->
+        <!-- Splash Screen -->
         <activity
-            android:name=".login.login"
-            android:noHistory="true">
+            android:name=".SplashActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".login.register"
-            android:noHistory="true"/>
+        <!-- Login/Signup Section + Intro part -->
+        <activity
+            android:name=".login.login"
+            android:noHistory="true">
+        </activity>
+        <activity
+            android:name=".login.register"
+            android:noHistory="true" />
         <!-- Home Section -->
         <activity android:name=".home.Message_Request" />
         <activity
@@ -34,10 +40,12 @@
         <activity android:name=".home.Chat_Activity" />
         <activity
             android:name=".home.ViewPromoted"
-            android:theme="@style/Theme.Transparent" /> <!-- Explore Section -->
+            android:theme="@style/Theme.Transparent" />
+        <!-- Explore Section -->
         <activity
             android:name=".explore.Explore"
-            android:windowSoftInputMode="adjustNothing" /> <!-- Contest Section -->
+            android:windowSoftInputMode="adjustNothing" />
+        <!-- Contest Section -->
         <activity android:name=".contest.create.form" />
         <activity android:name=".contest.create.CheckContest" />
         <activity android:name=".contest.ViewContestDetails" />
@@ -52,8 +60,10 @@
         <activity android:name=".contest.public_voting_media" />
         <activity
             android:name=".contest.contestMainActivity"
-            android:windowSoftInputMode="adjustNothing" /> <!-- Leaderboard Section -->
-        <activity android:name=".leaderboard.LeaderboardActivity" /> <!-- Profile Section -->
+            android:windowSoftInputMode="adjustNothing" />
+        <!-- Leaderboard Section -->
+        <activity android:name=".leaderboard.LeaderboardActivity" />
+        <!-- Profile Section -->
         <activity
             android:name=".profile.profile"
             android:noHistory="true" />
@@ -68,17 +78,20 @@
         <activity android:name=".profile.Account.Password_Reset" />
         <activity android:name=".profile.Account.Contest" />
         <activity android:name=".profile.Account.About" />
-
+        <activity android:name=".profile.Account.FanFolllowing.FanFollowList" />
         <activity
             android:name=".profile.PostVideoActivity"
             android:theme="@style/MyMaterialThemeProfile" />
         <activity
             android:name=".profile.PostPhotoActivity"
-            android:theme="@style/MyMaterialThemeProfile" /> <!-- Extras -->
+            android:theme="@style/MyMaterialThemeProfile" />
+        <!-- Extras -->
         <activity android:name=".CommentActivity" />
         <activity
             android:name=".ViewPostActivity"
-            android:launchMode="singleTop" /> <!-- Services -->
+            android:launchMode="singleTop" />
+
+        <!-- Services -->
         <meta-data
             android:name="com.google.firebase.messaging.some_id"
             android:value="some_id" /> <!-- Meta data -->
@@ -91,15 +104,13 @@
             </intent-filter>
         </service>
     </application>
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <dist:module dist:instant="true" />
 

@@ -111,8 +111,27 @@ public class ViewPostActivity extends AppCompatActivity {
 
     private SquareImageView mPostImage, thumbnail, progress2;
     private BottomNavigationViewEx bottomNavigationView;
-    private TextView mBackLabel, duration, mCaption, mUsername, mTimestamp, mLikes, mCommentnumber, mcredit, domain, promoteNum;
-    private ImageView mBackArrow, mEllipses, mStarYellow, mStarWhite, mProfileImage, mComment, promote, promoted, play2, mute, unmute;
+    private TextView mBackLabel;
+    private TextView duration;
+    private TextView mCaption;
+    private TextView mUsername;
+    private TextView mTimestamp;
+    private TextView mLikes;
+    private TextView mCommentnumber;
+    private TextView mcredit;
+    private TextView domain;
+    private TextView promoteNum;
+    private ImageView mBackArrow;
+    private ImageView mEllipses;
+    private ImageView mStarYellow;
+    private ImageView mStarWhite;
+    private ImageView mProfileImage;
+    private ImageView mComment;
+    private ImageView promote;
+    private ImageView promoted;
+    private ImageView play2;
+    private ImageView mute;
+    private ImageView unmute;
     //    SP
     Gson gson;
     SharedPreferences sp;
@@ -147,7 +166,7 @@ public class ViewPostActivity extends AppCompatActivity {
         mcredit = findViewById(R.id.credit);
         promote = findViewById(R.id.promote);
         promoted = findViewById(R.id.promoted);
-        domain = findViewById(R.id.domain12);
+//        domain = findViewById(R.id.domain12);
         promoteNum = findViewById(R.id.promote_number);
 
         progress = findViewById(R.id.pro);
