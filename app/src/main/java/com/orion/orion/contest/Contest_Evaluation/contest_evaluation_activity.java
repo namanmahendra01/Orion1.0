@@ -70,15 +70,17 @@ public class contest_evaluation_activity extends AppCompatActivity {
         mAuthListener = firebaseAuth -> {
             mUser = firebaseAuth.getCurrentUser();
             if (mUser == null) {
-
+                Log.d(TAG, "onAuthStateChanged:signed_out");
+                Log.d(TAG, "onAuthStateChanged: navigating to login");
                 SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
-                new AlertDialog.Builder(mContext)
+                new android.app.AlertDialog.Builder(mContext)
                         .setTitle("No user logon found")
                         .setMessage("We will be logging u out. \n Please try to log in again")
                         .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                             Intent intent = new Intent(mContext, login.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             settings.edit().clear().apply();
+                            if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
                             startActivity(intent);
                         })
                         .show();

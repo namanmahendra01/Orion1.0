@@ -47,6 +47,7 @@ public class About extends AppCompatActivity {
                             Intent intent = new Intent(mContext, login.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             settings.edit().clear().apply();
+                            if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
                             startActivity(intent);
                         })
                         .show();

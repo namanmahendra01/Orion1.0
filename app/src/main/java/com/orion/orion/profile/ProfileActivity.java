@@ -2,6 +2,7 @@ package com.orion.orion.profile;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ContentUris;
@@ -46,6 +47,7 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Adapters.AdapterGridImage;
 import com.orion.orion.R;
 import com.orion.orion.dialogs.DialogPostSelection;
+import com.orion.orion.login.login;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.Like;
 import com.orion.orion.models.Photo;
@@ -355,26 +357,26 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void getJudges() {
-            Query query = myRef.child(getString(R.string.dbname_contests))
-                    .child(mAuth.getCurrentUser().getUid())
-                    .child(getString(R.string.field_contest_judged));
-            query.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        long size = (long) snapshot.getValue();
+        Query query = myRef.child(getString(R.string.dbname_contests))
+                .child(mAuth.getCurrentUser().getUid())
+                .child(getString(R.string.field_contest_judged));
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    long size = (long) snapshot.getValue();
 //                mCreations.setText((int) size);
-                        judges.setText(String.valueOf(size));
-                    }else{
-                        judges.setText("0");
-                    }
+                    judges.setText(String.valueOf(size));
+                } else {
+                    judges.setText("0");
                 }
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    mCreations.setText("?");
-                }
-            });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                mCreations.setText("?");
+            }
+        });
 
     }
 
@@ -865,7 +867,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void setProfileWidgets(users userSetting) {
         Log.d(TAG, "onDataChange: " + userSetting.toString());
 
-        Glide.with(ProfileActivity.this)
+        Glide.with(getApplicationContext())
                 .load(userSetting.getPp())
                 .placeholder(R.drawable.load)
                 .error(R.drawable.default_image2)
@@ -945,7 +947,6 @@ public class ProfileActivity extends AppCompatActivity {
         Menu menu = bottomNavigationView.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);
-
     }
 
     private void setupFirebaseAuth() {
@@ -971,7 +972,23 @@ public class ProfileActivity extends AppCompatActivity {
 
                     }
                 });
-            } else Log.d(TAG, "onAuthStateChanged:signed_out");
+            } else {
+
+                Log.d(TAG, "onAuthStateChanged:signed_out");
+                Log.d(TAG, "onAuthStateChanged: navigating to login");
+                SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                new AlertDialog.Builder(mContext)
+                        .setTitle("No user logon found")
+                        .setMessage("We will be logging you out. \n Please try to log in again")
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            Intent intent = new Intent(mContext, login.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            settings.edit().clear().apply();
+                            if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
+                            startActivity(intent);
+                        })
+                        .show();
+            }
         };
 
     }

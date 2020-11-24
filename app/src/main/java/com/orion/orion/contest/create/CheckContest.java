@@ -1,6 +1,8 @@
 package com.orion.orion.contest.create;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
+import com.orion.orion.login.login;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.users;
 import com.orion.orion.util.FirebaseMethods;
@@ -568,6 +571,19 @@ public class CheckContest extends AppCompatActivity {
                     Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
                 } else {
                     Log.d(TAG, "onAuthStateChanged:signed_out");
+                    Log.d(TAG, "onAuthStateChanged: navigating to login");
+                    SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                    new android.app.AlertDialog.Builder(getApplicationContext())
+                            .setTitle("No user logon found")
+                            .setMessage("We will be logging u out. \n Please try to log in again")
+                            .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                                Intent intent = new Intent(getApplicationContext(), login.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                settings.edit().clear().apply();
+                                if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
+                                startActivity(intent);
+                            })
+                            .show();
                 }
             }
         };
