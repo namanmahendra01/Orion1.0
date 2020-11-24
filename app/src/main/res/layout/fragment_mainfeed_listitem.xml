@@ -12,16 +12,13 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="25dp"
             android:layout_height="wrap_content">
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/relLayout1"
-
                 app:cardUseCompatPadding="true"
                 app:cardCornerRadius="5dp"
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
             <RelativeLayout
@@ -97,15 +94,13 @@
                 android:id="@+id/relLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/post_imagelayout"
-              >
+                android:layout_below="@id/post_imagelayout">
 
                 <RelativeLayout
                     android:id="@+id/starlayout"
                     android:layout_width="60dp"
                     android:layout_height="match_parent"
-                    android:layout_centerHorizontal="true"
-                    >
+                    android:layout_centerHorizontal="true">
 
                     <ImageView
                         android:id="@+id/image_star"
@@ -213,7 +208,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="10dp"
                     android:text="naman.mahendra mountain #mountain"
                     android:textColor="@color/black"
                     android:textSize="16dp" />
@@ -315,6 +309,7 @@
 
                 <com.orion.orion.util.SquareImageView
                     android:id="@+id/post_image"
+                    android:background="@color/black"
                     android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

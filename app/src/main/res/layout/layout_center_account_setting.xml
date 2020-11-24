@@ -11,7 +11,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textSetting"
-            android:scrollbars="none"></ListView>
+            android:scrollbars="none" />
 
         <TextView
             android:id="@+id/textSetting"

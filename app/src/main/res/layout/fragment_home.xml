@@ -94,6 +94,7 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:layout_marginTop="25dp"
                         android:id="@+id/promo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -112,12 +113,10 @@
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/recyclerPromote"
-
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:layout_toRightOf="@+id/itemLayout"
-
+                            android:layout_toEndOf="@+id/itemLayout"
                             android:nestedScrollingEnabled="false"
                             android:orientation="horizontal"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
