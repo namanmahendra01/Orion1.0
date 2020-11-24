@@ -146,7 +146,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                         Intent i = new Intent(mContext, profile.class);
                         i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                        i.putExtra(mContext.getString(R.string.intent_user),mparticipantLists.getUi());
+                        i.putExtra(mContext.getString(R.string.intent_user), mparticipantLists.getUi());
                         mContext.startActivity(i);
                     }
                 });
@@ -157,19 +157,19 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                         Intent i = new Intent(mContext, profile.class);
                         i.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.home));
 
-                        i.putExtra(mContext.getString(R.string.intent_user),mparticipantLists.getUi());
+                        i.putExtra(mContext.getString(R.string.intent_user), mparticipantLists.getUi());
                         mContext.startActivity(i);
                     }
                 });
                 submission.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        boolean ok=mparticipantLists.getMl().length()>23;
-                        boolean ifNull=mparticipantLists.getMl() == null || mparticipantLists.getMl().equals("");
-                        if (ifNull){
+                        boolean ok = mparticipantLists.getMl().length() > 23;
+                        boolean ifNull = mparticipantLists.getMl() == null || mparticipantLists.getMl().equals("");
+                        if (ifNull) {
                             Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
 
-                        }else if (ok) {
+                        } else if (ok) {
                             if (mparticipantLists.getMl().substring(8, 23).equals("firebasestorage")) {
                                 Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
                                 i.putExtra("imageLink", mparticipantLists.getMl());
@@ -178,26 +178,26 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                 mContext.startActivity(i);
                             } else {
 
-                                try{
+                                try {
                                     Uri uri = Uri.parse(mparticipantLists.getMl());
                                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                                     mContext.startActivity(intent);
 
-                                }catch (ActivityNotFoundException e){
+                                } catch (ActivityNotFoundException e) {
                                     Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
-                                    Log.e(SNTPClient.TAG, "onClick: "+ e.getMessage());
+                                    Log.e(SNTPClient.TAG, "onClick: " + e.getMessage());
                                 }
                             }
-                        }else {
+                        } else {
 
-                            try{
+                            try {
                                 Uri uri = Uri.parse(mparticipantLists.getMl());
                                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                                 mContext.startActivity(intent);
 
-                            }catch (ActivityNotFoundException e){
+                            } catch (ActivityNotFoundException e) {
                                 Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
-                                Log.e(SNTPClient.TAG, "onClick: "+ e.getMessage());
+                                Log.e(SNTPClient.TAG, "onClick: " + e.getMessage());
                             }
                         }
 
@@ -246,39 +246,36 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
 
-                                                                        deleteRequest(mparticipantLists.getCi(), mparticipantLists.getJi(), mparticipantLists.getUi());
-                                                                        participantLists.remove(i);
+                                                        deleteRequest(mparticipantLists.getCi(), mparticipantLists.getJi(), mparticipantLists.getUi());
+                                                        participantLists.remove(i);
 
-                                                                        AdapterParticipantRequest.this.notifyItemRemoved(i);
+                                                        AdapterParticipantRequest.this.notifyItemRemoved(i);
 
-                                                                        if (mparticipantLists.getMl() == null || mparticipantLists.getMl().equals("")||!mparticipantLists.getMl().substring(8,23).equals("firebasestorage")) {
+                                                        if (mparticipantLists.getMl() == null || mparticipantLists.getMl().equals("") || !mparticipantLists.getMl().substring(8, 23).equals("firebasestorage")) {
 
-                                                                        }else{
-                                                                            StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMl());
-                                                                            photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                @Override
-                                                                                public void onSuccess(Void aVoid) {
-                                                                                    // File deleted successfully
-                                                                                    Log.d(TAG, "onSuccess: deleted file");
-                                                                                }
-                                                                            }).addOnFailureListener(new OnFailureListener() {
-                                                                                @Override
-                                                                                public void onFailure(@NonNull Exception exception) {
-                                                                                    // Uh-oh, an error occurred!
-                                                                                    Log.d(TAG, "onFailure: did not delete file");
-                                                                                }
-                                                                            });
-                                                                        }
+                                                        } else {
+                                                            StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMl());
+                                                            photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void aVoid) {
+                                                                    // File deleted successfully
+                                                                    Log.d(TAG, "onSuccess: deleted file");
+                                                                }
+                                                            }).addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception exception) {
+                                                                    // Uh-oh, an error occurred!
+                                                                    Log.d(TAG, "onFailure: did not delete file");
+                                                                }
+                                                            });
+                                                        }
 
-                                                                        bottomSheetDialog.dismiss();
+                                                        bottomSheetDialog.dismiss();
 
                                                     }
                                                 });
                                     }
                                 });
-
-
-
 
 
                             }
@@ -329,7 +326,6 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                         .setValue("Accepted");
 
 
-
                                 db.child(mContext.getString(R.string.dbname_users))
                                         .child(mparticipantLists.getUi())
                                         .child(mContext.getString(R.string.changedJoinedContest))
@@ -350,43 +346,40 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                                         .child(mparticipantLists.getCi())
                                                         .child(mparticipantLists.getJi())
                                                         .setValue(participantList)
-                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
-                                                            public void onComplete(@NonNull Task<Void> task) {
-                                                                if (task.isSuccessful()) {
-                                                                    HashMap<String, Object> hashMap3 = new HashMap<>();
-                                                                    hashMap3.put(mContext.getString(R.string.field_jury_1), "");
-                                                                    hashMap3.put(mContext.getString(R.string.field_jury_2), "");
-                                                                    hashMap3.put(mContext.getString(R.string.field_jury_3), "");
-                                                                    hashMap3.put(mContext.getString(R.string.field_jury_name_1), "-");
-                                                                    hashMap3.put(mContext.getString(R.string.field_jury_name_2), "-");
-                                                                    hashMap3.put(mContext.getString(R.string.field_jury_name_3), "-");
-                                                                    hashMap3.put(mContext.getString(R.string.field_jury_comment1), "-");
-                                                                    hashMap3.put(mContext.getString(R.string.field_jury_comment2), "-");
-                                                                    hashMap3.put(mContext.getString(R.string.field_jury_comment3), "-");
+                                                            public void onSuccess(Void aVoid) {
+                                                                HashMap<String, Object> hashMap3 = new HashMap<>();
+                                                                hashMap3.put(mContext.getString(R.string.field_jury_1), "");
+                                                                hashMap3.put(mContext.getString(R.string.field_jury_2), "");
+                                                                hashMap3.put(mContext.getString(R.string.field_jury_3), "");
+                                                                hashMap3.put(mContext.getString(R.string.field_jury_name_1), "-");
+                                                                hashMap3.put(mContext.getString(R.string.field_jury_name_2), "-");
+                                                                hashMap3.put(mContext.getString(R.string.field_jury_name_3), "-");
+                                                                hashMap3.put(mContext.getString(R.string.field_jury_comment1), "-");
+                                                                hashMap3.put(mContext.getString(R.string.field_jury_comment2), "-");
+                                                                hashMap3.put(mContext.getString(R.string.field_jury_comment3), "-");
 
-                                                                    DatabaseReference db3 = FirebaseDatabase.getInstance().getReference();
-                                                                    db3.child(mContext.getString(R.string.dbname_participantList))
-                                                                            .child(mparticipantLists.getCi())
-                                                                            .child(mparticipantLists.getJi())
-                                                                            .child(mContext.getString(R.string.juryMarks))
-                                                                            .setValue(hashMap3)
-                                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                @Override
-                                                                                public void onSuccess(Void aVoid) {
-                                                                                    deleteRequest(mparticipantLists.getCi(), mparticipantLists.getJi(), mparticipantLists.getUi());
-                                                                                    bottomSheetDialog.dismiss();
+                                                                DatabaseReference db3 = FirebaseDatabase.getInstance().getReference();
+                                                                db3.child(mContext.getString(R.string.dbname_participantList))
+                                                                        .child(mparticipantLists.getCi())
+                                                                        .child(mparticipantLists.getJi())
+                                                                        .child(mContext.getString(R.string.juryMarks))
+                                                                        .setValue(hashMap3)
+                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                            @Override
+                                                                            public void onSuccess(Void aVoid) {
+                                                                                deleteRequest(mparticipantLists.getCi(), mparticipantLists.getJi(), mparticipantLists.getUi());
+                                                                                bottomSheetDialog.dismiss();
 
-                                                                                    participantLists.remove(i);
-                                                                                    AdapterParticipantRequest.this.notifyItemRemoved(i);
-                                                                                }
-                                                                            });
-
-
-
-                                                                }
+                                                                                participantLists.remove(i);
+                                                                                AdapterParticipantRequest.this.notifyItemRemoved(i);
+                                                                            }
+                                                                        });
                                                             }
                                                         });
+
+
                                             }
 
                                             @Override
@@ -396,26 +389,14 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
 
                                         });
 
-                                final DatabaseReference data = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_users))
-                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                data.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        users user = dataSnapshot.getValue(users.class);
 
-                                        if (notify) {
-                                            mFirebaseMethods.sendNotification(mparticipantLists.getUi(),"", "You are now a participant.Check your ranking now.","Submission Accepted");
-                                        }
-                                        notify = false;
+                                if (notify) {
+                                    mFirebaseMethods.sendNotification(mparticipantLists.getUi(), "", "You are now a participant.Check your ranking now.", "Submission Accepted");
+                                }
+                                notify = false;
 
-                                    }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-                                addToHisNotification(""+mparticipantLists.getUi(),"Submission Accepted for a contest.Check on Contests.");
+                                addToHisNotification("" + mparticipantLists.getUi(), "Submission Accepted for a contest.Check on Contests.");
 
                             }
                         });
@@ -437,10 +418,8 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
         });
 
 
-
-
-
     }
+
     private void addToHisNotification(String hisUid, String notification) {
 
         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
@@ -459,17 +438,17 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                 String timestamp = String.valueOf(date.getTime());
 
 //        data to put in notification
-                HashMap<Object,String> hashMap = new HashMap<>();
-                hashMap.put("pId","false");
+                HashMap<Object, String> hashMap = new HashMap<>();
+                hashMap.put("pId", "false");
 
-                hashMap.put(mContext.getString(R.string.field_timestamp),timestamp);
+                hashMap.put(mContext.getString(R.string.field_timestamp), timestamp);
 
-                hashMap.put("pUid",hisUid);
+                hashMap.put("pUid", hisUid);
 
-                hashMap.put(mContext.getString(R.string.field_notification_message),notification);
-                hashMap.put(mContext.getString(R.string.field_if_seen),"false");
+                hashMap.put(mContext.getString(R.string.field_notification_message), notification);
+                hashMap.put(mContext.getString(R.string.field_if_seen), "false");
 
-                hashMap.put("sUid",FirebaseAuth.getInstance().getCurrentUser().getUid());
+                hashMap.put("sUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_users));
@@ -504,7 +483,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
     }
 
     private void getparticipantform(String userid, String joiningkey, String contestkey, TextView college, LinearLayout layout) {
-        DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child(mContext.getString(R.string.dbname_contests))
                 .child(userid)
                 .child(mContext.getString(R.string.joined_contest))
@@ -513,9 +492,9 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         JoinForm joinForm = dataSnapshot.getValue(JoinForm.class);
-                        college1=joinForm.getClg();
-                        String hostid=joinForm.getHst();
-                        DatabaseReference ref1 =FirebaseDatabase.getInstance().getReference();
+                        college1 = joinForm.getClg();
+                        String hostid = joinForm.getHst();
+                        DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference();
                         ref1.child(mContext.getString(R.string.dbname_contests))
                                 .child(hostid)
                                 .child(mContext.getString(R.string.created_contest))
@@ -524,9 +503,9 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         String openfor = dataSnapshot.child(mContext.getString(R.string.field_open_for)).getValue().toString();
-                                        if (openfor.equals("All")){
+                                        if (openfor.equals("All")) {
                                             layout.setVisibility(View.GONE);
-                                        }else{
+                                        } else {
                                             layout.setVisibility(View.VISIBLE);
                                             college.setText(college1);
                                         }
@@ -552,6 +531,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
         ParticipantList form = participantLists.get(position);
         return form.getJi().hashCode();
     }
+
     @Override
     public int getItemCount() {
         return participantLists.size();
@@ -569,25 +549,25 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
             mReference = FirebaseDatabase.getInstance().getReference();
 
 
-            profile=(CircleImageView)itemView.findViewById(R.id.profilePartCv);
-            username=itemView.findViewById(R.id.username);
-            time=itemView.findViewById(R.id.timeStamp);
+            profile = (CircleImageView) itemView.findViewById(R.id.profilePartCv);
+            username = itemView.findViewById(R.id.username);
+            time = itemView.findViewById(R.id.timeStamp);
 
         }
     }
 
 
     private void getparticipantDetails(String userid, TextView username, CircleImageView profile) {
-        DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child(mContext.getString(R.string.dbname_users))
                 .child(userid)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        users user =dataSnapshot.getValue(users.class);
-                        name1=user.getDn();
-                        username1=user.getU();
-                        profilelink=user.getPp();
+                        users user = dataSnapshot.getValue(users.class);
+                        name1 = user.getDn();
+                        username1 = user.getU();
+                        profilelink = user.getPp();
                         try {
 
                             Glide.with(mContext)
@@ -597,8 +577,8 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                     .placeholder(R.drawable.load)
                                     .thumbnail(0.5f)
                                     .into(profile);
-                        }catch (NullPointerException e){
-                            Log.e(TAG, "onDataChange: "+e.getMessage() );
+                        } catch (NullPointerException e) {
+                            Log.e(TAG, "onDataChange: " + e.getMessage());
 
                         }
 
@@ -615,6 +595,6 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
     }
 
 
-    }
+}
 
 

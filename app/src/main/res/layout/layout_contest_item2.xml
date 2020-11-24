@@ -43,23 +43,15 @@
             android:id="@+id/optionC"
             android:layout_alignParentRight="true" />
         </RelativeLayout>
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            >
+
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="200dp"
-                app:layout_constraintDimensionRatio="W,1:1"
-                android:scaleType="centerInside"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
                 android:id="@+id/posterD"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"/>
+                android:src="@drawable/orion_logo_png_black"
+               />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
     </RelativeLayout>
 
