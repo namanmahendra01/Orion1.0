@@ -62,10 +62,12 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Adapters.AdapterComment;
+import com.orion.orion.login.login;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.Photo;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
+import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.SNTPClient;
 import com.orion.orion.util.SquareImageView;
 
@@ -89,10 +91,13 @@ import static com.orion.orion.util.MyApplication.getProxy;
 public class ViewPostActivity extends AppCompatActivity {
     private static final String TAG = "ViewPostFragment";
 
+    private Context mContext;
 
     //firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private FirebaseUser mUser;
+    FirebaseMethods firebaseMethods;
     private DatabaseReference myRef;
     private FirebaseDatabase mFirebaseDatabase;
     String currentUsername = "";
@@ -143,12 +148,17 @@ public class ViewPostActivity extends AppCompatActivity {
     private ArrayList<String> commentID;
     private AdapterComment adapterComment;
 
+    private boolean notifyLike;
+    private boolean notifyPromote;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_post);
 
+        mContext = this;
         mPostImage = findViewById(R.id.post_image);
         bottomNavigationView = findViewById(R.id.BottomNavViewBar);
         mBackArrow = findViewById(R.id.backarrow);
@@ -210,7 +220,8 @@ public class ViewPostActivity extends AppCompatActivity {
 
         getComments( mphoto.getPi(), mphoto.getUi());
 
-
+        notifyLike = false;
+        notifyPromote = false;
 
         mEllipses.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -553,9 +564,8 @@ public class ViewPostActivity extends AppCompatActivity {
             }
         });
 
-        getCurrentUser();
-
         setupFirebaseAuth();
+        getCurrentUser();
         ifCurrentUserLiked();
         ifCurrentUserPromoted();
         numberofPromote();
@@ -569,6 +579,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
                 mStarWhite.setVisibility(View.GONE);
                 mStarYellow.setVisibility(View.VISIBLE);
+                notifyLike = true;
                 addlike();
                 NumberOfLikes();
             }
@@ -581,6 +592,7 @@ public class ViewPostActivity extends AppCompatActivity {
                 mStarYellow.setVisibility(View.GONE);
                 removeLike();
                 NumberOfLikes();
+                notifyLike = false;
                 if (!mphoto.getUi().equals(mAuth.getCurrentUser().getUid()))
                     Log.d(TAG, "onClick: preparing to remove like");
                 myRef.child(getString(R.string.dbname_users))
@@ -628,6 +640,7 @@ public class ViewPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 promotePost();
+
             }
         });
 
@@ -654,7 +667,6 @@ public class ViewPostActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Remove Promotion");
         builder.setMessage("Are you sure, you want to remove this Promotion?");
-
 //                set buttons
         builder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
             @Override
@@ -663,6 +675,8 @@ public class ViewPostActivity extends AppCompatActivity {
 
                 promote.setVisibility(View.VISIBLE);
                 promoted.setVisibility(View.GONE);
+
+
 
                 DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                 db.child(getString(R.string.dbname_promote))
@@ -678,6 +692,40 @@ public class ViewPostActivity extends AppCompatActivity {
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .removeValue();
 
+                notifyPromote=false;
+                myRef.child(getString(R.string.dbname_users))
+                        .child(mphoto.getUi())
+                        .child(getString(R.string.field_Notifications))
+                        .orderByKey()
+                        .limitToLast(3)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        if (dataSnapshot.exists()
+                                                && dataSnapshot.child(getString(R.string.field_notification_message)).getValue().equals(getString(R.string.promote_message))
+                                                && dataSnapshot.child("sUid").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                && dataSnapshot.child("pUid").getValue().equals(mphoto.getUi())
+                                                && dataSnapshot.child("pId").getValue().equals(mphoto.getPi())) {
+
+                                            myRef.child(getString(R.string.dbname_users))
+                                                    .child(mphoto.getUi())
+                                                    .child(getString(R.string.field_Notifications))
+                                                    .child(dataSnapshot.getKey()).removeValue()
+                                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "onDataChange: Notification Deleted"))
+                                                    .addOnFailureListener(e -> Log.d(TAG, "onDataChange: Notification not Deleted"));
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
 
             }
         });
@@ -757,8 +805,6 @@ public class ViewPostActivity extends AppCompatActivity {
                 .thumbnail(0.5f)
                 .into(post);
         username.setText(currentUsername);
-
-
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -816,8 +862,8 @@ public class ViewPostActivity extends AppCompatActivity {
                                 .child(getString(R.string.field_promotes))
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                 .setValue("true");
-
-                        addToHisNotification("" + mphoto.getUi(), mphoto.getPi(), "Promoted your post.");
+                        notifyPromote = true;
+                        addToHisNotification("" + mphoto.getUi(), mphoto.getPi(), getString(R.string.promote_message));
 
 
                         bottomSheetDialog.dismiss();
@@ -1090,8 +1136,6 @@ public class ViewPostActivity extends AppCompatActivity {
             @Override
             public void onTimeReceived(String rawDate) {
                 // rawDate -> 2019-11-05T17:51:01+0530
-
-
                 String str_date = rawDate;
                 java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
                 Date date = null;
@@ -1102,21 +1146,14 @@ public class ViewPostActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, "onCreateView: timestampyesss" + date.getTime());
                 String timestamp = String.valueOf(date.getTime());
-
-
 //        data to put in notification
                 HashMap<Object, String> hashMap = new HashMap<>();
                 hashMap.put("pId", pId);
-
                 hashMap.put(getString(R.string.field_timestamp), timestamp);
-
                 hashMap.put("pUid", hisUid);
-
                 hashMap.put(getString(R.string.field_notification_message), notification);
                 hashMap.put(getString(R.string.field_if_seen), "false");
-
                 hashMap.put("sUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-
 
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
                 ref.child(hisUid).child(getString(R.string.field_Notifications)).child(timestamp).setValue(hashMap)
@@ -1131,10 +1168,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
                     }
                 });
-
-
                 Log.e(SNTPClient.TAG, rawDate);
-
             }
 
             @Override
@@ -1142,8 +1176,6 @@ public class ViewPostActivity extends AppCompatActivity {
                 Log.e(SNTPClient.TAG, ex.getMessage());
             }
         });
-
-
     }
 
     private void addlike() {
@@ -1158,7 +1190,7 @@ public class ViewPostActivity extends AppCompatActivity {
                 .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
         NumberOfLikes();
         if (!mphoto.getUi().equals(mAuth.getCurrentUser().getUid()))
-            addToHisNotification("" + mphoto.getUi(), mphoto.getPi(), "Liked your post");
+            addToHisNotification(mphoto.getUi(), mphoto.getPi(), getString(R.string.liked_message));
     }
 
     private void removeLike() {
@@ -1171,8 +1203,6 @@ public class ViewPostActivity extends AppCompatActivity {
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .removeValue();
         NumberOfLikes();
-
-
     }
 
     private void ifCurrentUserPromoted() {
@@ -1194,8 +1224,6 @@ public class ViewPostActivity extends AppCompatActivity {
                     Log.d(TAG, " checking current user liked or not: not liked");
                     promote.setVisibility(View.VISIBLE);
                     promoted.setVisibility(View.GONE);
-
-
                 }
             }
 
@@ -1225,7 +1253,6 @@ public class ViewPostActivity extends AppCompatActivity {
                         .placeholder(R.drawable.load)
                         .into(mProfileImage);
                 mcredit.setText("© " + user.getU());
-
             }
 
 
@@ -1269,57 +1296,68 @@ public class ViewPostActivity extends AppCompatActivity {
 
 
     private void setupFirebaseAuth() {
-        Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference();
+        Log.d(TAG, "setupFirebaseAuth: started");
+        myRef = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
-
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-
-                if (user != null) {
-                    Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
-                } else {
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
+        firebaseMethods = new FirebaseMethods(mContext);
+        mAuthListener = firebaseAuth -> {
+            if (firebaseAuth.getCurrentUser() != null) Log.d(TAG, "onAuthStateChanged: signed_in:" + firebaseAuth.getCurrentUser().getUid());
+            else {
+                Log.d(TAG, "onAuthStateChanged:signed_out");
+                Log.d(TAG, "onAuthStateChanged: navigating to login");
+                SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                new AlertDialog.Builder(mContext)
+                        .setTitle("No user logon found")
+                        .setMessage("We will be logging you out. \n Please try to log in again")
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            Intent intent = new Intent(mContext, login.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            settings.edit().clear().apply();
+                            startActivity(intent);
+                        })
+                        .show();
             }
         };
-
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
         mAuth.addAuthStateListener(mAuthListener);
-
-
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
+        if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
+        if (simpleExoPlayer != null) simpleExoPlayer.release();
+        if(notifyLike || notifyPromote){
+            final DatabaseReference data = myRef.child(getString(R.string.dbname_users)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            data.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    users user = dataSnapshot.getValue(users.class);
+                    Log.d(TAG, "onDataChange: user.getU()"+user.getU());
+                    if(notifyLike) firebaseMethods.sendNotification(mphoto.getUi(), user.getU(), getString(R.string.liked_message), getString(R.string.like_string));
+                    if(notifyPromote) firebaseMethods.sendNotification(mphoto.getUi(), user.getU(), getString(R.string.promote_message), getString(R.string.promote_string));
+
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (simpleExoPlayer != null) {
-            simpleExoPlayer.release();
-        }
+        if (simpleExoPlayer != null) simpleExoPlayer.release();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (simpleExoPlayer != null) {
-            simpleExoPlayer.release();
-        }
+        if (simpleExoPlayer != null) simpleExoPlayer.release();
     }
 }

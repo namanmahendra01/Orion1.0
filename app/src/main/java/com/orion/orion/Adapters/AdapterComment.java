@@ -80,6 +80,7 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.ViewHold
                                 if (i == comments.size() || i == commentId.size()) {
                                     Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
                                 } else {
+
                                     comments.remove(i);
                                     commentId.remove(i);
                                     Query query = myRef.child(mContext.getString(R.string.dbname_users))
@@ -88,7 +89,7 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.ViewHold
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
-                                                if (singleSnapshot.child(mContext.getString(R.string.field_notification_message)).equals("commented on your post")
+                                                if (singleSnapshot.child(mContext.getString(R.string.field_notification_message)).equals(mContext.getString(R.string.chat_message))
                                                         && singleSnapshot.child("pId").equals(mPhotoId)) {
                                                     myRef.child(mContext.getString(R.string.dbname_users))
                                                             .child(mContext.getString(R.string.field_Notifications))

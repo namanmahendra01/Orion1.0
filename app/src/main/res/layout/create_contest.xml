@@ -729,7 +729,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <!--Limited No. of participants window-->
@@ -964,6 +964,7 @@
                 android:textSize="18dp" />
 
             <EditText
+                android:layout_marginBottom="10dp"
                 android:id="@+id/extraRules"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -151,7 +152,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
     private EditText thirdPrize;
     private TextView totalPrize;
     private EditText extraRules;
-    private EditText extraQuery;
+    private EditText exraQuery;
 
 
     //Values
@@ -191,6 +192,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser mUser;
 
+
     public static boolean isDateAfter(String startDate, String endDate) {
         try {
             String myFormatString = "dd-M-yyyy"; // for example
@@ -202,6 +204,27 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private void disableEmoji() {
+        InputFilter emojiFilter = (source, start, end, dest, dstart, dend) -> {
+            for (int index = start; index < end - 1; index++) {
+                int type = Character.getType(source.charAt(index));
+                if (type == Character.SURROGATE) return "";
+            }
+            return null;
+        };
+        eventTitle.setFilters(new InputFilter[]{emojiFilter});
+        hostedBy.setFilters(new InputFilter[]{emojiFilter});
+        description.setFilters(new InputFilter[]{emojiFilter});
+        juryName1.setFilters(new InputFilter[]{emojiFilter});
+        juryName2.setFilters(new InputFilter[]{emojiFilter});
+        juryName3.setFilters(new InputFilter[]{emojiFilter});
+        firstPrize.setFilters(new InputFilter[]{emojiFilter});
+        secondPrize.setFilters(new InputFilter[]{emojiFilter});
+        thirdPrize.setFilters(new InputFilter[]{emojiFilter});
+        totalPrize.setFilters(new InputFilter[]{emojiFilter});
+        extraRules.setFilters(new InputFilter[]{emojiFilter});
     }
 
     public static void hideKeyboardFrom(Context context, View view) {
@@ -235,6 +258,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
         mContext = form.this;
         setupFirebaseAuth();
         initializeWidgets();
+        disableEmoji();
         layout1.setOnClickListener(v -> hideKeyboardFrom(mContext, layout1));
         layout2.setOnClickListener(v -> hideKeyboardFrom(mContext, layout2));
         layout3.setOnClickListener(v -> hideKeyboardFrom(mContext, layout3));

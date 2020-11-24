@@ -1,6 +1,7 @@
 package com.orion.orion.profile;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -33,6 +34,7 @@ import com.google.gson.reflect.TypeToken;
 import com.orion.orion.Adapters.AdapterGridImage;
 import com.orion.orion.R;
 import com.orion.orion.home.Chat_Activity;
+import com.orion.orion.login.login;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.Like;
 import com.orion.orion.models.Photo;
@@ -203,6 +205,7 @@ public class ViewProfileActivity extends AppCompatActivity {
             YoYo.with(Techniques.FadeIn).duration(500).playOn(mMessage);
             if (isFollowing) {
                 isFollowing = false;
+                notify = false;
 //               remove from following list
                 SharedPreferences sp = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
                 Gson gson = new Gson();
@@ -405,21 +408,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_follower)).child(mUser).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_users)).child(mUser).child(getString(R.string.changedFollowers)).setValue("true");
                 mFollow.setText("Unfollow");
-                final DatabaseReference data = myRef.child(getString(R.string.dbname_users)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                data.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        users user = dataSnapshot.getValue(users.class);
-                        if (notify) {
-                            mFirebaseMethods.sendNotification(mUser, user.getU(), "becomes your FAN!", "Fan");
-                        }
-                        notify = false;
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                    }
-                });
                 addToHisNotification(mUser, "becomes your FAN!");
             }
             DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
@@ -983,19 +972,26 @@ public class ViewProfileActivity extends AppCompatActivity {
     }
 
     private void setupFirebaseAuth() {
-        Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = mFirebaseDatabase.getReference();
+        Log.d(TAG, "setupFirebaseAuth: started");
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = firebaseAuth -> {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user != null) {
-                Log.d(TAG, "onAuthStateChanged:signed in:" + user.getUid());
-            } else {
+            if (firebaseAuth.getCurrentUser() != null) Log.d(TAG, "onAuthStateChanged: signed_in:" + firebaseAuth.getCurrentUser().getUid());
+            else {
                 Log.d(TAG, "onAuthStateChanged:signed_out");
+                Log.d(TAG, "onAuthStateChanged: navigating to login");
+                SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                new AlertDialog.Builder(mContext)
+                        .setTitle("No user logon found")
+                        .setMessage("We will be logging you out. \n Please try to log in again")
+                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                            Intent intent = new Intent(mContext, login.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            settings.edit().clear().apply();
+                            startActivity(intent);
+                        })
+                        .show();
             }
         };
-
     }
 
     @Override
@@ -1007,8 +1003,21 @@ public class ViewProfileActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
+        if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
+        if (notify){
+            final DatabaseReference data = myRef.child(getString(R.string.dbname_users)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            data.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    users user = dataSnapshot.getValue(users.class);
+                    Log.d(TAG, "onDataChange: user.getU()"+user.getU());
+                    mFirebaseMethods.sendNotification(mUser, user.getU(), "becomes your FAN!", "Fan");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
         }
     }
 }

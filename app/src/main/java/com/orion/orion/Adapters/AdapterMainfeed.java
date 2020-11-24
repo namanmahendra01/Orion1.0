@@ -698,8 +698,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                 holder.yellowstar.setVisibility(View.VISIBLE);
                 addlike(holder, photo);
                 NumberOfLikes(holder, photo);
-
-
             }
         });
         holder.yellowstar.setOnClickListener(new View.OnClickListener() {
@@ -752,7 +750,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             @Override
             public void onClick(View v) {
                 notify = true;
-
                 promotePost(photo, holder);
             }
         });
@@ -907,25 +904,24 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                                 .setValue("true");
 
                         addToHisNotification("" + photo.getUi(), photo.getPi(), "promoted your post.");
-                        final DatabaseReference data = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_users))
-                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mContext.getString(R.string.field_username));
-                        data.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                String user = dataSnapshot.getValue().toString();
-
-                                if (notify) {
-                                    mFirebaseMethods.sendNotification(photo.getUi(), user, "promoted your post.", "Promote");
-                                }
-                                notify = false;
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
+//                        final DatabaseReference data = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_users)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mContext.getString(R.string.field_username));
+//                        data.addValueEventListener(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                String user = dataSnapshot.getValue().toString();
+//
+//                                if (notify) {
+//                                    mFirebaseMethods.sendNotification(photo.getUi(), user, "promoted your post.", "Promote");
+//                                }
+//                                notify = false;
+//
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                            }
+//                        });
 
 
 
@@ -1397,25 +1393,25 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                 .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
         NumberOfLikes(holder, photo);
 
-        final DatabaseReference data = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_users))
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        data.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                users user = dataSnapshot.getValue(users.class);
-
-                if (notify) {
-                    mFirebaseMethods.sendNotification(photo.getUi(), user.getU(), "liked your post", "Like");
-                }
-                notify = false;
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+//        final DatabaseReference data = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_users))
+//                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+//        data.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                users user = dataSnapshot.getValue(users.class);
+//
+//                if (notify) {
+//                    mFirebaseMethods.sendNotification(photo.getUi(), user.getU(), "liked your post", "Like");
+//                }
+//                notify = false;
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 
 
         addToHisNotification("" + photo.getUi(), photo.getPi(), "Liked your post");

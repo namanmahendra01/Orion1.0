@@ -45,15 +45,10 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
     @NonNull
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        if (i == MSG_TYPE_RIGHT) {
-            View view = LayoutInflater.from(context).inflate(R.layout.row_chat_right, viewGroup, false);
-            return new MyHolder(view);
-        } else {
-            View view = LayoutInflater.from(context).inflate(R.layout.row_chat_left, viewGroup, false);
-            return new MyHolder(view);
-
-        }
-
+        View view;
+        if (i == MSG_TYPE_RIGHT) view = LayoutInflater.from(context).inflate(R.layout.row_chat_right, viewGroup, false);
+        else view = LayoutInflater.from(context).inflate(R.layout.row_chat_left, viewGroup, false);
+        return new MyHolder(view);
     }
 
     @Override

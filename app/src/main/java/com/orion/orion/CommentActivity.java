@@ -45,17 +45,38 @@ public class CommentActivity extends AppCompatActivity {
 
 
     private EditText mComment;
-    private boolean notify = false;
     private FirebaseMethods mFirebaseMethods;
+    private boolean notifyComment;
+    String userId;
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(notifyComment){
+            final DatabaseReference data = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            data.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    users user = dataSnapshot.getValue(users.class);
+                    mFirebaseMethods.sendNotification(userId, user.getU(), "commented on your post", "Comment");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
+        notifyComment = false;
 
         Intent i = getIntent();
         String photoId = i.getStringExtra("photoId");
-        String userId = i.getStringExtra("userId");
+        userId = i.getStringExtra("userId");
         Log.d(TAG, "onCreate: kol" + photoId + userId);
 
         mComment = findViewById(R.id.comment);
@@ -81,28 +102,18 @@ public class CommentActivity extends AppCompatActivity {
         getComments(photoId, userId);
 
         ImageView mCheckMark = findViewById(R.id.checkMark);
-        mCheckMark.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!mComment.getText().toString().equals("")) {
-                    notify = true;
-                    addNewComment(mComment.getText().toString(), userId, photoId);
-                    mComment.setText("");
-                    closeKeyboard();
-                } else {
-                    Toast.makeText(CommentActivity.this, "C'mon..Give a Shoutout", Toast.LENGTH_SHORT).show();
-                }
+        mCheckMark.setOnClickListener(v -> {
+            if (!mComment.getText().toString().equals("")) {
+                notifyComment = true;
+                addNewComment(mComment.getText().toString(), userId, photoId);
+                mComment.setText("");
+                closeKeyboard();
+            } else Toast.makeText(CommentActivity.this, "C'mon..Give a Shoutout", Toast.LENGTH_SHORT).show();
 
-            }
         });
 
         ImageView mBackArrow = findViewById(R.id.backarrow);
-        mBackArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        mBackArrow.setOnClickListener(v -> finish());
     }
 
     private String getTim() {
@@ -134,21 +145,6 @@ public class CommentActivity extends AppCompatActivity {
                 .child(commentID)
                 .setValue(comment);
 
-        final DatabaseReference data = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        data.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                users user = dataSnapshot.getValue(users.class);
-                if (notify) {
-                    mFirebaseMethods.sendNotification(userId, user.getU(), "commented on your post", "Comment");
-                }
-                notify = false;
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
         addToHisNotification("" + userId, photoId, "commented on your post");
     }
 
@@ -164,16 +160,11 @@ public class CommentActivity extends AppCompatActivity {
         hashMap.put("sUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
         ref.child(hisUid).child(getString(R.string.field_Notifications)).child(timestamp).setValue(hashMap)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-            }
-        });
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "addToHisNotification: added Sucessfully");
+                }).addOnFailureListener(e -> {
+                    Log.e(TAG, "addToHisNotification: "+e.getMessage());
+                });
 
     }
 

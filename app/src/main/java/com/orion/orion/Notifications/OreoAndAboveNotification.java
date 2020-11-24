@@ -22,9 +22,7 @@ public class OreoAndAboveNotification extends ContextWrapper {
 
     public OreoAndAboveNotification(Context base) {
         super(base);
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
-            createChannel();
-        }
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.O) createChannel();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -36,10 +34,7 @@ public class OreoAndAboveNotification extends ContextWrapper {
         getManager().createNotificationChannel(notificationChannel);
     }
     public NotificationManager getManager(){
-        if (notificationManager==null){
-            notificationManager=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-
-        }
+        if (notificationManager==null) notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         return  notificationManager;
     }
 
@@ -56,6 +51,5 @@ public class OreoAndAboveNotification extends ContextWrapper {
                 .setSound(soundUri)
                 .setAutoCancel(true)
                 .setSmallIcon(Integer.parseInt(icon));
-
     }
 }

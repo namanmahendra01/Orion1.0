@@ -16,13 +16,7 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
-
-import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -64,6 +58,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+
 public class FirebaseMethods {
     private static final String TAG = "FirebaseMethods";
     private FirebaseAuth mAuth;
@@ -75,7 +72,7 @@ public class FirebaseMethods {
     private String userID;
     private double mPhotoUploadProgress = 0;
     private RequestQueue requestQueue;
-    boolean flag1=true,flag2=true,flag3=true,flag4=true,flag5=true,flag6=true;
+    boolean flag1 = true, flag2 = true, flag3 = true, flag4 = true, flag5 = true, flag6 = true;
     private static final float maxHeight = 1280.0f;
     private static final float maxWidth = 1280.0f;
 
@@ -93,7 +90,8 @@ public class FirebaseMethods {
         }
 
     }
-    public void uploadContest(final int count, final String imgURL, Bitmap bm, String contestKey, String p, String joiningkey){
+
+    public void uploadContest(final int count, final String imgURL, Bitmap bm, String contestKey, String p, String joiningkey) {
         FilePaths filepaths = new FilePaths();
 
         if (!imgURL.equals("")) {
@@ -109,16 +107,15 @@ public class FirebaseMethods {
             }
 
 
-            String imgUrl2= compressImage(imgURL);
+            String imgUrl2 = compressImage(imgURL);
 
-             bm = ImageManager.getBitmap(imgUrl2);
+            bm = ImageManager.getBitmap(imgUrl2);
 
 
             byte[] bytes;
 
 
-
-           bytes = ImageManager.getBytesFromBitmap(bm, 100);
+            bytes = ImageManager.getBytesFromBitmap(bm, 100);
 
 
             UploadTask uploadTask = null;
@@ -135,7 +132,7 @@ public class FirebaseMethods {
 //                           Toast.makeText(mContext, "Photo Upload success" , Toast.LENGTH_SHORT).show();
                             DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                             if (p.equals("p1")) {
-                                flag1=false;
+                                flag1 = false;
                                 ref.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.created_contest))
@@ -143,15 +140,13 @@ public class FirebaseMethods {
                                         .child(mContext.getString(R.string.field_jury_pic_1)).setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        flag1=true;
-                                        if (flag1&&flag2&&flag3&&flag4){
-                                            ((CheckContest)mContext).progress.setVisibility(View.GONE);
-                                            ((CheckContest)mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                        flag1 = true;
+                                        if (flag1 && flag2 && flag3 && flag4) {
+                                            ((CheckContest) mContext).progress.setVisibility(View.GONE);
+                                            ((CheckContest) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                             Intent i = new Intent(mContext, contestMainActivity.class);
-                                            mContext. startActivity(i);
-                                            Toast.makeText(mContext ,"Your Contest request has been submitted.", Toast.LENGTH_SHORT).show();
-
-
+                                            mContext.startActivity(i);
+                                            Toast.makeText(mContext, "Your Contest request has been submitted.", Toast.LENGTH_SHORT).show();
 
 
                                         }
@@ -160,7 +155,7 @@ public class FirebaseMethods {
                             }
                             if (p.equals("p2")) {
 
-                                flag2=false;
+                                flag2 = false;
                                 ref.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.created_contest))
@@ -168,13 +163,13 @@ public class FirebaseMethods {
                                         .child(mContext.getString(R.string.field_jury_pic_2)).setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        flag2=true;
-                                        if (flag1&&flag2&&flag3&&flag4){
-                                            ((CheckContest)mContext).progress.setVisibility(View.GONE);
-                                            ((CheckContest)mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                        flag2 = true;
+                                        if (flag1 && flag2 && flag3 && flag4) {
+                                            ((CheckContest) mContext).progress.setVisibility(View.GONE);
+                                            ((CheckContest) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                             Intent i = new Intent(mContext, contestMainActivity.class);
-                                            mContext. startActivity(i);
-                                            Toast.makeText(mContext ,"Your Contest request has been submitted.", Toast.LENGTH_SHORT).show();
+                                            mContext.startActivity(i);
+                                            Toast.makeText(mContext, "Your Contest request has been submitted.", Toast.LENGTH_SHORT).show();
 
 
                                         }
@@ -182,7 +177,7 @@ public class FirebaseMethods {
                                 });
                             }
                             if (p.equals("p3")) {
-                                flag3=false;
+                                flag3 = false;
 
                                 ref.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -191,13 +186,13 @@ public class FirebaseMethods {
                                         .child(mContext.getString(R.string.field_jury_pic_3)).setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        flag3=true;
-                                        if (flag1&&flag2&&flag3&&flag4){
-                                            ((CheckContest)mContext).progress.setVisibility(View.GONE);
-                                            ((CheckContest)mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                        flag3 = true;
+                                        if (flag1 && flag2 && flag3 && flag4) {
+                                            ((CheckContest) mContext).progress.setVisibility(View.GONE);
+                                            ((CheckContest) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                             Intent i = new Intent(mContext, contestMainActivity.class);
-                                            mContext. startActivity(i);
-                                            Toast.makeText(mContext ,"Your Contest request has been submitted.", Toast.LENGTH_SHORT).show();
+                                            mContext.startActivity(i);
+                                            Toast.makeText(mContext, "Your Contest request has been submitted.", Toast.LENGTH_SHORT).show();
 
 
                                         }
@@ -205,7 +200,7 @@ public class FirebaseMethods {
                                 });
                             }
                             if (p.equals("p4")) {
-                                flag4=false;
+                                flag4 = false;
 
                                 ref.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -214,14 +209,13 @@ public class FirebaseMethods {
                                         .child(mContext.getString(R.string.field_poster)).setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        flag4=true;
-                                        if (flag1&&flag2&&flag3&&flag4){
-                                            ((CheckContest)mContext).progress.setVisibility(View.GONE);
-                                            ((CheckContest)mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                        flag4 = true;
+                                        if (flag1 && flag2 && flag3 && flag4) {
+                                            ((CheckContest) mContext).progress.setVisibility(View.GONE);
+                                            ((CheckContest) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                             Intent i = new Intent(mContext, contestMainActivity.class);
-                                            mContext. startActivity(i);
-                                            Toast.makeText(mContext ,"Your Contest request has been submitted.", Toast.LENGTH_SHORT).show();
-
+                                            mContext.startActivity(i);
+                                            Toast.makeText(mContext, "Your Contest request has been submitted.", Toast.LENGTH_SHORT).show();
 
 
                                         }
@@ -231,7 +225,7 @@ public class FirebaseMethods {
                             }
                             if (p.equals("p5")) {
 
-                                flag5=false;
+                                flag5 = false;
                                 ref.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.joined_contest))
@@ -244,13 +238,13 @@ public class FirebaseMethods {
                                         .child(mContext.getString(R.string.field_id_link)).setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        flag5=true;
-                                        if (flag5&&flag6) {
+                                        flag5 = true;
+                                        if (flag5 && flag6) {
                                             ((JoiningForm) mContext).linearLayout.setVisibility(View.GONE);
-                                            ((JoiningForm) mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            ((JoiningForm) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                             Intent i = new Intent(mContext, contestMainActivity.class);
-                                            mContext. startActivity(i);
-                                            Toast.makeText(mContext ,"Your participation request has been submitted.", Toast.LENGTH_SHORT).show();
+                                            mContext.startActivity(i);
+                                            Toast.makeText(mContext, "Your participation request has been submitted.", Toast.LENGTH_SHORT).show();
                                         }
 
                                     }
@@ -258,7 +252,7 @@ public class FirebaseMethods {
                             }
                             if (p.equals("p6")) {
 
-                                flag6=false;
+                                flag6 = false;
                                 ref.child(mContext.getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(mContext.getString(R.string.joined_contest))
@@ -271,13 +265,13 @@ public class FirebaseMethods {
                                         .child(mContext.getString(R.string.field_media_link)).setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        flag6=true;
-                                        if (flag5&&flag6) {
+                                        flag6 = true;
+                                        if (flag5 && flag6) {
                                             ((JoiningForm) mContext).linearLayout.setVisibility(View.GONE);
-                                            ((JoiningForm) mContext).  getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            ((JoiningForm) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                             Intent i = new Intent(mContext, contestMainActivity.class);
-                                            mContext. startActivity(i);
-                                            Toast.makeText(mContext ,"Your participation request has been submitted.", Toast.LENGTH_SHORT).show();
+                                            mContext.startActivity(i);
+                                            Toast.makeText(mContext, "Your participation request has been submitted.", Toast.LENGTH_SHORT).show();
 
 
                                         }
@@ -299,17 +293,15 @@ public class FirebaseMethods {
                 public void onFailure(@NonNull Exception e) {
                     Log.d(TAG, "onFailure: Photo Upload Failed");
                     Toast.makeText(mContext, "Pics Upload failed", Toast.LENGTH_SHORT).show();
-
-
                 }
             });
         }
 
     }
 
-    public void sendNotification(final String hisUID, final String username,final String message,final String tittle) {
-        final  DatabaseReference allToken = FirebaseDatabase.getInstance().getReference("Tokens");
-        Query query= allToken.orderByKey().equalTo(hisUID);
+    public void sendNotification(final String hisUID, final String username, final String message, final String tittle) {
+        final DatabaseReference allToken = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = allToken.orderByKey().equalTo(hisUID);
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -317,56 +309,33 @@ public class FirebaseMethods {
                     Token token = ds.getValue(Token.class);
                     Data data = new Data(FirebaseAuth.getInstance().getCurrentUser().getUid(), username + " " + message, tittle, hisUID, R.drawable.orion_logo_png);
                     Sender sender = new Sender(data, token.getToken());
-
                     try {
                         JSONObject senderJsonObj = new JSONObject(new Gson().toJson(sender));
-                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("https://fcm.googleapis.com/fcm/send", senderJsonObj,
-                                new Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        Log.d("JSON_RESPONSE", "onResponse: " + response.toString());
-                                    }
-
-                                }, new Response.ErrorListener() {
+                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                                "https://fcm.googleapis.com/fcm/send", senderJsonObj,
+                                response -> Log.d("JSON_RESPONSE", "onResponse: " + response.toString()),
+                                error -> Log.d("JSON_RESPONSE", "onError: " + error.toString())
+                        ) {
                             @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.d("JSON_RESPONSE", "onError: " + error.toString());
-
-                            }
-                        }){
-                            @Override
-                            public Map<String, String> getHeaders() throws AuthFailureError {
-
-                                Map<String,String> headers = new HashMap<>();
-                                headers.put("Content-Type","application/json");
-                                headers.put("Authorization","key=AAAAPBXWnHs:APA91bFkGt9VULR-c7XBIcsF0SYlKTiWod88zRpKwIBf-74w46zKCUuIqKIsATJ_Lbv56jdPWhJ0QclNp56kN8__I1mJOQcKJeGjg6CfrIkDYL9SmEy_Dz0zDhyF4WJIlMdE0khSk7qI");
-
+                            public Map<String, String> getHeaders() {
+                                Map<String, String> headers = new HashMap<>();
+                                headers.put("Content-Type", "application/json");
+                                headers.put("Authorization", "key=AAAAPBXWnHs:APA91bFkGt9VULR-c7XBIcsF0SYlKTiWod88zRpKwIBf-74w46zKCUuIqKIsATJ_Lbv56jdPWhJ0QclNp56kN8__I1mJOQcKJeGjg6CfrIkDYL9SmEy_Dz0zDhyF4WJIlMdE0khSk7qI");
                                 return headers;
                             }
                         };
-
-
                         requestQueue.add(jsonObjectRequest);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-
-
-
                 }
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
-
-
     }
-
 
 
     public String getTim() {
@@ -377,8 +346,8 @@ public class FirebaseMethods {
 
 
     public String compressImage(String imagePath) {
-        Log.d(TAG, "compressImage: "+imagePath);
-  
+        Log.d(TAG, "compressImage: " + imagePath);
+
         File file = new File(imagePath);
         if (file.exists() && file.canRead()) {
             Log.d(TAG, "compressImage: yes");
@@ -500,24 +469,22 @@ public class FirebaseMethods {
     }
 
     public String getFilename() {
-            File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
-                    + "/Android/data/"
-                    + mContext.getApplicationContext().getPackageName()
-                    + "/Files/Compressed");
+        File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
+                + "/Android/data/"
+                + mContext.getApplicationContext().getPackageName()
+                + "/Files/Compressed");
 
-            // Create the storage directory if it does not exist
-            if (!mediaStorageDir.exists()) {
-                mediaStorageDir.mkdirs();
-            }
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists()) {
+            mediaStorageDir.mkdirs();
+        }
 
-            String mImageName = "IMG_" + String.valueOf(System.currentTimeMillis()) + ".jpg";
-            String uriString = (mediaStorageDir.getAbsolutePath() + "/" + mImageName);
-            ;
-            return uriString;
+        String mImageName = "IMG_" + String.valueOf(System.currentTimeMillis()) + ".jpg";
+        String uriString = (mediaStorageDir.getAbsolutePath() + "/" + mImageName);
+        ;
+        return uriString;
 
     }
-
-
 
 
     public void publishResut(boolean manual, String Conteskey, ArrayList<ParticipantList> participantLists,
@@ -548,8 +515,8 @@ public class FirebaseMethods {
                                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
                                                             public void onSuccess(Void aVoid) {
-                                                               publishResutFurther(manual, Conteskey,participantLists,
-                                                                   progress,activity,  winnerList);
+                                                                publishResutFurther(manual, Conteskey, participantLists,
+                                                                        progress, activity, winnerList);
                                                             }
                                                         });
                                             } else {
@@ -559,7 +526,7 @@ public class FirebaseMethods {
                                                         .setValue(1).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
-                                                       publishResutFurther(manual, Conteskey, participantLists, progress, activity, winnerList);
+                                                        publishResutFurther(manual, Conteskey, participantLists, progress, activity, winnerList);
                                                     }
                                                 });
                                             }
@@ -574,7 +541,7 @@ public class FirebaseMethods {
                     });
 
 
-        }else{
+        } else {
             ref.child(mContext.getString(R.string.dbname_contestlist))
                     .child(Conteskey)
                     .child(mContext.getString(R.string.field_result))
@@ -600,13 +567,13 @@ public class FirebaseMethods {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (!snapshot.child(mContext.getString(R.string.field_jury_name_1)).getValue().toString().equals("")){
+                        if (!snapshot.child(mContext.getString(R.string.field_jury_name_1)).getValue().toString().equals("")) {
                             ref.child(mContext.getString(R.string.dbname_username))
                                     .child(snapshot.child(mContext.getString(R.string.field_jury_name_1)).getValue().toString())
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            if (snapshot.exists()){
+                                            if (snapshot.exists()) {
                                                 DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
                                                         .child(snapshot.getValue().toString())
                                                         .child(mContext.getString(R.string.field_contest_judged));
@@ -616,9 +583,9 @@ public class FirebaseMethods {
                                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                         if (snapshot.exists()) {
                                                             long l = (long) snapshot.getValue();
-                                                            ref2.setValue(l+1);
+                                                            ref2.setValue(l + 1);
                                                             Log.d(TAG, "onDataChange: cgy 1");
-                                                        }else{
+                                                        } else {
                                                             ref2.setValue(1);
                                                         }
 
@@ -641,13 +608,13 @@ public class FirebaseMethods {
                                         }
                                     });
                         }
-                        if (!snapshot.child(mContext.getString(R.string.field_jury_name_2)).getValue().toString().equals("")){
+                        if (!snapshot.child(mContext.getString(R.string.field_jury_name_2)).getValue().toString().equals("")) {
                             ref.child(mContext.getString(R.string.dbname_username))
                                     .child(snapshot.child(mContext.getString(R.string.field_jury_name_2)).getValue().toString())
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            if (snapshot.exists()){
+                                            if (snapshot.exists()) {
                                                 DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
                                                         .child(snapshot.getValue().toString())
                                                         .child(mContext.getString(R.string.field_contest_judged));
@@ -657,8 +624,8 @@ public class FirebaseMethods {
                                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                         if (snapshot.exists()) {
                                                             long l = (long) snapshot.getValue();
-                                                            ref2.setValue(l+1);
-                                                        }else{
+                                                            ref2.setValue(l + 1);
+                                                        } else {
                                                             ref2.setValue(1);
                                                         }
 
@@ -680,13 +647,13 @@ public class FirebaseMethods {
                                         }
                                     });
                         }
-                        if (!snapshot.child(mContext.getString(R.string.field_jury_name_3)).getValue().toString().equals("")){
+                        if (!snapshot.child(mContext.getString(R.string.field_jury_name_3)).getValue().toString().equals("")) {
                             ref.child(mContext.getString(R.string.dbname_username))
                                     .child(snapshot.child(mContext.getString(R.string.field_jury_name_3)).getValue().toString())
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            if (snapshot.exists()){
+                                            if (snapshot.exists()) {
                                                 DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
                                                         .child(snapshot.getValue().toString())
                                                         .child(mContext.getString(R.string.field_contest_judged));
@@ -696,8 +663,8 @@ public class FirebaseMethods {
                                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                         if (snapshot.exists()) {
                                                             long l = (long) snapshot.getValue();
-                                                            ref2.setValue(l+1);
-                                                        }else{
+                                                            ref2.setValue(l + 1);
+                                                        } else {
                                                             ref2.setValue(1);
                                                         }
 
@@ -727,7 +694,7 @@ public class FirebaseMethods {
 
                     }
                 });
-        Log.d(TAG, "onDataChange: cgy 3"+winnerList+" "+participantLists);
+        Log.d(TAG, "onDataChange: cgy 3" + winnerList + " " + participantLists);
 
         if (winnerList.size() != 0) {
             Log.d(TAG, "onDataChange: cgy 2");
@@ -743,35 +710,35 @@ public class FirebaseMethods {
                 ref3.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot1) {
-                        if (snapshot1.exists()){
-                            long l= (long)snapshot1.getValue();
-                            ref3.setValue(l+1)
+                        if (snapshot1.exists()) {
+                            long l = (long) snapshot1.getValue();
+                            ref3.setValue(l + 1)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            if (finalX1 ==winnerList.size()-1){
-                                                sendNotyToParticipants(participantLists,progress);
+                                            if (finalX1 == winnerList.size() - 1) {
+                                                sendNotyToParticipants(participantLists, progress);
 
                                             }
                                         }
                                     });
-                        }else{
+                        } else {
                             ref3.setValue(1)
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            if (finalX1 ==winnerList.size()-1){
-                                                sendNotyToParticipants(participantLists,progress);
+                                            if (finalX1 == winnerList.size() - 1) {
+                                                sendNotyToParticipants(participantLists, progress);
 
                                             }
                                         }
-;                                    });
+
+                                        ;
+                                    });
 
                         }
 
                     }
-
-
 
 
                     @Override
@@ -781,7 +748,7 @@ public class FirebaseMethods {
                 });
 
             }
-            if (winnerList.size()==0){
+            if (winnerList.size() == 0) {
                 sendNotyToParticipants(participantLists, progress);
             }
 
@@ -812,12 +779,12 @@ public class FirebaseMethods {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
-                                    long l= (long) snapshot.getValue();
+                                    long l = (long) snapshot.getValue();
                                     ref.child(mContext.getString(R.string.dbname_contests))
                                             .child(participantLists.get(finalX).getUi())
                                             .child(mContext.getString(R.string.field_contest_participated))
-                                            .setValue(l+ 1);
-                                    if (finalX==participantLists.size()-1){
+                                            .setValue(l + 1);
+                                    if (finalX == participantLists.size() - 1) {
                                         Log.d(TAG, "onDataChange: cgy 7");
 
                                         progress.setVisibility(View.GONE);
@@ -827,7 +794,7 @@ public class FirebaseMethods {
                                             .child(participantLists.get(finalX).getUi())
                                             .child(mContext.getString(R.string.field_contest_participated))
                                             .setValue(1);
-                                    if (finalX==participantLists.size()-1){
+                                    if (finalX == participantLists.size() - 1) {
                                         Log.d(TAG, "onDataChange: cgy 8");
 
                                         progress.setVisibility(View.GONE);
@@ -844,7 +811,7 @@ public class FirebaseMethods {
 
 
             }
-        }else {
+        } else {
             Log.d(TAG, "onDataChange: cgy 6");
 
             progress.setVisibility(View.GONE);
@@ -871,19 +838,18 @@ public class FirebaseMethods {
                 String timestamp = String.valueOf(date.getTime());
 
 
-
 //        data to put in notification
-                HashMap<Object,String> hashMap = new HashMap<>();
-                hashMap.put("pId","false");
+                HashMap<Object, String> hashMap = new HashMap<>();
+                hashMap.put("pId", "false");
 
-                hashMap.put(mContext.getString(R.string.field_timestamp),timestamp);
+                hashMap.put(mContext.getString(R.string.field_timestamp), timestamp);
 
-                hashMap.put("pUid",hisUid);
+                hashMap.put("pUid", hisUid);
 
-                hashMap.put(mContext.getString(R.string.field_notification_message),notification);
-                hashMap.put(mContext.getString(R.string.field_if_seen),"false");
+                hashMap.put(mContext.getString(R.string.field_notification_message), notification);
+                hashMap.put(mContext.getString(R.string.field_if_seen), "false");
 
-                hashMap.put("sUid",FirebaseAuth.getInstance().getCurrentUser().getUid());
+                hashMap.put("sUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
 
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_users));
                 ref.child(hisUid).child(mContext.getString(R.string.field_Notifications)).child(timestamp).setValue(hashMap)
@@ -904,6 +870,7 @@ public class FirebaseMethods {
 
 
     }
+
     public int getImageCount(DataSnapshot dataSnapshot) {
 
         int count = 0;

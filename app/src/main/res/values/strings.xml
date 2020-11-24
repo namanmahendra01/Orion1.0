@@ -172,6 +172,12 @@
     <string name="Privacy_Policy">https://drive.google.com/file/d/1Kat9jq_H9vXxNWXmKfP4N3XerfpfHkw5/view?usp=sharing</string>
     <string name="Terms_and_Condition">https://drive.google.com/file/d/1t8XtHgyhvhWlWPlqoG8MREP56kFuEhPL/view?usp=sharing</string>
     <string name="orion_team_user_id">VGk6jAJMZhbxAYO5zqU6OGqaTXO2</string>
+    <string name="liked_message">liked your post</string>
+    <string name="like_string">Like</string>
+    <string name="promote_message">promoted your post.</string>
+    <string name="promote_string">Promoted</string>
+    <string name="chat_message">sent you a message.</string>
+    <string name="message_string">Message</string>
 
 
     <string-array name="entryfee2">

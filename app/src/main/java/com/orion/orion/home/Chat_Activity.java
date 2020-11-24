@@ -95,7 +95,7 @@ Chat_Activity extends AppCompatActivity {
     private RequestQueue requestQueue;
 
 
-    private boolean notify = false;
+    private boolean notifyChat;
 
     private void disableEmojiInTitle() {
         InputFilter emojiFilter = (source, start, end, dest, dstart, dend) -> {
@@ -156,6 +156,7 @@ Chat_Activity extends AppCompatActivity {
             recyclerView.smoothScrollToPosition(0);
         }
 
+        notifyChat = false;
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -212,7 +213,6 @@ Chat_Activity extends AppCompatActivity {
         mSendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                notify = true;
 
                 String message = mMessages.getText().toString().trim();
 
@@ -397,7 +397,6 @@ Chat_Activity extends AppCompatActivity {
             }
         });
         seenMessage();
-
     }
 
     private void sendRequestMessage(String message) {
@@ -681,13 +680,11 @@ Chat_Activity extends AppCompatActivity {
                     }
                 });
 
-
     }
 
 
     private void sendMessage(String message) {
-
-
+        notifyChat=true;
         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
             @Override
             public void onTimeReceived(String rawDate) {
@@ -714,7 +711,6 @@ Chat_Activity extends AppCompatActivity {
                 hashMap.put(getString(R.string.field_timestamp), timeStamp);
                 hashMap.put(getString(R.string.field_if_seen), false);
                 hashMap.put(getString(R.string.field_message_ID), newMessageKey);
-
                 refer1.child(getString(R.string.dbname_Chats))
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .child(hisUID)
@@ -734,26 +730,7 @@ Chat_Activity extends AppCompatActivity {
                                     mMessages.setText("");
 
 
-                                    final DatabaseReference data = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users))
-                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                            .child(getString(R.string.field_username));
-                                    data.addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            String user = dataSnapshot.getValue().toString();
 
-                                            if (notify) {
-                                                mFirebaseMethods.sendNotification(hisUID, user, "sent you a message.", "Message");
-                                            }
-                                            notify = false;
-
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                        }
-                                    });
                                 } else {
                                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                                     db.child(getString(R.string.dbname_request))
@@ -794,10 +771,7 @@ Chat_Activity extends AppCompatActivity {
 
         paginatedchatlist = new ArrayList<>();
         if (chatlist != null) {
-
             try {
-
-
                 int iteration = chatlist.size();
                 if (iteration > 10) {
                     iteration = 10;
@@ -812,8 +786,6 @@ Chat_Activity extends AppCompatActivity {
 //                    set adapter to recycler view
                 recyclerView.setAdapter(adapterchat1);
                 recyclerView.smoothScrollToPosition(0);
-
-
             } catch (NullPointerException e) {
                 Log.e(TAG, "Null pointer exception" + e.getMessage());
 
@@ -827,7 +799,6 @@ Chat_Activity extends AppCompatActivity {
 
     public void displayMoreChat() {
         Log.d(TAG, "display next 20 chat");
-
         try {
             if (chatlist.size() > mResults && chatlist.size() > 0) {
 
@@ -869,8 +840,6 @@ Chat_Activity extends AppCompatActivity {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         myRef = mFirebaseDatabase.getReference();
         mAuth = FirebaseAuth.getInstance();
-
-
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -914,29 +883,20 @@ Chat_Activity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        if (x != 0) {
-            recyclerView.smoothScrollToPosition(0);
-        }
-
+        if (x != 0) recyclerView.smoothScrollToPosition(0);
         setupFirebaseAuth();
-
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
         userRefForSeen.removeEventListener(seenListener);
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (x != 0) {
-            recyclerView.smoothScrollToPosition(0);
-        }
+        if (x != 0) recyclerView.smoothScrollToPosition(0);
         activity = true;
     }
 
@@ -945,8 +905,23 @@ Chat_Activity extends AppCompatActivity {
         super.onStop();
         activity = false;
         userRefForSeen.removeEventListener(seenListener);
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
+        if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
+        if(notifyChat){
+            final DatabaseReference data = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users))
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .child(getString(R.string.field_username));
+            data.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    String user = dataSnapshot.getValue().toString();
+                    mFirebaseMethods.sendNotification(hisUID, user, getString(R.string.chat_message), getString(R.string.message_string));
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 

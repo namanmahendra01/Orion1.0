@@ -106,9 +106,7 @@
                             android:layout_height="wrap_content"
                             android:visibility="gone">
 
-                            <include
-                                android:id="@+id/item"
-                                layout="@layout/promote_item" />
+                            <include layout="@layout/promote_item" />
                         </RelativeLayout>
 
                         <androidx.recyclerview.widget.RecyclerView

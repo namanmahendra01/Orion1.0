@@ -163,12 +163,9 @@ public class notificationFragment extends Fragment {
     }
 
     private void updateNotificationList() {
-
-
         Collections.reverse(notifyList);
         DatabaseReference refer = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
         refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-
                 .child(getString(R.string.field_Notifications))
                 .orderByKey()
                 .startAt(notifyList.get(notifyList.size() - 1).getTim())
@@ -192,7 +189,6 @@ public class notificationFragment extends Fragment {
                             String json = gson.toJson(notifyList);
                             editor.putString("nl", json);
                             editor.apply();
-
                             displayNotification();
                         } else {
                             readNotification();
@@ -221,7 +217,6 @@ public class notificationFragment extends Fragment {
                     x++;
                     Notification notification = snapshot.getValue(Notification.class);
                     notifyList.add(notification);
-
                     if (x == dataSnapshot.getChildrenCount()) {
                         Collections.reverse(notifyList);
 
