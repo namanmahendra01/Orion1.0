@@ -183,7 +183,6 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
     private String prizeThird = "";
     private String prizeTotal = "";
     private String extraRule = "";
-    private String query = "";
 
 
     //firebase
@@ -1141,7 +1140,6 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                 if (mEntryFees.getVisibility() == View.VISIBLE)
                     fees = mEntryFees.getText().toString();
                 extraRule = extraRules.getText().toString();
-                query = extraQuery.getText().toString();
 
                 Log.d(TAG, "onCreate: " + prizeFirst);
                 Log.d(TAG, "onCreate: " + prizeSecond);
@@ -1207,7 +1205,6 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                     i.putExtra("domain", domain);
                     i.putExtra("votetype", votingType);
                     i.putExtra("rule", extraRule);
-                    i.putExtra("query", query);
                     i.putExtra("regBegin", date1.replace("/", "-"));
                     i.putExtra("regEnd", date2.replace("/", "-"));
                     if (date3.equals("")) {
@@ -1345,7 +1342,6 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
         thirdPrize = findViewById(R.id.thirdPrize);
         totalPrize = findViewById(R.id.totalPrize);
         extraRules = findViewById(R.id.extraRules);
-        extraQuery = findViewById(R.id.extraQuery);
         mLimitedNoOfParticipants.setVisibility(View.GONE);
         mEntryFees.setVisibility(View.GONE);
         P1.setVisibility(View.GONE);

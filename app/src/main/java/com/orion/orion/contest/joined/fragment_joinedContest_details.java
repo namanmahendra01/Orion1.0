@@ -39,7 +39,7 @@ public class fragment_joinedContest_details extends Fragment {
 
     private TextView entryfee,title,totalprize,maxPart,voteType,gp,
             regBegin,regEnd,voteBegin,voteEnd,domain,openfor,juryname1,juryname2,juryname3,jury
-            ,jurypl1,jurypl2,jurypl3,hostedby,filetype,windate,p1Tv,p2Tv,p3Tv,description,rules2,descrip,rules;
+            ,jurypl1,jurypl2,jurypl3,hostedby,filetype,windate,p1Tv,p2Tv,p3Tv,userTv,rules2,descrip,rules;
     private ImageView poster,jurypic1,jurypic2,jurypic3;
     private String mAppend = "";
     private String posterlink="";
@@ -98,6 +98,8 @@ public class fragment_joinedContest_details extends Fragment {
         p2Tv=view.findViewById(R.id.p2Tv);
         p3Tv=view.findViewById(R.id.p3Tv);
         prizeLinear=view.findViewById(R.id.prizell);
+        userTv = view.findViewById(R.id.usernameCreator);
+
 
 
         gp = view.findViewById(R.id.gp);
@@ -117,6 +119,23 @@ public class fragment_joinedContest_details extends Fragment {
         userid=b1.getString("userId");
 
         setgp(userid, gp);
+
+        DatabaseReference ref8 = FirebaseDatabase.getInstance().getReference();
+        ref8.child(getString(R.string.dbname_users))
+                .child(userid)
+                .child(getString(R.string.field_username))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String username = dataSnapshot.getValue().toString();
+                        userTv.setText(username);
+
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
         DatabaseReference ref= FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests))
                 .child(userid)
                 .child(getString(R.string.created_contest))

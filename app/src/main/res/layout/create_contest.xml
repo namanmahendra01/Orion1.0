@@ -978,47 +978,9 @@
                 android:gravity="top"
                 android:hint="Any rules you want to specify.\nPlease mention them in lines"
                 android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
-                android:maxLines="5"
-                android:minLines="3"
                 android:padding="10dp"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginLeft="25dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginEnd="25dp"
-                android:layout_marginRight="25dp"
-                android:gravity="center|start"
-                android:text="Query:"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="18dp" />
-
-            <EditText
-                android:id="@+id/extraQuery"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="50dp"
-                android:background="@drawable/circular_corner_rectangle_white_border"
-                android:backgroundTint="@color/white"
-                android:elevation="10dp"
-                android:gravity="top"
-                android:hint="Ask questions from Paricipants."
-                android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
-                android:maxLines="5"
-                android:minLines="3"
-                android:padding="10dp"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
-
 
         </LinearLayout>
     </ScrollView>
