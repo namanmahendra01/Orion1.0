@@ -42,7 +42,7 @@
 
         android:layout_gravity="center"
         android:fontFamily="@font/orion"
-        android:textColor="@color/white"
+        android:textColor="@color/colorPrimary"
         android:textSize="20sp"
        />
 </androidx.cardview.widget.CardView>

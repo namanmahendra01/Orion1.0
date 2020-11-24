@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white">
 
     <RelativeLayout
@@ -47,7 +48,7 @@
     <ScrollView
         android:id="@+id/layout1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/currentActive"
         android:layout_marginBottom="70dp"
         android:background="@color/white"
@@ -145,8 +146,6 @@
                 android:padding="10dp"
                 android:background="@drawable/rectangular_border"
                 android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
-                android:maxLines="5"
-                android:minLines="3"
                 android:textColor="@color/black"
                 android:textColorHint="@color/grey"
                 android:textSize="18sp" />
@@ -427,8 +426,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:src="@drawable/ic_checkmark"
-                        android:tint="#4CAF50"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        app:tint="#4CAF50" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -460,8 +459,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:src="@drawable/ic_checkmark"
-                        android:tint="#4CAF50"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        app:tint="#4CAF50" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -493,8 +492,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:src="@drawable/ic_checkmark"
-                        android:tint="#4CAF50"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        app:tint="#4CAF50" />
                 </LinearLayout>
             </LinearLayout>
 
