@@ -747,6 +747,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
                         .error(R.drawable.default_image2)
                         .placeholder(R.drawable.load)
                         .thumbnail(0.5f)
+                        .override(1024,1024)
                         .into(poster);
             }
 

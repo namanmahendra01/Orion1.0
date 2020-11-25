@@ -441,6 +441,7 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
                         .error(R.drawable.default_image2)
                         .placeholder(R.drawable.load)
                         .thumbnail(0.5f)
+                        .override(512,512)
                         .into(poster);
             }
 

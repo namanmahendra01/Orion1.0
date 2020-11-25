@@ -1024,8 +1024,6 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user = dataSnapshot.getValue(users.class);
-                        promoteLayout.setVisibility(View.VISIBLE);
-
                         Glide.with(Homefragment.this)
                                 .load(user.getPp())
                                 .placeholder(R.drawable.load)
