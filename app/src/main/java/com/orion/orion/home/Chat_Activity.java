@@ -217,7 +217,7 @@ Chat_Activity extends AppCompatActivity {
                 String message = mMessages.getText().toString().trim();
 
                 if (TextUtils.isEmpty(message)) {
-                    Toast.makeText(context, "Type something idiot", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Type something please", Toast.LENGTH_SHORT).show();
                 } else {
                     sendMessage(message);
                 }
@@ -401,7 +401,7 @@ Chat_Activity extends AppCompatActivity {
 
     private void sendRequestMessage(String message) {
         if (message == null || message.equals("")) {
-            Toast.makeText(context, "Type Something!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Type something Please!", Toast.LENGTH_SHORT).show();
         } else {
 
 

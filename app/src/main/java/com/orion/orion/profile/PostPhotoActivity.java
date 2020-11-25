@@ -162,7 +162,6 @@ public class PostPhotoActivity extends AppCompatActivity {
         }).addOnProgressListener(taskSnapshot -> {
             double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
             ProgressDialog.show(mContext, "", "Uploading... - " + String.format("%.0f", progress) + "%", true);
-            Toast.makeText(mContext, "Photo Upload Progress" + String.format("%.0f", progress) + "%", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "onProgress: upload progress" + progress + "% done");
         });
     }

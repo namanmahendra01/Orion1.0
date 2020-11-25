@@ -201,8 +201,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
-                            Toast.makeText(mContext, "clicked", Toast.LENGTH_SHORT).show();
-
                             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                             builder.setTitle("Report");
                             builder.setMessage(mContext.getString(R.string.report_post_prompt));
@@ -795,7 +793,6 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                             public void onSuccess(Void aVoid) {
                                 dialog.dismiss();
                                 Toast.makeText(mContext, "Post promotion removed!", Toast.LENGTH_SHORT).show();
-
                             }
                         });
                     }

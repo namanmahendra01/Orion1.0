@@ -232,8 +232,6 @@ public class ViewPostActivity extends AppCompatActivity {
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
-                            Toast.makeText(ViewPostActivity.this, "clicked", Toast.LENGTH_SHORT).show();
-
                             AlertDialog.Builder builder = new AlertDialog.Builder(ViewPostActivity.this);
                             builder.setTitle("Delete");
                             builder.setMessage("Are you sure, you want to delete this Post?");
@@ -267,8 +265,6 @@ public class ViewPostActivity extends AppCompatActivity {
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
-                            Toast.makeText(ViewPostActivity.this, "clicked", Toast.LENGTH_SHORT).show();
-
                             AlertDialog.Builder builder = new AlertDialog.Builder(ViewPostActivity.this);
                             builder.setTitle("Report");
                             builder.setMessage("Are you sure, you want to Report this Post?");

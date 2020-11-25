@@ -80,7 +80,6 @@ public class AdapterComment extends RecyclerView.Adapter<AdapterComment.ViewHold
                                 if (i == comments.size() || i == commentId.size()) {
                                     Toast.makeText(mContext, "Error", Toast.LENGTH_SHORT).show();
                                 } else {
-
                                     comments.remove(i);
                                     commentId.remove(i);
                                     Query query = myRef.child(mContext.getString(R.string.dbname_users))

@@ -356,11 +356,7 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
-
-
-                Toast.makeText(context, "cannot Delete", Toast.LENGTH_SHORT).show();
-
+                Toast.makeText(context, "Notification not deleted", Toast.LENGTH_SHORT).show();
             }
         });
 

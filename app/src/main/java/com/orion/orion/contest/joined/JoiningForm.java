@@ -398,7 +398,7 @@ public class JoiningForm extends AppCompatActivity {
 
 
                         } else {
-                            Toast.makeText(JoiningForm.this, "please fill all entries Correctly!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(JoiningForm.this, "Please fill all the entries correctly!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

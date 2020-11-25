@@ -253,8 +253,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         ListViewRv.setDrawingCacheEnabled(true);
         ListViewRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
 
-        scrollView.getViewTreeObserver()
-                .addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
                     @Override
                     public void onScrollChanged() {
 
@@ -287,14 +286,15 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
             public void onClick(View v) {
                 star.setVisibility(View.GONE);
                 starFill.setVisibility(View.VISIBLE);
+                postReferesh.setRefreshing(true);
                 domaintv.setText(domain);
-
                 getFilteredFollowerListFromSP(domain);
             }
         });
         starFill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                postReferesh.setRefreshing(true);
                 starFill.setVisibility(View.GONE);
                 star.setVisibility(View.VISIBLE);
                 domaintv.setText("All");
@@ -510,12 +510,9 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         }.getType();
         mFollowing1 = gson.fromJson(json, type);
         if (mFollowing1 == null) {    //        if no arrayList is present
-
             mFollowing1 = new ArrayList<>();
             getFollowingFilltered(domain);  //            make new Arraylist
-
         } else {
-
             getfilterPhotos(mFollowing1);
         }
 
@@ -1457,6 +1454,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                 Log.d(TAG, "displayPhotos: sss" + mPaginatedPhotos);
                 mAadapter = new AdapterMainfeed(getContext(), mPaginatedPhotos, ListViewRv, Homefragment.this);
                 mAadapter.setHasStableIds(true);
+                postReferesh.setRefreshing(false);
                 ListViewRv.setAdapter(mAadapter);
 
             } catch (NullPointerException e) {
@@ -1470,6 +1468,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
         } else {
             mAadapter = new AdapterMainfeed(getContext(), mPaginatedPhotos, ListViewRv, Homefragment.this);
             mAadapter.setHasStableIds(true);
+            postReferesh.setRefreshing(false);
             ListViewRv.setAdapter(mAadapter);
             noPost.setVisibility(View.VISIBLE);
             bottomProgress.setVisibility(View.GONE);
@@ -1498,6 +1497,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                 ListViewRv.post(new Runnable() {
                     @Override
                     public void run() {
+                        postReferesh.setRefreshing(false);
                         mAadapter.notifyItemRangeInserted(mResults, iterations);
                         flag5 = true;
 

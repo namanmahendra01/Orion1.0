@@ -225,6 +225,7 @@ public class PostVideoActivity extends AppCompatActivity {
             if (simpleExoPlayer != null) {
                 simpleExoPlayer.setPlayWhenReady(true);
                 play2.setVisibility(View.INVISIBLE);
+                playerView.setVisibility(View.VISIBLE);
                 thumbnail.setVisibility(View.GONE);
             }
         });
@@ -275,7 +276,7 @@ public class PostVideoActivity extends AppCompatActivity {
             else if(caption.length()>=150)
                 Toast.makeText(mContext, "Caption size must be less then 150 letters //0‑0\\\\", Toast.LENGTH_SHORT).show();
             else if(imageUri==null)
-                Toast.makeText(mContext, "Please add a thumbnail also ༼ つ ◕_◕ ༽つdt", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Please add a thumbnail also ༼ つ ◕_◕ ༽つ ", Toast.LENGTH_SHORT).show();
             else
                 Toast.makeText(mContext, "Please wait for some more time", Toast.LENGTH_SHORT).show();
         }
@@ -398,7 +399,6 @@ public class PostVideoActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void setupVideoPlayer(Uri uri) {
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(mContext, Util.getUserAgent(mContext, "RecyclerView VideoPlayer"));
-
         if (uri != null) {
             final String path = getPathFromUri(mContext, uri);
             assert path != null;
@@ -604,7 +604,7 @@ public class PostVideoActivity extends AppCompatActivity {
             File folder = new File(Environment.getExternalStorageDirectory() + File.separator + "Orion");
             boolean success = true;
             if (!folder.exists()) {
-                Toast.makeText(mContext, "Directory Does Not Exist, Create It", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Directory does not exists, creating it", Toast.LENGTH_SHORT).show();
                 success = folder.mkdirs();
             }
             if (success) {
@@ -799,6 +799,7 @@ public class PostVideoActivity extends AppCompatActivity {
                             Log.d(TAG, "onActivityResult: uri: " + uri);
                             imageUri = uri;
                             thumbnailImage.setImageURI(imageUri);
+                            playerView.setVisibility(View.INVISIBLE);
                             if (thumbnail.getVisibility() == View.VISIBLE)
                                 thumbnail.setImageURI(imageUri);
                         }

@@ -48,7 +48,7 @@ public class profile extends AppCompatActivity {
                     overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 }
             } else {
-                Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Something went wrong. Please try again later", Toast.LENGTH_SHORT).show();
             }
         } else {
             Intent i = new Intent(profile.this, ProfileActivity.class);

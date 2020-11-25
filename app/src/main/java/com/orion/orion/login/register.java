@@ -449,7 +449,7 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
                                                                     }).addOnFailureListener(new OnFailureListener() {
                                                                 @Override
                                                                 public void onFailure(@NonNull Exception e) {
-                                                                    Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
+                                                                    Toast.makeText(mContext, "Error: Please try again", Toast.LENGTH_SHORT).show();
 
                                                                 }
                                                             });
@@ -469,7 +469,7 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
                                                                     }).addOnFailureListener(new OnFailureListener() {
                                                                 @Override
                                                                 public void onFailure(@NonNull Exception e) {
-                                                                    Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
+                                                                    Toast.makeText(mContext, "Error: Please try again", Toast.LENGTH_SHORT).show();
 
                                                                 }
                                                             });
@@ -479,7 +479,7 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
                                             }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, "Error: Please try again", Toast.LENGTH_SHORT).show();
 
                                         }
                                     });
@@ -491,7 +491,7 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(mContext, "Error:Please try again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Error: Please try again", Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -546,7 +546,7 @@ public class ProfileActivity extends AppCompatActivity {
                             int rating = (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_post)).getValue()
                                     + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).getValue()
                                     + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
-                            if (rating > userRating && !user.getUid().equals(singleSnapshot.getKey()) && !user.getUid().equals(getString(R.string.orion_team_user_id)))
+                            if (rating > userRating && !user.getUid().equals(singleSnapshot.getKey()) && !singleSnapshot.getKey().equals(getString(R.string.orion_team_user_id)))
                                 updateRank();
                         }
                     }
@@ -866,7 +866,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void setProfileWidgets(users userSetting) {
         Log.d(TAG, "onDataChange: " + userSetting.toString());
-
         Glide.with(getApplicationContext())
                 .load(userSetting.getPp())
                 .placeholder(R.drawable.load)
