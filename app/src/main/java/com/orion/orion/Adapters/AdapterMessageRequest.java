@@ -69,7 +69,7 @@ public class AdapterMessageRequest extends RecyclerView.Adapter<AdapterMessageRe
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, Chat_Activity.class);
-                intent.putExtra("his_UID",hisUid);
+                intent.putExtra("his_uid",hisUid);
                 intent.putExtra("request","yes");
                 context.startActivity(intent);
             }

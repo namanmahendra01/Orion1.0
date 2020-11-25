@@ -131,6 +131,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         mContext = this;
         mFirebaseMethods = new FirebaseMethods(mContext);
         backButton = findViewById(R.id.back);
+        myRef=FirebaseDatabase.getInstance().getReference();
 
         mUsername = findViewById(R.id.username);
         mDomain = findViewById(R.id.domain);
@@ -181,6 +182,8 @@ public class ViewProfileActivity extends AppCompatActivity {
         try {
             Intent i = getIntent();
             mUser = i.getStringExtra(getString(R.string.intent_user));
+            Log.d(TAG, "init: koko"+mUser);
+
             init();
         } catch (NullPointerException e) {
             Log.d(TAG, "null pointer Exception" + e.getMessage());
@@ -430,7 +433,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         mMessage.setOnClickListener(v -> {
             YoYo.with(Techniques.FadeIn).duration(500).playOn(mMessage);
             Intent intent = new Intent(ViewProfileActivity.this, Chat_Activity.class);
-            intent.putExtra(getString(R.string.his_UID), mUser);
+            intent.putExtra(getString(R.string.his_uid), mUser);
             intent.putExtra("request", "no");
             startActivity(intent);
         });

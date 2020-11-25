@@ -20,7 +20,7 @@
     <string name="intent_user">intent_user</string>
 
     <string name="home">Home Activity</string>
-    <string name="his_UID">his_UID</string>
+    <string name="his_uid">his_uid</string>
 
 
     <!-- Databses names-->

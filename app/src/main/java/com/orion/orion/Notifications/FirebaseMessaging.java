@@ -76,7 +76,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 
         Intent intent = new Intent(this, MainActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(getString(R.string.his_UID), user);
+        bundle.putString(getString(R.string.his_uid), user);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pIntent = PendingIntent.getActivity(this,i,intent,PendingIntent.FLAG_ONE_SHOT);
@@ -125,7 +125,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         Log.d(TAG, "sendNormalNotification: vo "+ String.valueOf(i));
         Intent intent = new Intent(this, MainActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(getString(R.string.his_UID), user);
+        bundle.putString(getString(R.string.his_uid), user);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pIntent = PendingIntent.getActivity(this,i,intent,PendingIntent.FLAG_ONE_SHOT);

@@ -171,7 +171,7 @@ Chat_Activity extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
-        hisUID = intent.getStringExtra(getString(R.string.his_UID));
+        hisUID = intent.getStringExtra(getString(R.string.his_uid));
         request = intent.getStringExtra("request");
 
         DatabaseReference refer1 = FirebaseDatabase.getInstance().getReference();

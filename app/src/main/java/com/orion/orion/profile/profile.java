@@ -36,6 +36,7 @@ public class profile extends AppCompatActivity {
         if (intent.hasExtra(getString(R.string.calling_activity))) {
             if (intent.hasExtra(getString(R.string.intent_user))) {
                 String user = intent.getStringExtra(getString(R.string.intent_user));
+                Log.d(TAG, "init: koko"+user);
                 if (!user.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                     Intent i = new Intent(profile.this, ViewProfileActivity.class);
                     i.putExtra(getString(R.string.intent_user), user);
