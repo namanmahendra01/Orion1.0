@@ -1512,7 +1512,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                 poster.setVisibility(View.VISIBLE);
                 poster.setBackgroundColor(Color.rgb(0, 0, 0));
 
-                Glide.with(form.this)
+                Glide.with(getApplicationContext())
                         .load(posterLink)
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)

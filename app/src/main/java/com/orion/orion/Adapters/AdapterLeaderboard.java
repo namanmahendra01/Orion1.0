@@ -52,7 +52,7 @@ public class AdapterLeaderboard extends RecyclerView.Adapter<AdapterLeaderboard.
         holder.Position.setText(rank);
         holder.PositionName.setText(currentItem.getPostionName());
         holder.PositionParameter.setText(currentItem.getPostionParameter());
-        Glide.with(holder.itemView.getContext())
+        Glide.with(holder.itemView.getContext().getApplicationContext())
                 .load(currentItem.getPostionProfile())
                 .placeholder(R.drawable.load)
                 .error(R.drawable.default_image2)

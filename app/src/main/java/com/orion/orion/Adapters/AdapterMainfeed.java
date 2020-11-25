@@ -280,7 +280,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             holder.image.setVisibility(View.VISIBLE);
             holder.play2.setVisibility(View.GONE);
             holder.playerView.setVisibility(GONE);
-            Glide.with(holder.itemView.getContext())
+            Glide.with(holder.itemView.getContext().getApplicationContext())
                     .load(photo.getIp())
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)
@@ -293,7 +293,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
             holder.play2.setVisibility(View.VISIBLE);
             holder.image.setVisibility(View.GONE);
             holder.playerView.setVisibility(View.VISIBLE);
-            Glide.with(holder.itemView.getContext())
+            Glide.with(holder.itemView.getContext().getApplicationContext())
                     .load(photo.getT())
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)
@@ -564,7 +564,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                         mContext.startActivity(i);
                     }
                 });
-                Glide.with(mContext)
+                Glide.with(mContext.getApplicationContext())
                         .load(singleSnapshot.getValue(users.class).getPp())
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)
@@ -825,7 +825,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
         ImageView progress = bottomSheetView.findViewById(R.id.progress);
 
         if (photo.getTy().equals("photo")) {
-            Glide.with(holder.itemView.getContext())
+            Glide.with(holder.itemView.getContext().getApplicationContext())
                     .load(photo.getIp())
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)
@@ -833,7 +833,7 @@ public class AdapterMainfeed extends RecyclerView.Adapter<AdapterMainfeed.ViewHo
                     .thumbnail(0.2f)
                     .into(post);
         } else {
-            Glide.with(holder.itemView.getContext())
+            Glide.with(holder.itemView.getContext().getApplicationContext())
                     .load(photo.getT())
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)

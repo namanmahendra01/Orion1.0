@@ -101,7 +101,7 @@ public class AdapterVoterList extends RecyclerView.Adapter<AdapterVoterList.View
                         profilelink=user.getPp();
 
                         username.setText(user.getU());
-                        Glide.with(mContext)
+                        Glide.with(mContext.getApplicationContext())
                                 .load(profilelink)
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)

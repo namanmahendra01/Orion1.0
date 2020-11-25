@@ -322,7 +322,7 @@ public class PostPhotoActivity extends AppCompatActivity {
         Log.d(TAG, "setImage next " + imgPath);
         imgURL = imgPath;
         String mAppend = "file:/";
-        Glide.with(PostPhotoActivity.this)
+        Glide.with(getApplicationContext())
                 .load(imgURL)
                 .placeholder(R.drawable.load)
                 .error(R.drawable.default_image2)

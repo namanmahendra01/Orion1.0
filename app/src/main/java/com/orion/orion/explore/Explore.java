@@ -1059,7 +1059,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
     }
 
     private void setImage(String link, CircleImageView imageView) {
-        Glide.with(Explore.this)
+        Glide.with(getApplicationContext())
                 .load(link)
                 .placeholder(R.drawable.load)
                 .error(R.drawable.default_image2)

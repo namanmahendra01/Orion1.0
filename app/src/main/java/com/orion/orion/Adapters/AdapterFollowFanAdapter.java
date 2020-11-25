@@ -68,7 +68,7 @@ public class AdapterFollowFanAdapter extends RecyclerView.Adapter<AdapterFollowF
     public void onBindViewHolder(@NonNull AdapterFollowFanAdapter.ViewHolder holder, int position) {
         ItemFollow itemFollow = mLists.get(position);
         final boolean[] notify = {false};
-        Glide.with(holder.itemView.getContext())
+        Glide.with(holder.itemView.getContext().getApplicationContext())
                 .load(itemFollow.getProfileUrl())
                 .placeholder(R.drawable.load)
                 .error(R.drawable.default_image2)

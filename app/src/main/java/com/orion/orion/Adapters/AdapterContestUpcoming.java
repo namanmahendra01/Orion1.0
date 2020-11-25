@@ -741,7 +741,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
                 host.setText(createForm.getHst());
                 regend.setText(createForm.getRe());
                 totalp.setText(createForm.getTp());
-                Glide.with(mContext)
+                Glide.with(mContext.getApplicationContext())
                         .load(createForm.getPo())
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)

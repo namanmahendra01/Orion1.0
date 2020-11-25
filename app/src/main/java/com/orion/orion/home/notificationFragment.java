@@ -144,7 +144,7 @@ public class notificationFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                             if (snapshot1.exists() && notifyList.size() != 0) {
-                                if (notifyList.get(0).getTim().equals(snapshot1.getKey())) {
+                                if (notifyList==null || notifyList.get(0).getTim().equals(snapshot1.getKey())) {
                                     displayNotification();
                                 } else {
                                     updateNotificationList();

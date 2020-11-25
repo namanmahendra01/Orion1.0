@@ -19,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyLog;
 import com.bumptech.glide.Glide;
@@ -152,7 +151,6 @@ public class ViewPostActivity extends AppCompatActivity {
     private boolean notifyPromote;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -218,7 +216,7 @@ public class ViewPostActivity extends AppCompatActivity {
         adapterComment.setHasStableIds(true);
         commentRv.setAdapter(adapterComment);
 
-        getComments( mphoto.getPi(), mphoto.getUi());
+        getComments(mphoto.getPi(), mphoto.getUi());
 
         notifyLike = false;
         notifyPromote = false;
@@ -301,7 +299,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
             mPostImage.setVisibility(View.VISIBLE);
             play2.setVisibility(View.GONE);
-            Glide.with(ViewPostActivity.this)
+            Glide.with(getApplicationContext())
                     .load(mphoto.getIp())
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)
@@ -334,7 +332,7 @@ public class ViewPostActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
-                            Glide.with(ViewPostActivity.this)
+                            Glide.with(getApplicationContext())
                                     .load(mphoto.getT())
                                     .placeholder(R.drawable.load)
                                     .error(R.drawable.default_image2)
@@ -607,7 +605,7 @@ public class ViewPostActivity extends AppCompatActivity {
                                                 && dataSnapshot.child("pUid").getValue().equals(mphoto.getUi())
                                                 && dataSnapshot.child("pId").getValue().equals(mphoto.getPi())) {
                                             Log.d(TAG, "onDataChange: " + dataSnapshot);
-                                            Log.d(TAG, "onDataChange: "+(dataSnapshot.exists()
+                                            Log.d(TAG, "onDataChange: " + (dataSnapshot.exists()
                                                     && dataSnapshot.child(getString(R.string.field_notification_message)).getValue().equals("Liked your post")
                                                     && dataSnapshot.child("sUid").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                                     && dataSnapshot.child("pUid").getValue().equals(mphoto.getUi())
@@ -673,7 +671,6 @@ public class ViewPostActivity extends AppCompatActivity {
                 promoted.setVisibility(View.GONE);
 
 
-
                 DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                 db.child(getString(R.string.dbname_promote))
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -688,7 +685,7 @@ public class ViewPostActivity extends AppCompatActivity {
                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                         .removeValue();
 
-                notifyPromote=false;
+                notifyPromote = false;
                 myRef.child(getString(R.string.dbname_users))
                         .child(mphoto.getUi())
                         .child(getString(R.string.field_Notifications))
@@ -745,10 +742,13 @@ public class ViewPostActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         comments.clear();
-                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                            Comment comment = snapshot1.getValue(Comment.class);
-                            comments.add(comment);
-                            commentID.add(snapshot1.getKey());
+                        if (snapshot.exists()) {
+                            mCommentnumber.setText(String.valueOf(snapshot.getChildrenCount()));
+                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                Comment comment = snapshot1.getValue(Comment.class);
+                                comments.add(comment);
+                                commentID.add(snapshot1.getKey());
+                            }
                         }
                         adapterComment.notifyDataSetChanged();
                     }
@@ -793,7 +793,7 @@ public class ViewPostActivity extends AppCompatActivity {
         TextView cancel = bottomSheetView.findViewById(R.id.cancel);
         TextView promote1 = bottomSheetView.findViewById(R.id.promote);
         ImageView post = bottomSheetView.findViewById(R.id.postBs);
-        Glide.with(ViewPostActivity.this)
+        Glide.with(getApplicationContext())
                 .load(mphoto.getIp())
                 .placeholder(R.drawable.load)
                 .error(R.drawable.default_image2)
@@ -1297,7 +1297,8 @@ public class ViewPostActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         firebaseMethods = new FirebaseMethods(mContext);
         mAuthListener = firebaseAuth -> {
-            if (firebaseAuth.getCurrentUser() != null) Log.d(TAG, "onAuthStateChanged: signed_in:" + firebaseAuth.getCurrentUser().getUid());
+            if (firebaseAuth.getCurrentUser() != null)
+                Log.d(TAG, "onAuthStateChanged: signed_in:" + firebaseAuth.getCurrentUser().getUid());
             else {
                 Log.d(TAG, "onAuthStateChanged:signed_out");
                 Log.d(TAG, "onAuthStateChanged: navigating to login");
@@ -1327,17 +1328,20 @@ public class ViewPostActivity extends AppCompatActivity {
         super.onStop();
         if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
         if (simpleExoPlayer != null) simpleExoPlayer.release();
-        if(notifyLike || notifyPromote){
+        if (notifyLike || notifyPromote) {
             final DatabaseReference data = myRef.child(getString(R.string.dbname_users)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
             data.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     users user = dataSnapshot.getValue(users.class);
-                    Log.d(TAG, "onDataChange: user.getU()"+user.getU());
-                    if(notifyLike) firebaseMethods.sendNotification(mphoto.getUi(), user.getU(), getString(R.string.liked_message), getString(R.string.like_string));
-                    if(notifyPromote) firebaseMethods.sendNotification(mphoto.getUi(), user.getU(), getString(R.string.promote_message), getString(R.string.promote_string));
+                    Log.d(TAG, "onDataChange: user.getU()" + user.getU());
+                    if (notifyLike)
+                        firebaseMethods.sendNotification(mphoto.getUi(), user.getU(), getString(R.string.liked_message), getString(R.string.like_string));
+                    if (notifyPromote)
+                        firebaseMethods.sendNotification(mphoto.getUi(), user.getU(), getString(R.string.promote_message), getString(R.string.promote_string));
 
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
                 }

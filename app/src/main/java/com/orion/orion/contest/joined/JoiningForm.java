@@ -652,7 +652,7 @@ if (isJuryOrHost.equals("true")){
         if (selectedImage == 1) {
 
             idLink = imgurl;
-            Glide.with(JoiningForm.this)
+            Glide.with(getApplicationContext())
                     .load(idLink)
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)
@@ -664,7 +664,7 @@ if (isJuryOrHost.equals("true")){
 
             mediaLink = imgurl;
 
-            Glide.with(JoiningForm.this)
+            Glide.with(getApplicationContext())
                     .load(mediaLink)
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)

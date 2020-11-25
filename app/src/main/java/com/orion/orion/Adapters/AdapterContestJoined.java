@@ -382,7 +382,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
                 entryfee.setText(createForm.getEf());
                 domain.setText(createForm.getD());
 
-                Glide.with(mContext)
+                Glide.with(mContext.getApplicationContext())
                         .load(createForm.getPo())
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)

@@ -751,7 +751,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                 regend.setText(createForm.getRe());
                 totalp.setText(createForm.getTp());
                 Log.d(TAG, "onDataChange: image" + createForm.getPo());
-                Glide.with(mContext)
+                Glide.with(mContext.getApplicationContext())
                         .load(createForm.getPo())
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)

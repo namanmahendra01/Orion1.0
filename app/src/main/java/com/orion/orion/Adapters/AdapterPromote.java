@@ -103,14 +103,14 @@ public class AdapterPromote extends RecyclerView.Adapter<AdapterPromote.MyHolder
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user=dataSnapshot.getValue(users.class);
-                        Glide.with(context)
+                        Glide.with(context.getApplicationContext())
                                 .load(user.getPp())
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)
                                 .placeholder(R.drawable.load)
                                 .thumbnail(0.5f)
                                 .into(story);
-                        Glide.with(context)
+                        Glide.with(context.getApplicationContext())
                                 .load(user.getPp())
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)

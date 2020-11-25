@@ -140,7 +140,7 @@ private HashMap<String,String> LastMessagemap;
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user = dataSnapshot.getValue(users.class);
                         nameTv.setText(user.getU());
-                        Glide.with(context)
+                        Glide.with(context.getApplicationContext())
                                 .load(user.getPp())
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)

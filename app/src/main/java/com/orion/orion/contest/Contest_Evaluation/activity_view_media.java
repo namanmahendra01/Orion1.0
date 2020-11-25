@@ -58,7 +58,7 @@ public class activity_view_media extends AppCompatActivity {
         joiningKey = i.getStringExtra("joiningkey");
         String view = i.getStringExtra("view");
 
-        Glide.with(mContext)
+        Glide.with(mContext.getApplicationContext())
                 .load(imagelink)
                 .placeholder(R.drawable.load)
                 .error(R.drawable.default_image2)

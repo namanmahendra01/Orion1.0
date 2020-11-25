@@ -145,7 +145,7 @@ public class CommentActivity extends AppCompatActivity {
                 .child(commentID)
                 .setValue(comment);
 
-        addToHisNotification("" + userId, photoId, "commented on your post");
+        if(!userId.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) addToHisNotification("" + userId, photoId, "commented on your post");
     }
 
     private void addToHisNotification(String hisUid, String pId, String notification) {

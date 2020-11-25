@@ -131,7 +131,7 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
 
         holder.entryFee.setText(mcreateForm.getEf());
         holder.domain.setText(mcreateForm.getD());
-        Glide.with(holder.itemView.getContext())
+        Glide.with(holder.itemView.getContext().getApplicationContext())
                 .load(mcreateForm.getPo())
                 .placeholder(R.drawable.load)
                 .error(R.drawable.default_image2)

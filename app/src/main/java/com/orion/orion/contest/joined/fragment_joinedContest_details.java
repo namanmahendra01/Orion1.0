@@ -216,7 +216,7 @@ public class fragment_joinedContest_details extends Fragment {
                                                         jurypl1.setText(user.getU());
                                                         Log.d(TAG, "onDataChange: " + user.getDn());
 
-                                                        Glide.with(fragment_joinedContest_details.this)
+                                                        Glide.with(getActivity().getApplicationContext())
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
@@ -275,7 +275,7 @@ public class fragment_joinedContest_details extends Fragment {
                                                         jurypl1.setText(user.getU());
                                                         Log.d(TAG, "onDataChange: " + user.getDn());
 
-                                                        Glide.with(fragment_joinedContest_details.this)
+                                                        Glide.with(getActivity().getApplicationContext())
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
@@ -317,7 +317,7 @@ public class fragment_joinedContest_details extends Fragment {
                                                         jurypl2.setText(user.getU());
                                                         Log.d(TAG, "onDataChange: " + user.getDn());
 
-                                                        Glide.with(fragment_joinedContest_details.this)
+                                                        Glide.with(getActivity().getApplicationContext())
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
@@ -375,7 +375,7 @@ public class fragment_joinedContest_details extends Fragment {
                                                         jurypl1.setText(user.getU());
                                                         Log.d(TAG, "onDataChange: " + user.getDn());
 
-                                                        Glide.with(fragment_joinedContest_details.this)
+                                                        Glide.with(getActivity().getApplicationContext())
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
@@ -416,7 +416,7 @@ public class fragment_joinedContest_details extends Fragment {
                                                         jurypl2.setText(user.getU());
                                                         Log.d(TAG, "onDataChange: " + user.getDn());
 
-                                                        Glide.with(fragment_joinedContest_details.this)
+                                                        Glide.with(getActivity().getApplicationContext())
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
@@ -458,7 +458,7 @@ public class fragment_joinedContest_details extends Fragment {
                                                         jurypl3.setText(user.getU());
                                                         Log.d(TAG, "onDataChange: " + user.getDn());
 
-                                                        Glide.with(fragment_joinedContest_details.this)
+                                                        Glide.with(getActivity().getApplicationContext())
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
@@ -483,7 +483,7 @@ public class fragment_joinedContest_details extends Fragment {
                 }
                 posterlink=mCreateForm.getPo();
 
-                Glide.with(fragment_joinedContest_details.this)
+                Glide.with(getActivity().getApplicationContext())
                         .load(posterlink)
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)

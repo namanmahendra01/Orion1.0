@@ -285,7 +285,7 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
                 if(dataSnapshot.exists()) {
                         if(dataSnapshot.child(context.getString(R.string.type)).getValue().toString().equals("photo")){
                             String img = dataSnapshot.child(context.getString(R.string.field_image_path)).getValue().toString();
-                            Glide.with(context)
+                            Glide.with(context.getApplicationContext())
                                     .load(img)
                                     .placeholder(R.drawable.load)
                                     .error(R.drawable.default_image2)
@@ -294,7 +294,7 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
                                     .into(imageView);
                         }else{
                             String img = dataSnapshot.child(context.getString(R.string.thumbnail)).getValue().toString();
-                            Glide.with(context)
+                            Glide.with(context.getApplicationContext())
                                     .load(img)
                                     .placeholder(R.drawable.load)
                                     .error(R.drawable.default_image2)

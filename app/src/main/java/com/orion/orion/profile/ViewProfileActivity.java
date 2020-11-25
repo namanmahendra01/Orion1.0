@@ -22,7 +22,6 @@ import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -131,7 +130,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         mContext = this;
         mFirebaseMethods = new FirebaseMethods(mContext);
         backButton = findViewById(R.id.back);
-        myRef=FirebaseDatabase.getInstance().getReference();
+        myRef = FirebaseDatabase.getInstance().getReference();
 
         mUsername = findViewById(R.id.username);
         mDomain = findViewById(R.id.domain);
@@ -182,7 +181,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         try {
             Intent i = getIntent();
             mUser = i.getStringExtra(getString(R.string.intent_user));
-            Log.d(TAG, "init: koko"+mUser);
+            Log.d(TAG, "init: koko" + mUser);
 
             init();
         } catch (NullPointerException e) {
@@ -190,9 +189,9 @@ public class ViewProfileActivity extends AppCompatActivity {
             Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
             getSupportFragmentManager().popBackStack();
         }
-        Log.d(TAG, "onCreate: yess2  "+mUser+"  "+getString(R.string.orion_team_user_id));
+        Log.d(TAG, "onCreate: yess2  " + mUser + "  " + getString(R.string.orion_team_user_id));
 
-        if (mUser.equals(getString(R.string.orion_team_user_id))){
+        if (mUser.equals(getString(R.string.orion_team_user_id))) {
             Log.d(TAG, "onCreate: yess");
             mFollow.setEnabled(false);
         }
@@ -209,71 +208,61 @@ public class ViewProfileActivity extends AppCompatActivity {
             if (isFollowing) {
                 isFollowing = false;
                 notify = false;
-//               remove from following list
+                //remove from following list
                 SharedPreferences sp = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
                 Gson gson = new Gson();
                 String json = sp.getString("fl", null);
                 Type type = new TypeToken<ArrayList<String>>() {
                 }.getType();
-                ArrayList<String> list = new ArrayList<String>();
+                ArrayList<String> list;
                 list = gson.fromJson(json, type);
-                if (list == null) {
-
-                } else {
-                    list.remove(mUser);
-
-                }
-//                 save following list
+                if (list != null) list.remove(mUser);
+                //save following list
                 SharedPreferences.Editor editor = sp.edit();
                 json = gson.toJson(list);
                 editor.putString("fl", json);
                 editor.apply();
 
-//              update following list
+                //update following list
                 json = sp.getString("removefollowing", null);
                 type = new TypeToken<ArrayList<String>>() {
                 }.getType();
-                ArrayList<String> ulist = new ArrayList<String>();
+                ArrayList<String> ulist;
                 ulist = gson.fromJson(json, type);
                 if (ulist == null) {
-                    ulist = new ArrayList<String>();
+                    ulist = new ArrayList<>();
                     ulist.add(mUser);
                 } else {
                     if (!ulist.contains(mUser)) {
-                        Log.d(TAG, "onCreate: check9"+ulist);
+                        Log.d(TAG, "onCreate: check9" + ulist);
                         ulist.add(mUser);
-
                     }
                 }
-//                save update list
+
+                //save update list
                 editor = sp.edit();
                 json = gson.toJson(ulist);
                 editor.putString("removefollowing", json);
                 editor.apply();
 
-
-//              update following list
+                //update following list
                 json = sp.getString("addfollowing", null);
                 type = new TypeToken<ArrayList<String>>() {
                 }.getType();
                 ArrayList<String> ulist2 = new ArrayList<String>();
                 ulist2 = gson.fromJson(json, type);
-                if (ulist2 == null) {
-
-                } else {
-                    Log.d(TAG, "onCreate: checkk1"+ulist2);
+                if (ulist2 != null) {
+                    Log.d(TAG, "onCreate: checkk1" + ulist2);
                     if (ulist2.contains(mUser)) {
                         ulist2.remove(mUser);
-                        Log.d(TAG, "onCreate: checkk2"+ulist2);
-
-//                save update list
+                        Log.d(TAG, "onCreate: checkk2" + ulist2);
+                        //save update list
                         editor = sp.edit();
                         json = gson.toJson(ulist2);
                         editor.putString("addfollowing", json);
                         editor.apply();
                     }
                 }
-
 
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mUser).removeValue();
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_follower)).child(mUser).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
@@ -309,31 +298,26 @@ public class ViewProfileActivity extends AppCompatActivity {
                             }
                         });
             } else {
-//               addfollowing list
+                //addfollowing list
                 isFollowing = true;
                 SharedPreferences sp = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
                 Gson gson = new Gson();
                 String json = sp.getString("fl", null);
                 Type type = new TypeToken<ArrayList<String>>() {
                 }.getType();
-                ArrayList<String> list = new ArrayList<String>();
+                ArrayList<String> list;
                 list = gson.fromJson(json, type);
                 if (list == null) {
-                    list = new ArrayList<String>();
+                    list = new ArrayList<>();
                     list.add(mUser);
-                } else {
-                    if (!list.contains(mUser)) {
-                        list.add(mUser);
-                    }
-                }
-//                 save following list
+                } else if (!list.contains(mUser)) list.add(mUser);
+                //save following list
                 SharedPreferences.Editor editor = sp.edit();
                 json = gson.toJson(list);
                 editor.putString("fl", json);
                 editor.apply();
 
-
-                //              update following list
+                //update following list
                 json = sp.getString("removefollowing", null);
                 type = new TypeToken<ArrayList<String>>() {
                 }.getType();
@@ -374,7 +358,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                         json = gson.toJson(ulist2);
                         editor.putString("removefollowing", json);
                         editor.apply();
-                    }else{
+                    } else {
                         Log.d(TAG, "onCreate: checkk6");
 
                         //              update following list
@@ -385,33 +369,22 @@ public class ViewProfileActivity extends AppCompatActivity {
                         ArrayList<String> ulist = new ArrayList<String>();
                         ulist = gson.fromJson(json, type);
                         if (ulist == null) {
-                            ulist = new ArrayList<String>();
+                            ulist = new ArrayList<>();
                             ulist.add(mUser);
-                        } else {
-                            if (!ulist.contains(mUser)) {
-                                ulist.add(mUser);
-
-                            }
-
-
-                        }
-//                save update list
+                        } else if (!ulist.contains(mUser)) ulist.add(mUser);
+                        //save update list
                         editor = sp.edit();
                         json = gson.toJson(ulist);
                         editor.putString("addfollowing", json);
                         editor.apply();
-
                     }
                 }
-
-
 
                 notify = true;
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(mUser).setValue(true);
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_follower)).child(mUser).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
                 FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_users)).child(mUser).child(getString(R.string.changedFollowers)).setValue("true");
                 mFollow.setText("Unfollow");
-
                 addToHisNotification(mUser, "becomes your FAN!");
             }
             DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
@@ -422,7 +395,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     users setting = dataSnapshot.getValue(users.class);
                     assert setting != null;
                     setProfileWidgets(setting);
-                    setUpInfoBox();
+                    getFans();
                 }
 
                 @Override
@@ -559,7 +532,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     long size = (long) snapshot.getValue();
 //                mCreations.setText((int) size);
                     judges.setText(String.valueOf(size));
-                }else{
+                } else {
                     judges.setText("0");
                 }
             }
@@ -620,7 +593,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     Log.d(TAG, "setUpInfoBox: fansCount" + size);
                     if (size == 0) mFans.setText("0");
                     else mFans.setText(String.valueOf(size));
-                }else{
+                } else {
                     mFans.setText("0");
                 }
             }
@@ -642,7 +615,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     Log.d(TAG, "setUpInfoBox: postsCount" + size);
                     if (size == 0) mPosts.setText("0");
                     else mPosts.setText(String.valueOf(size));
-                }else{
+                } else {
                     mPosts.setText("0");
                 }
             }
@@ -664,7 +637,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     Log.d(TAG, "setUpInfoBox: creations" + size);
 //                mCreations.setText((int) size);
                     mWins.setText(String.valueOf(size));
-                }else{
+                } else {
                     mWins.setText("0");
                 }
             }
@@ -686,7 +659,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     Log.d(TAG, "setUpInfoBox: creations" + size);
 //                mCreations.setText((int) size);
                     mCreations.setText(String.valueOf(size));
-                }else{
+                } else {
                     mCreations.setText("0");
                 }
             }
@@ -708,7 +681,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     Log.d(TAG, "setUpInfoBox: participationsCount" + size);
 //                mParticipation.setText((int) size);
                     mParticipation.setText(String.valueOf(size));
-                }else{
+                } else {
                     mParticipation.setText("0");
 
                 }
@@ -720,6 +693,7 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         });
     }
+
     private void getRank() {
         Query query = myRef.child(getString(R.string.dbname_leaderboard)).child(mUser);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -736,7 +710,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                             int rating = (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_post)).getValue()
                                     + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).getValue()
                                     + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
-                            if (rating > userRating && !mUser.equals(singleSnapshot.getKey())  && !singleSnapshot.getKey().equals(getString(R.string.orion_team_user_id)))
+                            if (rating > userRating && !mUser.equals(singleSnapshot.getKey()) && !singleSnapshot.getKey().equals(getString(R.string.orion_team_user_id)))
                                 updateRank();
                         }
                     }
@@ -825,7 +799,6 @@ public class ViewProfileActivity extends AppCompatActivity {
                 gridRv.setAdapter(adapterGridImage);
             }
 
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.d(TAG, "Query Cancelled");
@@ -847,20 +820,14 @@ public class ViewProfileActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 String timestamp = String.valueOf(date.getTime());
-
-//        data to put in notification
+                //data to put in notification
                 HashMap<Object, String> hashMap = new HashMap<>();
                 hashMap.put("pId", "false");
-
                 hashMap.put(mContext.getString(R.string.field_timestamp), timestamp);
-
                 hashMap.put("pUid", hisUid);
-
                 hashMap.put(mContext.getString(R.string.field_notification_message), notification);
                 hashMap.put(mContext.getString(R.string.field_if_seen), "false");
-
                 hashMap.put("sUid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
                 ref.child(hisUid).child(getString(R.string.field_Notifications)).child(timestamp).setValue(hashMap)
                         .addOnSuccessListener(aVoid -> {
@@ -902,7 +869,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     private void setProfileWidgets(users userSetting) {
         Log.d(TAG, "onDataChange: " + userSetting.toString());
-        Glide.with(ViewProfileActivity.this)
+        Glide.with(getApplicationContext())
                 .load(userSetting.getPp())
                 .placeholder(R.drawable.load)
                 .error(R.drawable.default_image2)
@@ -978,7 +945,8 @@ public class ViewProfileActivity extends AppCompatActivity {
         Log.d(TAG, "setupFirebaseAuth: started");
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = firebaseAuth -> {
-            if (firebaseAuth.getCurrentUser() != null) Log.d(TAG, "onAuthStateChanged: signed_in:" + firebaseAuth.getCurrentUser().getUid());
+            if (firebaseAuth.getCurrentUser() != null)
+                Log.d(TAG, "onAuthStateChanged: signed_in:" + firebaseAuth.getCurrentUser().getUid());
             else {
                 Log.d(TAG, "onAuthStateChanged:signed_out");
                 Log.d(TAG, "onAuthStateChanged: navigating to login");
@@ -1008,13 +976,13 @@ public class ViewProfileActivity extends AppCompatActivity {
     public void onStop() {
         super.onStop();
         if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
-        if (notify){
+        if (notify) {
             final DatabaseReference data = myRef.child(getString(R.string.dbname_users)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
             data.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     users user = dataSnapshot.getValue(users.class);
-                    Log.d(TAG, "onDataChange: user.getU()"+user.getU());
+                    Log.d(TAG, "onDataChange: user.getU()" + user.getU());
                     mFirebaseMethods.sendNotification(mUser, user.getU(), "becomes your FAN!", "Fan");
                 }
 

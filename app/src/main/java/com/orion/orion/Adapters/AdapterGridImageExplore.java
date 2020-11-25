@@ -65,7 +65,7 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
 
         if (photo.getTy() != null)
             if (photo.getTy().equals("video"))
-                Glide.with(holder.itemView.getContext())
+                Glide.with(holder.itemView.getContext().getApplicationContext())
                         .load(photo.getT())
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)
@@ -74,7 +74,7 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
                         .thumbnail(0.5f)
                         .into(holder.image);
             else
-                Glide.with(holder.itemView.getContext())
+                Glide.with(holder.itemView.getContext().getApplicationContext())
                         .load(photo.getIp())
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)
@@ -83,7 +83,7 @@ public class AdapterGridImageExplore extends RecyclerView.Adapter<AdapterGridIma
                         .thumbnail(0.5f)
                         .into(holder.image);
         else
-            Glide.with(holder.itemView.getContext())
+            Glide.with(holder.itemView.getContext().getApplicationContext())
                     .load(photo.getIp())
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)

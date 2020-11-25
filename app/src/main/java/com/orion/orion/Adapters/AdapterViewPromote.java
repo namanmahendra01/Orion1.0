@@ -213,7 +213,7 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         username.setText("@"+dataSnapshot.getValue().toString());
-                        Glide.with(context)
+                        Glide.with(context.getApplicationContext())
                                 .load(photoLink)
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)

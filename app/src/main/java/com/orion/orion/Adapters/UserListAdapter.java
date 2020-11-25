@@ -75,7 +75,7 @@ public class UserListAdapter extends ArrayAdapter<users> {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
 
-                Glide.with(mContext)
+                Glide.with(mContext.getApplicationContext())
                         .load(Objects.requireNonNull(dataSnapshot.getValue(users.class)).getPp())
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)

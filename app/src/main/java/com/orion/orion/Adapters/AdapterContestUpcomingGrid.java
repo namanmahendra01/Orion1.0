@@ -435,7 +435,7 @@ public class AdapterContestUpcomingGrid extends RecyclerView.Adapter<AdapterCont
                 CreateForm createForm = dataSnapshot.getValue(CreateForm.class);
                 title.setText(createForm.getCt());
                 Log.d(TAG, "onDataChange: image" + createForm.getPo());
-                Glide.with(mContext)
+                Glide.with(mContext.getApplicationContext())
                         .load(createForm.getPo())
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)

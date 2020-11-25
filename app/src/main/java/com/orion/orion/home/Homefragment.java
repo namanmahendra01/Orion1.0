@@ -1020,14 +1020,14 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user = dataSnapshot.getValue(users.class);
-                        Glide.with(Homefragment.this)
+                        Glide.with(getActivity().getApplicationContext())
                                 .load(user.getPp())
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)
                                 .thumbnail(0.25f)
                                 .into(story);
 
-                        Glide.with(Homefragment.this)
+                        Glide.with(getActivity().getApplicationContext())
                                 .load(user.getPp())
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)

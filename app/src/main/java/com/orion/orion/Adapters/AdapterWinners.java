@@ -156,7 +156,7 @@ public class AdapterWinners extends RecyclerView.Adapter<AdapterWinners.ViewHold
                         users user = dataSnapshot.getValue(users.class);
                         username.setText(user.getU());
                         displayname.setText(user.getDn());
-                        Glide.with(mContext)
+                        Glide.with(mContext.getApplicationContext())
                                 .load(user.getPp())
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)

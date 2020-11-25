@@ -60,7 +60,7 @@ public class AdapterGridImage extends RecyclerView.Adapter<AdapterGridImage.View
 
         Photo photo = photos.get(i);
         if (photo.getTy().equals("photo")) {
-            Glide.with(holder.itemView.getContext())
+            Glide.with(holder.itemView.getContext().getApplicationContext())
                     .load(photo.getIp())
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)
@@ -69,7 +69,7 @@ public class AdapterGridImage extends RecyclerView.Adapter<AdapterGridImage.View
                     .thumbnail(0.5f)
                     .into(holder.image);
         } else {
-            Glide.with(holder.itemView.getContext())
+            Glide.with(holder.itemView.getContext().getApplicationContext())
                     .load(photo.getT())
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)

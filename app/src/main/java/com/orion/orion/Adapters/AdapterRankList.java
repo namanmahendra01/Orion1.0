@@ -81,7 +81,7 @@ public class AdapterRankList extends RecyclerView.Adapter<AdapterRankList.ViewHo
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user = dataSnapshot.getValue(users.class);
                         username.setText(user.getU());
-                        Glide.with(mContext)
+                        Glide.with(mContext.getApplicationContext())
                                 .load(user.getPp())
                                 .placeholder(R.drawable.load)
                                 .error(R.drawable.default_image2)

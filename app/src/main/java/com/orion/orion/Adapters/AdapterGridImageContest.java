@@ -75,7 +75,7 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
             holder.image.setLayoutParams(parms);
             ifCurrentUserVote(holder, participantList.getJi(), participantList.getCi());
 
-            Glide.with(mContext)
+            Glide.with(mContext.getApplicationContext())
                     .load(participantList.getMl())
                     .placeholder(R.drawable.load)
                     .error(R.drawable.default_image2)

@@ -14,28 +14,29 @@ public class ImageManager {
 
     private static final String TAG = "ImageManager";
 
-    public static Bitmap getBitmap(String imgUrl){
+    public static Bitmap getBitmap(String imgUrl) {
         File imageFile = new File(imgUrl);
         FileInputStream fis = null;
-        Bitmap bitmap=null;
+        Bitmap bitmap = null;
         try {
-            fis= new FileInputStream(imageFile);
-            bitmap= BitmapFactory.decodeStream(fis);
-        }catch(FileNotFoundException e){
-            Log.e(TAG,"Bitmap:FileNotFounfexception" + e.getMessage());
-        }finally {
+            fis = new FileInputStream(imageFile);
+            bitmap = BitmapFactory.decodeStream(fis);
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "Bitmap:FileNotFounfexception" + e.getMessage());
+        } finally {
             try {
                 fis.close();
-            }catch (IOException e){
-                Log.e(TAG,"Bitmap:FileNotFounfexception" + e.getMessage());
+            } catch (IOException | NullPointerException e) {
+                Log.e(TAG, "Bitmap:FileNotFounfexception" + e.getMessage());
             }
         }
         return bitmap;
     }
-    public static  byte[] getBytesFromBitmap(Bitmap bm, int quality){
+
+    public static byte[] getBytesFromBitmap(Bitmap bm, int quality) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Log.d(TAG, "getBytesFromBitmap: "+stream.size());
-        bm.compress(Bitmap.CompressFormat.JPEG,quality,stream);
+        Log.d(TAG, "getBytesFromBitmap: " + stream.size());
+        bm.compress(Bitmap.CompressFormat.JPEG, quality, stream);
         return stream.toByteArray();
     }
 }

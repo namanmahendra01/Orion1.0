@@ -190,7 +190,7 @@ public class CheckContest extends AppCompatActivity {
                                                 jurypl1.setText(user.getU());
                                                 Log.d(TAG, "onDataChange: " + user.getDn());
 
-                                                Glide.with(CheckContest.this)
+                                                Glide.with(getApplicationContext())
                                                         .load(user.getPp())
                                                         .placeholder(R.drawable.load)
                                                         .error(R.drawable.default_image2)
@@ -245,7 +245,7 @@ public class CheckContest extends AppCompatActivity {
                                                 juryname1.setText(user.getDn());
                                                 jurypl1.setText(user.getU());
 
-                                                Glide.with(CheckContest.this)
+                                                Glide.with(getApplicationContext())
                                                         .load(user.getPp())
                                                         .placeholder(R.drawable.load)
                                                         .error(R.drawable.default_image2)
@@ -285,7 +285,7 @@ public class CheckContest extends AppCompatActivity {
                                                 juryname2.setText(user.getDn());
                                                 jurypl2.setText(user.getU());
 
-                                                Glide.with(CheckContest.this)
+                                                Glide.with(getApplicationContext())
                                                         .load(user.getPp())
                                                         .placeholder(R.drawable.load)
                                                         .error(R.drawable.default_image2)
@@ -343,7 +343,7 @@ public class CheckContest extends AppCompatActivity {
                                                 jurypl1.setText(user.getU());
                                                 Log.d(TAG, "onDataChange: " + user.getDn());
 
-                                                Glide.with(CheckContest.this)
+                                                Glide.with(getApplicationContext())
                                                         .load(user.getPp())
                                                         .placeholder(R.drawable.load)
                                                         .error(R.drawable.default_image2)
@@ -385,7 +385,7 @@ public class CheckContest extends AppCompatActivity {
                                                 jurypl2.setText(user.getU());
                                                 Log.d(TAG, "onDataChange: " + user.getDn());
 
-                                                Glide.with(CheckContest.this)
+                                                Glide.with(getApplicationContext())
                                                         .load(user.getPp())
                                                         .placeholder(R.drawable.load)
                                                         .error(R.drawable.default_image2)
@@ -427,7 +427,7 @@ public class CheckContest extends AppCompatActivity {
                                                 jurypl3.setText(user.getU());
                                                 Log.d(TAG, "onDataChange: " + user.getDn());
 
-                                                Glide.with(CheckContest.this)
+                                                Glide.with(getApplicationContext())
                                                         .load(user.getPp())
                                                         .placeholder(R.drawable.load)
                                                         .error(R.drawable.default_image2)
@@ -468,7 +468,7 @@ public class CheckContest extends AppCompatActivity {
         p3Tv.setText(intent.getStringExtra("place_3"));
         posterlink = intent.getStringExtra("poster");
 
-        Glide.with(CheckContest.this)
+        Glide.with(getApplicationContext())
                 .load(posterlink)
                 .placeholder(R.drawable.load)
                 .error(R.drawable.default_image2)

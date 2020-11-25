@@ -118,7 +118,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
 
                 name.setText(name1);
                 username.setText(username1);
-                Glide.with(mContext)
+                Glide.with(mContext.getApplicationContext())
                         .load(profilelink)
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)
@@ -569,8 +569,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                         username1 = user.getU();
                         profilelink = user.getPp();
                         try {
-
-                            Glide.with(mContext)
+                            Glide.with(mContext.getApplicationContext().getApplicationContext())
                                     .load(profilelink)
                                     .placeholder(R.drawable.load)
                                     .error(R.drawable.default_image2)

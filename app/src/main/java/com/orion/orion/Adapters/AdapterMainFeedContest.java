@@ -322,7 +322,7 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
                     title.setText(createForm.getCt());
                     domain.setText(createForm.getD().toString());
 
-                    Glide.with(mContext)
+                    Glide.with(mContext.getApplicationContext())
                             .load(createForm.getPo())
                             .placeholder(R.drawable.load)
                             .error(R.drawable.default_image2)

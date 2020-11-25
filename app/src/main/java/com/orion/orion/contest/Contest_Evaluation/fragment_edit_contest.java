@@ -277,7 +277,7 @@ public class fragment_edit_contest extends Fragment {
                                                         juryname1.setText(user.getDn());
                                                         jurypl1.setText(user.getU());
 
-                                                        Glide.with(fragment_edit_contest.this)
+                                                        Glide.with(getActivity().getApplicationContext())
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
@@ -319,7 +319,7 @@ public class fragment_edit_contest extends Fragment {
                                                         jurypl2.setText(user.getU());
                                                         Log.d(TAG, "onDataChange: " + user.getDn());
 
-                                                        Glide.with(fragment_edit_contest.this)
+                                                        Glide.with(getActivity().getApplicationContext())
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
@@ -376,7 +376,7 @@ public class fragment_edit_contest extends Fragment {
                                                         juryname1.setText(user.getDn());
                                                         jurypl1.setText(user.getU());
 
-                                                        Glide.with(fragment_edit_contest.this)
+                                                        Glide.with(getActivity().getApplicationContext())
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
@@ -416,7 +416,7 @@ public class fragment_edit_contest extends Fragment {
                                                         juryname2.setText(user.getDn());
                                                         jurypl2.setText(user.getU());
 
-                                                        Glide.with(fragment_edit_contest.this)
+                                                        Glide.with(getActivity().getApplicationContext())
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
@@ -458,7 +458,7 @@ public class fragment_edit_contest extends Fragment {
                                                         jurypl3.setText(user.getU());
                                                         Log.d(TAG, "onDataChange: " + user.getDn());
 
-                                                        Glide.with(fragment_edit_contest.this)
+                                                        Glide.with(getActivity().getApplicationContext())
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
@@ -483,7 +483,7 @@ public class fragment_edit_contest extends Fragment {
                 }
 
                 posterlink = mCreateForm.getPo();
-                Glide.with(fragment_edit_contest.this)
+                Glide.with(getActivity().getApplicationContext())
                         .load(posterlink)
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)

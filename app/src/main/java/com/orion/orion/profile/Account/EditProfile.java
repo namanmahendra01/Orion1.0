@@ -508,7 +508,7 @@ public class EditProfile extends AppCompatActivity {
     private void setProfileWidgets(users userSetting) {
         setting = userSetting;
 
-        Glide.with(EditProfile.this)
+        Glide.with(getApplicationContext())
                 .load(setting.getPp())
                 .placeholder(R.drawable.load)
                 .error(R.drawable.default_image2)
@@ -670,7 +670,7 @@ public class EditProfile extends AppCompatActivity {
         Log.d(TAG, "setImage next " + imgPath);
         imgURL = imgPath;
         String mAppend = "file:/";
-        Glide.with(EditProfile.this)
+        Glide.with(getApplicationContext())
                 .load(imgURL)
                 .placeholder(R.drawable.load)
                 .error(R.drawable.default_image2)

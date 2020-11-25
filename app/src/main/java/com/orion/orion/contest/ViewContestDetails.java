@@ -351,7 +351,7 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         jurypl1.setText(user.getU());
                                                         Log.d(TAG, "onDataChange: " + user.getDn());
 
-                                                        Glide.with(ViewContestDetails.this)
+                                                        Glide.with(getApplicationContext())
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
@@ -410,7 +410,7 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         jurypl1.setText(user.getU());
                                                         Log.d(TAG, "onDataChange: " + user.getDn());
 
-                                                        Glide.with(ViewContestDetails.this)
+                                                        Glide.with(getApplicationContext())
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
@@ -455,7 +455,7 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         Log.d(TAG, "onDataChange: " + user.getDn());
 
 
-                                                        Glide.with(ViewContestDetails.this)
+                                                        Glide.with(getApplicationContext())
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
@@ -514,7 +514,7 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         Log.d(TAG, "onDataChange: " + user.getDn());
 
 
-                                                        Glide.with(ViewContestDetails.this)
+                                                        Glide.with(getApplicationContext())
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
@@ -556,7 +556,7 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         Log.d(TAG, "onDataChange: " + user.getDn());
 
 
-                                                        Glide.with(ViewContestDetails.this)
+                                                        Glide.with(getApplicationContext())
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
@@ -599,7 +599,7 @@ public class ViewContestDetails extends AppCompatActivity {
                                                         Log.d(TAG, "onDataChange: " + user.getDn());
 
 
-                                                        Glide.with(ViewContestDetails.this)
+                                                        Glide.with(getApplicationContext())
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
@@ -625,7 +625,7 @@ public class ViewContestDetails extends AppCompatActivity {
                 posterlink = mCreateForm.getPo();
 
 
-                Glide.with(ViewContestDetails.this)
+                Glide.with(getApplicationContext())
                         .load(posterlink)
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)

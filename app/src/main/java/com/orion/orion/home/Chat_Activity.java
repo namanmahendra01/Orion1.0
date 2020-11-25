@@ -858,7 +858,7 @@ Chat_Activity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot singleSnapshot) {
 
-                Glide.with(Chat_Activity.this)
+                Glide.with(getApplicationContext())
                         .load(singleSnapshot.child(getString(R.string.profile_photo)).getValue().toString())
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)
