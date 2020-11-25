@@ -8,6 +8,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -43,6 +44,7 @@ import com.orion.orion.models.Photo;
 import com.orion.orion.util.FilePaths;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.ImageManager;
+import com.orion.orion.util.Permissions;
 import com.orion.orion.util.StringManipilation;
 
 import java.io.File;
@@ -59,12 +61,15 @@ import java.util.regex.Pattern;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 public class PostPhotoActivity extends AppCompatActivity {
 
 
     private static final String TAG = "PostPhotoActivity";
     private final Context mContext = PostPhotoActivity.this;
+    private static final int VERIFY_PERMISSION_REQUEST = 1;
+
     //firebase
     private RelativeLayout rootView;
     private FirebaseAuth mAuth;
@@ -107,11 +112,13 @@ public class PostPhotoActivity extends AppCompatActivity {
         });
         fab.setOnClickListener(v -> {
             fab.setEnabled(false);
-            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("*/*");
-            intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"});
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+            if (checkPermissionArray(Permissions.PERMISSIONS)) {
+                fab.setEnabled(false);
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+            } else verifyPermission(Permissions.PERMISSIONS);
         });
         backArrow.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -201,6 +208,87 @@ public class PostPhotoActivity extends AppCompatActivity {
         });
     }
 
+    public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {
+                column
+        };
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(index);
+            }
+        } finally {
+            if (cursor != null) cursor.close();
+        }
+        return null;
+    }
+
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+    }
+
+    public static String getPathFromUri(final Context context, final Uri uri) {
+        // DocumentProvider
+        if (DocumentsContract.isDocumentUri(context, uri)) {
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                if ("primary".equalsIgnoreCase(type))
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                // TODO handle non-primary volumes
+            }
+            // DownloadsProvider
+            else if (isDownloadsDocument(uri)) {
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
+                return getDataColumn(context, contentUri, null, null);
+            }
+            // MediaProvider
+            else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                Uri contentUri = null;
+                if ("image".equals(type)) contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                else if ("video".equals(type))
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                else if ("audio".equals(type))
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[]{
+                        split[1]
+                };
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            }
+        }
+        // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(uri.getScheme())) {
+            // Return the remote address
+            if (isGooglePhotosUri(uri)) return uri.getLastPathSegment();
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) return uri.getPath();
+        return null;
+    }
+
 
     @TargetApi(19)
     @Override
@@ -209,109 +297,10 @@ public class PostPhotoActivity extends AppCompatActivity {
         String imgPath = "";
         if (data != null && data.getData() != null && resultCode == RESULT_OK) {
             Uri uri = data.getData();
-            if (DocumentsContract.isDocumentUri(this, uri)) {
-                if ("com.android.externalstorage.documents".equals(uri.getAuthority())) {
-                    String docId = DocumentsContract.getDocumentId(uri);
-                    String[] split = docId.split(":");
-                    String type = split[0];
-                    if ("primary".equalsIgnoreCase(type)) {
-                        imgPath = Environment.getExternalStorageDirectory() + "/" + split[1];
-                        setImage(imgPath);
-                    } else {
-                        Pattern DIR_SEPORATOR = Pattern.compile("/");
-                        Set<String> rv = new HashSet<>();
-                        String rawExternalStorage = System.getenv("EXTERNAL_STORAGE");
-                        String rawSecondaryStoragesStr = System.getenv("SECONDARY_STORAGE");
-                        String rawEmulatedStorageTarget = System.getenv("EMULATED_STORAGE_TARGET");
-                        if (TextUtils.isEmpty(rawEmulatedStorageTarget))
-                            if (TextUtils.isEmpty(rawExternalStorage)) rv.add("/storage/sdcard0");
-                            else rv.add(rawExternalStorage);
-                        else {
-                            String rawUserId;
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-                            String[] folders = DIR_SEPORATOR.split(path);
-                            String lastFolder = folders[folders.length - 1];
-                            boolean isDigit = false;
-                            try {
-                                Integer.valueOf(lastFolder);
-                                isDigit = true;
-                            } catch (NumberFormatException | NullPointerException ex) {
-                                Log.e(TAG, "onActivityResult: " + ex.getMessage());
-                            }
-                            rawUserId = isDigit ? lastFolder : "";
-                            if (TextUtils.isEmpty(rawUserId)) rv.add(rawEmulatedStorageTarget);
-                            else rv.add(rawEmulatedStorageTarget + File.separator + rawUserId);
-                        }
-                        if (!TextUtils.isEmpty(rawSecondaryStoragesStr)) {
-                            String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
-                            Collections.addAll(rv, rawSecondaryStorages);
-                        }
-                        String[] temp = rv.toArray(new String[0]);
-                        for (String s : temp) {
-                            File tempf = new File(s + "/" + split[1]);
-                            if (tempf.exists()) {
-                                imgPath = s + "/" + split[1];
-                                setImage(imgPath);
-                            }
-                        }
-                    }
-                } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
-                    String id = DocumentsContract.getDocumentId(uri);
-                    Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
-                    Cursor cursor = null;
-                    String column = "_data";
-                    String[] projection = {column};
-                    try {
-                        cursor = this.getContentResolver().query(contentUri, projection, null, null, null);
-                        if (cursor != null && cursor.moveToFirst()) {
-                            int column_index = cursor.getColumnIndexOrThrow(column);
-                            imgPath = cursor.getString(column_index);
-                            setImage(imgPath);
-                        }
-                    } finally {
-                        if (cursor != null) cursor.close();
-                    }
-                } else if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
-                    String docId = DocumentsContract.getDocumentId(uri);
-                    String[] split = docId.split(":");
-                    String type = split[0];
-                    Uri contentUri = null;
-                    if ("image".equals(type))
-                        contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                    else if ("video".equals(type))
-                        contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                    else if ("audio".equals(type))
-                        contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                    String selection = "_id=?";
-                    String[] selectionArgs = new String[]{split[1]};
-                    Cursor cursor = null;
-                    String column = "_data";
-                    String[] projection = {column};
-                    try {
-                        assert contentUri != null;
-                        cursor = this.getContentResolver().query(contentUri, projection, selection, selectionArgs, null);
-                        if (cursor != null && cursor.moveToFirst()) {
-                            int column_index = cursor.getColumnIndexOrThrow(column);
-                            imgPath = cursor.getString(column_index);
-                            setImage(imgPath);
-                        }
-                    } finally {
-                        if (cursor != null) cursor.close();
-                    }
-                } else if ("com.google.android.apps.docs.storage".equals(uri.getAuthority()))
-                    setImage(imgPath);
-            } else if ("content".equalsIgnoreCase(uri.getScheme())) {
-                Cursor cursor = null;
-                String column = "_data";
-                String[] projection = {column};
-                try {
-                    cursor = this.getContentResolver().query(uri, projection, null, null, null);
-                    if (cursor != null && cursor.moveToFirst()) setImage(imgPath);
-                } finally {
-                    if (cursor != null) cursor.close();
-                }
-            } else if ("file".equalsIgnoreCase(uri.getScheme())) {
-                imgPath = uri.getPath();
+            if (uri != null) {
+                imgPath = getPathFromUri(mContext, uri);
+                Log.d(TAG, "onActivityResult: path: " + imgPath);
+                Log.d(TAG, "onActivityResult: uri: " + uri);
                 setImage(imgPath);
             }
         }
@@ -328,6 +317,18 @@ public class PostPhotoActivity extends AppCompatActivity {
                 .error(R.drawable.default_image2)
                 .placeholder(R.drawable.load)
                 .into(image);
+    }
+    public void verifyPermission(String[] permissions) {
+        ActivityCompat.requestPermissions(this, permissions, VERIFY_PERMISSION_REQUEST);
+    }
+    public boolean checkPermissionArray(String[] permissions) {
+        for (String check : permissions) if (!checkPermissions(check)) return false;
+        return true;
+    }
+
+    public boolean checkPermissions(String permission) {
+        int permissionRequest = ActivityCompat.checkSelfPermission(this, permission);
+        return permissionRequest == PackageManager.PERMISSION_GRANTED;
     }
 
     private void setupFirebaseAuth() {

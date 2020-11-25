@@ -295,12 +295,8 @@ public class PostVideoActivity extends AppCompatActivity {
 
 
         String imgUrl2= mFirebaseMethods.compressImage(getPathFromUri(mContext,imageUri));
-
         Bitmap bm = ImageManager.getBitmap(imgUrl2);
-
-
         byte[] bytes;
-
         bytes = ImageManager.getBytesFromBitmap(bm, 100);
 
         storageReferencePhoto.putBytes(bytes)
@@ -790,7 +786,7 @@ public class PostVideoActivity extends AppCompatActivity {
                     }
                 }
             } else {
-                if (requestCode == REQUEST_SELECT_THUMBNAIL) {
+                if (requestCode == REQUEST_SELECT_THUMBNAIL)
                     if (data != null && data.getData() != null) {
                         Uri uri = data.getData();
                         if (uri != null) {
@@ -804,8 +800,6 @@ public class PostVideoActivity extends AppCompatActivity {
                                 thumbnail.setImageURI(imageUri);
                         }
                     }
-
-                }
             }
             super.onActivityResult(requestCode, resultCode, data);
         }
