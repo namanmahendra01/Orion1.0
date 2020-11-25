@@ -2,7 +2,6 @@ package com.orion.orion.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +27,6 @@ import com.orion.orion.models.users;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
-import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class AdapterPromote extends RecyclerView.Adapter<AdapterPromote.MyHolder> {
 
@@ -68,8 +65,8 @@ public class AdapterPromote extends RecyclerView.Adapter<AdapterPromote.MyHolder
                         for (DataSnapshot dataSnapshot1:dataSnapshot.getChildren()) {
                             myHolder.promote = dataSnapshot1.getValue(Promote.class);
 
-                            Long timeEnd = Long.parseLong(myHolder.promote.getTiE());
-                            seenStory(myHolder, myHolder.promote.getPID(), myHolder.promote.getStID(), timeEnd);
+                            Long timeEnd = Long.parseLong(myHolder.promote.getTie());
+                            seenStory(myHolder, myHolder.promote.getPID(), myHolder.promote.getStid(), timeEnd);
                             getUserInfo(myHolder.promote.getPID(), myHolder.story, myHolder.storySeen, myHolder.username);
 
                         }

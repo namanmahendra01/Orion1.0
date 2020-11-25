@@ -164,6 +164,7 @@ public class AccountSettingActivity extends AppCompatActivity {
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             settings.edit().clear().apply();
                             if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
+                            dialog.dismiss();
                             startActivity(intent);
                         })
                         .show();

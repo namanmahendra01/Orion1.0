@@ -3,31 +3,31 @@ package com.orion.orion.models;
 public class Promote {
     public Promote(){}
 
-    String tiS, tiE, pi, ui, ip, stID, pID;
+    String tis, tie, pi, ui, ip, stid, pid;
 
 
 
-    public String getTiS() {
-        return tiS;
+    public String getTis() {
+        return tis;
     }
 
-    public void setTimeStart(String timeStart) {
-        this.tiS = timeStart;
+    public void setTis(String timeStart) {
+        this.tis = timeStart;
     }
 
-    public String getTiE() {
-        return tiE;
+    public String getTie() {
+        return tie;
     }
 
-    public void setTimeEnd(String timeEnd) {
-        this.tiE = timeEnd;
+    public void setTie(String timeEnd) {
+        this.tie = timeEnd;
     }
 
     public String getPi() {
         return pi;
     }
 
-    public void setPhotoid(String photoid) {
+    public void setPi(String photoid) {
         this.pi = photoid;
     }
 
@@ -43,36 +43,36 @@ public class Promote {
         return ip;
     }
 
-    public void setPhotoLink(String photoLink) {
+    public void setIp(String photoLink) {
         this.ip = photoLink;
     }
 
-    public String getStID() {
-        return stID;
+    public String getStid() {
+        return stid;
     }
 
-    public void setStoryid(String storyid) {
-        this.stID = storyid;
+    public void setStid(String storyid) {
+        this.stid = storyid;
     }
 
     public String getPID() {
-        return pID;
+        return pid;
     }
 
-    public void setPromoterId(String promoterId) {
-        this.pID = promoterId;
+    public void setPID(String promoterId) {
+        this.pid = promoterId;
     }
 
     @Override
     public String toString() {
         return "Promote{" +
-                "tiS='" + tiS + '\'' +
-                ", tiE='" + tiE + '\'' +
+                "tiS='" + tis + '\'' +
+                ", tiE='" + tie + '\'' +
                 ", pi='" + pi + '\'' +
                 ", ui='" + ui + '\'' +
                 ", ip='" + ip + '\'' +
-                ", stID='" + stID + '\'' +
-                ", pID='" + pID + '\'' +
+                ", stID='" + stid + '\'' +
+                ", pID='" + pid + '\'' +
                 '}';
     }
 }

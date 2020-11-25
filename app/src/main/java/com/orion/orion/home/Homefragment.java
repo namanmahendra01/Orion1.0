@@ -40,7 +40,6 @@ import com.google.gson.reflect.TypeToken;
 import com.orion.orion.Adapters.AdapterMainFeedContest;
 import com.orion.orion.Adapters.AdapterMainfeed;
 import com.orion.orion.Adapters.AdapterPromote;
-import com.orion.orion.Notifications.Data;
 import com.orion.orion.R;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.ContestDetail;
@@ -1302,7 +1301,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
 
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Promote promote = snapshot.getValue(Promote.class);
-                            if (timestamp >= Long.parseLong(promote.getTiS()) && timestamp <= Long.parseLong(promote.getTiE())) {
+                            if (timestamp >= Long.parseLong(promote.getTis()) && timestamp <= Long.parseLong(promote.getTie())) {
                             } else {
                                 DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
 

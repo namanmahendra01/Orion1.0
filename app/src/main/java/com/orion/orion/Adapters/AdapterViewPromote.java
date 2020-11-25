@@ -34,8 +34,6 @@ import com.orion.orion.models.Promote;
 import java.util.ArrayList;
 import java.util.List;
 
-import static androidx.constraintlayout.widget.Constraints.TAG;
-
 public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.MyHolder> {
 
     Context context;
@@ -118,7 +116,7 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
                         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                         db.child(context.getString(R.string.dbname_promote))
                                 .child(promote.getPID())
-                                .child(promote.getStID())
+                                .child(promote.getStid())
                                 .removeValue();
                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
                         reference.child(context.getString(R.string.dbname_user_photos))
@@ -145,7 +143,7 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(context.getString(R.string.dbname_promote))
                 .child(promote.getPID())
-                .child(promote.getStID())
+                .child(promote.getStid())
                 .child(context.getString(R.string.field_view))
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .setValue("true");
@@ -241,7 +239,7 @@ public class AdapterViewPromote extends RecyclerView.Adapter<AdapterViewPromote.
 
     public long getItemId(int position) {
         Promote form = promoteList.get(position);
-        return form.getStID().hashCode();
+        return form.getStid().hashCode();
     }
     @Override
     public int getItemCount() {
