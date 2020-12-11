@@ -25,6 +25,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -90,6 +91,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
     //    private static final Handler handler = new Handler(Looper.getMainLooper());
     private static final int SET_SIZE_DOMAIN = 300;
     private static final int TOTAL_USER_SIZE = 500;
+    private static final int PAGINATION_SIZE = 6;
     //    private static final int RETRY_DURATION = 30000;
     int x = 0;
     int prevHeight;
@@ -119,10 +121,12 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
     private ArrayList<String> topUser8;
     private List<users> mUserList;
     private UserListAdapter mAdapter;
+    private ArrayList<Photo> starPhotos;
     private ArrayList<Photo> fieldPhotos;
     private ArrayList<Photo> paginatedPhotos;
     private boolean shuffled = false;
     private ImageView cross, up, down;
+//    private ProgressBar loading;
     //firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -133,6 +137,8 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
     private String SELECTED_FILTER;
     private boolean requestedFromCheckPostFetched;
     private boolean requestedFromSelectListener;
+    private boolean photosReady;
+    protected boolean isAdapterReady;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -160,6 +166,8 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
         checkTopDatabase();
         requestedFromCheckPostFetched = false;
         requestedFromSelectListener = false;
+        photosReady = false;
+        isAdapterReady = false;
         SELECTED_FILTER = getString(R.string.field_overall);
     }
 
@@ -205,6 +213,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
         reference = FirebaseDatabase.getInstance().getReference();
 
         topUser8 = new ArrayList<>();
+        starPhotos = new ArrayList<>();
         fieldPhotos = new ArrayList<>();
         paginatedPhotos = new ArrayList<>();
         mSearchParam = findViewById(R.id.search);
@@ -226,6 +235,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
         cross = findViewById(R.id.cross);
         up = findViewById(R.id.up);
         down = findViewById(R.id.down);
+//        loading = findViewById(R.id.progressBar);
 
         View v = collapse;
         prevHeight = v.getHeight();
@@ -260,26 +270,30 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
         });
 
         overall.setOnClickListener(v -> {
-            overall.setTextColor(getResources().getColor(R.color.colorPrimary));
-            domain.setTextColor(getResources().getColor(R.color.black));
-            swipeRefreshLayout.setRefreshing(true);
-            SELECTED_FILTER = getString(R.string.field_overall);
-            displayPhotos(SELECTED_FILTER);
-            overall.setClickable(false);
-            domain.setClickable(true);
+            if (photosReady) {
+                overall.setTextColor(getResources().getColor(R.color.colorPrimary));
+                domain.setTextColor(getResources().getColor(R.color.black));
+                swipeRefreshLayout.setRefreshing(true);
+                SELECTED_FILTER = getString(R.string.field_overall);
+                displayPhotos(SELECTED_FILTER);
+                overall.setClickable(false);
+                domain.setClickable(true);
+            }
         });
         domain.setOnClickListener(v -> {
-            domain.setTextColor(getResources().getColor(R.color.colorPrimary));
-            overall.setTextColor(getResources().getColor(R.color.black));
-            requestedFromSelectListener = true;
-            if (USER_DOMAIN == null) getUserDomain();
-            else {
-                swipeRefreshLayout.setRefreshing(true);
-                requestedFromSelectListener = false;
-                SELECTED_FILTER = USER_DOMAIN;
-                displayPhotos(SELECTED_FILTER);
-                overall.setClickable(true);
-                domain.setClickable(false);
+            if (photosReady) {
+                domain.setTextColor(getResources().getColor(R.color.colorPrimary));
+                overall.setTextColor(getResources().getColor(R.color.black));
+                requestedFromSelectListener = true;
+                if (USER_DOMAIN == null) getUserDomain();
+                else {
+                    swipeRefreshLayout.setRefreshing(true);
+                    requestedFromSelectListener = false;
+                    SELECTED_FILTER = USER_DOMAIN;
+                    displayPhotos(SELECTED_FILTER);
+                    overall.setClickable(true);
+                    domain.setClickable(false);
+                }
             }
         });
         star1.setOnClickListener(v -> jumpToUser(user1));
@@ -293,10 +307,16 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
         exploreRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NotNull RecyclerView recyclerView, int newState) {
-
                 super.onScrollStateChanged(recyclerView, newState);
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE)
-                    if (paginatedPhotos.size() < fieldPhotos.size()) displayMorePhotos();
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (paginatedPhotos.size() < fieldPhotos.size() && photosReady) {
+                        displayMorePhotos();
+                    }
+                    if (paginatedPhotos.size() < starPhotos.size() && !photosReady) {
+//                        loading.setVisibility(View.VISIBLE);
+                        displayMorePhotosTop8();
+                    }
+                }
             }
 
             @Override
@@ -318,12 +338,16 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                 R.color.red
         );
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            Log.d(TAG, "initOnClickListeners: starting");
-            swipeRefreshLayout.setRefreshing(true);
-            displayPhotos(SELECTED_FILTER);
+            if (photosReady) {
+                Log.d(TAG, "initOnClickListeners: starting");
+                swipeRefreshLayout.setRefreshing(true);
+                displayPhotos(SELECTED_FILTER);
+            } else
+                swipeRefreshLayout.setRefreshing(false);
         });
         Log.d(TAG, "initOnClickListeners: completed");
     }
+
 
     private void jumpToUser(String toUser) {
         if (toUser != null && !toUser.equals("")) {
@@ -977,7 +1001,6 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
                                 Log.d(TAG, field + ": getPosts: Error - " + error.getMessage());
-
                             }
                         });
                     }
@@ -1002,6 +1025,9 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                             topUser8.add(singleSnapshot.getValue().toString());
                     Log.d(TAG, "getTop8: topUser" + topUser8);
                     getStarImage(topUser8);
+                    String json = mPreferences.getString(getString(R.string.field_overall) + "_TopPosts", null);
+                    if (json == null || json.equals(""))
+                        getStarPhotos(topUser8);
                 }
             }
 
@@ -1009,6 +1035,101 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
+
+    private void getStarPhotos(ArrayList<String> user_ids) {
+        Log.d(TAG, "getStarPhotos: started");
+        Log.d(TAG, "getStarImage: " + user_ids);
+        for (String user_id : user_ids) {
+            if (!user_id.equals(mUser.getUid()))
+                reference.child(getString(R.string.dbname_user_photos))
+                        .child(user_id)
+                        .limitToLast(5)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists())
+                                    for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
+                                        if (singleSnapshot.exists()) {
+                                            Photo photo = singleSnapshot.getValue(Photo.class);
+                                            starPhotos.add(photo);
+                                            if (isAdapterReady && paginatedPhotos.size() < PAGINATION_SIZE) {
+                                                paginatedPhotos.add(photo);
+                                                adapterGridImage.notifyItemInserted(paginatedPhotos.size() - 1);
+                                            } else if (!isAdapterReady) displayPhotosTop8();
+                                        }
+                                    }
+                                Log.d(TAG, "getStarPhotos: " + starPhotos.size());
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+        }
+    }
+
+    private void displayPhotosTop8() {
+        isAdapterReady = true;
+        Log.d(TAG, "displayPhotosTop8: fetching photos of - " + starPhotos.size());
+        try {
+            if (starPhotos.size() != 0) {
+                runOnUiThread(() -> findViewById(R.id.noPost).setVisibility(View.GONE));
+                paginatedPhotos = new ArrayList<>();
+                for (int i = 0; i < starPhotos.size(); i++) {
+                    paginatedPhotos.add(starPhotos.get(i));
+                    if (i == starPhotos.size() - 1 || i == PAGINATION_SIZE - 1) {
+                        Log.d(TAG, "displayPhotosTop8: paginatedPhotos - " + paginatedPhotos.size());
+                        adapterGridImage = new AdapterGridImageExplore(mContext, paginatedPhotos, this);
+                        ((SimpleItemAnimator) exploreRv.getItemAnimator()).setSupportsChangeAnimations(false);
+                        swipeRefreshLayout.setRefreshing(false);
+                        adapterGridImage.setHasStableIds(true);
+                        exploreRv.post(() -> exploreRv.setAdapter(adapterGridImage));
+                        break;
+                    }
+                }
+            } else runOnUiThread(() -> {
+                swipeRefreshLayout.setRefreshing(false);
+                findViewById(R.id.noPost).setVisibility(View.VISIBLE);
+            });
+
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Null pointer exception" + e.getMessage());
+            swipeRefreshLayout.setRefreshing(false);
+            findViewById(R.id.noPost).setVisibility(View.VISIBLE);
+        } catch (IndexOutOfBoundsException e) {
+            Log.e(TAG, "index out of bound" + e.getMessage());
+            swipeRefreshLayout.setRefreshing(false);
+            findViewById(R.id.noPost).setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void displayMorePhotosTop8() {
+        Log.d(TAG, "displayMorePhotosTop8: started");
+        Log.d(TAG, "displayMorePhotosTop8: paginatedPhotos - " + paginatedPhotos.size());
+        Log.d(TAG, "displayMorePhotosTop8: starPhotos - " + starPhotos.size());
+        int l = paginatedPhotos.size();
+        int addCount = PAGINATION_SIZE;
+        if (l % 2 == 1) addCount++;
+        try {
+            for (int i = l; i < starPhotos.size(); i++) {
+                if (i == starPhotos.size() || i == l + addCount) {
+                    int itemCount = (i == starPhotos.size()) ? (starPhotos.size() - l) : addCount;
+                    Log.d(TAG, "displayMorePhotosTop8: itemcount" + itemCount);
+                    exploreRv.post(() -> {
+                        adapterGridImage.notifyItemRangeInserted(l, itemCount);
+//                        loading.setVisibility(View.GONE);
+                    });
+                    break;
+                } else paginatedPhotos.add(starPhotos.get(i));
+            }
+        } catch (NullPointerException e) {
+            Log.e(TAG, "Null pointer exception" + e.getMessage());
+
+        } catch (IndexOutOfBoundsException e) {
+            Log.e(TAG, "index out of bound" + e.getMessage());
+        }
     }
 
     private void getStarImage(ArrayList<String> user_id) {
@@ -1069,7 +1190,17 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
     }
 
     private void displayPhotos(String field) {
+        Log.d(TAG, "displayPhotos: started");
+//        if (!photosReady) {
+//            AlertDialog alertDialog = new AlertDialog.Builder(this)
+//                    .setTitle("Get Ready")
+//                    .setMessage("We have fetched some data according to your personalized liking")
+//                    .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> dialogInterface.dismiss())
+//                    .show();
+//            alertDialog.show();
+//        }
         requestedFromSelectListener = false;
+        photosReady = true;
         findViewById(R.id.noPost).setVisibility(View.GONE);
         if (swipeRefreshLayout.isRefreshing()) {
             Log.d(TAG, field + ": displayPhotos: started");
@@ -1158,6 +1289,9 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
 
                     }
                 });
+            } else {
+                swipeRefreshLayout.setRefreshing(false);
+                findViewById(R.id.noPost).setVisibility(View.VISIBLE);
             }
         }
     }
@@ -1165,6 +1299,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
     private void fetchPhotos() {
         Log.d(TAG, "fetchPhotos: fetching photos of - " + fieldPhotos.size());
         try {
+            paginatedPhotos.clear();
             if (fieldPhotos.size() != 0) {
                 runOnUiThread(() -> findViewById(R.id.noPost).setVisibility(View.GONE));
                 if (!shuffled) {
@@ -1198,6 +1333,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
             swipeRefreshLayout.setRefreshing(false);
             findViewById(R.id.noPost).setVisibility(View.VISIBLE);
         }
+
     }
 
     public void displayMorePhotos() {

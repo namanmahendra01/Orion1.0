@@ -36,6 +36,8 @@ import com.orion.orion.R;
 import com.orion.orion.dialogs.BottomSheetFilter;
 import com.orion.orion.login.login;
 import com.orion.orion.models.ItemLeaderboard;
+import com.orion.orion.models.location;
+import com.orion.orion.models.users;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.SNTPClient;
@@ -121,7 +123,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 //                            Log.d(TAG, "updateLeaderboard: " + singleSnapshot);
-//                            users currentUser = new users();
+//                            users currentUser;
 //                            currentUser=singleSnapshot.getValue(users.class);
 //                            //initializing variables for the updation
 //                            String user_id = singleSnapshot.getKey();
@@ -129,6 +131,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 //                            assert currentUser != null;
 //                            String username = currentUser.getU();
 //                            String domain = currentUser.getD();
+//                            location location = new location();
 //                            String profilePhoto = currentUser.getPp();
 //                            boolean changedFollowers=false;
 //                            boolean changedJoinedContest = false;
@@ -173,7 +176,6 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                     float last_week = 0;
                                     float this_week = 0;
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
                                         long likes = snapshot.child(getString(R.string.field_likes)).getChildrenCount();
                                         long comments = snapshot.child(getString(R.string.field_comment)).getChildrenCount();
                                         float rating = (int) (0.5 + likes + 0.2 * comments);
@@ -866,7 +868,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                             String profileUrl = (String) singleSnapshot.child(getString(R.string.profile_photo)).getValue();
                             String domain = (String) singleSnapshot.child(getString(R.string.field_domain)).getValue();
 
-                            assert domain != null;
+                            if(user_id==null || username == null || profileUrl == null || domain == null) continue;
                             Log.d(TAG, "onDataChange: domain" + domain);
                             if (domainParameter.equals("") || domain.equals(domainParameter)) {
                                 //calculating total rating and type rating for filter 1 and filter 3

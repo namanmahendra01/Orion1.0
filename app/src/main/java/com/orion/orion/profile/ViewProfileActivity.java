@@ -865,8 +865,7 @@ public class ViewProfileActivity extends AppCompatActivity {
             }
         });
     }
-
-
+    
     private void setProfileWidgets(users userSetting) {
         Log.d(TAG, "onDataChange: " + userSetting.toString());
         Glide.with(getApplicationContext())

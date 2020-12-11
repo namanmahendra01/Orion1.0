@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity
     private FrameLayout mFramelayoutl;
     private RelativeLayout mRelativeLayout;
     LinearLayout prom;
-    Context context=MainActivity.this;
+        Context context=MainActivity.this;
     String mUid;
 
     @Override

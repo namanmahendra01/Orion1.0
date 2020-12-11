@@ -296,7 +296,6 @@ public class ViewPostActivity extends AppCompatActivity {
         });
 
         if (mphoto.getTy().equals("photo")) {
-
             mPostImage.setVisibility(View.VISIBLE);
             play2.setVisibility(View.GONE);
             Glide.with(getApplicationContext())
@@ -323,8 +322,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
 
 //                    get thumbnail
-        reference2
-                .child(getString(R.string.dbname_user_photos))
+        reference2.child(getString(R.string.dbname_user_photos))
                 .child(mphoto.getUi())
                 .child(mphoto.getPi())
                 .child(getString(R.string.thumbnail))
@@ -634,7 +632,6 @@ public class ViewPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 promotePost();
-
             }
         });
 
@@ -662,74 +659,64 @@ public class ViewPostActivity extends AppCompatActivity {
         builder.setTitle("Remove Promotion");
         builder.setMessage("Are you sure, you want to remove this Promotion?");
 //                set buttons
-        builder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.d(VolleyLog.TAG, "Rejecting: rejected ");
+        builder.setPositiveButton("Remove", (dialog, which) -> {
+            Log.d(VolleyLog.TAG, "Rejecting: rejected ");
+            promote.setVisibility(View.VISIBLE);
+            promoted.setVisibility(View.GONE);
+            DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+            db.child(getString(R.string.dbname_promote))
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .child(mphoto.getPi())
+                    .removeValue();
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            reference.child(getString(R.string.dbname_user_photos))
+                    .child(mphoto.getUi())
+                    .child(mphoto.getPi())
+                    .child(getString(R.string.field_promotes))
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .removeValue();
+            notifyPromote = false;
+            if(!mphoto.getUi().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                removeNotfication();
+            }
+        });
+        builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
+    }
 
-                promote.setVisibility(View.VISIBLE);
-                promoted.setVisibility(View.GONE);
-
-
-                DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-                db.child(getString(R.string.dbname_promote))
-                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .child(mphoto.getPi())
-                        .removeValue();
-
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                reference.child(getString(R.string.dbname_user_photos))
-                        .child(mphoto.getUi())
-                        .child(mphoto.getPi())
-                        .child(getString(R.string.field_promotes))
-                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                        .removeValue();
-
-                notifyPromote = false;
-                myRef.child(getString(R.string.dbname_users))
-                        .child(mphoto.getUi())
-                        .child(getString(R.string.field_Notifications))
-                        .orderByKey()
-                        .limitToLast(3)
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.exists()) {
-                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                        if (dataSnapshot.exists()
-                                                && dataSnapshot.child(getString(R.string.field_notification_message)).getValue().equals(getString(R.string.promote_message))
-                                                && dataSnapshot.child("sUid").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                && dataSnapshot.child("pUid").getValue().equals(mphoto.getUi())
-                                                && dataSnapshot.child("pId").getValue().equals(mphoto.getPi())) {
-
-                                            myRef.child(getString(R.string.dbname_users))
-                                                    .child(mphoto.getUi())
-                                                    .child(getString(R.string.field_Notifications))
-                                                    .child(dataSnapshot.getKey()).removeValue()
-                                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "onDataChange: Notification Deleted"))
-                                                    .addOnFailureListener(e -> Log.d(TAG, "onDataChange: Notification not Deleted"));
-                                            break;
-                                        }
-                                    }
+    private void removeNotfication() {
+        myRef.child(getString(R.string.dbname_users))
+                .child(mphoto.getUi())
+                .child(getString(R.string.field_Notifications))
+                .orderByKey()
+                .limitToLast(3)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                if (dataSnapshot.exists()
+                                        && dataSnapshot.child(getString(R.string.field_notification_message)).getValue().equals(getString(R.string.promote_message))
+                                        && dataSnapshot.child("sUid").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        && dataSnapshot.child("pUid").getValue().equals(mphoto.getUi())
+                                        && dataSnapshot.child("pId").getValue().equals(mphoto.getPi())) {
+                                    myRef.child(getString(R.string.dbname_users))
+                                            .child(mphoto.getUi())
+                                            .child(getString(R.string.field_Notifications))
+                                            .child(dataSnapshot.getKey()).removeValue()
+                                            .addOnSuccessListener(aVoid -> Log.d(TAG, "onDataChange: Notification Deleted"))
+                                            .addOnFailureListener(e -> Log.d(TAG, "onDataChange: Notification not Deleted"));
+                                    break;
                                 }
                             }
+                        }
+                    }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
-
-            }
-        });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
-
+                    }
+                });
     }
 
     private void getComments(String photoId, String userId) {
@@ -783,7 +770,6 @@ public class ViewPostActivity extends AppCompatActivity {
 
     }
 
-
     private void promotePost() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
 
@@ -801,81 +787,70 @@ public class ViewPostActivity extends AppCompatActivity {
                 .thumbnail(0.5f)
                 .into(post);
         username.setText(currentUsername);
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomSheetDialog.dismiss();
-            }
-        });
+        cancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
 
-        promote1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                promote.setVisibility(View.GONE);
-                promoted.setVisibility(View.VISIBLE);
+        promote1.setOnClickListener(v -> {
+            promote.setVisibility(View.GONE);
+            promoted.setVisibility(View.VISIBLE);
 
 
-                SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
-                    @Override
-                    public void onTimeReceived(String rawDate) {
-                        // rawDate -> 2019-11-05T17:51:01+0530
+            SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
+                @Override
+                public void onTimeReceived(String rawDate) {
+                    // rawDate -> 2019-11-05T17:51:01+0530
+
+                    @SuppressLint("SimpleDateFormat")
+                    java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+                    Date date = null;
+                    try {
+                        date = formatter.parse(rawDate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    Long timeStart = date.getTime();
+                    Long timeEnd = date.getTime() + 84600000;
 
 
-                        String str_date = rawDate;
-                        java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-                        Date date = null;
-                        try {
-                            date = formatter.parse(str_date);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        Long timeStart = date.getTime();
-                        Long timeEnd = date.getTime() + 84600000;
+                    DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
+
+                    HashMap<String, Object> hashMap = new HashMap<>();
+                    hashMap.put(getString(R.string.field_photo_id), mphoto.getPi());
+                    hashMap.put(getString(R.string.field_user_id), mphoto.getUi());
+                    hashMap.put(getString(R.string.field_image_path), mphoto.getIp());
+                    hashMap.put(getString(R.string.field_story_ID), mphoto.getPi());
+                    hashMap.put(getString(R.string.field_promotion_time_end), String.valueOf(timeEnd));
+                    hashMap.put(getString(R.string.field_promotion_time_start), String.valueOf(timeStart));
+                    hashMap.put(getString(R.string.field_promoter_ID), FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
-                        DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
+                    db1.child(getString(R.string.dbname_promote))
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .child(mphoto.getPi())
+                            .setValue(hashMap);
 
-                        HashMap<String, Object> hashMap = new HashMap<>();
-                        hashMap.put(getString(R.string.field_photo_id), mphoto.getPi());
-                        hashMap.put(getString(R.string.field_user_id), mphoto.getUi());
-                        hashMap.put(getString(R.string.field_image_path), mphoto.getIp());
-                        hashMap.put(getString(R.string.field_story_ID), mphoto.getPi());
-                        hashMap.put(getString(R.string.field_promotion_time_end), String.valueOf(timeEnd));
-                        hashMap.put(getString(R.string.field_promotion_time_start), String.valueOf(timeStart));
-                        hashMap.put(getString(R.string.field_promoter_ID), FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-
-                        db1.child(getString(R.string.dbname_promote))
-                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                .child(mphoto.getPi())
-                                .setValue(hashMap);
-
-                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-                        reference.child(getString(R.string.dbname_user_photos))
-                                .child(mphoto.getUi())
-                                .child(mphoto.getPi())
-                                .child(getString(R.string.field_promotes))
-                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                .setValue("true");
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+                    reference.child(getString(R.string.dbname_user_photos))
+                            .child(mphoto.getUi())
+                            .child(mphoto.getPi())
+                            .child(getString(R.string.field_promotes))
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .setValue("true");
+                    if(!mphoto.getUi().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                         notifyPromote = true;
                         addToHisNotification("" + mphoto.getUi(), mphoto.getPi(), getString(R.string.promote_message));
-
-
-                        bottomSheetDialog.dismiss();
-
-                        Log.e(SNTPClient.TAG, rawDate);
-
                     }
+                    bottomSheetDialog.dismiss();
+                    Log.e(SNTPClient.TAG, rawDate);
 
-                    @Override
-                    public void onError(Exception ex) {
-                        Log.e(SNTPClient.TAG, ex.getMessage());
-                    }
-                });
+                }
+
+                @Override
+                public void onError(Exception ex) {
+                    Log.e(SNTPClient.TAG, ex.getMessage());
+                }
+            });
 
 
-            }
         });
 
 

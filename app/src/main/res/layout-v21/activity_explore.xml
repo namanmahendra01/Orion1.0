@@ -172,6 +172,16 @@
                     app:spanCount="3" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+<!--            <ProgressBar-->
+<!--                android:layout_below="@id/swiperefresh"-->
+<!--                android:id="@+id/progressBar"-->
+<!--                style="?android:attr/progressBarStyleLarge"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_centerHorizontal="true"-->
+<!--                android:indeterminate="true"-->
+<!--                android:visibility="gone" />-->
+
             <!--     This should stay in bottom to be visible on top of others       -->
             <TextView
                 android:layout_alignParentBottom="true"
