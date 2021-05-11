@@ -9,7 +9,7 @@
 </item>
     <item
         android:id="@+id/ic_chat"
-        android:icon="@drawable/ic_chat_black"
+        android:icon="@drawable/ic_msgw"
         android:title="MESSAGES">
 
 
@@ -23,7 +23,7 @@
     </item>
     <item
         android:id="@+id/ic_notification"
-        android:icon="@drawable/ic_bell_black"
+        android:icon="@drawable/ic_noti"
         android:title="NOTIFICATION">
 
     </item>
