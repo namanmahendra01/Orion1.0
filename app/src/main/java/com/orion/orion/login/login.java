@@ -32,7 +32,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.orion.orion.R;
-import com.orion.orion.home.MainActivity;
+import com.orion.orion.contest.contestMainActivity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -83,7 +83,7 @@ public class login extends AppCompatActivity {
         setupFirebaseAuth();
         if (!justRegistered.equals("yes")) {
             if (mAuth.getCurrentUser() != null) {
-                Intent intent = new Intent(login.this, MainActivity.class);
+                Intent intent = new Intent(login.this, contestMainActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -156,7 +156,7 @@ public class login extends AppCompatActivity {
                                 editor.putString("yes", "no");
                                 editor.apply();
                                 progressDialog.dismiss();
-                                Intent intent = new Intent(login.this, MainActivity.class);
+                                Intent intent = new Intent(login.this, contestMainActivity.class);
                                 startActivity(intent);
                             } else {
                                 new AlertDialog.Builder(mContext)

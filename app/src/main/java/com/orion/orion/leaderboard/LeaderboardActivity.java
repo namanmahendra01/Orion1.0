@@ -66,7 +66,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class LeaderboardActivity extends AppCompatActivity implements BottomSheetFilter.BottomSheetListener {
     private static final String TAG = "LeaderboardActivity";
-    private static final int ACTIVITY_NUM = 3;
+    private static final int ACTIVITY_NUM = 2;
     private static final int ANIMATION_DURATION = 500;
     private static final int LEADERBOAD_SIZE = 20;
     private Context mContext;
@@ -163,86 +163,86 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                             Log.d(TAG, "updateLeaderboard: USERID: " + user_id);
                             Log.d(TAG, "updateLeaderboard: posts update");
                             //for posts parameters of leaders according the photos
-                            Query query1 = reference.child(getString(R.string.dbname_user_photos)).child(user_id);
-                            query1.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                    //initializing temp variables for posts
-                                    float all_time = 0;
-                                    float yearly = 0;
-                                    float last_month = 0;
-                                    float this_month = 0;
-                                    float last_week = 0;
-                                    float this_week = 0;
-                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                        long likes = snapshot.child(getString(R.string.field_likes)).getChildrenCount();
-                                        long comments = snapshot.child(getString(R.string.field_comment)).getChildrenCount();
-                                        float rating = (int) (0.5 + likes + 0.2 * comments);
-
-                                        //calculating date related parameters
-                                        String postedTimestamp = (String) snapshot.child(getString(R.string.field_date_createdr)).getValue();
-                                        assert postedTimestamp != null;
-                                        int postedYear = Integer.parseInt(postedTimestamp.substring(0, 4));
-                                        int postedMonth = Integer.parseInt(postedTimestamp.substring(5, 7));
-                                        int postedDate = Integer.parseInt(postedTimestamp.substring(8, 10));
-//                                        String postedTime = postedTimestamp.substring(12, postedTimestamp.length() - 1);
-                                        String postedDateFormat = postedDate + "/" + postedMonth + "/" + postedYear;
-
-                                        //calculating difference of dates in post and current one
-                                        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
-                                        long elapsedDays = 0;
-                                        try {
-                                            Date date1 = simpleDateFormat.parse(postedDateFormat);
-                                            Date date2 = simpleDateFormat.parse(currentDateFormat);
-//                                            Log.d(TAG, "onTimeReceived: " + date1);
-//                                            Log.d(TAG, "onTimeReceived: " + date2);
-                                            assert date1 != null;
-                                            assert date2 != null;
-                                            elapsedDays = (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24);
-//                                            Log.d(TAG, "onDataChange: " + elapsedDays);
-//                                            Log.d(TAG, "onDataChange: " + currentDay);
-                                        } catch (ParseException e) {
-                                            e.printStackTrace();
-                                        }
-
-                                        //all time one
-                                        all_time += rating;
-                                        //yearly one
-                                        if (currentYear == postedYear) {
-                                            yearly += rating;
-                                            //same monthly in same years
-                                            if (currentMonth == postedMonth)
-                                                this_month += rating;
-                                                //previous month in same year
-                                            else if (currentMonth == postedMonth + 1)
-                                                last_month += rating;
-                                        }
-                                        //previous month in different year
-                                        else if ((currentYear - 1) == postedYear && currentMonth == 1 && postedMonth == 12) {
-                                            last_month += rating;
-                                        }
-                                        //calculating weekly ones
-                                        if (elapsedDays > currentDay && elapsedDays <= (currentDay + 7))
-                                            last_week += rating;
-                                            //same week in same year and same month
-                                        else if (elapsedDays <= currentDay)
-                                            this_week += rating;
-                                    }
-                                    Log.d(TAG, "updateLeaderboard: posts " + all_time + "," + yearly + "," + last_month + "," + this_month + "," + last_week + "," + this_week);
-                                    reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_all_time)).child(getString(R.string.field_post)).setValue((int) all_time);
-                                    reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_yearly)).child(getString(R.string.field_post)).setValue((int) yearly);
-                                    reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_month)).child(getString(R.string.field_post)).setValue((int) last_month);
-                                    reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_this_month)).child(getString(R.string.field_post)).setValue((int) this_month);
-                                    reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_week)).child(getString(R.string.field_post)).setValue((int) last_week);
-                                    reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_this_week)).child(getString(R.string.field_post)).setValue((int) this_week);
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                }
-
-                            });
+//                            Query query1 = reference.child(getString(R.string.dbname_user_photos)).child(user_id);
+//                            query1.addListenerForSingleValueEvent(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                                    //initializing temp variables for posts
+//                                    float all_time = 0;
+//                                    float yearly = 0;
+//                                    float last_month = 0;
+//                                    float this_month = 0;
+//                                    float last_week = 0;
+//                                    float this_week = 0;
+//                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                                        long likes = snapshot.child(getString(R.string.field_likes)).getChildrenCount();
+//                                        long comments = snapshot.child(getString(R.string.field_comment)).getChildrenCount();
+//                                        float rating = (int) (0.5 + likes + 0.2 * comments);
+//
+//                                        //calculating date related parameters
+//                                        String postedTimestamp = (String) snapshot.child(getString(R.string.field_date_createdr)).getValue();
+//                                        assert postedTimestamp != null;
+//                                        int postedYear = Integer.parseInt(postedTimestamp.substring(0, 4));
+//                                        int postedMonth = Integer.parseInt(postedTimestamp.substring(5, 7));
+//                                        int postedDate = Integer.parseInt(postedTimestamp.substring(8, 10));
+////                                        String postedTime = postedTimestamp.substring(12, postedTimestamp.length() - 1);
+//                                        String postedDateFormat = postedDate + "/" + postedMonth + "/" + postedYear;
+//
+//                                        //calculating difference of dates in post and current one
+//                                        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
+//                                        long elapsedDays = 0;
+//                                        try {
+//                                            Date date1 = simpleDateFormat.parse(postedDateFormat);
+//                                            Date date2 = simpleDateFormat.parse(currentDateFormat);
+////                                            Log.d(TAG, "onTimeReceived: " + date1);
+////                                            Log.d(TAG, "onTimeReceived: " + date2);
+//                                            assert date1 != null;
+//                                            assert date2 != null;
+//                                            elapsedDays = (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24);
+////                                            Log.d(TAG, "onDataChange: " + elapsedDays);
+////                                            Log.d(TAG, "onDataChange: " + currentDay);
+//                                        } catch (ParseException e) {
+//                                            e.printStackTrace();
+//                                        }
+//
+//                                        //all time one
+//                                        all_time += rating;
+//                                        //yearly one
+//                                        if (currentYear == postedYear) {
+//                                            yearly += rating;
+//                                            //same monthly in same years
+//                                            if (currentMonth == postedMonth)
+//                                                this_month += rating;
+//                                                //previous month in same year
+//                                            else if (currentMonth == postedMonth + 1)
+//                                                last_month += rating;
+//                                        }
+//                                        //previous month in different year
+//                                        else if ((currentYear - 1) == postedYear && currentMonth == 1 && postedMonth == 12) {
+//                                            last_month += rating;
+//                                        }
+//                                        //calculating weekly ones
+//                                        if (elapsedDays > currentDay && elapsedDays <= (currentDay + 7))
+//                                            last_week += rating;
+//                                            //same week in same year and same month
+//                                        else if (elapsedDays <= currentDay)
+//                                            this_week += rating;
+//                                    }
+//                                    Log.d(TAG, "updateLeaderboard: posts " + all_time + "," + yearly + "," + last_month + "," + this_month + "," + last_week + "," + this_week);
+//                                    reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_all_time)).child(getString(R.string.field_post)).setValue((int) all_time);
+//                                    reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_yearly)).child(getString(R.string.field_post)).setValue((int) yearly);
+//                                    reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_month)).child(getString(R.string.field_post)).setValue((int) last_month);
+//                                    reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_this_month)).child(getString(R.string.field_post)).setValue((int) this_month);
+//                                    reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_week)).child(getString(R.string.field_post)).setValue((int) last_week);
+//                                    reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_this_week)).child(getString(R.string.field_post)).setValue((int) this_week);
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(@NonNull DatabaseError databaseError) {
+//                                }
+//
+//                            });
 
                             Log.d(TAG, "updateLeaderboard: followers update");
                             if (changedFollowers
@@ -843,105 +843,107 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //user details
-                int userRating;
+                if (dataSnapshot.exists()) {
+                    //user details
+                    int userRating;
 //                if (finalTypeParameter.equals(""))
-                userRating = (int) (long) dataSnapshot.child(finalTime).child(getString(R.string.field_post)).getValue() + (int) (long) dataSnapshot.child(finalTime).child(getString(R.string.field_followers)).getValue() + (int) (long) dataSnapshot.child(finalTime).child(getString(R.string.field_contest)).getValue();
+                    userRating = (int) (long) dataSnapshot.child(finalTime).child(getString(R.string.field_followers)).getValue() + (int) (long) dataSnapshot.child(finalTime).child(getString(R.string.field_contest)).getValue();
 //                else
 //                    userRating = (int) (long) dataSnapshot.child(finalTime).child(finalTypeParameter).getValue();
-                int finalUserRating = userRating;
+                    int finalUserRating = userRating;
 //                String userDomain = (String) dataSnapshot.child(getString(R.string.field_domain)).getValue();
-                String userUsername = (String) dataSnapshot.child(getString(R.string.field_username)).getValue();
+                    String userUsername = (String) dataSnapshot.child(getString(R.string.field_username)).getValue();
 
 
-                //query for leaderboard database
-                Query query1 = reference.child(getString(R.string.dbname_leaderboard));
-                query1.addListenerForSingleValueEvent(new ValueEventListener() {
-                    int rank = 1;
+                    //query for leaderboard database
+                    Query query1 = reference.child(getString(R.string.dbname_leaderboard));
+                    query1.addListenerForSingleValueEvent(new ValueEventListener() {
+                        int rank = 1;
 
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                            //getting user ids, username and profile photos
-                            String user_id = singleSnapshot.getKey();
-                            String username = (String) singleSnapshot.child(getString(R.string.field_username)).getValue();
-                            String profileUrl = (String) singleSnapshot.child(getString(R.string.profile_photo)).getValue();
-                            String domain = (String) singleSnapshot.child(getString(R.string.field_domain)).getValue();
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                                //getting user ids, username and profile photos
+                                String user_id = singleSnapshot.getKey();
+                                String username = (String) singleSnapshot.child(getString(R.string.field_username)).getValue();
+                                String profileUrl = (String) singleSnapshot.child(getString(R.string.profile_photo)).getValue();
+                                String domain = (String) singleSnapshot.child(getString(R.string.field_domain)).getValue();
 
-                            if(user_id==null || username == null || profileUrl == null || domain == null) continue;
-                            Log.d(TAG, "onDataChange: domain" + domain);
-                            if (domainParameter.equals("") || domain.equals(domainParameter)) {
-                                //calculating total rating and type rating for filter 1 and filter 3
-                                int rating;
-                                assert user_id != null;
+                                if (user_id == null || username == null || profileUrl == null || domain == null)
+                                    continue;
+                                Log.d(TAG, "onDataChange: domain" + domain);
+                                if (domainParameter.equals("") || domain.equals(domainParameter)) {
+                                    //calculating total rating and type rating for filter 1 and filter 3
+                                    int rating;
+                                    assert user_id != null;
 //                                if (finalTypeParameter.equals("")) {
-                                rating = (int) (long) dataSnapshot.child(user_id)
-                                        .child(finalTime)
-                                        .child(getString(R.string.field_post)).getValue() + (int) (long) dataSnapshot.child(user_id)
-                                        .child(finalTime)
-                                        .child(getString(R.string.field_followers)).getValue() + (int) (long) dataSnapshot.child(user_id).child(finalTime).child(getString(R.string.field_contest)).getValue();
+                                    rating = (int) (long) dataSnapshot.child(user_id).child(finalTime).child(getString(R.string.field_followers)).getValue() + (int) (long) dataSnapshot.child(user_id).child(finalTime).child(getString(R.string.field_contest)).getValue();
 //                                Log.d(TAG, "onDataChange: user_id"+user_id);
 //                                Log.d(TAG, "onDataChange: "+dataSnapshot.child(user_id));
 //                                } else
 //                                    rating = (int) (long) dataSnapshot.child(user_id).child(finalTime).child(finalTypeParameter).getValue();
-                                int finalRating = rating;
+                                    int finalRating = rating;
 
 
-                                //calculating location wise rating for filter 2 by getting last known location
-                                if (!finalLocationParameter.equals("")) {
-                                    Query query = reference.child(getString(R.string.dbname_leaderboard)).child(currentUser).child(getString(R.string.field_last_known_location)).child(finalLocationParameter);
-                                    query.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    //calculating location wise rating for filter 2 by getting last known location
+                                    if (!finalLocationParameter.equals("")) {
+                                        Query query = reference.child(getString(R.string.dbname_leaderboard)).child(currentUser).child(getString(R.string.field_last_known_location)).child(finalLocationParameter);
+                                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                            String userLocation = (String) dataSnapshot.getValue();
-                                            String testLocation = (String) singleSnapshot.child(getString(R.string.field_last_known_location)).child(finalLocationParameter).getValue();
-                                            assert testLocation != null;
-                                            if (testLocation.equals(userLocation) && !user_id.equals(getString(R.string.orion_team_user_id)))
-                                                rank = addToLeaderboard(rank, finalUserRating, username, finalRating, profileUrl, user_id);
+                                                String userLocation = (String) dataSnapshot.getValue();
+                                                String testLocation = (String) singleSnapshot.child(getString(R.string.field_last_known_location)).child(finalLocationParameter).getValue();
+                                                assert testLocation != null;
+                                                if (testLocation.equals(userLocation) && !user_id.equals(getString(R.string.orion_team_user_id)))
+                                                    rank = addToLeaderboard(rank, finalUserRating, username, finalRating, profileUrl, user_id);
 
-                                            mRecyclerView.setVisibility(View.VISIBLE);
-                                            mAdapter.notifyDataSetChanged();
-                                            YoYo.with(Techniques.Landing).duration(ANIMATION_DURATION).playOn(mRecyclerView);
-                                            String rankText = "#" + rank;
+                                                mRecyclerView.setVisibility(View.VISIBLE);
+                                                mAdapter.notifyDataSetChanged();
+                                                YoYo.with(Techniques.Landing).duration(ANIMATION_DURATION).playOn(mRecyclerView);
+                                                String rankText = "#" + rank;
 //                                            String ratingText = finalUserRating + "pts";
-                                            userItemUsername.setText(userUsername);
-                                            userItemRank.setText(rankText);
-                                            assert userLocation != null;
-                                            if (!userLocation.equals(""))
-                                                sortedByLocation.setText(userLocation);
-                                            sortedByLocation.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-                                            YoYo.with(Techniques.Tada).duration(ANIMATION_DURATION).playOn(sortedByLocation);
-                                            swipeRefreshLayout.setRefreshing(false);
-                                        }
+                                                userItemUsername.setText(userUsername);
+                                                userItemRank.setText(rankText);
+                                                assert userLocation != null;
+                                                if (!userLocation.equals(""))
+                                                    sortedByLocation.setText(userLocation);
+                                                sortedByLocation.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+                                                YoYo.with(Techniques.Tada).duration(ANIMATION_DURATION).playOn(sortedByLocation);
+                                                swipeRefreshLayout.setRefreshing(false);
+                                            }
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                                        }
-                                    });
-                                }
-                                //for rest cases where location will not be a parameter
-                                else if (!user_id.equals(getString(R.string.orion_team_user_id)))
-                                    rank = addToLeaderboard(rank, finalUserRating, username, finalRating, profileUrl, user_id);
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            }
+                                        });
+                                    }
+                                    //for rest cases where location will not be a parameter
+                                    else if (!user_id.equals(getString(R.string.orion_team_user_id)))
+                                        rank = addToLeaderboard(rank, finalUserRating, username, finalRating, profileUrl, user_id);
 
-                                mRecyclerView.setVisibility(View.VISIBLE);
-                                mAdapter.notifyDataSetChanged();
-                                YoYo.with(Techniques.Landing).duration(ANIMATION_DURATION).playOn(mRecyclerView);
-                                String rankText = "#" + rank;
+                                    mRecyclerView.setVisibility(View.VISIBLE);
+                                    mAdapter.notifyDataSetChanged();
+                                    YoYo.with(Techniques.Landing).duration(ANIMATION_DURATION).playOn(mRecyclerView);
+                                    String rankText = "#" + rank;
 //                                String ratingText = finalUserRating + "pts";
-                                userItemUsername.setText(userUsername);
-                                userItemRank.setText(rankText);
-                                swipeRefreshLayout.setRefreshing(false);
+                                    userItemUsername.setText(userUsername);
+                                    userItemRank.setText(rankText);
+                                    swipeRefreshLayout.setRefreshing(false);
+                                }
                             }
+                            swipeRefreshLayout.setRefreshing(false);
                         }
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
+                } else {
+                    Toast.makeText(mContext, "Waiting for leaderboard to update", Toast.LENGTH_LONG);
+                    updateLeaderboard();
+                }
             }
 
             @Override

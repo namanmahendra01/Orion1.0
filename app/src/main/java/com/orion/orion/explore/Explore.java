@@ -83,6 +83,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Explore extends AppCompatActivity implements AdapterGridImageExplore.OnPostItemClickListner {
@@ -126,7 +127,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
     private ArrayList<Photo> paginatedPhotos;
     private boolean shuffled = false;
     private ImageView cross, up, down;
-//    private ProgressBar loading;
+    //    private ProgressBar loading;
     //firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -685,7 +686,6 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                             + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).getValue()
                             + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
                     String user_id = singleSnapshot.getKey();
-                    assert domain != null;
                     if (field.equals(getString(R.string.field_overall))) {
                         //creating top SET_SIZE_DOMAIN list using insertion sort algorithm
                         if (mList.size() == 0) mList.add(new TopUsers(user_id, rating));
@@ -707,7 +707,7 @@ public class Explore extends AppCompatActivity implements AdapterGridImageExplor
                             }
                             if (mList.size() == SET_SIZE_DOMAIN + 1) mList.remove(SET_SIZE_DOMAIN);
                         }
-                    } else if (domain.equals(field)) {
+                    } else if (domain != null && domain.equals(field)) {
                         //creating top SET_SIZE_DOMAIN list using insertion sort algorithm
                         if (mList.size() == 0) mList.add(new TopUsers(user_id, rating));
                         else {

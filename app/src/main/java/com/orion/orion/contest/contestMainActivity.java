@@ -28,7 +28,7 @@ import com.orion.orion.util.BottomNaavigationViewHelper;
 
 public class contestMainActivity extends AppCompatActivity {
     private static final String TAG = "contest";
-    private static final int ACTIVITY_NUM = 2;
+    private static final int ACTIVITY_NUM = 0;
     private static final int CREATE_CONTEST = 1;
     public static final String TIME_SERVER = "time-a.nist.gov";
     private Context mContext;

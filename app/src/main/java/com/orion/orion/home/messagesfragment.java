@@ -362,8 +362,6 @@ public class messagesfragment extends Fragment {
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-
-
     }
 
     @Override
