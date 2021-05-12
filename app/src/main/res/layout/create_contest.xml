@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/root"
     android:background="@color/white">
 
     <RelativeLayout
@@ -50,7 +51,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/currentActive"
-        android:layout_marginBottom="70dp"
         android:background="@color/white"
         android:visibility="visible">
 
@@ -246,6 +246,8 @@
 
                 android:text="Select your Domain"
                 android:textColor="@color/black"
+                android:layout_marginBottom="50dp"
+
                 android:textSize="18sp" />
 
         </LinearLayout>
@@ -256,7 +258,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/currentActive"
-        android:layout_marginBottom="70dp"
         android:background="@color/white"
         android:visibility="gone">
 
@@ -751,7 +752,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="start|center"
-                    android:text="Limited no.\nof participants: "
+                    android:text="Limited no.\nof participants:"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
@@ -956,6 +957,8 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginEnd="25dp"
+                android:visibility="gone"
+
                 android:layout_marginRight="25dp"
                 android:gravity="center|start"
                 android:text="Rules:"
@@ -971,6 +974,7 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
+                android:visibility="gone"
                 android:layout_marginEnd="15dp"
                 android:layout_marginRight="15dp"
                 android:background="@drawable/circular_corner_rectangle_white_border"
@@ -990,16 +994,16 @@
         android:id="@+id/previousButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="15dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/circular_button"
         android:backgroundTint="#E5E6EB"
         android:elevation="5dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
+
         android:text="Previous"
+        android:padding="10dp"
         android:textColor="@color/white"
         android:textSize="15sp" />
 
@@ -1008,14 +1012,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_margin="5dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="10dp"
         android:background="@drawable/circular_button"
         android:backgroundTint="@color/colorPrimary"
         android:elevation="5dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
+
+        android:layout_marginBottom="10dp"
         android:text="NEXT"
         android:textColor="@color/white"
         android:textSize="15sp" />

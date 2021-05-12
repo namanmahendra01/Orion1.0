@@ -1165,9 +1165,6 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                     fees = mEntryFees.getText().toString();
                 extraRule = extraRules.getText().toString();
 
-                Log.d(TAG, "onCreate: " + prizeFirst);
-                Log.d(TAG, "onCreate: " + prizeSecond);
-                Log.d(TAG, "onCreate: " + prizeThird);
                 if (toggleLimitedNoOfParticipants.isChecked() && noOfParticipants.equals("")) {
                     YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mLimitedNoOfParticipants);
                     mLimitedNoOfParticipants.setError("Please enter a number");
@@ -1176,7 +1173,10 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                     YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mEntryFees);
                     mEntryFees.setError("Please enter a number");
                     mEntryFees.requestFocus();
-                } else if (togglePrize.isChecked() && (prizeFirst.equals("") || prizeSecond.equals("") || prizeThird.equals("") || prizeFirst.equals("0") || prizeSecond.equals("0") || prizeThird.equals("0") || Integer.parseInt(prizeSecond) >= Integer.parseInt(prizeFirst) || Integer.parseInt(prizeThird) >= Integer.parseInt(prizeSecond))) {
+                } else if (togglePrize.isChecked() && (prizeFirst.equals("") || prizeSecond.equals("")
+                        || prizeThird.equals("") || prizeFirst.equals("0") || prizeSecond.equals("0")
+                        || prizeThird.equals("0") || Integer.parseInt(prizeSecond) >= Integer.parseInt(prizeFirst) ||
+                        Integer.parseInt(prizeThird) >= Integer.parseInt(prizeSecond)||(Integer.parseInt(prizeThird)<=Integer.parseInt(fees)))) {
                     if (prizeFirst.equals("") || prizeFirst.equals("0")) {
                         YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(firstPrize);
                         firstPrize.setError("Please enter some prize");
@@ -1207,6 +1207,11 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                         thirdPrize.setError("3rd prize cannot be more than 2nd");
                         secondPrize.requestFocus();
                         thirdPrize.requestFocus();
+                    }
+                    if ((Integer.parseInt(prizeThird)<=Integer.parseInt(fees))){
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mEntryFees);
+                        mEntryFees.setError("Entry fee should be more than each prize money");
+                        mEntryFees.requestFocus();
                     }
                 } else
                     submit();

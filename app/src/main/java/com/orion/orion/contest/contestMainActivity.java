@@ -69,7 +69,7 @@ public class contestMainActivity extends AppCompatActivity {
             tablayout.getTabAt(0).setText("create");
             tablayout.getTabAt(1).setText("upcoming");
             tablayout.getTabAt(2).setText("joined");
-        }, 10);
+        }, 1000);
 
 
     }

@@ -137,7 +137,6 @@ public class JoiningForm extends AppCompatActivity {
                         openfor = createForm.getOf();
                         type = createForm.getFt();
 
-                        Log.d(TAG, "onDataChange: " + type + "  " + createForm);
                         if (type.equals("Image")) {
                             imageLinear.setVisibility(View.VISIBLE);
                             submissionIv.setVisibility(View.VISIBLE);
@@ -196,7 +195,6 @@ public class JoiningForm extends AppCompatActivity {
                                                 submitBtn.setEnabled(false);
                                                 warn.setVisibility(View.VISIBLE);
                                             } else {
-                                                submitBtn.setEnabled(true);
 
                                             }
                                         }
@@ -253,6 +251,10 @@ public class JoiningForm extends AppCompatActivity {
 
 
         });
+        if (isJuryOrHost.equals("true")) {
+            decline.setVisibility(View.VISIBLE);
+            submitBtn.setEnabled(false);
+        }
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -389,9 +391,7 @@ public class JoiningForm extends AppCompatActivity {
         });
 
 
-        if (isJuryOrHost.equals("true")) {
-            decline.setVisibility(View.VISIBLE);
-        }
+
     }
 
     public boolean checkValidity() {
