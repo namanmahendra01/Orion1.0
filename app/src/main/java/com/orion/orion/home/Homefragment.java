@@ -1060,7 +1060,7 @@ public class Homefragment extends Fragment implements AdapterMainfeed.ReleasePla
                             int t = 0;
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-                                if ((snapshot.child(getString(R.string.field_view)).child(FirebaseAuth.getInstance()
+                                if ((snapshot.child(getContext().getString(R.string.field_view)).child(FirebaseAuth.getInstance()
                                         .getCurrentUser().getUid()).exists())) {
                                     t++;
                                 }

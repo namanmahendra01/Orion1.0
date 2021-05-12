@@ -53,8 +53,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class
 Chat_Activity extends AppCompatActivity {
     private static final String TAG = "Chat_Activity";
-
-
+    
     RecyclerView recyclerView;
     ImageView mprofileImage;
     TextView mUsername, accept, decline, sendReqBtn, cancelReqBtn;

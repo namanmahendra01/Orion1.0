@@ -53,10 +53,8 @@ public class login extends AppCompatActivity {
     private EditText mEmail;
     private EditText mPassword;
     private Button btnLogin;
-    private TextView linkSignup;
+    private TextView linkSignup,flg;
     private TextView forgotPassword;
-    private final String cameFromSignup = "2";
-    Intent intent;
     String justRegistered;
 
     //    SP
@@ -77,8 +75,6 @@ public class login extends AppCompatActivity {
         gson = new Gson();
         justRegistered = sp.getString("yes", "");
 
-        Log.d(TAG, "onCreate: 333" + justRegistered);
-
         initializeWidgets();
         setupFirebaseAuth();
         if (!justRegistered.equals("yes")) {
@@ -87,6 +83,8 @@ public class login extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
+        }else{
+            flg.setVisibility(View.VISIBLE);
         }
         init();
 
@@ -97,6 +95,8 @@ public class login extends AppCompatActivity {
         Log.d(TAG, "initializeWidgets: ");
         appIcon = findViewById(R.id.appIcon);
         rootView = findViewById(R.id.rootView);
+        flg = findViewById(R.id.flg);
+
         afterAnimationView = findViewById(R.id.afterAnimationView);
         mProgressBar = findViewById(R.id.loginrequestloadingprogressbar);
         mProgressBar.setVisibility(View.GONE);

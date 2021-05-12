@@ -180,67 +180,56 @@ public class fragment_contest_participants extends Fragment {
     }
 
     private void checkUpdate() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        reference.child(getString(R.string.dbname_participantList))
-                .child(Conteskey)
-                .orderByKey()
-                .limitToLast(1)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                                if (participantLists.get(0).getJi().equals(snapshot1.getKey())) {
-                                    displayParticipant();
-                                } else updateList();
-                            }
-                        } else updateList();
-                    }
+        DatabaseReference reference = FirebaseDatabase.getInstance()
+                .getReference((getString(R.string.dbname_participantList))).child(Conteskey);
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    if (participantLists.size()!=snapshot.getChildrenCount()){
+                        fetchParticipants();
+                    }else{
+                        reference.orderByKey()
+                                .limitToLast(1)
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()) {
+                                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                                if (participantLists.get(0).getJi().equals(snapshot1.getKey())) {
+                                                    displayParticipant();
+                                                } else                         fetchParticipants();
+
+                                            }
+                                        } else                        fetchParticipants();
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                    }
+                                });
                     }
-                });
+                }else{
+                    fetchParticipants();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
     }
 
-    private void updateList() {
-        Collections.reverse(participantLists);
-        DatabaseReference refer = FirebaseDatabase.getInstance().getReference();
-        refer.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child(getString(R.string.dbname_participantList))
-                .child(Conteskey)
-                .orderByKey()
-                .startAt(participantLists.get(participantLists.size() - 1).getJi())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            int x = 0;
-                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                                x++;
-                                ParticipantList participantList = snapshot1.getValue(ParticipantList.class);
-                                participantLists.add(participantList);
-                                if (x == snapshot.getChildrenCount()) {
-                                    Collections.reverse(participantLists);
-                                    //    Add newly Created ArrayList to Shared Preferences
-                                    SharedPreferences.Editor editor = sp.edit();
-                                    String json = gson.toJson(participantLists);
-                                    editor.putString(Conteskey, json);
-                                    editor.apply();
-                                    displayParticipant();
-                                }
-                            }
-                        } else fetchParticipants();
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-    }
 
     private void fetchParticipants() {
+        participantLists.clear();
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(getString(R.string.dbname_participantList))
                 .child(Conteskey)
@@ -265,7 +254,6 @@ public class fragment_contest_participants extends Fragment {
                             }
 
                         } else {
-                            participantLists.clear();
                             SharedPreferences.Editor editor = sp.edit();
                             String json = gson.toJson(participantLists);
                             editor.putString(Conteskey, json);

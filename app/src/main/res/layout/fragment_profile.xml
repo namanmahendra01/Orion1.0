@@ -60,6 +60,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
+                            android:visibility="gone"
                             android:orientation="vertical">
 
                             <TextView
@@ -368,6 +369,7 @@
                 android:layout_marginEnd="20dp"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical"
+                android:paddingBottom="60dp"
                 android:visibility="visible"
                 android:weightSum="100">
 
@@ -426,6 +428,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:layout_marginTop="20dp"
+                    android:visibility="gone"
                     android:background="@drawable/circular_button"
                     android:backgroundTint="@color/black"
                     android:elevation="5dp"
@@ -437,6 +440,7 @@
                         android:layout_height="wrap_content"
                         android:padding="5dp"
                         android:paddingRight="15dp"
+                        android:visibility="gone"
                         android:text="Share Skill +"
                         android:textColor="@color/colorPrimary"
                         android:textSize="18sp" />
@@ -632,6 +636,7 @@
                 android:layout_marginBottom="70dp"
                 android:background="@color/white"
                 android:gravity="center"
+                android:visibility="gone"
                 android:horizontalSpacing="1dp"
                 android:stretchMode="columnWidth"
                 android:verticalSpacing="1dp"

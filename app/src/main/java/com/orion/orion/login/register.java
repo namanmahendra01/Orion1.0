@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,7 +59,7 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
     private FirebaseAuth.AuthStateListener mAuthListener;
     private Context mContext;
     //widgets
-    private RelativeLayout rootView;
+    private ScrollView rootView;
     private ProgressBar mProgressBar;
     private EditText mUsername;
     private EditText mEmail;

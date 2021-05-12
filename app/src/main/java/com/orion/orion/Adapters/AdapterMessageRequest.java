@@ -84,17 +84,15 @@ public class AdapterMessageRequest extends RecyclerView.Adapter<AdapterMessageRe
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()) {
-                            users user = dataSnapshot.getValue(users.class);
-                            nameTv.setText(user.getU());
-                            Glide.with(context.getApplicationContext().getApplicationContext())
-                                    .load(user.getPp())
-                                    .placeholder(R.drawable.load)
-                                    .error(R.drawable.default_image2)
-                                    .placeholder(R.drawable.load)
-                                    .thumbnail(0.5f)
-                                    .into(profileTv);
-                        }
+                        users user = dataSnapshot.getValue(users.class);
+                        nameTv.setText(user.getU());
+                        Glide.with(context.getApplicationContext().getApplicationContext())
+                                .load(user.getPp())
+                                .placeholder(R.drawable.load)
+                                .error(R.drawable.default_image2)
+                                .placeholder(R.drawable.load)
+                                .thumbnail(0.5f)
+                                .into(profileTv);
                     }
 
                     @Override

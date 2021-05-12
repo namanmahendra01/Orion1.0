@@ -41,8 +41,6 @@
                 android:textSize="18sp" />
 
 
-
-
             <ImageView
                 android:id="@+id/cross"
                 android:layout_width="22dp"

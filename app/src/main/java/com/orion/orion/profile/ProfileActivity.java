@@ -189,7 +189,6 @@ public class ProfileActivity extends AppCompatActivity {
         gridRv.setHasFixedSize(true);
         GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 3);
         gridRv.setLayoutManager(linearLayoutManager);
-        gridRv.setDrawingCacheEnabled(true);
         gridRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
         linearLayoutManager.setItemPrefetchEnabled(true);
         linearLayoutManager.setInitialPrefetchItemCount(20);
@@ -586,7 +585,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void checkUpdate() {
-        noPost.setVisibility(View.GONE);
+//        noPost.setVisibility(View.GONE);
 
         Log.d(TAG, "checkUpdate: started");
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -609,7 +608,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     if (imgURLsList != null && imgURLsList.size() != 0) {
                                         displayPhotos();
                                     } else {
-                                        noPost.setVisibility(View.VISIBLE);
+//                                        noPost.setVisibility(View.VISIBLE);
                                     }
                                 } else {
                                     SetupGridView();
@@ -799,7 +798,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void SetupGridView() {
-        noPost.setVisibility(View.GONE);
+//        noPost.setVisibility(View.GONE);
 
         final ArrayList<Photo> photos = new ArrayList<>();
         imgURLsList = new ArrayList<>();
@@ -851,7 +850,7 @@ public class ProfileActivity extends AppCompatActivity {
                 if (imgURLsList != null && imgURLsList.size() != 0) {
                     displayPhotos();
                 } else {
-                    noPost.setVisibility(View.VISIBLE);
+//                    noPost.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -991,7 +990,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void displayPhotos() {
-        noPost.setVisibility(View.GONE);
+//        noPost.setVisibility(View.GONE);
         Log.d(TAG, "display first 10 photo");
         paginatedimgURLsList = new ArrayList<>();
         if (imgURLsList != null && imgURLsList.size() != 0) {
@@ -1020,7 +1019,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
         } else {
-            noPost.setVisibility(View.VISIBLE);
+//            noPost.setVisibility(View.VISIBLE);
 //            bottomProgress.setVisibility(View.GONE);
 
         }
@@ -1084,4 +1083,5 @@ public class ProfileActivity extends AppCompatActivity {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
+
 }

@@ -103,7 +103,6 @@ public class fragment_marks_and_votes extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         juryMarks juryMarks = dataSnapshot.getValue(juryMarks.class);
-                        Log.d(TAG, "onDataChange: kkk" + juryMarks.toString());
                         TableRow row1 = (TableRow) juryTable.getChildAt(1);
                         TableRow row2 = (TableRow) juryTable.getChildAt(2);
                         TableRow row3 = (TableRow) juryTable.getChildAt(3);
