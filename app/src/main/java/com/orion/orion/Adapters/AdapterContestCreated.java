@@ -3,6 +3,7 @@ package com.orion.orion.Adapters;
 import android.app.AlertDialog;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -99,15 +100,48 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
                         clipboard.setPrimaryClip(clip);
                     }
                 } else if (item.getItemId() == R.id.ic_house1) {
-                    String message =
-                            "https://play.google.com/store/apps/details?id=" + mContext.getPackageName() +
-                                    "\nDownload ORION to Participate and Vote in contests or share you skill."
-                                    + "\nEnter Contest key( *" + key + "* )in Contest Search to vote for this contest";
-                    Intent share = new Intent(Intent.ACTION_SEND);
-                    share.setType("text/plain");
-                    share.putExtra(Intent.EXTRA_TEXT, message);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("Share");
+                    builder.setMessage(R.string.type_of_share);
 
-                    mContext.startActivity(Intent.createChooser(share, "Select"));
+//                set buttons
+                    builder.setPositiveButton("Ask for Vote", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String message = "Vote for me and help me to win this contest." +
+                                    "\nTo Vote:" +
+                                    "\n1) Download Orion:" +"https://play.google.com/store/apps/details?id=" + mContext.getPackageName()+
+                                    "\n3) Enter contest key in contest search: "+ key +
+                                    "\n4) Select contest and then Select Vote"+
+                                    "\n5) Select submission you want to vote for."+
+                                    "\n6) Vote";
+
+                            Intent share = new Intent(Intent.ACTION_SEND);
+                            share.setType("text/plain");
+                            share.putExtra(Intent.EXTRA_TEXT, message);
+                            mContext.startActivity(Intent.createChooser(share, "Select"));
+
+                        }
+                    });
+                    builder.setNegativeButton("Ask for Participation", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String message = "Participate in this exciting contest." +
+                                    "\nTo Participate:" +
+                                    "\n1) Download Orion:" +"https://play.google.com/store/apps/details?id=" + mContext.getPackageName()+
+                                    "\n3) Enter contest key in contest search: "+  key+
+                                    "\n4) Select contest and then Select Participate"+
+                                    "\n5) Fill Submission Form."+
+                                    "\n6) Click Submit"+
+                                    "\n Compete with the best!";
+
+                            Intent share = new Intent(Intent.ACTION_SEND);
+                            share.setType("text/plain");
+                            share.putExtra(Intent.EXTRA_TEXT, message);
+                            mContext.startActivity(Intent.createChooser(share, "Select"));
+                        }
+                    });
+                    builder.create().show();
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setTitle("Report");

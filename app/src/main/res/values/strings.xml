@@ -178,6 +178,7 @@
     <string name="promote_string">Promoted</string>
     <string name="chat_message">sent you a message.</string>
     <string name="message_string">Message</string>
+    <string name="type_of_share">Select purpose you want to share for-</string>
 
 
     <string-array name="entryfee2">
