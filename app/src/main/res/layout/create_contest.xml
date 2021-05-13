@@ -726,7 +726,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/currentActive"
         android:background="@color/white"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -804,6 +804,7 @@
                 android:background="@drawable/circular_corner_rectangle_white_border"
                 android:backgroundTint="@color/white"
                 android:elevation="10dp"
+                android:layout_marginBottom="50dp"
                 android:orientation="vertical"
                 android:padding="10dp">
 
