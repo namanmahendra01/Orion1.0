@@ -1,6 +1,5 @@
 package com.orion.orion.contest;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,8 +34,12 @@ public class contestMainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser mUser;
-
+<<<<<<< Updated upstream
+    private TabLayout tablayout;
+=======
+>>>>>>> Stashed changes
     private ViewPager mViewPager;
+    private TabLayout tablayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,12 +47,16 @@ public class contestMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contest);
         Log.d(TAG, "onCreate: started.");
         mContext = contestMainActivity.this;
-        mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
+        mViewPager = findViewById(R.id.viewpager_container);
+<<<<<<< Updated upstream
+=======
+        tablayout = findViewById(R.id.tabs);
+>>>>>>> Stashed changes
         setupBottomNavigationView();
+        setupViewPager();
         setupFirebaseAuth();
         checkCurrentuser(mAuth.getCurrentUser());
         hideSoftKeyboard();
-        setupViewPager();
     }
 
     //    for adding 3 tabs -media,home,message
@@ -58,27 +65,26 @@ public class contestMainActivity extends AppCompatActivity {
         adapter.addFragment(new fragment_createContest());
         adapter.addFragment(new fragment_upcomingContest());
         adapter.addFragment(new fragment_joinedContest());
-
-
-        mViewPager.postDelayed((Runnable) () -> {
+<<<<<<< Updated upstream
+        mViewPager.postDelayed(() -> {
             mViewPager.setAdapter(adapter);
-            TabLayout tablayout = (TabLayout) findViewById(R.id.tabs);
+            tablayout = findViewById(R.id.tabs);
+=======
+        mViewPager.setOffscreenPageLimit(3);
+        mViewPager.postDelayed(() -> {
+            mViewPager.setAdapter(adapter);
+>>>>>>> Stashed changes
             tablayout.setupWithViewPager(mViewPager);
             mViewPager.setCurrentItem(CREATE_CONTEST);
-//        for giving icon to them
             tablayout.getTabAt(0).setText("create");
             tablayout.getTabAt(1).setText("upcoming");
             tablayout.getTabAt(2).setText("joined");
-        }, 1000);
-
-
+        }, 1);
     }
-
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
     }
 
     private void hideSoftKeyboard() {
@@ -90,14 +96,12 @@ public class contestMainActivity extends AppCompatActivity {
 
     private void setupBottomNavigationView() {
         Log.d(TAG, " setupBottomNavigationView:setting up BottomNavigationView");
-        BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.BottomNavViewBar);
+        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.BottomNavViewBar);
         BottomNaavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         BottomNaavigationViewHelper.enableNavigation(contestMainActivity.this, this, bottomNavigationViewEx);
-
         Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);
-
     }
 
     private void checkCurrentuser(FirebaseUser user) {
@@ -106,10 +110,7 @@ public class contestMainActivity extends AppCompatActivity {
             Intent intent = new Intent(contestMainActivity.this, login.class);
             startActivity(intent);
         }
-
-
     }
-
 
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
