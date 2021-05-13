@@ -40,16 +40,22 @@ public class activity_view_media extends AppCompatActivity {
     private boolean voted = false;
     private String joiningKey = "";
     private String contestKey = "";
-
+    SharedPreferences sp;
+    SharedPreferences.Editor editor;
+    RelativeLayout relativeLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_media);
 
+         sp = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+         editor=sp.edit();
+
+
         ImageView mediaIv = findViewById(R.id.mediaIv);
         voteNo = findViewById(R.id.noVote);
         voteYes = findViewById(R.id.yesVote);
-        RelativeLayout relativeLayout = findViewById(R.id.relLayout2);
+        relativeLayout = findViewById(R.id.relLayout2);
         ImageView progress = findViewById(R.id.progress);
 
         Intent i = getIntent();
@@ -185,6 +191,22 @@ public class activity_view_media extends AppCompatActivity {
                         .show();
             } else Log.d(TAG, "onAuthStateChanged: signed_in:" + mUser.getUid());
         };
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (relativeLayout.getVisibility()==View.VISIBLE){
+        if (voteNo.getVisibility() == View.VISIBLE) {
+            editor.putString("backColor", "White");
+            editor.apply();
+
+        }
+        if (voteYes.getVisibility() == View.VISIBLE) {
+            editor.putString("backColor", "Yellow");
+            editor.apply();
+        }
+        }
     }
 
     @Override

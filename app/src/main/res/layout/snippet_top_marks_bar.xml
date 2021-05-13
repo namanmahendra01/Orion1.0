@@ -3,7 +3,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@drawable/white_border"
+        android:background="@color/black"
         >
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
@@ -20,7 +20,10 @@
             android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="Judge"
-                android:textColor="#000000"
+                android:textColor="@color/topColor"
+                android:textAllCaps="true"
+                android:textSize="25sp"
+                android:fontFamily="@font/orion"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="15dp"
                 android:id="@+id/username"/>

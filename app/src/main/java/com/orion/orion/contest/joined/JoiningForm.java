@@ -174,7 +174,7 @@ public class JoiningForm extends AppCompatActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        submitBtn.setEnabled(false);
+
 
                         if (dataSnapshot.exists()) {
                             submitBtn.setEnabled(false);
