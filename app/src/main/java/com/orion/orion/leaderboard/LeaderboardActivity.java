@@ -36,8 +36,6 @@ import com.orion.orion.R;
 import com.orion.orion.dialogs.BottomSheetFilter;
 import com.orion.orion.login.login;
 import com.orion.orion.models.ItemLeaderboard;
-import com.orion.orion.models.location;
-import com.orion.orion.models.users;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.SNTPClient;
@@ -98,9 +96,8 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
                 Toast.makeText(LeaderboardActivity.this, "Permission Granted", Toast.LENGTH_LONG).show();
-            }
     }
 
 
@@ -753,7 +750,6 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                 sortedByLocation.setBackgroundResource(R.drawable.circular_gradient_background);
                 sortedByLocation.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
                 YoYo.with(Techniques.ZoomIn).duration(ANIMATION_DURATION).playOn(sortedByLocation);
-//                checkOrGetLocation();
                 break;
 //            case "Overall":
 //            case "Posts":
@@ -826,40 +822,27 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                 break;
         }
         Log.d(TAG, "filter: " + domainParameter);
-
         mList.clear();
         mAdapter.notifyDataSetChanged();
         String finalTime = time;
         String finalLocationParameter = locationParameter;
 //        String finalTypeParameter = typeParameter;
-
-
 //        Log.d(TAG, "filter: "+finalTime);
 //        Log.d(TAG, "filter: "+finalLocationParameter);
 //        Log.d(TAG, "filter: "+finalTypeParameter);
-
-
         Query query = reference.child(getString(R.string.dbname_leaderboard)).child(currentUser);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     //user details
-                    int userRating;
-//                if (finalTypeParameter.equals(""))
-                    userRating = (int) (long) dataSnapshot.child(finalTime).child(getString(R.string.field_followers)).getValue() + (int) (long) dataSnapshot.child(finalTime).child(getString(R.string.field_contest)).getValue();
-//                else
-//                    userRating = (int) (long) dataSnapshot.child(finalTime).child(finalTypeParameter).getValue();
-                    int finalUserRating = userRating;
+                    int userRating = (int) (long) dataSnapshot.child(finalTime).child(getString(R.string.field_followers)).getValue() + (int) (long) dataSnapshot.child(finalTime).child(getString(R.string.field_contest)).getValue();
 //                String userDomain = (String) dataSnapshot.child(getString(R.string.field_domain)).getValue();
                     String userUsername = (String) dataSnapshot.child(getString(R.string.field_username)).getValue();
-
-
                     //query for leaderboard database
                     Query query1 = reference.child(getString(R.string.dbname_leaderboard));
                     query1.addListenerForSingleValueEvent(new ValueEventListener() {
                         int rank = 1;
-
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
@@ -874,43 +857,32 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                 Log.d(TAG, "onDataChange: domain" + domain);
                                 if (domainParameter.equals("") || domain.equals(domainParameter)) {
                                     //calculating total rating and type rating for filter 1 and filter 3
-                                    int rating;
-                                    assert user_id != null;
-//                                if (finalTypeParameter.equals("")) {
-                                    rating = (int) (long) dataSnapshot.child(user_id).child(finalTime).child(getString(R.string.field_followers)).getValue() + (int) (long) dataSnapshot.child(user_id).child(finalTime).child(getString(R.string.field_contest)).getValue();
-//                                Log.d(TAG, "onDataChange: user_id"+user_id);
-//                                Log.d(TAG, "onDataChange: "+dataSnapshot.child(user_id));
-//                                } else
-//                                    rating = (int) (long) dataSnapshot.child(user_id).child(finalTime).child(finalTypeParameter).getValue();
-                                    int finalRating = rating;
-
-
+                                    int rating = (int) (long) dataSnapshot.child(user_id).child(finalTime).child(getString(R.string.field_followers)).getValue() + (int) (long) dataSnapshot.child(user_id).child(finalTime).child(getString(R.string.field_contest)).getValue();
                                     //calculating location wise rating for filter 2 by getting last known location
                                     if (!finalLocationParameter.equals("")) {
                                         Query query = reference.child(getString(R.string.dbname_leaderboard)).child(currentUser).child(getString(R.string.field_last_known_location)).child(finalLocationParameter);
                                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                                String userLocation = (String) dataSnapshot.getValue();
-                                                String testLocation = (String) singleSnapshot.child(getString(R.string.field_last_known_location)).child(finalLocationParameter).getValue();
-                                                assert testLocation != null;
-                                                if (testLocation.equals(userLocation) && !user_id.equals(getString(R.string.orion_team_user_id)))
-                                                    rank = addToLeaderboard(rank, finalUserRating, username, finalRating, profileUrl, user_id);
-
-                                                mRecyclerView.setVisibility(View.VISIBLE);
-                                                mAdapter.notifyDataSetChanged();
-                                                YoYo.with(Techniques.Landing).duration(ANIMATION_DURATION).playOn(mRecyclerView);
-                                                String rankText = "#" + rank;
-//                                            String ratingText = finalUserRating + "pts";
-                                                userItemUsername.setText(userUsername);
-                                                userItemRank.setText(rankText);
-                                                assert userLocation != null;
-                                                if (!userLocation.equals(""))
-                                                    sortedByLocation.setText(userLocation);
-                                                sortedByLocation.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-                                                YoYo.with(Techniques.Tada).duration(ANIMATION_DURATION).playOn(sortedByLocation);
-                                                swipeRefreshLayout.setRefreshing(false);
+                                                if (dataSnapshot.exists()) {
+                                                    String userLocation = (String) dataSnapshot.getValue();
+                                                    String testLocation = (String) singleSnapshot.child(getString(R.string.field_last_known_location)).child(finalLocationParameter).getValue();
+                                                    if (testLocation!=null && testLocation.equals(userLocation) && !user_id.equals(getString(R.string.orion_team_user_id)))
+                                                        rank = addToLeaderboard(rank, userRating, username, rating, profileUrl, user_id);
+                                                    mRecyclerView.setVisibility(View.VISIBLE);
+                                                    mAdapter.notifyDataSetChanged();
+                                                    YoYo.with(Techniques.Landing).duration(ANIMATION_DURATION).playOn(mRecyclerView);
+                                                    String rankText = "#" + rank;
+                                                    userItemUsername.setText(userUsername);
+                                                    userItemRank.setText(rankText);
+                                                    assert userLocation != null;
+                                                    if (!userLocation.equals(""))
+                                                        sortedByLocation.setText(userLocation);
+                                                    sortedByLocation.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+                                                    YoYo.with(Techniques.Tada).duration(ANIMATION_DURATION).playOn(sortedByLocation);
+                                                    swipeRefreshLayout.setRefreshing(false);
+                                                } else
+                                                    checkOrGetLocation();
                                             }
 
                                             @Override
@@ -920,13 +892,12 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                     }
                                     //for rest cases where location will not be a parameter
                                     else if (!user_id.equals(getString(R.string.orion_team_user_id)))
-                                        rank = addToLeaderboard(rank, finalUserRating, username, finalRating, profileUrl, user_id);
+                                        rank = addToLeaderboard(rank, userRating, username, rating, profileUrl, user_id);
 
                                     mRecyclerView.setVisibility(View.VISIBLE);
                                     mAdapter.notifyDataSetChanged();
                                     YoYo.with(Techniques.Landing).duration(ANIMATION_DURATION).playOn(mRecyclerView);
                                     String rankText = "#" + rank;
-//                                String ratingText = finalUserRating + "pts";
                                     userItemUsername.setText(userUsername);
                                     userItemRank.setText(rankText);
                                     swipeRefreshLayout.setRefreshing(false);
@@ -941,7 +912,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                         }
                     });
                 } else {
-                    Toast.makeText(mContext, "Waiting for leaderboard to update", Toast.LENGTH_LONG);
+                    Toast.makeText(mContext, "Waiting for leaderboard to update", Toast.LENGTH_LONG).show();
                     updateLeaderboard();
                 }
             }
@@ -953,27 +924,27 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         });
     }
 
-    private int addToLeaderboard(int rank, int finalUserRating, String username, int finalRating, String profileUrl, String user_id) {
+    private int addToLeaderboard(int rank, int userRating, String username, int rating, String profileUrl, String user_id) {
         Log.d(TAG, "addToLeaderboard: adding" + user_id);
-        if (finalUserRating < finalRating)
+        if (userRating < rating)
             rank++;
         if (mList.size() == 0)
-            mList.add(new ItemLeaderboard(username, finalRating, profileUrl, user_id));
+            mList.add(new ItemLeaderboard(username, rating, profileUrl, user_id));
         else {
             int l = mList.size();
             //loop to push in between and next one further away
             for (int i = 0; i < l; i++) {
                 int r = Integer.parseInt(mList.get(i).getPostionParameter());
-                if (finalRating >= r) {
+                if (rating >= r) {
                     mList.add(new ItemLeaderboard("", 0, "", ""));
                     for (int j = mList.size() - 1; j > i; j--)
                         mList.set(j, mList.get(j - 1));
-                    mList.set(i, new ItemLeaderboard(username, finalRating, profileUrl, user_id));
+                    mList.set(i, new ItemLeaderboard(username, rating, profileUrl, user_id));
                     break;
                 }
                 //pushing at the end
                 else if (i == l - 1)
-                    mList.add(new ItemLeaderboard(username, finalRating, profileUrl, user_id));
+                    mList.add(new ItemLeaderboard(username, rating, profileUrl, user_id));
             }
         }
         //removing extra nodes
