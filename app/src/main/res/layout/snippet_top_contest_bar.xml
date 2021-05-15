@@ -41,7 +41,7 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:src="@drawable/ic_eclipse"
+                    android:src="@drawable/ic_whilte_eclipse"
                     android:layout_alignParentEnd="true"
                     android:id="@+id/optionC"
                     android:layout_alignParentRight="true" />
