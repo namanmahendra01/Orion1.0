@@ -34,6 +34,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static java.security.AccessController.getContext;
+
 public class NotificationActivity extends AppCompatActivity {
     private static final String TAG = "mediafragment";
     private static final int ACTIVITY_NUM = 3;
@@ -63,6 +65,8 @@ public class NotificationActivity extends AppCompatActivity {
         clearNotification = findViewById(R.id.clearNotification);
         emptyNotification = findViewById(R.id.emptyNotification);
         setupBottomNavigationView();
+        Log.d(TAG, " context"+this+"  "+getContext()+"  "+getApplicationContext());
+
         //          Initialize SharedPreference variables
         sp = mContext.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();

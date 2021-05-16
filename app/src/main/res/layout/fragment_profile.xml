@@ -26,10 +26,10 @@
                 android:id="@+id/profile_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/profileLinks"
+                android:layout_below="@id/linearLayout2"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="60dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginBottom="10dp"
@@ -44,8 +44,7 @@
                     android:orientation="vertical"
                     android:weightSum="4"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/relativeLayout">
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -364,12 +363,12 @@
                 android:id="@id/linearLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/profile_info"
+                android:layout_below="@id/profileLinks"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical"
-                android:paddingBottom="60dp"
+                android:paddingBottom="20dp"
                 android:visibility="visible"
                 android:weightSum="100">
 
@@ -377,9 +376,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
+                    android:paddingBottom="3dp"
                     android:text="ABOUT"
-                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="18sp" />
 
                 <TextView

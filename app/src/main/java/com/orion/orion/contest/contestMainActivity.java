@@ -26,6 +26,8 @@ import com.orion.orion.contest.upcoming.fragment_upcomingContest;
 import com.orion.orion.login.LoginActivity;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 
+import static java.security.AccessController.getContext;
+
 public class contestMainActivity extends AppCompatActivity {
     private static final String TAG = "contest";
     private static final int ACTIVITY_NUM = 0;
@@ -50,6 +52,8 @@ public class contestMainActivity extends AppCompatActivity {
         checkCurrentuser(mAuth.getCurrentUser());
         hideSoftKeyboard();
         setupViewPager();
+        Log.d(TAG, " context"+this+"  "+getContext()+"  "+getApplicationContext());
+
     }
 
     //    for adding 3 tabs -media,home,message

@@ -189,7 +189,7 @@ public class EditProfile extends AppCompatActivity {
             title.setText("Add/Edit your email address");
             editComment.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
             if (gmail != null || !gmail.equals("")) {
-                buttonSubmit.setText("EDIT");
+                buttonSubmit.setText("ADD");
                 editComment.setText(gmail);
             } else editComment.setHint("Enter email address to add");
             buttonSubmit.setOnClickListener(view -> {
@@ -209,7 +209,7 @@ public class EditProfile extends AppCompatActivity {
             title.setText("Add/Edit your Instagram username");
             editComment.setInputType(InputType.TYPE_CLASS_TEXT);
             if (instagramProfile != null || !instagramProfile.equals("")) {
-                buttonSubmit.setText("EDIT");
+                buttonSubmit.setText("ADD");
                 editComment.setText(instagramProfile);
             } else {
                 editComment.setText(instagramProfile);
@@ -232,7 +232,7 @@ public class EditProfile extends AppCompatActivity {
             title.setText("Add/Edit your Facebook unique id");
             editComment.setInputType(InputType.TYPE_CLASS_TEXT);
             if (facebookProfile != null || !facebookProfile.equals("")) {
-                buttonSubmit.setText("EDIT");
+                buttonSubmit.setText("ADD");
                 editComment.setText(facebookProfile);
             } else {
                 editComment.setText(facebookProfile);
@@ -255,7 +255,7 @@ public class EditProfile extends AppCompatActivity {
             title.setText("Add/Edit your Twitter id");
             editComment.setInputType(InputType.TYPE_CLASS_TEXT);
             if (twitterProfile != null || !twitterProfile.equals("")) {
-                buttonSubmit.setText("EDIT");
+                buttonSubmit.setText("ADD");
                 editComment.setText(twitterProfile);
             } else {
                 editComment.setText(twitterProfile);
@@ -278,7 +278,7 @@ public class EditProfile extends AppCompatActivity {
             title.setText("Add/Edit your Whats app no");
             editComment.setInputType(InputType.TYPE_CLASS_PHONE);
             if (whatsappNo != null || !whatsappNo.equals("")) {
-                buttonSubmit.setText("EDIT");
+                buttonSubmit.setText("ADD");
                 editComment.setText(whatsappNo);
             } else {
                 editComment.setText(whatsappNo);

@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="0d214381-15d0-4407-a080-3c7202abba42" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../../java/com/orion/orion/contest/create/form.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/orion/orion/contest/create/form.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_contest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/create_contest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/orion/orion/NotificationActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/orion/orion/NotificationActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/orion/orion/contest/contestMainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/orion/orion/contest/contestMainActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../build.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,10 +33,11 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="dart.analysis.tool.window.visible" value="false" />
-    <property name="last_opened_file_path" value="E:/OrionAdmin" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../.." />
     <property name="settings.editor.selected.configurable" value="com.genymobile.genymotion.ide.idea.GdmSettings" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -43,9 +52,9 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1620829277284">
+    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1621054176304">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1620829277284" />
+    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1621054176304" />
   </component>
 </project>
