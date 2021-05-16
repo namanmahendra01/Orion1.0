@@ -1,258 +1,269 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/black"
-    android:id="@+id/rootView">
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-    <ProgressBar
-        android:id="@+id/Registerrequestloadingprogressbar"
-        style="?android:attr/progressBarStyleHorizontal"
+    android:background="@color/black">
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="12dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="-4dp"
-        android:foregroundGravity="bottom"
-        android:indeterminate="true"
-        android:padding="0dp"
-        android:theme="@style/Widget.AppCompat.ProgressBar.Horizontal" />
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/linearLayout1"
-        android:orientation="vertical"
-        android:paddingLeft="25dp"
-        android:paddingRight="25dp">
-        <RelativeLayout
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:id="@+id/Registerrequestloadingprogressbar"
+            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="12dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="-4dp"
+            android:foregroundGravity="bottom"
+            android:indeterminate="true"
+            android:padding="0dp"
+            android:theme="@style/Widget.AppCompat.ProgressBar.Horizontal" />
 
-        <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-           android:background="@drawable/orion_login"
-            android:id="@+id/logo"
-            android:textColor="@color/colorPrimary"
-            android:gravity="center|start"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SIGN UP"
-            android:textSize="22sp"
-            android:layout_below="@+id/logo"
-            android:textColor="@color/white"/>
-        </RelativeLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="15dp"
-            android:inputType="textFilter"
-            android:background="@drawable/rectangular_border"
-            android:hint="Username"
-            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890_."
-            android:textColorHint="@color/grey"
-            android:textColor="@color/black"
-            android:padding="10dp"
-            android:id="@+id/username"
-            android:textSize="18sp"
-            android:imeOptions="actionNext"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="15dp"
-            android:hint="E-mail"
-            android:padding="10dp"
-            android:background="@drawable/rectangular_border"
-            android:inputType="textFilter"
-            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890_.@"
-            android:textColorHint="@color/grey"
-            android:textColor="@color/black"
-            android:id="@+id/input_email"
-            android:textSize="18sp"
-            android:imeOptions="actionNext"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/input_password"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="15dp"
-                android:inputType="textPassword"
-                android:hint="Password"
-                android:padding="10dp"
-                android:background="@drawable/rectangular_border"
-                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890{}()[];:#^,.?!_`@$%\/=+-*'"
-                android:maxLength="16"
-                android:textColorHint="@color/grey"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:imeOptions="actionDone"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:passwordToggleEnabled="true"
-            >
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="15dp"
-            android:hint="Confirm Password"
-            app:endIconMode="password_toggle"
-
-            android:padding="10dp"
-            android:background="@drawable/rectangular_border"
-            android:inputType="textPassword"
-            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890{}()[];:#^,.?!_`@$%\/=+-*'"
-            android:maxLength="16"
-            android:textColorHint="@color/grey"
-            android:textColor="@color/black"
-            android:id="@+id/confirm_password"
-            android:textSize="18sp"
-            android:imeOptions="actionDone"/>
-        </com.google.android.material.textfield.TextInputLayout>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:text="Select Your Domain"
-            android:background="@drawable/white_round_button"
-            android:gravity="center"
-            android:textColor="@color/grey"
-            android:layout_gravity="center"
-            android:padding="10dp"
-            android:id="@+id/domain_selection"
-            android:textSize="18sp"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="You cannot change your domain afterwards."
-            android:gravity="center"
-
-            android:textColor="#F44336"
-            android:layout_gravity="center"
-            android:id="@+id/text"
-            android:textSize="12sp"
-            />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="25dp"
-        android:paddingRight="25dp"
-        android:paddingTop="30dp"
-        android:orientation="vertical"
-       >
-        <TextView
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
-            android:layout_marginEnd="50dp"
-            android:text="By creating this account, you agree to our Terms and Conditions and Privacy Policy"
-            android:minLines="2"
-            android:gravity="center_horizontal"
-            android:textColor="@color/white"
-            android:textSize="12sp"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="50dp"
-            android:text="See"
-
-            android:minLines="1"
-            android:textColor="@color/white"
-            android:textSize="12sp"/>
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/linearLayout1"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
+                android:orientation="vertical"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp">
 
-                android:text="Terms and Conditions"
-                android:id="@+id/terms"
-                android:minLines="1"
-                android:textColor="#03A9F4"
-                android:textSize="12sp"/>
-            <TextView
-                android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/logo"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:background="@drawable/orion_login"
+                        android:gravity="center|start"
+                        android:textColor="@color/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/logo"
+                        android:text="SIGN UP"
+                        android:textColor="@color/white"
+                        android:textSize="22sp" />
+                </RelativeLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/username"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/rectangular_border"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890_."
+                        android:hint="Username"
+                        android:imeOptions="actionNext"
+                        android:inputType="textFilter"
+                        android:padding="10dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/grey"
+                        android:textSize="18sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/rectangular_border"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890_.@"
+                        android:hint="E-mail"
+                        android:imeOptions="actionNext"
+                        android:inputType="textFilter"
+                        android:padding="10dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/grey"
+                        android:textSize="18sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/rectangular_border"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890{}()[];:#^,.?!_`@$%\/=+-*'"
+                        android:hint="Password"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPassword"
+                        android:maxLength="16"
+                        android:padding="10dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/grey"
+                        android:textSize="18sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:passwordToggleEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/confirm_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@drawable/rectangular_border"
+
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890{}()[];:#^,.?!_`@$%\/=+-*'"
+                        android:hint="Confirm Password"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPassword"
+                        android:maxLength="16"
+                        android:padding="10dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/grey"
+                        android:textSize="18sp"
+                        app:endIconMode="password_toggle" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/domain_selection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="25dp"
+                    android:background="@drawable/white_round_button"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="Select Your Domain"
+                    android:textColor="@color/grey"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+
+                    android:gravity="center"
+                    android:text="You cannot change your domain afterwards."
+                    android:textColor="#F44336"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:text="or"
+                android:orientation="vertical"
+                android:paddingLeft="25dp"
+                android:paddingTop="30dp"
+                android:paddingRight="25dp">
 
-                android:minLines="1"
-                android:textColor="@color/white"
-                android:textSize="12sp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginEnd="50dp"
+                    android:gravity="center_horizontal"
+                    android:minLines="2"
+                    android:text="By creating this account, you agree to our Terms and Conditions and Privacy Policy"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
 
-                android:text="Privacy policy"
-                android:id="@+id/policy"
-                android:minLines="1"
-                android:textColor="#03A9F4"
-                android:textSize="12sp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_horizontal">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="50dp"
+                        android:gravity="center"
+                        android:minLines="1"
+                        android:text="See"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/terms"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="2dp"
+                        android:minLines="1"
+                        android:text="Terms and Conditions"
+                        android:textColor="#03A9F4"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="2dp"
+                        android:minLines="1"
+
+                        android:text="or"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/policy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginStart="2dp"
+                        android:minLines="1"
+                        android:text="Privacy policy"
+                        android:textColor="#03A9F4"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/white_round_button"
+                    android:text="Register"
+                    android:textColor="@color/black"
+                    android:textSize="16sp">
+
+                </androidx.appcompat.widget.AppCompatButton>
+
+                <TextView
+                    android:id="@+id/link_login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:foregroundGravity="center"
+                    android:gravity="center_horizontal"
+                    android:paddingBottom="15sp"
+                    android:text="I'm already a member"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+            </LinearLayout>
         </LinearLayout>
-        <androidx.appcompat.widget.AppCompatButton
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
-            android:text="Register"
-            android:id="@+id/btn_register"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:background="@drawable/white_round_button">
-
-        </androidx.appcompat.widget.AppCompatButton>
-
-        <TextView
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:foregroundGravity="center"
-            android:text="I'm already a member"
-            android:gravity="center_horizontal"
-            android:paddingBottom="15sp"
-            android:textColor="@color/white"
-            android:id="@+id/link_login"
-            android:textSize="14sp"/>
-    </LinearLayout>
-</LinearLayout>
-</RelativeLayout>
+    </RelativeLayout>
 </ScrollView>

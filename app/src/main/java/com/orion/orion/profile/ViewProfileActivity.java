@@ -177,20 +177,19 @@ public class ViewProfileActivity extends AppCompatActivity {
 //        adapterGridImage.setHasStableIds(true);
 //        gridRv.setAdapter(adapterGridImage);
 //
-//        try {
-//            Intent i = getIntent();
-//            mUser = i.getStringExtra(getString(R.string.intent_user));
-//            Log.d(TAG, "init: koko" + mUser);
-//
-//            init();
-//        } catch (NullPointerException e) {
-//            Log.d(TAG, "null pointer Exception" + e.getMessage());
-//            Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
-//            getSupportFragmentManager().popBackStack();
-//        }
+        try {
+            Intent i = getIntent();
+            mUser = i.getStringExtra(getString(R.string.intent_user));
+            Log.d(TAG, "init: koko" + mUser);
+            init();
+        } catch (NullPointerException e) {
+            Log.d(TAG, "null pointer Exception" + e.getMessage());
+            Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
+            getSupportFragmentManager().popBackStack();
+        }
         Log.d(TAG, "onCreate: yess2  " + mUser + "  " + getString(R.string.orion_team_user_id));
 
-        if (mUser.equals(getString(R.string.orion_team_user_id))) {
+        if (mUser!=null && mUser.equals(getString(R.string.orion_team_user_id))) {
             Log.d(TAG, "onCreate: yess");
             mFollow.setEnabled(false);
         }
@@ -731,22 +730,23 @@ public class ViewProfileActivity extends AppCompatActivity {
         mRank.setText(String.valueOf(rank));
     }
 
-//    private void init() {
-//        DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
-//        Query query1 = reference1.child(getString(R.string.dbname_users)).child(mUser);
-//        query1.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                users setting = dataSnapshot.getValue(users.class);
-//                assert setting != null;
-//                setProfileWidgets(setting);
-//                setUpInfoBox();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//            }
-//        });
+    private void init() {
+        DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
+        Query query1 = reference1.child(getString(R.string.dbname_users)).child(mUser);
+        query1.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                users setting = dataSnapshot.getValue(users.class);
+                assert setting != null;
+                setProfileWidgets(setting);
+                setUpInfoBox();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
 //        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 //        Query query = reference.child(getString(R.string.dbname_user_photos)).child(mUser);
 //        query.addListenerForSingleValueEvent(new ValueEventListener() {
