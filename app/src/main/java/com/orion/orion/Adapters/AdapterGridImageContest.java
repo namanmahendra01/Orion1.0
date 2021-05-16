@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
 import android.view.Display;
@@ -37,9 +39,31 @@ import static com.orion.orion.util.SNTPClient.TAG;
 public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridImageContest.ViewHolder> {
 
 
-    private Context mContext;
+    private static Context mContext;
     boolean isImage;
+    static ViewHolder previousHolder=null;
     private List<ParticipantList> participantLists;
+    public interface changeBackground {
+        default void changeColor() {
+
+            if(previousHolder!=null) {
+                SharedPreferences sp =mContext.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                String color =sp.getString("backColor",null);
+
+                if(color.equals("White")){
+                    previousHolder.card.setCardBackgroundColor(Color.WHITE);
+
+                }else if(color.equals("Yellow")){
+                    previousHolder.card.setCardBackgroundColor(Color.YELLOW);
+                }
+
+
+            }
+        }
+
+
+    }
+
 
     public AdapterGridImageContest(Context mContext, List<ParticipantList> participantLists, boolean isImage) {
         this.mContext = mContext;
@@ -86,6 +110,7 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
             holder.image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    previousHolder = holder;
 
 
                     Intent i = new Intent(mContext, activity_view_media.class);
@@ -243,10 +268,10 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        public CardView card;
         private ImageView image;
         TextView viewSub, num, name;
         private ImageView voteNo, voteYes;
-        CardView card;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -277,9 +302,10 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
                         if (dataSnapshot2.exists()) {
-                            if (isImage){
-                                holder.card.setCardBackgroundColor(mContext.getResources().getColor(R.color.yellow));
-                            }else{
+                            if (isImage) {
+                                holder.card.setCardBackgroundColor(Color.YELLOW);
+                                previousHolder = holder;
+                            } else {
                                 holder.voteNo.setVisibility(View.GONE);
                                 holder.voteYes.setVisibility(View.VISIBLE);
                             }
@@ -299,9 +325,6 @@ public class AdapterGridImageContest extends RecyclerView.Adapter<AdapterGridIma
 
                     }
                 });
-
-
     }
-
 
 }

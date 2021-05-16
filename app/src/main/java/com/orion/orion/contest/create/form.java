@@ -1208,7 +1208,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                     }
                     if ((Integer.parseInt(prizeThird)<=Integer.parseInt(fees))){
                         YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mEntryFees);
-                        mEntryFees.setError("Entry fee should be more than each prize money");
+                        mEntryFees.setError("Entry fee must be less than each prize money");
                         mEntryFees.requestFocus();
                     }
                 } else
