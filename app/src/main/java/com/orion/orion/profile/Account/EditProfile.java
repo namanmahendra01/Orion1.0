@@ -435,6 +435,7 @@ public class EditProfile extends AppCompatActivity {
                     Toast.makeText(mContext, "Photo Upload success", Toast.LENGTH_SHORT).show();
                 });
                 mContext.startActivity(new Intent(mContext, ProfileActivity.class));
+                finish();
             }).addOnFailureListener(e -> {
                 dialog.dismiss();
                 Log.d(TAG, "onFailure: Photo Upload Failed");
@@ -446,7 +447,10 @@ public class EditProfile extends AppCompatActivity {
                 Toast.makeText(mContext, "Photo Upload Progress" + String.format("%.0f", progress) + "%", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "onProgress: upload progress" + progress + "% done");
             });
-        } else mContext.startActivity(new Intent(mContext, ProfileActivity.class));
+        } else {
+            mContext.startActivity(new Intent(mContext, ProfileActivity.class));
+            finish();
+        }
     }
 
     private void checkifuserexist(final String username) {
