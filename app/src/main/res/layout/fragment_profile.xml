@@ -29,10 +29,10 @@
                 android:layout_below="@id/linearLayout2"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginLeft="5dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="60dp"
                 android:visibility="visible"
                 android:background="@drawable/info_container"
                 android:elevation="5dp">
@@ -386,7 +386,7 @@
                     android:id="@+id/display_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
+                    android:paddingTop="3dp"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 

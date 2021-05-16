@@ -140,15 +140,7 @@ public class AccountSettingActivity extends AppCompatActivity {
         });
     }
 
-    private void setupBottomNavigationView() {
-        Log.d(TAG, "setupBottomNavigationView:setting up BottomNavigationView");
-        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.BottomNavViewBar);
-        BottomNaavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNaavigationViewHelper.enableNavigation(mContext, this, bottomNavigationViewEx);
-        Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
-        menuItem.setChecked(true);
-    }
+
 
     private void setupFirebaseAuth() {
         Log.d(TAG, "setupFirebaseAuth: started");

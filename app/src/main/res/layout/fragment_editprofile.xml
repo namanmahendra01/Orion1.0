@@ -13,17 +13,17 @@
         <RelativeLayout
             android:id="@+id/topEditProfile"
             android:layout_width="match_parent"
+            android:background="@color/black"
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:backgroundTint="@color/white">
+                android:backgroundTint="@color/black">
 
                 <androidx.appcompat.widget.Toolbar
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/black">
+                    android:layout_height="wrap_content">
 
 
                     <RelativeLayout
@@ -36,9 +36,7 @@
                             android:layout_height="30dp"
                             android:layout_centerVertical="true"
                             android:layout_marginStart="10dp"
-                            android:layout_marginLeft="10dp"
                             android:layout_marginEnd="20dp"
-                            android:layout_marginRight="20dp"
                             android:src="@drawable/ic_back_black_arrow" />
 
                         <TextView
@@ -46,23 +44,22 @@
                             android:layout_height="wrap_content"
                             android:layout_centerHorizontal="true"
                             android:layout_centerVertical="true"
-                            android:layout_marginLeft="5dp"
+                            android:layout_marginStart="5dp"
                             android:text="Edit Profile"
-                            android:textColor="@color/white"
-                            android:textStyle="bold"/>
+                            android:fontFamily="@font/orion"
+                            android:textAllCaps="true"
+                            android:textSize="25sp"
+                            android:textColor="@color/topColor" />
 
                         <ImageView
                             android:id="@+id/saveChanges"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:layout_marginStart="10dp"
-                            android:layout_marginLeft="10dp"
                             android:layout_marginEnd="20dp"
-                            android:layout_marginRight="20dp"
-                            android:src="@drawable/ic_checkmark"
-                            app:tint="@color/white" />
+                            android:src="@drawable/ic_white_checkmark" />
 
 
                     </RelativeLayout>
@@ -120,7 +117,7 @@
                         android:gravity="start"
                         android:text="Personal Info"
                         android:textColor="@color/black"
-                        android:textSize="22dp" />
+                        android:textSize="22sp" />
                     <!--    username-->
                     <RelativeLayout
                         android:id="@+id/relLayout1"
@@ -136,7 +133,7 @@
                             android:layout_height="match_parent"
                             android:layout_centerVertical="true"
                             android:background="@drawable/rectangular_border"
-                            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890_."
+
                             android:hint="Username"
                             android:inputType="textNoSuggestions"
 
@@ -196,13 +193,17 @@
                         android:layout_below="@+id/relLayout3"
                         android:layout_marginTop="15dp"
                         android:background="@color/white">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:weightSum="10"
+                            android:orientation="horizontal">
 
                         <EditText
                             android:id="@+id/externalLinks"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_centerVertical="true"
-                            android:layout_alignParentEnd="true"
+                            android:layout_weight="9"
                             android:background="@drawable/rectangular_border"
                             android:hint="External Links"
                             android:maxLines="5"
@@ -211,14 +212,13 @@
 
                         <ImageView
                             android:id="@+id/addLink"
-                            android:layout_width="50dp"
+                            android:layout_width="0dp"
                             android:layout_height="50dp"
                             android:padding="5dp"
+                            android:layout_weight="1"
                             android:src="@drawable/ic_baseline_add_24"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentBottom="true"
                             app:tint="@color/colorPrimary" />
+                        </LinearLayout>
 
                     </RelativeLayout>
                     <LinearLayout
@@ -234,11 +234,10 @@
 
                         <TextView
                             android:id="@+id/link1"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:gravity="center"
                             android:layout_weight="8"
-                            android:layout_alignParentStart="true"
                             android:textColor="@color/light_blue"
                             android:text="External Links"
                             android:textSize="16sp"
@@ -246,13 +245,11 @@
 
                         <ImageView
                             android:id="@+id/link1delete"
-                            android:layout_width="24dp"
+                            android:layout_width="0dp"
                             android:layout_height="24dp"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentBottom="true"
                             android:padding="5dp"
+                            android:layout_weight="2"
                             android:layout_marginStart="15dp"
-                            android:layout_toRightOf="@+id/link1"
                             android:src="@drawable/ic_baseline_close_24" />
 
                     </LinearLayout>
@@ -270,9 +267,8 @@
                         <TextView
                             android:id="@+id/link2"
                             android:layout_weight="8"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_alignParentStart="true"
                             android:gravity="center"
                             android:inputType="textNoSuggestions"
                             android:text="External Links"
@@ -281,13 +277,12 @@
 
                         <ImageView
                             android:id="@+id/link2delete"
-                            android:layout_width="24dp"
+                            android:layout_width="0dp"
                             android:layout_height="24dp"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentBottom="true"
                             android:padding="5dp"
+                            android:layout_weight="2"
+
                             android:layout_marginStart="15dp"
-                            android:layout_toRightOf="@+id/link2"
                             android:src="@drawable/ic_baseline_close_24" />
 
                     </LinearLayout>
@@ -304,11 +299,10 @@
 
                         <TextView
                             android:id="@+id/link3"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:gravity="center"
                             android:layout_weight="8"
-                            android:layout_alignParentStart="true"
                             android:textColor="@color/light_blue"
                             android:text="External Links"
                             android:textSize="16sp"
@@ -316,13 +310,12 @@
 
                         <ImageView
                             android:id="@+id/link3delete"
-                            android:layout_width="24dp"
+                            android:layout_width="0dp"
                             android:layout_height="24dp"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentBottom="true"
                             android:padding="5dp"
+                            android:layout_weight="2"
+
                             android:layout_marginStart="15dp"
-                            android:layout_toRightOf="@+id/link3"
                             android:src="@drawable/ic_baseline_close_24" />
 
                     </LinearLayout>
@@ -338,7 +331,7 @@
                         android:gravity="start"
                         android:text="Connections"
                         android:textColor="@color/black"
-                        android:textSize="22dp" />
+                        android:textSize="22sp" />
 
                     <RelativeLayout
                         android:id="@+id/profileLinks"
