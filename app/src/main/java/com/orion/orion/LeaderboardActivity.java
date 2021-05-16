@@ -1,4 +1,4 @@
-package com.orion.orion.leaderboard;
+package com.orion.orion;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -32,9 +32,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Adapters.AdapterLeaderboard;
-import com.orion.orion.R;
 import com.orion.orion.dialogs.BottomSheetFilter;
-import com.orion.orion.login.login;
+import com.orion.orion.login.LoginActivity;
 import com.orion.orion.models.ItemLeaderboard;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 import com.orion.orion.util.FirebaseMethods;
@@ -1002,7 +1001,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                         .setTitle("No user logon found")
                         .setMessage("We will be logging u out. \n Please try to log in again")
                         .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                            Intent intent = new Intent(mContext, login.class);
+                            Intent intent = new Intent(mContext, LoginActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             settings.edit().clear().apply();
                             if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);

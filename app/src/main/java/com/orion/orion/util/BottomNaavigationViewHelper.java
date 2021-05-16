@@ -4,20 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.view.MenuItem;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-import com.orion.orion.MessagesActivity;
+import com.orion.orion.chat.MessagesActivity;
 import com.orion.orion.NotificationActivity;
 import com.orion.orion.R;
 import com.orion.orion.contest.contestMainActivity;
-import com.orion.orion.explore.Explore;
-import com.orion.orion.home.MainActivity;
-import com.orion.orion.leaderboard.LeaderboardActivity;
-import com.orion.orion.models.Notification;
+import com.orion.orion.LeaderboardActivity;
 import com.orion.orion.profile.profile;
 
 public class BottomNaavigationViewHelper {

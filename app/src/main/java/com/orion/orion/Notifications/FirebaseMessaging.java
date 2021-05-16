@@ -20,12 +20,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.orion.orion.R;
-import com.orion.orion.home.Chat_Activity;
-import com.orion.orion.home.MainActivity;
+import com.orion.orion.contest.contestMainActivity;
 
 import java.util.Random;
 
@@ -70,16 +68,16 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         assert user != null;
         Random rand = new Random();
-        Log.d(TAG, "sendOAndAboveNotification: rand  "+rand.nextInt());
+        Log.d(TAG, "sendOAndAboveNotification: rand  " + rand.nextInt());
         int i = rand.nextInt();
-        Log.d(TAG, "sendNormalNotification: vo1 "+ String.valueOf(i));
+        Log.d(TAG, "sendNormalNotification: vo1 " + i);
 
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, contestMainActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(getString(R.string.his_uid), user);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pIntent = PendingIntent.getActivity(this,i,intent,PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_ONE_SHOT);
 
         Uri defSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
@@ -90,19 +88,19 @@ public class FirebaseMessaging extends FirebaseMessagingService {
                 .setSound(defSoundUri)
                 .setContentIntent(pIntent);
 
-        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        int j= 0;
-        if(i>0){
-            j=i;
-            notificationManager.notify(j,builder.build());
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        int j = 0;
+        if (i > 0) {
+            j = i;
+            notificationManager.notify(j, builder.build());
 
-        }else{
-            i=Math.abs(i);
-            j=i;
-            notificationManager.notify(j,builder.build());
+        } else {
+            i = Math.abs(i);
+            j = i;
+            notificationManager.notify(j, builder.build());
 
         }
-        notificationManager.notify(j,builder.build());
+        notificationManager.notify(j, builder.build());
 
 
     }
@@ -120,43 +118,45 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         assert user != null;
         Random rand = new Random();
-        Log.d(TAG, "sendOAndAboveNotification: rand  "+rand.nextInt());
+        Log.d(TAG, "sendOAndAboveNotification: rand  " + rand.nextInt());
         int i = rand.nextInt();
-        Log.d(TAG, "sendNormalNotification: vo "+ String.valueOf(i));
-        Intent intent = new Intent(this, MainActivity.class);
+        Log.d(TAG, "sendNormalNotification: vo " + String.valueOf(i));
+        Intent intent = new Intent(this, contestMainActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(getString(R.string.his_uid), user);
         intent.putExtras(bundle);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pIntent = PendingIntent.getActivity(this,i,intent,PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pIntent = PendingIntent.getActivity(this, i, intent, PendingIntent.FLAG_ONE_SHOT);
 
         Uri defSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-        OreoAndAboveNotification notification1= new OreoAndAboveNotification(this);
-        Notification.Builder builder = notification1.getONotification(title,body,pIntent,defSoundUri,icon);
+        OreoAndAboveNotification notification1 = new OreoAndAboveNotification(this);
+        Notification.Builder builder = notification1.getONotification(title, body, pIntent, defSoundUri, icon);
 
 
-        int j= 0;
-        if(i>0){
-            j=i;
+        int j = 0;
+        if (i > 0) {
+            j = i;
 
-        }else{
-            i=Math.abs(i);
-            j=i;
+        } else {
+            i = Math.abs(i);
+            j = i;
 
         }
-        notification1.getManager().notify(j,builder.build());
+        notification1.getManager().notify(j, builder.build());
 
     }
+
     @Override
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (user!=null){
+        if (user != null) {
             updateToken(s);
         }
     }
+
     private void updateToken(String tokenRefresh) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Tokens");

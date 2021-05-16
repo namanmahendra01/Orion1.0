@@ -1,29 +1,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/white"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
     <RelativeLayout
+        android:id="@+id/relLayout1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/relLayout1">
-        <include layout="@layout/snippet_top_marks_bar"/>
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/snippet_top_bar" />
 
     </RelativeLayout>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
 
-android:layout_below="@+id/relLayout1"
+    <TextView
         android:id="@+id/quote"
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relLayout1"
         android:gravity="center_horizontal"
         android:text="Marks must be given between 1-10 range.\nGreat power comes with great responsbility"
         android:textColor="@color/grey" />
+
     <ScrollView
         android:layout_width="wrap_content"
-        android:layout_below="@+id/quote"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/quote">
 
         <RelativeLayout
             android:id="@+id/relLayout"
@@ -50,9 +54,9 @@ android:layout_below="@+id/relLayout1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="@color/white"
-                    app:cardUseCompatPadding="true"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="2dp"
+                    app:cardUseCompatPadding="true"
                     app:contentPadding="3dp">
 
                     <TableLayout
@@ -71,18 +75,18 @@ android:layout_below="@+id/relLayout1"
 
                                 android:gravity="center_horizontal"
                                 android:text="Participant"
-                                android:textStyle="bold"
-                                android:textColor="@color/black" />
+                                android:textColor="@color/black"
+                                android:textStyle="bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal"
-                                android:textStyle="bold"
-
                                 android:text="Subbmission"
-                                android:textColor="@color/black" />
+
+                                android:textColor="@color/black"
+                                android:textStyle="bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -91,9 +95,9 @@ android:layout_below="@+id/relLayout1"
                                 android:gravity="center_horizontal"
 
                                 android:text="Marks"
-                                android:textStyle="bold"
+                                android:textColor="@color/black"
 
-                                android:textColor="@color/black" />
+                                android:textStyle="bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -102,9 +106,9 @@ android:layout_below="@+id/relLayout1"
                                 android:gravity="center_horizontal"
 
                                 android:text="Comment"
-                                android:textStyle="bold"
+                                android:textColor="@color/black"
 
-                                android:textColor="@color/black" />
+                                android:textStyle="bold" />
 
 
                         </TableRow>
@@ -118,38 +122,40 @@ android:layout_below="@+id/relLayout1"
         </RelativeLayout>
 
     </ScrollView>
+
     <LinearLayout
+        android:id="@+id/pro"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:id="@+id/pro"
         android:background="#CC333232"
-        android:visibility="gone"
-        android:orientation="vertical">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/white_border"
+            android:layout_gravity="center"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
-            android:layout_gravity="center">
+            android:background="@drawable/white_border">
+
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                />
+                android:layout_marginLeft="10dp" />
+
             <TextView
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/progressBar"
                 android:layout_centerInParent="true"
-                android:textColor="@color/black"
+                android:layout_centerHorizontal="true"
                 android:text="Submiting..."
-                android:textSize="20sp"
-                />
+                android:textColor="@color/black"
+                android:textSize="20sp" />
         </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

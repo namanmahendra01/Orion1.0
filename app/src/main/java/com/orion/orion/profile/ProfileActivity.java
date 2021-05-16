@@ -1,28 +1,19 @@
 package com.orion.orion.profile;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,8 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -42,36 +31,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-import com.orion.orion.Adapters.AdapterGridImage;
 import com.orion.orion.R;
-import com.orion.orion.dialogs.DialogPostSelection;
-import com.orion.orion.login.login;
-import com.orion.orion.models.Comment;
-import com.orion.orion.models.Like;
+import com.orion.orion.login.LoginActivity;
 import com.orion.orion.models.Photo;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.Account.AccountSettingActivity;
 import com.orion.orion.util.BottomNaavigationViewHelper;
-import com.orion.orion.util.Permissions;
 
-import java.io.File;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -133,7 +107,7 @@ public class ProfileActivity extends AppCompatActivity {
     private LinearLayout share_btn;
     private RecyclerView gridRv;
     private BottomNavigationViewEx bottomNavigationView;
-    private AdapterGridImage adapterGridImage;
+//    private AdapterGridImage adapterGridImage;
     int c = 0;
     //    SP
     Gson gson;
@@ -205,33 +179,33 @@ public class ProfileActivity extends AppCompatActivity {
         gson = new Gson();
         setupBottomNavigationView();
         setupFirebaseAuth();
-        fetchPhotosFromSp();
+//        fetchPhotosFromSp();
 //        SetupGridView();
-        scrollView.getViewTreeObserver()
-                .addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-                    @Override
-                    public void onScrollChanged() {
-
-                        if (scrollView.getChildAt(0).getBottom()
-                                == (scrollView.getHeight() + scrollView.getScrollY()) && c != 0) {
-
-
-                            //scroll view is at bottom
-
-                            Log.d(TAG, "onScrollChanged: j");
-                            displayMorePhotos();
-//                            checkLoading();
-
-                        } else {
-//                            bottomProgress.setVisibility(View.GONE);
-
-                            //scroll view is not at bottom
-                        }
-                        c++;
-                    }
-
-
-                });
+//        scrollView.getViewTreeObserver()
+//                .addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+//                    @Override
+//                    public void onScrollChanged() {
+//
+//                        if (scrollView.getChildAt(0).getBottom()
+//                                == (scrollView.getHeight() + scrollView.getScrollY()) && c != 0) {
+//
+//
+//                            //scroll view is at bottom
+//
+//                            Log.d(TAG, "onScrollChanged: j");
+//                            displayMorePhotos();
+////                            checkLoading();
+//
+//                        } else {
+////                            bottomProgress.setVisibility(View.GONE);
+//
+//                            //scroll view is not at bottom
+//                        }
+//                        c++;
+//                    }
+//
+//
+//                });
 
         mGmailLink.setOnClickListener(v -> {
             if (gmail != null && !gmail.equals("")) {
@@ -327,14 +301,14 @@ public class ProfileActivity extends AppCompatActivity {
                 Toast.makeText(mContext, " You don't have any browser to open web page", Toast.LENGTH_LONG).show();
             }
         });
-        share_btn.setOnClickListener(v -> {
-            YoYo.with(Techniques.FadeIn).duration(500).playOn(share_btn);
-            if (checkPermissionArray(Permissions.PERMISSIONS)) {
-
-                DialogPostSelection dialogPostSelection = new DialogPostSelection(ProfileActivity.this);
-                dialogPostSelection.show();
-            } else verifyPermission(Permissions.PERMISSIONS);
-        });
+//        share_btn.setOnClickListener(v -> {
+//            YoYo.with(Techniques.FadeIn).duration(500).playOn(share_btn);
+//            if (checkPermissionArray(Permissions.PERMISSIONS)) {
+//
+//                DialogPostSelection dialogPostSelection = new DialogPostSelection(ProfileActivity.this);
+//                dialogPostSelection.show();
+//            } else verifyPermission(Permissions.PERMISSIONS);
+//        });
         menu.setOnClickListener(v -> {
             Intent intent = new Intent(this, AccountSettingActivity.class);
             startActivity(intent);
@@ -567,299 +541,299 @@ public class ProfileActivity extends AppCompatActivity {
         mRank.setText(String.valueOf(rank));
     }
 
-    private void fetchPhotosFromSp() {
-        String json = sp.getString("myMedia", null);
-        Type type = new TypeToken<ArrayList<Photo>>() {
-        }.getType();
-        imgURLsList = gson.fromJson(json, type);
-//        Log.d(TAG, "fetchPhotosFromSp: "+imgURLsList.size());
-        if (imgURLsList == null || imgURLsList.size() == 0) {
-            Log.d(TAG, "fetchPhotosFromSp: 1");
-            imgURLsList = new ArrayList<>();
-            SetupGridView();
-        } else {
-            Log.d(TAG, "fetchPhotosFromSp: 2");
+//    private void fetchPhotosFromSp() {
+//        String json = sp.getString("myMedia", null);
+//        Type type = new TypeToken<ArrayList<Photo>>() {
+//        }.getType();
+//        imgURLsList = gson.fromJson(json, type);
+////        Log.d(TAG, "fetchPhotosFromSp: "+imgURLsList.size());
+//        if (imgURLsList == null || imgURLsList.size() == 0) {
+//            Log.d(TAG, "fetchPhotosFromSp: 1");
+//            imgURLsList = new ArrayList<>();
+//            SetupGridView();
+//        } else {
+//            Log.d(TAG, "fetchPhotosFromSp: 2");
+//
+//            checkUpdate();
+//        }
+//    }
+//
+//    private void checkUpdate() {
+////        noPost.setVisibility(View.GONE);
+//
+//        Log.d(TAG, "checkUpdate: started");
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        assert user != null;
+//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_user_photos)).child(user.getUid());
+//
+//        Log.d(TAG, "checkUpdate: user" + user.getUid());
+//        Query query = reference.limitToLast(1);
+//        query.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+//                    if (imgURLsList.get(0).getPi().equals(dataSnapshot.getKey())) {
+//
+//                        reference.addValueEventListener(new ValueEventListener() {
+//                            @Override
+//                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                if (snapshot.getChildrenCount() == imgURLsList.size()) {
+//
+//                                    if (imgURLsList != null && imgURLsList.size() != 0) {
+//                                        displayPhotos();
+//                                    } else {
+////                                        noPost.setVisibility(View.VISIBLE);
+//                                    }
+//                                } else {
+//                                    SetupGridView();
+//
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onCancelled(@NonNull DatabaseError error) {
+//
+//                            }
+//                        });
+//
+//                    } else {
+//                        SetupGridView();
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//
+//    }
+//
+//    public void verifyPermission(String[] permissions) {
+//        ActivityCompat.requestPermissions(this, permissions, VERIFY_PERMISSION_REQUEST);
+//    }
+//
+//    public boolean checkPermissionArray(String[] permissions) {
+//        for (String check : permissions) if (!checkPermissions(check)) return false;
+//        return true;
+//    }
+//
+//    public boolean checkPermissions(String permission) {
+//        int permissionRequest = ActivityCompat.checkSelfPermission(this, permission);
+//        return permissionRequest == PackageManager.PERMISSION_GRANTED;
+//    }
 
-            checkUpdate();
-        }
-    }
-
-    private void checkUpdate() {
-//        noPost.setVisibility(View.GONE);
-
-        Log.d(TAG, "checkUpdate: started");
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assert user != null;
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_user_photos)).child(user.getUid());
-
-        Log.d(TAG, "checkUpdate: user" + user.getUid());
-        Query query = reference.limitToLast(1);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    if (imgURLsList.get(0).getPi().equals(dataSnapshot.getKey())) {
-
-                        reference.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.getChildrenCount() == imgURLsList.size()) {
-
-                                    if (imgURLsList != null && imgURLsList.size() != 0) {
-                                        displayPhotos();
-                                    } else {
-//                                        noPost.setVisibility(View.VISIBLE);
-                                    }
-                                } else {
-                                    SetupGridView();
-
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-
-                    } else {
-                        SetupGridView();
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-    }
-
-    public void verifyPermission(String[] permissions) {
-        ActivityCompat.requestPermissions(this, permissions, VERIFY_PERMISSION_REQUEST);
-    }
-
-    public boolean checkPermissionArray(String[] permissions) {
-        for (String check : permissions) if (!checkPermissions(check)) return false;
-        return true;
-    }
-
-    public boolean checkPermissions(String permission) {
-        int permissionRequest = ActivityCompat.checkSelfPermission(this, permission);
-        return permissionRequest == PackageManager.PERMISSION_GRANTED;
-    }
-
-    @TargetApi(19)
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        String imgPath = "";
-        if (data != null && data.getData() != null && resultCode == RESULT_OK) {
-            Uri uri = data.getData();
-            if (isKitKat && DocumentsContract.isDocumentUri(this, uri)) {
-                if ("com.android.externalstorage.documents".equals(uri.getAuthority())) {
-                    String docId = DocumentsContract.getDocumentId(uri);
-                    String[] split = docId.split(":");
-                    String type = split[0];
-                    if ("primary".equalsIgnoreCase(type)) {
-                        imgPath = Environment.getExternalStorageDirectory() + "/" + split[1];
-                        Intent intent = new Intent(this, PostPhotoActivity.class);
-                        intent.putExtra(getString(R.string.selected_image), imgPath);
-                        startActivity(intent);
-                    } else {
-                        Pattern DIR_SEPORATOR = Pattern.compile("/");
-                        Set<String> rv = new HashSet<>();
-                        String rawExternalStorage = System.getenv("EXTERNAL_STORAGE");
-                        String rawSecondaryStoragesStr = System.getenv("SECONDARY_STORAGE");
-                        String rawEmulatedStorageTarget = System.getenv("EMULATED_STORAGE_TARGET");
-                        if (TextUtils.isEmpty(rawEmulatedStorageTarget)) {
-                            if (TextUtils.isEmpty(rawExternalStorage)) {
-                                rv.add("/storage/sdcard0");
-                            } else {
-                                rv.add(rawExternalStorage);
-                            }
-                        } else {
-                            String rawUserId;
-                            String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-                            String[] folders = DIR_SEPORATOR.split(path);
-                            String lastFolder = folders[folders.length - 1];
-                            boolean isDigit = false;
-                            try {
-                                Integer.valueOf(lastFolder);
-                                isDigit = true;
-                            } catch (NumberFormatException ignored) {
-                            }
-                            rawUserId = isDigit ? lastFolder : "";
-                            if (TextUtils.isEmpty(rawUserId)) {
-                                rv.add(rawEmulatedStorageTarget);
-                            } else {
-                                rv.add(rawEmulatedStorageTarget + File.separator + rawUserId);
-                            }
-                        }
-                        if (!TextUtils.isEmpty(rawSecondaryStoragesStr)) {
-                            assert rawSecondaryStoragesStr != null;
-                            String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
-                            Collections.addAll(rv, rawSecondaryStorages);
-                        }
-                        String[] temp = rv.toArray(new String[0]);
-                        for (String s : temp) {
-                            File tempf = new File(s + "/" + split[1]);
-                            if (tempf.exists()) {
-                                imgPath = s + "/" + split[1];
-                                Intent intent = new Intent(this, PostPhotoActivity.class);
-                                intent.putExtra(getString(R.string.selected_image), imgPath);
-                                startActivity(intent);
-                            }
-                        }
-                    }
-                } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
-                    String id = DocumentsContract.getDocumentId(uri);
-                    Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
-                    Cursor cursor = null;
-                    String column = "_data";
-                    String[] projection = {column};
-                    try {
-                        cursor = this.getContentResolver().query(contentUri, projection, null, null,
-                                null);
-                        if (cursor != null && cursor.moveToFirst()) {
-                            int column_index = cursor.getColumnIndexOrThrow(column);
-                            imgPath = cursor.getString(column_index);
-                        }
-                    } finally {
-                        if (cursor != null)
-                            cursor.close();
-                    }
-                } else if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
-                    String docId = DocumentsContract.getDocumentId(uri);
-                    String[] split = docId.split(":");
-                    String type = split[0];
-
-                    Uri contentUri = null;
-                    if ("image".equals(type)) {
-                        contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                    } else if ("video".equals(type)) {
-                        contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                    } else if ("audio".equals(type)) {
-                        contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                    }
-
-                    String selection = "_id=?";
-                    String[] selectionArgs = new String[]{split[1]};
-
-                    Cursor cursor = null;
-                    String column = "_data";
-                    String[] projection = {column};
-
-                    try {
-                        assert contentUri != null;
-                        cursor = this.getContentResolver().query(contentUri, projection, selection, selectionArgs, null);
-                        if (cursor != null && cursor.moveToFirst()) {
-                            int column_index = cursor.getColumnIndexOrThrow(column);
-                            imgPath = cursor.getString(column_index);
-                            Intent intent = new Intent(this, PostPhotoActivity.class);
-                            intent.putExtra(getString(R.string.selected_image), imgPath);
-                            startActivity(intent);
-                        }
-                    } finally {
-                        if (cursor != null)
-                            cursor.close();
-                    }
-                } else if ("com.google.android.apps.docs.storage".equals(uri.getAuthority())) {
-                    Intent intent = new Intent(this, PostPhotoActivity.class);
-                    intent.putExtra(getString(R.string.selected_image), imgPath);
-                    startActivity(intent);
-                }
-            } else if ("content".equalsIgnoreCase(uri.getScheme())) {
-                Cursor cursor = null;
-                String column = "_data";
-                String[] projection = {column};
-
-                try {
-                    cursor = this.getContentResolver().query(uri, projection, null, null, null);
-                    if (cursor != null && cursor.moveToFirst()) {
-                        int column_index = cursor.getColumnIndexOrThrow(column);
-                        imgPath = cursor.getString(column_index);
-                        Intent intent = new Intent(this, PostPhotoActivity.class);
-                        intent.putExtra(getString(R.string.selected_image), imgPath);
-                        startActivity(intent);
-                    }
-                } finally {
-                    if (cursor != null)
-                        cursor.close();
-                }
-            } else if ("file".equalsIgnoreCase(uri.getScheme())) {
-                imgPath = uri.getPath();
-                Intent intent = new Intent(this, PostPhotoActivity.class);
-                intent.putExtra(getString(R.string.selected_image), imgPath);
-                startActivity(intent);
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void SetupGridView() {
-//        noPost.setVisibility(View.GONE);
-
-        final ArrayList<Photo> photos = new ArrayList<>();
-        imgURLsList = new ArrayList<>();
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbname_user_photos)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                    Photo photo = new Photo();
-                    Map<String, Object> objectMap = (Map<String, Object>) singleSnapshot.getValue();
-
-                    photo.setCap(objectMap.get(getString(R.string.field_caption)).toString());
-                    photo.setTg(objectMap.get(getString(R.string.field_tags)).toString());
-                    photo.setPi(objectMap.get(getString(R.string.field_photo_id)).toString());
-                    photo.setUi(objectMap.get(getString(R.string.field_user_id)).toString());
-                    photo.setDc(objectMap.get(getString(R.string.field_date_createdr)).toString());
-                    photo.setIp(objectMap.get(getString(R.string.field_image_path)).toString());
-                    if (objectMap.get(getString(R.string.thumbnail)) != null)
-                        photo.setT(objectMap.get(getString(R.string.thumbnail)).toString());
-                    photo.setTy(objectMap.get(getString(R.string.type)).toString());
-                    ArrayList<Comment> comments = new ArrayList<>();
-                    for (DataSnapshot dSnapshot : singleSnapshot.child(getString(R.string.field_comment)).getChildren()) {
-                        Comment comment = new Comment();
-                        comment.setUi(dSnapshot.getValue(Comment.class).getUi());
-                        comment.setC(dSnapshot.getValue(Comment.class).getC());
-                        comment.setDc(dSnapshot.getValue(Comment.class).getDc());
-                        comments.add(comment);
-                    }
-                    photo.setComments(comments);
-                    List<Like> likeList = new ArrayList<Like>();
-                    for (DataSnapshot dSnapshot : singleSnapshot.child(getString(R.string.field_likes)).getChildren()) {
-                        Like like = new Like();
-                        like.setUi(dSnapshot.getValue(Like.class).getUi());
-                        likeList.add(like);
-                    }
-                    photos.add(photo);
-
-                }
-                imgURLsList.addAll(photos);
-                Collections.reverse(imgURLsList);
-                //    Add newly Created ArrayList to Shared Preferences
-                SharedPreferences.Editor editor = sp.edit();
-                String json = gson.toJson(imgURLsList);
-                editor.putString("myMedia", json);
-                editor.apply();
-
-                if (imgURLsList != null && imgURLsList.size() != 0) {
-                    displayPhotos();
-                } else {
-//                    noPost.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d(TAG, "Query Cancelled");
-            }
-        });
-    }
+//    @TargetApi(19)
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        String imgPath = "";
+//        if (data != null && data.getData() != null && resultCode == RESULT_OK) {
+//            Uri uri = data.getData();
+//            if (isKitKat && DocumentsContract.isDocumentUri(this, uri)) {
+//                if ("com.android.externalstorage.documents".equals(uri.getAuthority())) {
+//                    String docId = DocumentsContract.getDocumentId(uri);
+//                    String[] split = docId.split(":");
+//                    String type = split[0];
+//                    if ("primary".equalsIgnoreCase(type)) {
+//                        imgPath = Environment.getExternalStorageDirectory() + "/" + split[1];
+//                        Intent intent = new Intent(this, PostPhotoActivity.class);
+//                        intent.putExtra(getString(R.string.selected_image), imgPath);
+//                        startActivity(intent);
+//                    } else {
+//                        Pattern DIR_SEPORATOR = Pattern.compile("/");
+//                        Set<String> rv = new HashSet<>();
+//                        String rawExternalStorage = System.getenv("EXTERNAL_STORAGE");
+//                        String rawSecondaryStoragesStr = System.getenv("SECONDARY_STORAGE");
+//                        String rawEmulatedStorageTarget = System.getenv("EMULATED_STORAGE_TARGET");
+//                        if (TextUtils.isEmpty(rawEmulatedStorageTarget)) {
+//                            if (TextUtils.isEmpty(rawExternalStorage)) {
+//                                rv.add("/storage/sdcard0");
+//                            } else {
+//                                rv.add(rawExternalStorage);
+//                            }
+//                        } else {
+//                            String rawUserId;
+//                            String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+//                            String[] folders = DIR_SEPORATOR.split(path);
+//                            String lastFolder = folders[folders.length - 1];
+//                            boolean isDigit = false;
+//                            try {
+//                                Integer.valueOf(lastFolder);
+//                                isDigit = true;
+//                            } catch (NumberFormatException ignored) {
+//                            }
+//                            rawUserId = isDigit ? lastFolder : "";
+//                            if (TextUtils.isEmpty(rawUserId)) {
+//                                rv.add(rawEmulatedStorageTarget);
+//                            } else {
+//                                rv.add(rawEmulatedStorageTarget + File.separator + rawUserId);
+//                            }
+//                        }
+//                        if (!TextUtils.isEmpty(rawSecondaryStoragesStr)) {
+//                            assert rawSecondaryStoragesStr != null;
+//                            String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
+//                            Collections.addAll(rv, rawSecondaryStorages);
+//                        }
+//                        String[] temp = rv.toArray(new String[0]);
+//                        for (String s : temp) {
+//                            File tempf = new File(s + "/" + split[1]);
+//                            if (tempf.exists()) {
+//                                imgPath = s + "/" + split[1];
+//                                Intent intent = new Intent(this, PostPhotoActivity.class);
+//                                intent.putExtra(getString(R.string.selected_image), imgPath);
+//                                startActivity(intent);
+//                            }
+//                        }
+//                    }
+//                } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+//                    String id = DocumentsContract.getDocumentId(uri);
+//                    Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
+//                    Cursor cursor = null;
+//                    String column = "_data";
+//                    String[] projection = {column};
+//                    try {
+//                        cursor = this.getContentResolver().query(contentUri, projection, null, null,
+//                                null);
+//                        if (cursor != null && cursor.moveToFirst()) {
+//                            int column_index = cursor.getColumnIndexOrThrow(column);
+//                            imgPath = cursor.getString(column_index);
+//                        }
+//                    } finally {
+//                        if (cursor != null)
+//                            cursor.close();
+//                    }
+//                } else if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
+//                    String docId = DocumentsContract.getDocumentId(uri);
+//                    String[] split = docId.split(":");
+//                    String type = split[0];
+//
+//                    Uri contentUri = null;
+//                    if ("image".equals(type)) {
+//                        contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+//                    } else if ("video".equals(type)) {
+//                        contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+//                    } else if ("audio".equals(type)) {
+//                        contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+//                    }
+//
+//                    String selection = "_id=?";
+//                    String[] selectionArgs = new String[]{split[1]};
+//
+//                    Cursor cursor = null;
+//                    String column = "_data";
+//                    String[] projection = {column};
+//
+//                    try {
+//                        assert contentUri != null;
+//                        cursor = this.getContentResolver().query(contentUri, projection, selection, selectionArgs, null);
+//                        if (cursor != null && cursor.moveToFirst()) {
+//                            int column_index = cursor.getColumnIndexOrThrow(column);
+//                            imgPath = cursor.getString(column_index);
+//                            Intent intent = new Intent(this, PostPhotoActivity.class);
+//                            intent.putExtra(getString(R.string.selected_image), imgPath);
+//                            startActivity(intent);
+//                        }
+//                    } finally {
+//                        if (cursor != null)
+//                            cursor.close();
+//                    }
+//                } else if ("com.google.android.apps.docs.storage".equals(uri.getAuthority())) {
+//                    Intent intent = new Intent(this, PostPhotoActivity.class);
+//                    intent.putExtra(getString(R.string.selected_image), imgPath);
+//                    startActivity(intent);
+//                }
+//            } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+//                Cursor cursor = null;
+//                String column = "_data";
+//                String[] projection = {column};
+//
+//                try {
+//                    cursor = this.getContentResolver().query(uri, projection, null, null, null);
+//                    if (cursor != null && cursor.moveToFirst()) {
+//                        int column_index = cursor.getColumnIndexOrThrow(column);
+//                        imgPath = cursor.getString(column_index);
+//                        Intent intent = new Intent(this, PostPhotoActivity.class);
+//                        intent.putExtra(getString(R.string.selected_image), imgPath);
+//                        startActivity(intent);
+//                    }
+//                } finally {
+//                    if (cursor != null)
+//                        cursor.close();
+//                }
+//            } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+//                imgPath = uri.getPath();
+//                Intent intent = new Intent(this, PostPhotoActivity.class);
+//                intent.putExtra(getString(R.string.selected_image), imgPath);
+//                startActivity(intent);
+//            }
+//        }
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
+//
+//    private void SetupGridView() {
+////        noPost.setVisibility(View.GONE);
+//
+//        final ArrayList<Photo> photos = new ArrayList<>();
+//        imgURLsList = new ArrayList<>();
+//
+//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+//        Query query = reference.child(getString(R.string.dbname_user_photos)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+//        query.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+//                    Photo photo = new Photo();
+//                    Map<String, Object> objectMap = (Map<String, Object>) singleSnapshot.getValue();
+//
+//                    photo.setCap(objectMap.get(getString(R.string.field_caption)).toString());
+//                    photo.setTg(objectMap.get(getString(R.string.field_tags)).toString());
+//                    photo.setPi(objectMap.get(getString(R.string.field_photo_id)).toString());
+//                    photo.setUi(objectMap.get(getString(R.string.field_user_id)).toString());
+//                    photo.setDc(objectMap.get(getString(R.string.field_date_createdr)).toString());
+//                    photo.setIp(objectMap.get(getString(R.string.field_image_path)).toString());
+//                    if (objectMap.get(getString(R.string.thumbnail)) != null)
+//                        photo.setT(objectMap.get(getString(R.string.thumbnail)).toString());
+//                    photo.setTy(objectMap.get(getString(R.string.type)).toString());
+//                    ArrayList<Comment> comments = new ArrayList<>();
+//                    for (DataSnapshot dSnapshot : singleSnapshot.child(getString(R.string.field_comment)).getChildren()) {
+//                        Comment comment = new Comment();
+//                        comment.setUi(dSnapshot.getValue(Comment.class).getUi());
+//                        comment.setC(dSnapshot.getValue(Comment.class).getC());
+//                        comment.setDc(dSnapshot.getValue(Comment.class).getDc());
+//                        comments.add(comment);
+//                    }
+//                    photo.setComments(comments);
+//                    List<Like> likeList = new ArrayList<Like>();
+//                    for (DataSnapshot dSnapshot : singleSnapshot.child(getString(R.string.field_likes)).getChildren()) {
+//                        Like like = new Like();
+//                        like.setUi(dSnapshot.getValue(Like.class).getUi());
+//                        likeList.add(like);
+//                    }
+//                    photos.add(photo);
+//
+//                }
+//                imgURLsList.addAll(photos);
+//                Collections.reverse(imgURLsList);
+//                //    Add newly Created ArrayList to Shared Preferences
+//                SharedPreferences.Editor editor = sp.edit();
+//                String json = gson.toJson(imgURLsList);
+//                editor.putString("myMedia", json);
+//                editor.apply();
+//
+//                if (imgURLsList != null && imgURLsList.size() != 0) {
+//                    displayPhotos();
+//                } else {
+////                    noPost.setVisibility(View.VISIBLE);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//                Log.d(TAG, "Query Cancelled");
+//            }
+//        });
+//    }
 
     private void setProfileWidgets(users userSetting) {
         Log.d(TAG, "onDataChange: " + userSetting.toString());
@@ -977,7 +951,7 @@ public class ProfileActivity extends AppCompatActivity {
                         .setTitle("No user logon found")
                         .setMessage("We will be logging you out. \n Please try to log in again")
                         .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                            Intent intent = new Intent(mContext, login.class);
+                            Intent intent = new Intent(mContext, LoginActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             settings.edit().clear().apply();
                             if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
@@ -989,86 +963,86 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-    private void displayPhotos() {
-//        noPost.setVisibility(View.GONE);
-        Log.d(TAG, "display first 10 photo");
-        paginatedimgURLsList = new ArrayList<>();
-        if (imgURLsList != null && imgURLsList.size() != 0) {
+//    private void displayPhotos() {
+////        noPost.setVisibility(View.GONE);
+//        Log.d(TAG, "display first 10 photo");
+//        paginatedimgURLsList = new ArrayList<>();
+//        if (imgURLsList != null && imgURLsList.size() != 0) {
+//
+//            try {
+//
+//                int iteration = imgURLsList.size();
+//                if (iteration > 10) {
+//                    iteration = 10;
+//                }
+//                mResults = 10;
+//                for (int i = 0; i < iteration; i++) {
+//                    paginatedimgURLsList.add(imgURLsList.get(i));
+//                }
+//                Log.d(TAG, "displayPhotos: sss" + paginatedimgURLsList.size());
+//                adapterGridImage = new AdapterGridImage(ProfileActivity.this, paginatedimgURLsList);
+//                adapterGridImage.setHasStableIds(true);
+//                gridRv.setAdapter(adapterGridImage);
+//
+//            } catch (NullPointerException e) {
+//                Log.e(TAG, "Null pointer exception" + e.getMessage());
+//
+//            } catch (IndexOutOfBoundsException e) {
+//                Log.e(TAG, "index out of bound" + e.getMessage());
+//
+//            }
+//
+//        } else {
+////            noPost.setVisibility(View.VISIBLE);
+////            bottomProgress.setVisibility(View.GONE);
+//
+//        }
+//    }
 
-            try {
-
-                int iteration = imgURLsList.size();
-                if (iteration > 10) {
-                    iteration = 10;
-                }
-                mResults = 10;
-                for (int i = 0; i < iteration; i++) {
-                    paginatedimgURLsList.add(imgURLsList.get(i));
-                }
-                Log.d(TAG, "displayPhotos: sss" + paginatedimgURLsList.size());
-                adapterGridImage = new AdapterGridImage(ProfileActivity.this, paginatedimgURLsList);
-                adapterGridImage.setHasStableIds(true);
-                gridRv.setAdapter(adapterGridImage);
-
-            } catch (NullPointerException e) {
-                Log.e(TAG, "Null pointer exception" + e.getMessage());
-
-            } catch (IndexOutOfBoundsException e) {
-                Log.e(TAG, "index out of bound" + e.getMessage());
-
-            }
-
-        } else {
-//            noPost.setVisibility(View.VISIBLE);
-//            bottomProgress.setVisibility(View.GONE);
-
-        }
-    }
-
-    public void displayMorePhotos() {
-        Log.d(TAG, "display next 10 photo");
-
-        try {
-            if (imgURLsList.size() > mResults && imgURLsList.size() > 0) {
-
-                int iterations;
-                if (imgURLsList.size() > (mResults + 6)) {
-                    Log.d(TAG, "display next 10 photo");
-                    iterations = 6;
-                } else {
-                    Log.d(TAG, "display less tha 10 photo");
-                    iterations = imgURLsList.size() - mResults;
-                }
-                for (int i = mResults; i < mResults + iterations; i++) {
-                    paginatedimgURLsList.add(imgURLsList.get(i));
-
-                }
-                gridRv.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d(TAG, "run: " + mResults + iterations);
-                        adapterGridImage.notifyDataSetChanged();
-
-
-                    }
-                });
-                mResults = mResults + iterations;
-
-
-            } else {
-//                bottomProgress.setVisibility(View.GONE);
-
-            }
-
-        } catch (NullPointerException e) {
-            Log.e(TAG, "Null pointer exception" + e.getMessage());
-
-        } catch (IndexOutOfBoundsException e) {
-            Log.e(TAG, "index out of bound" + e.getMessage());
-
-        }
-
-    }
+//    public void displayMorePhotos() {
+//        Log.d(TAG, "display next 10 photo");
+//
+//        try {
+//            if (imgURLsList.size() > mResults && imgURLsList.size() > 0) {
+//
+//                int iterations;
+//                if (imgURLsList.size() > (mResults + 6)) {
+//                    Log.d(TAG, "display next 10 photo");
+//                    iterations = 6;
+//                } else {
+//                    Log.d(TAG, "display less tha 10 photo");
+//                    iterations = imgURLsList.size() - mResults;
+//                }
+//                for (int i = mResults; i < mResults + iterations; i++) {
+//                    paginatedimgURLsList.add(imgURLsList.get(i));
+//
+//                }
+//                gridRv.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Log.d(TAG, "run: " + mResults + iterations);
+//                        adapterGridImage.notifyDataSetChanged();
+//
+//
+//                    }
+//                });
+//                mResults = mResults + iterations;
+//
+//
+//            } else {
+////                bottomProgress.setVisibility(View.GONE);
+//
+//            }
+//
+//        } catch (NullPointerException e) {
+//            Log.e(TAG, "Null pointer exception" + e.getMessage());
+//
+//        } catch (IndexOutOfBoundsException e) {
+//            Log.e(TAG, "index out of bound" + e.getMessage());
+//
+//        }
+//
+//    }
 
     @Override
     public void onStart() {

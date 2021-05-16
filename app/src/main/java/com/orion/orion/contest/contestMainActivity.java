@@ -1,3 +1,4 @@
+
 package com.orion.orion.contest;
 
 import android.content.Context;
@@ -22,7 +23,7 @@ import com.orion.orion.R;
 import com.orion.orion.contest.create.fragment_createContest;
 import com.orion.orion.contest.joined.fragment_joinedContest;
 import com.orion.orion.contest.upcoming.fragment_upcomingContest;
-import com.orion.orion.login.login;
+import com.orion.orion.login.LoginActivity;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 
 public class contestMainActivity extends AppCompatActivity {
@@ -34,12 +35,8 @@ public class contestMainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser mUser;
-<<<<<<< Updated upstream
-    private TabLayout tablayout;
-=======
->>>>>>> Stashed changes
+
     private ViewPager mViewPager;
-    private TabLayout tablayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,16 +44,12 @@ public class contestMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contest);
         Log.d(TAG, "onCreate: started.");
         mContext = contestMainActivity.this;
-        mViewPager = findViewById(R.id.viewpager_container);
-<<<<<<< Updated upstream
-=======
-        tablayout = findViewById(R.id.tabs);
->>>>>>> Stashed changes
+        mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
         setupBottomNavigationView();
-        setupViewPager();
         setupFirebaseAuth();
         checkCurrentuser(mAuth.getCurrentUser());
         hideSoftKeyboard();
+        setupViewPager();
     }
 
     //    for adding 3 tabs -media,home,message
@@ -65,26 +58,25 @@ public class contestMainActivity extends AppCompatActivity {
         adapter.addFragment(new fragment_createContest());
         adapter.addFragment(new fragment_upcomingContest());
         adapter.addFragment(new fragment_joinedContest());
-<<<<<<< Updated upstream
-        mViewPager.postDelayed(() -> {
+
+
+        mViewPager.postDelayed((Runnable) () -> {
             mViewPager.setAdapter(adapter);
-            tablayout = findViewById(R.id.tabs);
-=======
-        mViewPager.setOffscreenPageLimit(3);
-        mViewPager.postDelayed(() -> {
-            mViewPager.setAdapter(adapter);
->>>>>>> Stashed changes
+            TabLayout tablayout = (TabLayout) findViewById(R.id.tabs);
             tablayout.setupWithViewPager(mViewPager);
             mViewPager.setCurrentItem(CREATE_CONTEST);
+//        for giving icon to them
             tablayout.getTabAt(0).setText("create");
             tablayout.getTabAt(1).setText("upcoming");
             tablayout.getTabAt(2).setText("joined");
-        }, 1);
+        }, 10);
     }
+
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+
     }
 
     private void hideSoftKeyboard() {
@@ -96,21 +88,21 @@ public class contestMainActivity extends AppCompatActivity {
 
     private void setupBottomNavigationView() {
         Log.d(TAG, " setupBottomNavigationView:setting up BottomNavigationView");
-        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.BottomNavViewBar);
+        BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.BottomNavViewBar);
         BottomNaavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
         BottomNaavigationViewHelper.enableNavigation(contestMainActivity.this, this, bottomNavigationViewEx);
+
         Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);
+
     }
 
     private void checkCurrentuser(FirebaseUser user) {
         Log.d(TAG, "checkCurrentuser:check if current user logged in");
-        if (user == null) {
-            Intent intent = new Intent(contestMainActivity.this, login.class);
-            startActivity(intent);
-        }
+        if (user == null) startActivity(new Intent(contestMainActivity.this, LoginActivity.class));
     }
+
 
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
@@ -125,7 +117,7 @@ public class contestMainActivity extends AppCompatActivity {
                         .setTitle("No user logon found")
                         .setMessage("We will be logging u out. \n Please try to log in again")
                         .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                            Intent intent = new Intent(mContext, login.class);
+                            Intent intent = new Intent(mContext, LoginActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             settings.edit().clear().apply();
                             if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);

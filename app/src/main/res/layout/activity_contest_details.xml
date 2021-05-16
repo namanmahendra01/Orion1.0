@@ -13,7 +13,7 @@
 
         android:layout_height="wrap_content">
 
-        <include layout="@layout/snippet_top_contest_bar" />
+        <include layout="@layout/snippet_top_contest_ac_bar" />
     </RelativeLayout>
 
     <ScrollView

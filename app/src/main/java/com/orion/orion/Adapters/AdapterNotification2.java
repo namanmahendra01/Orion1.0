@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.orion.orion.R;
-import com.orion.orion.ViewPostActivity;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.Notification;
 import com.orion.orion.models.Photo;
@@ -42,8 +40,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-
-import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotification2.ViewHolder> {
 
@@ -118,56 +114,56 @@ public class AdapterNotification2 extends RecyclerView.Adapter<AdapterNotificati
 
         holder.timeStamp1.setText(datetime);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (holder.msg2.equals("") && !notification.getpId().equals("false")) {
-
-                    DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
-                    db1.child(context.getString(R.string.dbname_user_photos))
-                            .child(notification.getpUid())
-                            .child(notification.getpId())
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (snapshot.exists()) {
-                                        holder.photo = snapshot.getValue(Photo.class);
-                                        ArrayList<Comment> comments = new ArrayList<>();
-
-                                        for (DataSnapshot dSnapshot : snapshot.child(context.getString(R.string.field_comment)).getChildren()) {
-                                            Comment comment = new Comment();
-                                            comment.setUi(dSnapshot.getValue(Comment.class).getUi());
-                                            comment.setC(dSnapshot.getValue(Comment.class).getC());
-                                            comment.setDc(dSnapshot.getValue(Comment.class).getDc());
-                                            comments.add(comment);
-
-
-                                        }
-
-
-                                        Intent i = new Intent(context, ViewPostActivity.class);
-                                        i.putExtra("photo", holder.photo);
-                                        i.putParcelableArrayListExtra("comments", comments);
-
-                                        context.startActivity(i);
-
-
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-
-
-                }else if(!holder.msg2.equals("") ) {
-                    bottomSheet(holder.msg2,holder.host);
-                }
-            }
-        });
+//        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                if (holder.msg2.equals("") && !notification.getpId().equals("false")) {
+//
+//                    DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
+//                    db1.child(context.getString(R.string.dbname_user_photos))
+//                            .child(notification.getpUid())
+//                            .child(notification.getpId())
+//                            .addListenerForSingleValueEvent(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                    if (snapshot.exists()) {
+//                                        holder.photo = snapshot.getValue(Photo.class);
+//                                        ArrayList<Comment> comments = new ArrayList<>();
+//
+//                                        for (DataSnapshot dSnapshot : snapshot.child(context.getString(R.string.field_comment)).getChildren()) {
+//                                            Comment comment = new Comment();
+//                                            comment.setUi(dSnapshot.getValue(Comment.class).getUi());
+//                                            comment.setC(dSnapshot.getValue(Comment.class).getC());
+//                                            comment.setDc(dSnapshot.getValue(Comment.class).getDc());
+//                                            comments.add(comment);
+//
+//
+//                                        }
+//
+//
+//                                        Intent i = new Intent(context, ViewPostActivity.class);
+//                                        i.putExtra("photo", holder.photo);
+//                                        i.putParcelableArrayListExtra("comments", comments);
+//
+//                                        context.startActivity(i);
+//
+//
+//                                    }
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                                }
+//                            });
+//
+//
+//                }else if(!holder.msg2.equals("") ) {
+//                    bottomSheet(holder.msg2,holder.host);
+//                }
+//            }
+//        });
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {

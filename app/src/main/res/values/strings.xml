@@ -14,9 +14,6 @@
 
     <string name="selected_image">selected_image</string>
 
-    <string name="comments">Comments</string>
-
-    <string name="search_activity">Search Activity</string>
     <string name="intent_user">intent_user</string>
 
     <string name="home">Home Activity</string>
@@ -35,9 +32,7 @@
     <string name="dbname_Chats">Chats</string>
     <string name="dbname_request">Requests</string>
     <string name="dbname_promote">Promote</string>
-    <string name="dbname_reports">Reports</string>
     <string name="dbname_ChatList">ChatList</string>
-    <string name="db_topUsersParams">db_topUsersParams</string>
     <string name="dbname_username">username</string>
 
 
@@ -58,14 +53,8 @@
     <string name="field_city">cty</string>
     <string name="field_area">area</string>
     <string name="field_domain">d</string>
-    <string name="field_post">p</string>
-    <string name="post_updates">pu</string>
     <string name="thumbnail">t</string>
     <string name="type">ty</string>
-    <string name="field_last_updated_topUsers">luu</string>
-    <string name="field_overall">Overall</string>
-    <string name="field_completed">cmp</string>
-    <string name="contest_update">cu</string>
     <string name="changedFollowers">cf</string>
     <string name="changedJoinedContest">cjc</string>
     <string name="changedCreatedContest">ccc</string>
@@ -73,7 +62,6 @@
     <string name="field_facebook">fb</string>
     <string name="field_twitter">tw</string>
     <string name="field_whatsapp">wa</string>
-    <string name="explore_update">eu</string>
     <string name="field_link1">l1</string>
     <string name="field_link2">l2</string>
     <string name="field_link3">l3</string>
@@ -98,14 +86,12 @@
     <string name="field_Participant_List">pl</string>
     <string name="gp_displayer_tittle">GP:GENUINE PERCENTAGE</string>
     <string name="delete_message_prompt">Are you sure, you want to delete this message?</string>
-    <string name="delete_post_prompt">Are you sure, you want to delete this Post?</string>
     <string name="remove_promotion_prompt">"Are you sure, you want to remove this Promotion?"</string>
 
     <string name="field_contest_completed">c_cmp</string>
     <string name="field_contest_reports">c_rprt</string>
     <string name="field_contest_report_list">rl</string>
     <string name="report_prompt">Are you sure, you want to Report this Contest?</string>
-    <string name="report_post_prompt">Are you sure, you want to Report this Post?</string>
 
     <string name="gp_diplayer_description">This is the percentage showing how much genuine this host is.</string>
     <string name="field_total_voters_list">tvl</string>
@@ -164,21 +150,14 @@
     <string name="field_jury_3">j3</string>
     <string name="field_notification_message">not</string>
 
-    <string name="field_promotion_time_start">tis</string>
-    <string name="field_promotion_time_end">tie</string>
-    <string name="field_promoter_ID">pid</string>
-    <string name="field_story_ID">stid</string>
     <string name="field_unfollowed_Me">um</string>
     <string name="Privacy_Policy">https://drive.google.com/file/d/1Kat9jq_H9vXxNWXmKfP4N3XerfpfHkw5/view?usp=sharing</string>
     <string name="Terms_and_Condition">https://drive.google.com/file/d/1t8XtHgyhvhWlWPlqoG8MREP56kFuEhPL/view?usp=sharing</string>
     <string name="orion_team_user_id">VGk6jAJMZhbxAYO5zqU6OGqaTXO2</string>
-    <string name="liked_message">liked your post</string>
-    <string name="like_string">Like</string>
-    <string name="promote_message">promoted your post.</string>
-    <string name="promote_string">Promoted</string>
     <string name="chat_message">sent you a message.</string>
     <string name="message_string">Message</string>
     <string name="type_of_share">Select purpose you want to share for-</string>
+    <string name="post_updates">pu</string>
 
 
     <string-array name="entryfee2">

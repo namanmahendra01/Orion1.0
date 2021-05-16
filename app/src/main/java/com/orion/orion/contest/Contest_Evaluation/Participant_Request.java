@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,7 @@ public class Participant_Request extends AppCompatActivity {
     private int mResults;
     private FirebaseAuth fAuth;
     private ImageView backArrow;
+    private TextView mTopBarTitle;
     private String Conteskey;
 
     private AdapterParticipantRequest adapterParticipantRequest;
@@ -41,10 +43,14 @@ public class Participant_Request extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_participant_requests);
 
+
+        backArrow = findViewById(R.id.backarrow);
+        mTopBarTitle = findViewById(R.id.titleTopBar);
+        backArrow.setOnClickListener(view -> finish());
+        mTopBarTitle.setText("Participant Request");
         Intent i = getIntent();
         Conteskey = i.getStringExtra("ContestKey");
-        backArrow = findViewById(R.id.backarrow);
-        backArrow.setOnClickListener(view -> finish());
+
         participantRv = findViewById(R.id.recycler_view4);
         participantRv.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);

@@ -1,4 +1,4 @@
-package com.orion.orion.home;
+package com.orion.orion.chat;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,9 +6,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -18,7 +17,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.Adapters.AdapterMessageRequest;
-import com.orion.orion.Adapters.AdaterChatList;
 import com.orion.orion.R;
 import com.orion.orion.models.Chat;
 import com.orion.orion.models.users;
@@ -26,8 +24,6 @@ import com.orion.orion.util.FirebaseMethods;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.orion.orion.util.SNTPClient.TAG;
 
 public class Message_Request extends AppCompatActivity {
 
@@ -41,7 +37,8 @@ public class Message_Request extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
     FirebaseUser currentUser;
 
-    ImageView backArrow;
+    private ImageView backArrow;
+    private TextView mTopBarTitle;
     private Context mcontext;
 
     RecyclerView recyclerView;
@@ -57,15 +54,12 @@ public class Message_Request extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerview);
         backArrow = findViewById(R.id.backarrow);
+        mTopBarTitle = findViewById(R.id.titleTopBar);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
-        backArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        backArrow.setOnClickListener(view -> finish());
+        mTopBarTitle.setText("Message Request");
 
         chatList = new ArrayList<>();
 

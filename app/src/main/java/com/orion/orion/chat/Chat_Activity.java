@@ -1,4 +1,4 @@
-package com.orion.orion.home;
+package com.orion.orion.chat;
 
 import android.app.AlertDialog;
 import android.content.Context;

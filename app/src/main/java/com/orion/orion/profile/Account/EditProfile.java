@@ -17,7 +17,6 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +24,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,20 +40,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.orion.orion.R;
-import com.orion.orion.login.login;
+import com.orion.orion.login.LoginActivity;
 import com.orion.orion.models.users;
-import com.orion.orion.profile.PostPhotoActivity;
 import com.orion.orion.profile.ProfileActivity;
 import com.orion.orion.util.FilePaths;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.ImageManager;
 import com.orion.orion.util.Permissions;
-
-import java.io.File;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -448,7 +439,7 @@ public class EditProfile extends AppCompatActivity {
                 dialog.dismiss();
                 Log.d(TAG, "onFailure: Photo Upload Failed");
                 Toast.makeText(mContext, "Photo Upload failed", Toast.LENGTH_SHORT).show();
-                mContext.startActivity(new Intent(mContext, PostPhotoActivity.class));
+                mContext.startActivity(new Intent(mContext, EditProfile.class));
             }).addOnProgressListener(taskSnapshot -> {
                 double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                 ProgressDialog.show(mContext, "", "Uploading... - " + String.format("%.0f", progress) + "%", true);
@@ -671,7 +662,7 @@ public class EditProfile extends AppCompatActivity {
                         .setTitle("No user logon found")
                         .setMessage("We will be logging u out. \n Please try to log in again")
                         .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                            Intent intent = new Intent(mContext, login.class);
+                            Intent intent = new Intent(mContext, LoginActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             settings.edit().clear().apply();
                             if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);

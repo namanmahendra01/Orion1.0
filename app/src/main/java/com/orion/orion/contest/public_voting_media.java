@@ -8,34 +8,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.orion.orion.Adapters.AdapterGridImage;
 import com.orion.orion.Adapters.AdapterGridImageContest;
 import com.orion.orion.R;
-import com.orion.orion.contest.Contest_Evaluation.activity_view_media;
 import com.orion.orion.models.ParticipantList;
-import com.orion.orion.models.Photo;
 
 import java.util.ArrayList;
-
-import static com.android.volley.VolleyLog.TAG;
 
 public class public_voting_media extends AppCompatActivity {
     private static final int NUM_GRID_COLUMNS = 3;
     private static final int ACTIVITY_NUM = 4;
     RecyclerView gridRv;
-    ImageView backArrrow;
+    private ImageView backArrrow;
+    private TextView mTopBarTitle;
     ArrayList<ParticipantList> imgURLsList;
     private AdapterGridImageContest adapterGridImage;
 
@@ -46,17 +39,11 @@ public class public_voting_media extends AppCompatActivity {
         setContentView(R.layout.activity_public_voting_media);
 
 
-        gridRv=(RecyclerView) findViewById(R.id.gridRv);
+        gridRv= findViewById(R.id.gridRv);
         backArrrow= findViewById(R.id.backarrow);
-
-        backArrrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-
+        mTopBarTitle = findViewById(R.id.titleTopBar);
+        backArrrow.setOnClickListener(view -> finish());
+        mTopBarTitle.setText("Vote");
 
         imgURLsList=new ArrayList<>();
 

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.orion.orion.Adapters.AdapterRankList;
 import com.orion.orion.Adapters.AdapterRankListFull;
@@ -25,7 +26,8 @@ public class ranking extends AppCompatActivity {
     ArrayList<ParticipantList> participantLists;
     ArrayList<ParticipantList> paginatedParticipantLists;
     int mResults;
-    ImageView backArrrow;
+    private ImageView backArrrow;
+    private TextView mTopBarTitle;
     RecyclerView rankRv;
     private AdapterRankListFull rankList;
 
@@ -40,13 +42,10 @@ public class ranking extends AppCompatActivity {
         rankRv.setLayoutManager(linearLayoutManager1);
 
         backArrrow= findViewById(R.id.backarrow);
+        mTopBarTitle = findViewById(R.id.titleTopBar);
 
-        backArrrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        backArrrow.setOnClickListener(view -> finish());
+        mTopBarTitle.setText("Rank List");
 
         Intent i = getIntent();
         Bundle args = i.getBundleExtra("BUNDLE");

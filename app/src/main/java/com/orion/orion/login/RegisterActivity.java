@@ -14,7 +14,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,7 +50,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class register extends AppCompatActivity implements BottomSheetDomain.BottomSheetListener {
+public class RegisterActivity extends AppCompatActivity implements BottomSheetDomain.BottomSheetListener {
 
     private static final String TAG = "register";
     private static final int ANIMATION_DURATION = 1000;
@@ -100,7 +99,7 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
         gson = new Gson();
         String justRegistered=sp.getString("yes",null);
 
-        mContext = register.this;
+        mContext = RegisterActivity.this;
         firebaseMethods = new FirebaseMethods(mContext);
         setupFirebaseAuth();
         initWidgets();
@@ -121,7 +120,7 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
         policy = findViewById(R.id.policy);
         terms = findViewById(R.id.terms);
 
-        mContext = register.this;
+        mContext = RegisterActivity.this;
         mProgressBar.setVisibility(View.GONE);
         domain = "";
 
@@ -266,7 +265,7 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
         //link login
         linkLogin.setOnClickListener(v -> {
             Log.d(TAG, "on Click:navigating to register screen");
-            Intent intent = new Intent(register.this, login.class);
+            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
             startActivity(intent);
         });
     }
@@ -300,8 +299,8 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
     private void checkifuserexist(final String username) {
         if (username.contains(" ")){
             Toast.makeText(mContext, "No space should be there.", Toast.LENGTH_SHORT).show();
-            register.this.mUsername.setError("No space should be there.");
-            register.this.mProgressBar.setVisibility(View.GONE);
+            RegisterActivity.this.mUsername.setError("No space should be there.");
+            RegisterActivity.this.mProgressBar.setVisibility(View.GONE);
         }else{
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
             Query query = reference.child(getString(R.string.dbname_username)).child(username);
@@ -313,8 +312,8 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
 
                     } else {
                         Toast.makeText(mContext, "please try different username", Toast.LENGTH_SHORT).show();
-                        register.this.mUsername.setError("username already exist");
-                        register.this.mProgressBar.setVisibility(View.GONE);
+                        RegisterActivity.this.mUsername.setError("username already exist");
+                        RegisterActivity.this.mProgressBar.setVisibility(View.GONE);
 
                     }
                 }
@@ -380,7 +379,7 @@ public class register extends AppCompatActivity implements BottomSheetDomain.Bot
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putString("yes", "yes");
                     editor.apply();
-                    Intent intent = new Intent(register.this, login.class);
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                     startActivity(intent);
                     Toast.makeText(mContext, " Verification mail sent. Please verify!", Toast.LENGTH_LONG).show();
                 }

@@ -13,13 +13,14 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.R;
-import com.orion.orion.login.login;
+import com.orion.orion.login.LoginActivity;
 import com.orion.orion.profile.Account.FanFolllowing.FanFollowList;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 
@@ -33,6 +34,8 @@ public class AccountSettingActivity extends AppCompatActivity {
     private static final String TAG = "AccountSettingActivity";
     private static final int ACTIVITY_NUM = 4;
     private Context mContext;
+    private ImageView backarrow;
+    private TextView mTitleTopBar;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
@@ -48,12 +51,14 @@ public class AccountSettingActivity extends AppCompatActivity {
 
         mContext = AccountSettingActivity.this;
         listview = findViewById(R.id.lvAccountSettings);
-        ImageView backarrow = findViewById(R.id.backarrow);
+        backarrow = findViewById(R.id.backarrow);
+        mTitleTopBar = findViewById(R.id.titleTopBar);
+        backarrow.setOnClickListener(v -> finish());
+        mTitleTopBar.setText("Options");
 
-        setupBottomNavigationView();
+//        setupBottomNavigationView();
         setupFirebaseAuth();
         setupSettingList();
-        backarrow.setOnClickListener(v -> finish());
         Log.d(TAG, "onCreate: started");
     }
 
@@ -121,7 +126,7 @@ public class AccountSettingActivity extends AppCompatActivity {
                                 SharedPreferences settings = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
                                 settings.edit().clear().apply();
                                 PreferenceManager.getDefaultSharedPreferences(getBaseContext()).edit().clear().apply();
-                                Intent intent = new Intent(mContext, login.class);
+                                Intent intent = new Intent(mContext, LoginActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 mAuth.signOut();
                                 startActivity(intent);
@@ -160,7 +165,7 @@ public class AccountSettingActivity extends AppCompatActivity {
                         .setTitle("No user logon found")
                         .setMessage("We will be logging you out. \n Please try to log in again")
                         .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                            Intent intent = new Intent(mContext, login.class);
+                            Intent intent = new Intent(mContext, LoginActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             settings.edit().clear().apply();
                             if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);

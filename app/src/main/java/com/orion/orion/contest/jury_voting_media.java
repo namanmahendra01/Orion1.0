@@ -49,7 +49,8 @@ public class jury_voting_media extends AppCompatActivity {
 
     private TableLayout juryTable;
     String username2 = "";
-    ImageView backArrrow;
+    private ImageView backArrrow;
+    private TextView mTopBarTitle;
 
     List<EditText> etList1 = new ArrayList<EditText>();
     List<EditText> etList2 = new ArrayList<EditText>();
@@ -68,6 +69,13 @@ public class jury_voting_media extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_jury_voting_media);
+
+
+        backArrrow = findViewById(R.id.backarrow);
+        mTopBarTitle = findViewById(R.id.titleTopBar);
+        backArrrow.setOnClickListener(view -> finish());
+        mTopBarTitle.setText("Judge");
+
         juryTable = findViewById(R.id.jurytablevote);
         juryTable.setStretchAllColumns(true);
         btn = findViewById(R.id.submitMarksBtn);
@@ -99,14 +107,7 @@ public class jury_voting_media extends AppCompatActivity {
 
         }
 
-        backArrrow = findViewById(R.id.backarrow);
 
-        backArrrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
 
 
         //          Initialize SharedPreference variables

@@ -7,7 +7,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 
-import com.orion.orion.login.login;
+import com.orion.orion.login.LoginActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,7 +26,7 @@ public class SplashActivity extends AppCompatActivity {
         findViewById(R.id.SplashScreenImage).startAnimation(fade_in);
 
         new Handler().postDelayed(() -> {
-            Intent intent = new Intent(SplashActivity.this, login.class);
+            Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
         }, 500);

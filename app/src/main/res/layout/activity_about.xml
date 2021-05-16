@@ -6,23 +6,22 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     tools:context=".profile.Account.Contest">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:id="@+id/top"
 
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <include
-            layout="@layout/snippet_top_about_bar"
-            />
+        <include layout="@layout/snippet_top_bar" />
     </RelativeLayout>
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_below="@+id/top"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/top">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
 
 
         </RelativeLayout>

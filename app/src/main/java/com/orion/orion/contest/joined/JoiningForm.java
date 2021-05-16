@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
@@ -37,7 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.contest.contestMainActivity;
-import com.orion.orion.login.login;
+import com.orion.orion.login.LoginActivity;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.Permissions;
@@ -60,6 +59,8 @@ import static com.orion.orion.profile.ProfileActivity.VERIFY_PERMISSION_REQUEST;
 public class JoiningForm extends AppCompatActivity {
     private static final String TAG = "JoiningForm";
     private final Context mContext = JoiningForm.this;
+
+    private TextView mTopBarTitle;
     private EditText collegeEt, urlEt;
     private ImageView idIv, submissionIv, backArrow;
     TextView warn, decline;
@@ -91,9 +92,9 @@ public class JoiningForm extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joining_form);
         setupFirebaseAuth();
-
+        mTopBarTitle = findViewById(R.id.titleTopBar);
+        mTopBarTitle.setText("Joining Contest");
         mFirebaseMethods = new FirebaseMethods(JoiningForm.this);
-
 
         Intent i = getIntent();
         userId = i.getStringExtra("userId");
@@ -219,11 +220,11 @@ public class JoiningForm extends AppCompatActivity {
             public void onClick(View v) {
                 selectedImage = 1;
                 if (checkPermissionArray(Permissions.PERMISSIONS)) {
-                        isKitKat = true;
-                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);
-                        intent.setType("image/*");
-                        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+                    isKitKat = true;
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("image/*");
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
                 } else {
                     verifyPermission(Permissions.PERMISSIONS);
                 }
@@ -237,11 +238,11 @@ public class JoiningForm extends AppCompatActivity {
                 mediaBtn.setEnabled(false);
                 selectedImage = 2;
                 if (checkPermissionArray(Permissions.PERMISSIONS)) {
-                        isKitKat = true;
-                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);
-                        intent.setType("image/*");
-                        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+                    isKitKat = true;
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("image/*");
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
                 } else {
                     verifyPermission(Permissions.PERMISSIONS);
 
@@ -389,7 +390,6 @@ public class JoiningForm extends AppCompatActivity {
 
             }
         });
-
 
 
     }
@@ -607,7 +607,7 @@ public class JoiningForm extends AppCompatActivity {
                         .setTitle("No user logon found")
                         .setMessage("We will be logging u out. \n Please try to log in again")
                         .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                            Intent intent = new Intent(mContext, login.class);
+                            Intent intent = new Intent(mContext, LoginActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             settings.edit().clear().apply();
                             startActivity(intent);

@@ -30,10 +30,9 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.orion.orion.Adapters.AdapterGridImage;
 import com.orion.orion.R;
-import com.orion.orion.home.Chat_Activity;
-import com.orion.orion.login.login;
+import com.orion.orion.chat.Chat_Activity;
+import com.orion.orion.login.LoginActivity;
 import com.orion.orion.models.Comment;
 import com.orion.orion.models.Like;
 import com.orion.orion.models.Photo;
@@ -112,7 +111,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     private TextView mLink3;
     private TextView mRank;
 
-    private AdapterGridImage adapterGridImage;
+//    private AdapterGridImage adapterGridImage;
     private RecyclerView gridRv;
     private String mUser;
 
@@ -168,27 +167,27 @@ public class ViewProfileActivity extends AppCompatActivity {
         GridLayoutManager linearLayoutManager = new GridLayoutManager(this, 3);
         gridRv.setLayoutManager(linearLayoutManager);
         imgURLsList = new ArrayList<>();
-        adapterGridImage = new AdapterGridImage(this, imgURLsList);
+//        adapterGridImage = new AdapterGridImage(this, imgURLsList);
         linearLayoutManager.setItemPrefetchEnabled(true);
         linearLayoutManager.setInitialPrefetchItemCount(20);
         gridRv.setItemViewCacheSize(9);
         gridRv.setDrawingCacheEnabled(true);
         gridRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
 
-        adapterGridImage.setHasStableIds(true);
-        gridRv.setAdapter(adapterGridImage);
-
-        try {
-            Intent i = getIntent();
-            mUser = i.getStringExtra(getString(R.string.intent_user));
-            Log.d(TAG, "init: koko" + mUser);
-
-            init();
-        } catch (NullPointerException e) {
-            Log.d(TAG, "null pointer Exception" + e.getMessage());
-            Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
-            getSupportFragmentManager().popBackStack();
-        }
+//        adapterGridImage.setHasStableIds(true);
+//        gridRv.setAdapter(adapterGridImage);
+//
+//        try {
+//            Intent i = getIntent();
+//            mUser = i.getStringExtra(getString(R.string.intent_user));
+//            Log.d(TAG, "init: koko" + mUser);
+//
+//            init();
+//        } catch (NullPointerException e) {
+//            Log.d(TAG, "null pointer Exception" + e.getMessage());
+//            Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
+//            getSupportFragmentManager().popBackStack();
+//        }
         Log.d(TAG, "onCreate: yess2  " + mUser + "  " + getString(R.string.orion_team_user_id));
 
         if (mUser.equals(getString(R.string.orion_team_user_id))) {
@@ -732,77 +731,77 @@ public class ViewProfileActivity extends AppCompatActivity {
         mRank.setText(String.valueOf(rank));
     }
 
-    private void init() {
-        DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
-        Query query1 = reference1.child(getString(R.string.dbname_users)).child(mUser);
-        query1.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                users setting = dataSnapshot.getValue(users.class);
-                assert setting != null;
-                setProfileWidgets(setting);
-                setUpInfoBox();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbname_user_photos)).child(mUser);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ArrayList<Photo> photos = new ArrayList<>();
-                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                    Log.d(TAG, "onBindViewHolder: " + dataSnapshot.getChildrenCount());
-                    Photo photo = new Photo();
-                    Map<String, Object> objectMap = (Map<String, Object>) singleSnapshot.getValue();
-                    Log.d(TAG, "onDataChange: objectMap" + objectMap);
-                    try {
-                        photo.setCap(objectMap.get(getString(R.string.field_caption)).toString());
-                        photo.setTg(objectMap.get(getString(R.string.field_tags)).toString());
-                        photo.setPi(objectMap.get(getString(R.string.field_photo_id)).toString());
-                        photo.setUi(objectMap.get(getString(R.string.field_user_id)).toString());
-                        photo.setDc(objectMap.get(getString(R.string.field_date_createdr)).toString());
-                        photo.setIp(objectMap.get(getString(R.string.field_image_path)).toString());
-                        if (objectMap.get(getString(R.string.thumbnail)) != null)
-                            photo.setT(objectMap.get(getString(R.string.thumbnail)).toString());
-                        photo.setTy(objectMap.get(getString(R.string.type)).toString());
-                        ArrayList<Comment> comments = new ArrayList<>();
-                        for (DataSnapshot dSnapshot : singleSnapshot.child(getString(R.string.field_comment)).getChildren()) {
-                            Comment comment = new Comment();
-                            comment.setUi(dSnapshot.getValue(Comment.class).getUi());
-                            comment.setC(dSnapshot.getValue(Comment.class).getC());
-                            comment.setDc(dSnapshot.getValue(Comment.class).getDc());
-                            comments.add(comment);
-                        }
-                        photo.setComments(comments);
-                        List<Like> likeList = new ArrayList<Like>();
-                        for (DataSnapshot dSnapshot : singleSnapshot.child(getString(R.string.field_likes)).getChildren()) {
-                            Like like = new Like();
-                            like.setUi(dSnapshot.getValue(Like.class).getUi());
-                            likeList.add(like);
-                        }
-                        photos.add(photo);
-                    } catch (NullPointerException e) {
-                        Log.e(TAG, "null pointer exception" + e.getMessage());
-                    }
-                }
-                imgURLsList.addAll(photos);
-                Log.d(TAG, "onDataChange: size sdf" + imgURLsList.size());
-                Collections.reverse(imgURLsList);
-//                adapterGridImage = new AdapterGridImage(mContext, imgURLsList);
-//                adapterGridImage.setHasStableIds(true);
-                gridRv.setAdapter(adapterGridImage);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d(TAG, "Query Cancelled");
-            }
-        });
-    }
+//    private void init() {
+//        DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference();
+//        Query query1 = reference1.child(getString(R.string.dbname_users)).child(mUser);
+//        query1.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                users setting = dataSnapshot.getValue(users.class);
+//                assert setting != null;
+//                setProfileWidgets(setting);
+//                setUpInfoBox();
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//            }
+//        });
+//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+//        Query query = reference.child(getString(R.string.dbname_user_photos)).child(mUser);
+//        query.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                ArrayList<Photo> photos = new ArrayList<>();
+//                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+//                    Log.d(TAG, "onBindViewHolder: " + dataSnapshot.getChildrenCount());
+//                    Photo photo = new Photo();
+//                    Map<String, Object> objectMap = (Map<String, Object>) singleSnapshot.getValue();
+//                    Log.d(TAG, "onDataChange: objectMap" + objectMap);
+//                    try {
+//                        photo.setCap(objectMap.get(getString(R.string.field_caption)).toString());
+//                        photo.setTg(objectMap.get(getString(R.string.field_tags)).toString());
+//                        photo.setPi(objectMap.get(getString(R.string.field_photo_id)).toString());
+//                        photo.setUi(objectMap.get(getString(R.string.field_user_id)).toString());
+//                        photo.setDc(objectMap.get(getString(R.string.field_date_createdr)).toString());
+//                        photo.setIp(objectMap.get(getString(R.string.field_image_path)).toString());
+//                        if (objectMap.get(getString(R.string.thumbnail)) != null)
+//                            photo.setT(objectMap.get(getString(R.string.thumbnail)).toString());
+//                        photo.setTy(objectMap.get(getString(R.string.type)).toString());
+//                        ArrayList<Comment> comments = new ArrayList<>();
+//                        for (DataSnapshot dSnapshot : singleSnapshot.child(getString(R.string.field_comment)).getChildren()) {
+//                            Comment comment = new Comment();
+//                            comment.setUi(dSnapshot.getValue(Comment.class).getUi());
+//                            comment.setC(dSnapshot.getValue(Comment.class).getC());
+//                            comment.setDc(dSnapshot.getValue(Comment.class).getDc());
+//                            comments.add(comment);
+//                        }
+//                        photo.setComments(comments);
+//                        List<Like> likeList = new ArrayList<Like>();
+//                        for (DataSnapshot dSnapshot : singleSnapshot.child(getString(R.string.field_likes)).getChildren()) {
+//                            Like like = new Like();
+//                            like.setUi(dSnapshot.getValue(Like.class).getUi());
+//                            likeList.add(like);
+//                        }
+//                        photos.add(photo);
+//                    } catch (NullPointerException e) {
+//                        Log.e(TAG, "null pointer exception" + e.getMessage());
+//                    }
+//                }
+//                imgURLsList.addAll(photos);
+//                Log.d(TAG, "onDataChange: size sdf" + imgURLsList.size());
+//                Collections.reverse(imgURLsList);
+////                adapterGridImage = new AdapterGridImage(mContext, imgURLsList);
+////                adapterGridImage.setHasStableIds(true);
+//                gridRv.setAdapter(adapterGridImage);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//                Log.d(TAG, "Query Cancelled");
+//            }
+//        });
+//    }
 
     private void addToHisNotification(String hisUid, String notification) {
         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
@@ -952,7 +951,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                         .setTitle("No user logon found")
                         .setMessage("We will be logging you out. \n Please try to log in again")
                         .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                            Intent intent = new Intent(mContext, login.class);
+                            Intent intent = new Intent(mContext, LoginActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             settings.edit().clear().apply();
                             if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);

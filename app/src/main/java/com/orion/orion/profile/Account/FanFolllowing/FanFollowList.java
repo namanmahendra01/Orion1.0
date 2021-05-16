@@ -13,7 +13,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.orion.orion.Adapters.SectionPagerAdapter;
 import com.orion.orion.R;
-import com.orion.orion.login.login;
+import com.orion.orion.login.LoginActivity;
 import com.orion.orion.profile.Account.AccountSettingActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -97,7 +97,7 @@ public class FanFollowList extends AppCompatActivity {
                         .setTitle("No user logon found")
                         .setMessage("We will be logging u out. \n Please try to log in again")
                         .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                            Intent intent = new Intent(mContext, login.class);
+                            Intent intent = new Intent(mContext, LoginActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             settings.edit().clear().apply();
                             startActivity(intent);

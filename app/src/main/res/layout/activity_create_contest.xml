@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/root"
     android:background="@color/white">
 
     <RelativeLayout
@@ -12,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true">
 
-        <include layout="@layout/snippet_top_form_bar" />
+        <include layout="@layout/snippet_top_bar" />
     </RelativeLayout>
 
     <LinearLayout

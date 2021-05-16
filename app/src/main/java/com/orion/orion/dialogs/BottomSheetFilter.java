@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.orion.orion.R;
 
-import org.jetbrains.annotations.NotNull;
+
 
 public class BottomSheetFilter extends BottomSheetDialogFragment {
     private BottomSheetListener mListener;
@@ -40,7 +40,7 @@ public class BottomSheetFilter extends BottomSheetDialogFragment {
         void onButtonClicked(String text);
     }
     @Override
-    public void onAttach(@NotNull Context context) {
+    public void onAttach(Context context) {
         super.onAttach(context);
         try {
             mListener = (BottomSheetListener) context;

@@ -3,12 +3,12 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@drawable/white_border"
-        >
+        android:background="@drawable/white_border">
+
         <androidx.appcompat.widget.Toolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/profileToolbar">
+            android:background="@color/black">
 
 
             <RelativeLayout
@@ -16,32 +16,27 @@
                 android:layout_height="match_parent">
 
                 <ImageView
+                    android:id="@+id/backarrow"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="20dp"
                     android:layout_centerVertical="true"
-                    android:id="@+id/backarrow"
-                    android:src="@drawable/ic_back_black_arrow"
+                    android:layout_marginStart="10dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="20dp" />
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginRight="20dp"
+                    android:src="@drawable/ic_back_black_arrow" />
 
 
                 <TextView
-                    android:layout_centerHorizontal="true"
+                    android:id="@+id/titleTopBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    android:text="Contest Details"
-                    android:textColor="#000000"
-                    android:layout_marginLeft="5dp"/>
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:src="@drawable/ic_eclipse"
-                    android:layout_alignParentEnd="true"
-                    android:id="@+id/optionC"
-                    android:layout_alignParentRight="true" />
+                    android:layout_marginLeft="5dp"
+                    android:text="Title"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
 
 
             </RelativeLayout>

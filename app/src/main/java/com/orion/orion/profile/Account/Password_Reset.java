@@ -10,26 +10,24 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.orion.orion.R;
-import com.orion.orion.login.login;
-import com.orion.orion.profile.ProfileActivity;
+import com.orion.orion.login.LoginActivity;
 
 public class Password_Reset extends AppCompatActivity {
     private static final String TAG = "Password_Reset";
     private FirebaseAuth mAuth;
-    ImageView backArrow;
+    private ImageView backArrow;
+    private TextView mTopBarTitle;
     ProgressBar progressBar;
     private  FirebaseAuth.AuthStateListener mAuthListener;
     private String oldP = "", newP = "", confirmP = "", email = "";
@@ -50,14 +48,11 @@ public class Password_Reset extends AppCompatActivity {
         newE = findViewById(R.id.newpswrd2);
         confirmE = findViewById(R.id.confirm_password2);
         backArrow = findViewById(R.id.backarrow);
+        mTopBarTitle = findViewById(R.id.titleTopBar);
         progressBar = findViewById(R.id.pro);
 
-        backArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        backArrow.setOnClickListener(view -> finish());
+        mTopBarTitle.setText("Password Reset");
         Button confirm = findViewById(R.id.confirm);
         Button cancel = findViewById(R.id.cancel);
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -126,7 +121,7 @@ public class Password_Reset extends AppCompatActivity {
                         .setTitle("No user logon found")
                         .setMessage("We will be logging u out. \n Please try to log in again")
                         .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                            Intent intent = new Intent(mContext, login.class);
+                            Intent intent = new Intent(mContext, LoginActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             settings.edit().clear().apply();
                             if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);

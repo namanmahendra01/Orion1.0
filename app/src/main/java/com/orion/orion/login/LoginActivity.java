@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +37,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class login extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "activity_login";
     private static final int ANIMATION_DURATION = 1000;
     private FirebaseAuth mAuth;
@@ -79,7 +77,7 @@ public class login extends AppCompatActivity {
         setupFirebaseAuth();
         if (!justRegistered.equals("yes")) {
             if (mAuth.getCurrentUser() != null) {
-                Intent intent = new Intent(login.this, contestMainActivity.class);
+                Intent intent = new Intent(LoginActivity.this, contestMainActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -105,7 +103,7 @@ public class login extends AppCompatActivity {
         btnLogin = findViewById(R.id.btn_login);
         linkSignup = findViewById(R.id.link_signup);
         forgotPassword = findViewById(R.id.forgotPassword);
-        mContext = login.this;
+        mContext = LoginActivity.this;
     }
 
 
@@ -138,7 +136,7 @@ public class login extends AppCompatActivity {
                 mProgressBar.setVisibility(View.VISIBLE);
                 mEmail.setFocusable(false);
                 mPassword.setFocusable(false);
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(login.this, task -> {
+                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, task -> {
                     FirebaseUser user = mAuth.getCurrentUser();
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
@@ -156,7 +154,7 @@ public class login extends AppCompatActivity {
                                 editor.putString("yes", "no");
                                 editor.apply();
                                 progressDialog.dismiss();
-                                Intent intent = new Intent(login.this, contestMainActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, contestMainActivity.class);
                                 startActivity(intent);
                             } else {
                                 new AlertDialog.Builder(mContext)
@@ -257,7 +255,7 @@ public class login extends AppCompatActivity {
 
         linkSignup.setOnClickListener(v -> {
             Log.d(TAG, "on Click:navigating to register screen");
-            Intent intent = new Intent(login.this, register.class);
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
         });
 

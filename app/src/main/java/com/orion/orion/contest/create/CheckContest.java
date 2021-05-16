@@ -29,7 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
-import com.orion.orion.login.login;
+import com.orion.orion.login.LoginActivity;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.users;
 import com.orion.orion.util.FirebaseMethods;
@@ -577,7 +577,7 @@ public class CheckContest extends AppCompatActivity {
                             .setTitle("No user logon found")
                             .setMessage("We will be logging u out. \n Please try to log in again")
                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                                Intent intent = new Intent(getApplicationContext(), login.class);
+                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 settings.edit().clear().apply();
                                 if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);

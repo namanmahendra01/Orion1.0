@@ -20,7 +20,6 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -55,18 +54,13 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.dialogs.BottomSheetDomain;
-import com.orion.orion.login.login;
+import com.orion.orion.login.LoginActivity;
 import com.orion.orion.util.Permissions;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 import static com.orion.orion.profile.ProfileActivity.VERIFY_PERMISSION_REQUEST;
 
@@ -76,6 +70,8 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
     private static final int ANIMATION_DURATION = 100;
     boolean isKitKat;
     int layoutActive = 1;
+
+    private TextView mTopBarTitle;
 
     //Widgets
     private ScrollView layout1;
@@ -253,9 +249,11 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_contest);
+        setContentView(R.layout.activity_create_contest);
 
         mContext = form.this;
+        mTopBarTitle = findViewById(R.id.titleTopBar);
+        mTopBarTitle.setText("Create Contest");
         setupFirebaseAuth();
         initializeWidgets();
         disableEmoji();
@@ -1531,7 +1529,7 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                         .setTitle("No user logon found")
                         .setMessage("We will be logging u out. \n Please try to log in again")
                         .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                            Intent intent = new Intent(mContext, login.class);
+                            Intent intent = new Intent(mContext, LoginActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             settings.edit().clear().apply();
                             startActivity(intent);

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:id="@+id/rqst">
-        <include layout="@layout/snippet_top_participant_request"
+        <include layout="@layout/snippet_top_bar"
         />
     </RelativeLayout>
 

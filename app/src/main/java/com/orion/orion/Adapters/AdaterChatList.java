@@ -2,7 +2,6 @@ package com.orion.orion.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +20,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
-import com.orion.orion.home.Chat_Activity;
+import com.orion.orion.chat.Chat_Activity;
 import com.orion.orion.models.Chat;
 import com.orion.orion.models.users;
 
 import java.util.HashMap;
 import java.util.List;
-
-import static com.android.volley.VolleyLog.TAG;
 
 public class AdaterChatList extends RecyclerView.Adapter<AdaterChatList.MyHolder> {
 
