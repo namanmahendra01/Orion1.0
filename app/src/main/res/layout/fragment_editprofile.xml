@@ -234,14 +234,13 @@
 
                         <TextView
                             android:id="@+id/link1"
-                            android:layout_width="0dp"
+                            android:layout_weight="8"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:layout_weight="8"
+                            android:inputType="textNoSuggestions"
                             android:textColor="@color/light_blue"
-                            android:text="External Links"
-                            android:textSize="16sp"
-                            android:inputType="textNoSuggestions" />
+                            android:textSize="16sp" />
 
                         <ImageView
                             android:id="@+id/link1delete"
@@ -267,11 +266,10 @@
                         <TextView
                             android:id="@+id/link2"
                             android:layout_weight="8"
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
                             android:inputType="textNoSuggestions"
-                            android:text="External Links"
                             android:textColor="@color/light_blue"
                             android:textSize="16sp" />
 
@@ -281,7 +279,6 @@
                             android:layout_height="24dp"
                             android:padding="5dp"
                             android:layout_weight="2"
-
                             android:layout_marginStart="15dp"
                             android:src="@drawable/ic_baseline_close_24" />
 
@@ -299,14 +296,13 @@
 
                         <TextView
                             android:id="@+id/link3"
-                            android:layout_width="0dp"
+                            android:layout_weight="8"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:layout_weight="8"
+                            android:inputType="textNoSuggestions"
                             android:textColor="@color/light_blue"
-                            android:text="External Links"
-                            android:textSize="16sp"
-                            android:inputType="textNoSuggestions" />
+                            android:textSize="16sp" />
 
                         <ImageView
                             android:id="@+id/link3delete"
@@ -314,7 +310,6 @@
                             android:layout_height="24dp"
                             android:padding="5dp"
                             android:layout_weight="2"
-
                             android:layout_marginStart="15dp"
                             android:src="@drawable/ic_baseline_close_24" />
 

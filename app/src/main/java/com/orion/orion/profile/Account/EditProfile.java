@@ -119,7 +119,7 @@ public class EditProfile extends AppCompatActivity {
         setContentView(R.layout.fragment_editprofile);
         mContext = EditProfile.this;
 
-        mFirebaseMethods=new FirebaseMethods(mContext);
+        mFirebaseMethods = new FirebaseMethods(mContext);
 
         backarrow = findViewById(R.id.backarrow);
         checkmark = findViewById(R.id.saveChanges);
@@ -321,7 +321,7 @@ public class EditProfile extends AppCompatActivity {
             }
         });
         mLink1delete.setOnClickListener(v -> {
-            if (link1Container.getVisibility() == View.VISIBLE && link2Container.getVisibility() == View.VISIBLE) {
+            if (link2Container.getVisibility() == View.VISIBLE && link3Container.getVisibility() == View.VISIBLE) {
                 mLink1.setText(mLink2.getText());
                 mLink2.setText(mLink3.getText());
                 externalLink1 = externalLink2;
@@ -335,8 +335,6 @@ public class EditProfile extends AppCompatActivity {
                 externalLink2 = "";
                 mLink2.setText("");
                 link2Container.setVisibility(View.GONE);
-            } else if (link2Container.getVisibility() != View.VISIBLE && link3Container.getVisibility() == View.VISIBLE) {
-
             } else {
                 externalLink1 = "";
                 mLink1.setText("");
@@ -410,6 +408,13 @@ public class EditProfile extends AppCompatActivity {
         if (!whatsappNo.equals("") && (setting.getWa() == null || !setting.getWa().equals(whatsappNo)))
             myRef.child(getString(R.string.dbname_users)).child(userID).child(getString(R.string.field_whatsapp)).setValue(whatsappNo);
 
+//        Log.d(TAG, "externalLink123: " + mLink1.getText() + mLink2.getText() + mLink3.getText());
+//        Log.d(TAG, "externalLink123: " + externalLink1 + externalLink2 + externalLink3);
+
+        externalLink1 = mLink1.getText().toString();
+        externalLink2 = mLink2.getText().toString();
+        externalLink3 = mLink3.getText().toString();
+
         myRef.child(getString(R.string.dbname_users)).child(userID).child(getString(R.string.field_link1)).setValue(externalLink1);
         myRef.child(getString(R.string.dbname_users)).child(userID).child(getString(R.string.field_link2)).setValue(externalLink2);
         myRef.child(getString(R.string.dbname_users)).child(userID).child(getString(R.string.field_link3)).setValue(externalLink3);
@@ -422,7 +427,7 @@ public class EditProfile extends AppCompatActivity {
             String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
             final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(filepaths.FIREBASE_IMAGE_STORAGE + "/" + user_id + "/profile_photo");
 
-            String imgUrl2= mFirebaseMethods.compressImage(imgURL);
+            String imgUrl2 = mFirebaseMethods.compressImage(imgURL);
             Bitmap bm = ImageManager.getBitmap(imgUrl2);
             byte[] bytes;
             bytes = ImageManager.getBytesFromBitmap(bm, 100);
@@ -477,7 +482,6 @@ public class EditProfile extends AppCompatActivity {
             }
         });
     }
-
 
 
     public boolean checkPermissionArray(String[] permissions) {
@@ -536,6 +540,7 @@ public class EditProfile extends AppCompatActivity {
             mWhatsappLink.setAlpha(0.5f);
         else whatsappNo = userSetting.getWa();
     }
+
     public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
         Cursor cursor = null;
         final String column = "_data";
