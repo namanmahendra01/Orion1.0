@@ -23,7 +23,7 @@ import com.orion.orion.models.ParticipantList;
 
 import java.util.ArrayList;
 
-public class public_voting_media extends AppCompatActivity {
+public class public_voting_media extends AppCompatActivity implements AdapterGridImageContest.changeBackground {
     private static final int NUM_GRID_COLUMNS = 3;
     private static final int ACTIVITY_NUM = 4;
     RecyclerView gridRv;
@@ -111,5 +111,12 @@ public class public_voting_media extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        public_voting_media obj = new public_voting_media();
+        obj.changeColor();
     }
 }

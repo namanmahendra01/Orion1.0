@@ -271,113 +271,117 @@ public class JoiningForm extends AppCompatActivity {
 
                         boolean ok = checkValidity();
                         if (ok) {
-                            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                            linearLayout.setVisibility(View.VISIBLE);
 
-                            SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
-                                @Override
-                                public void onTimeReceived(String rawDate) {
-                                    // rawDate -> 2019-11-05T17:51:01+0530
+                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                linearLayout.setVisibility(View.VISIBLE);
 
-
-                                    String str_date = rawDate;
-                                    java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-                                    Date date = null;
-                                    try {
-                                        date = formatter.parse(str_date);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
-                                    String timeStamp = String.valueOf(date.getTime());
-
-                                    DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-
-                                    String JoiningKey = db.child(getString(R.string.dbname_contests))
-                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                            .child(getString(R.string.joined_contest))
-                                            .push().getKey();
+                                SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
+                                    @Override
+                                    public void onTimeReceived(String rawDate) {
+                                        // rawDate -> 2019-11-05T17:51:01+0530
 
 
-                                    if (!type.equals("Image")) {
-                                        mediaLink = urlEt.getText().toString();
-                                    }
-                                    HashMap<String, Object> hashMap = new HashMap<>();
-                                    hashMap.put(getString(R.string.field_college), collegeEt.getText().toString());
-                                    hashMap.put(getString(R.string.field_status), "waiting");
-                                    hashMap.put(getString(R.string.field_host), userId);
-                                    hashMap.put(getString(R.string.field_contest_ID), contestId);
-                                    hashMap.put(getString(R.string.field_timestamp), timeStamp);
-                                    hashMap.put(getString(R.string.field_joining_ID), JoiningKey);
-                                    hashMap.put(getString(R.string.field_id_link), idLink);
-                                    hashMap.put(getString(R.string.field_media_link), mediaLink);
-                                    hashMap.put(getString(R.string.field_user_id), FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                    db.child(getString(R.string.dbname_contests))
-                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                            .child(getString(R.string.joined_contest))
-                                            .child(JoiningKey)
-                                            .setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            DatabaseReference db2 = FirebaseDatabase.getInstance().getReference();
-
-                                            HashMap<String, Object> hashMap2 = new HashMap<>();
-                                            hashMap2.put(getString(R.string.field_timestamp), timeStamp);
-                                            hashMap2.put(getString(R.string.field_joining_ID), JoiningKey);
-                                            hashMap2.put(getString(R.string.field_total_score), 0);
-                                            hashMap2.put(getString(R.string.field_contest_ID), contestId);
-                                            hashMap2.put(getString(R.string.field_media_link), mediaLink);
-                                            hashMap2.put(getString(R.string.field_user_id), FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                            db2.child(getString(R.string.dbname_request))
-                                                    .child(getString(R.string.dbname_participantList))
-                                                    .child(contestId)
-                                                    .child(JoiningKey)
-                                                    .setValue(hashMap2).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    int c = 0;
-                                                    if (!idLink.equals("")) {
-                                                        mFirebaseMethods.uploadContest(imageCount, idLink, null, contestId, p5, JoiningKey);
-
-                                                    } else {
-                                                        c++;
-                                                    }
-                                                    if (type.equals("Image")) {
-                                                        mFirebaseMethods.uploadContest(imageCount, mediaLink, null, contestId, p6, JoiningKey);
-                                                    } else {
-                                                        c++;
-                                                    }
-
-                                                    if (c == 2) {
-                                                        linearLayout.setVisibility(View.GONE);
-                                                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                                        Intent i = new Intent(JoiningForm.this, contestMainActivity.class);
-                                                        startActivity(i);
-                                                        Toast.makeText(JoiningForm.this, "Your submission has been submitted.", Toast.LENGTH_SHORT).show();
-
-
-                                                    }
-                                                }
-                                            });
+                                        String str_date = rawDate;
+                                        java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+                                        Date date = null;
+                                        try {
+                                            date = formatter.parse(str_date);
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
                                         }
-                                    });
+                                        String timeStamp = String.valueOf(date.getTime());
+
+                                        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+
+                                        String JoiningKey = db.child(getString(R.string.dbname_contests))
+                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                .child(getString(R.string.joined_contest))
+                                                .push().getKey();
 
 
-                                    Log.e(SNTPClient.TAG, rawDate);
+                                        if (!type.equals("Image")) {
+                                            mediaLink = urlEt.getText().toString();
+                                        }
 
-                                }
+                                        HashMap<String, Object> hashMap = new HashMap<>();
+                                        hashMap.put(getString(R.string.field_college), collegeEt.getText().toString());
+                                        hashMap.put(getString(R.string.field_status), "waiting");
+                                        hashMap.put(getString(R.string.field_host), userId);
+                                        hashMap.put(getString(R.string.field_contest_ID), contestId);
+                                        hashMap.put(getString(R.string.field_timestamp), timeStamp);
+                                        hashMap.put(getString(R.string.field_joining_ID), JoiningKey);
+                                        hashMap.put(getString(R.string.field_id_link), idLink);
+                                        hashMap.put(getString(R.string.field_media_link), mediaLink);
+                                        hashMap.put(getString(R.string.field_user_id), FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        db.child(getString(R.string.dbname_contests))
+                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                .child(getString(R.string.joined_contest))
+                                                .child(JoiningKey)
+                                                .setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                DatabaseReference db2 = FirebaseDatabase.getInstance().getReference();
 
-                                @Override
-                                public void onError(Exception ex) {
-                                    Log.e(SNTPClient.TAG, ex.getMessage());
-                                }
-                            });
+                                                HashMap<String, Object> hashMap2 = new HashMap<>();
+                                                hashMap2.put(getString(R.string.field_timestamp), timeStamp);
+                                                hashMap2.put(getString(R.string.field_joining_ID), JoiningKey);
+                                                hashMap2.put(getString(R.string.field_total_score), 0);
+                                                hashMap2.put(getString(R.string.field_contest_ID), contestId);
+                                                hashMap2.put(getString(R.string.field_media_link), mediaLink);
+                                                hashMap2.put(getString(R.string.field_user_id), FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                                db2.child(getString(R.string.dbname_request))
+                                                        .child(getString(R.string.dbname_participantList))
+                                                        .child(contestId)
+                                                        .child(JoiningKey)
+                                                        .setValue(hashMap2).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        int c = 0;
+                                                        if (!idLink.equals("")) {
+                                                            mFirebaseMethods.uploadContest(imageCount, idLink, null, contestId, p5, JoiningKey);
+
+                                                        } else {
+                                                            c++;
+                                                        }
+                                                        if (type.equals("Image")) {
+                                                            mFirebaseMethods.uploadContest(imageCount, mediaLink, null, contestId, p6, JoiningKey);
+                                                        } else {
+                                                            c++;
+                                                        }
+
+                                                        if (c == 2) {
+                                                            linearLayout.setVisibility(View.GONE);
+                                                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                                            Intent i = new Intent(JoiningForm.this, contestMainActivity.class);
+                                                        startActivity(i);
+                                                            Toast.makeText(JoiningForm.this, "Your submission has been submitted.", Toast.LENGTH_SHORT).show();
 
 
-                        } else {
-                            Toast.makeText(JoiningForm.this, "Please fill all the entries correctly!", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        });
+
+
+                                        Log.e(SNTPClient.TAG, rawDate);
+
+                                    }
+
+                                    @Override
+                                    public void onError(Exception ex) {
+                                        Log.e(SNTPClient.TAG, ex.getMessage());
+                                    }
+                                });
+
+
+
+                        }else{
+                                Toast.makeText(JoiningForm.this, "Please fill all the entries correctly!", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
+
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override

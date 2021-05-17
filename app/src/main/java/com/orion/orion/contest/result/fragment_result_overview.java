@@ -529,23 +529,18 @@ public class fragment_result_overview extends Fragment {
     }
 
     private void displayParticipantRank() {
-        Log.d(TAG, "display first 10 contest");
-        paginatedParticipantLists = new ArrayList<>();
+        ArrayList<ParticipantList> paginatedParticipantLists = new ArrayList<>();
         if (participantLists != null) {
-
             try {
-
-
+                Collections.sort(participantLists, (o1, o2) -> Integer.compare(o1.getTs(), o2.getTs()));
+                Collections.reverse(participantLists);
                 int iteration = participantLists.size();
-                if (iteration > 10) {
-                    iteration = 10;
-                }
-                mResults = 10;
+                if (iteration > 10) iteration = 10;
                 for (int i = 0; i < iteration; i++) {
                     paginatedParticipantLists.add(participantLists.get(i));
                 }
-                Log.d(TAG, "contest: sss" + paginatedParticipantLists.size());
-                rankList = new AdapterRankList(getContext(), paginatedParticipantLists);
+
+                AdapterRankList rankList = new AdapterRankList(getContext(), paginatedParticipantLists);
                 rankList.setHasStableIds(true);
                 rankRv.setAdapter(rankList);
 
@@ -559,4 +554,6 @@ public class fragment_result_overview extends Fragment {
 
         }
     }
+
+
 }

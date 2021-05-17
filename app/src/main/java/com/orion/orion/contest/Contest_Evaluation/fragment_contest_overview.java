@@ -80,6 +80,7 @@ public class fragment_contest_overview extends Fragment {
     private RecyclerView winnerRv;
     private Button pubBtn, pubBtn2;
     private String timestamp = "";
+    RelativeLayout juryRl;
     boolean isPublicAndJuryVote = false;
 
     private String Conteskey;
@@ -101,6 +102,8 @@ public class fragment_contest_overview extends Fragment {
         ScrollView scrollView = view.findViewById(R.id.scroll);
         TextView seeRank = view.findViewById(R.id.seeRank);
         progress = view.findViewById(R.id.pro);
+        juryRl = view.findViewById(R.id.jutyRl);
+
 
         mFirebaseMethods = new FirebaseMethods(getActivity());
 
@@ -166,6 +169,9 @@ public class fragment_contest_overview extends Fragment {
                                     boolean result = contestDetail.getR();
                                     if (contestDetail.getVt().equals("Jury and Public")) {
                                         isPublicAndJuryVote = true;
+                                    }
+                                    if (contestDetail.getVt().equals("Public")) {
+                                        juryRl.setVisibility(View.GONE);
                                     }
 
 
@@ -570,15 +576,62 @@ public class fragment_contest_overview extends Fragment {
 
     }
 
+
+    //  fetching ParticipantList  from SharedPreferences
+    private void getParticipantListFromSP() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        reference.child(getString(R.string.dbname_participantList))
+                .child(Conteskey)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        participantLists.clear();
+                        participantLists2.clear();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            ParticipantList participantList = snapshot.getValue(ParticipantList.class);
+
+                            participantLists.add(participantList);
+                        }
+                        Collections.sort(participantLists, new Comparator<ParticipantList>() {
+                            @Override
+                            public int compare(ParticipantList o1, ParticipantList o2) {
+                                return Integer.compare(o1.getTs(), o2.getTs());
+                            }
+                        });
+                        Collections.reverse(participantLists);
+                        try {
+                            int o=0;
+                            for (int x = 0; x < participantLists.size(); x++) {
+                                o++;
+                                participantLists2.add(participantLists.get(x));
+                                if (o==3){
+                                    break;
+                                }
+
+                            }
+
+                        } catch (IndexOutOfBoundsException e) {
+                            Log.e(TAG, "onDataChange: " + e.getMessage());
+                        }
+
+                        if (juryRl.getVisibility()!=View.GONE){
+                            juryMarksTable(Conteskey);
+                        }
+                        juryAndPublicMarksTable(Conteskey);
+                        getRank();
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+    }
     private void getRank() {
-        participantLists2.clear();
-        Collections.sort(participantLists, (o1, o2) -> Integer.compare(o1.getTs(), o2.getTs()));
-        Collections.reverse(participantLists);
-        try {
-            for (int x = 0; x < 3; x++) participantLists2.add(participantLists.get(x));
-        } catch (IndexOutOfBoundsException e) {
-            Log.e(TAG, "onDataChange: " + e.getMessage());
-        }
 
         displayParticipantRank();
 
@@ -588,32 +641,18 @@ public class fragment_contest_overview extends Fragment {
         winnerRv.setAdapter(winnerList);
     }
 
-    //  fetching ParticipantList  from SharedPreferences
-    private void getParticipantListFromSP() {
-        String json = sp.getString(Conteskey, null);
-
-        Type type = new TypeToken<ArrayList<ParticipantList>>() {
-        }.getType();
-        participantLists = gson.fromJson(json, type);
-        if (participantLists == null) {    //        if no arrayList is present
-            participantLists = new ArrayList<>();
-        }
-        Log.d(TAG, "getParticipantListFromSP: cgy"+participantLists.size());
-        getRank();
-        juryMarksTable(Conteskey);
-        juryAndPublicMarksTable(Conteskey);
-
-    }
-
     private void displayParticipantRank() {
         ArrayList<ParticipantList> paginatedParticipantLists = new ArrayList<>();
         if (participantLists != null) {
             try {
+                Collections.sort(participantLists, (o1, o2) -> Integer.compare(o1.getTs(), o2.getTs()));
+                Collections.reverse(participantLists);
                 int iteration = participantLists.size();
                 if (iteration > 10) iteration = 10;
-                int mResults = 10;
-                for (int i = 0; i < iteration; i++)
+                for (int i = 0; i < iteration; i++) {
                     paginatedParticipantLists.add(participantLists.get(i));
+                }
+
                 AdapterRankList rankList = new AdapterRankList(getContext(), paginatedParticipantLists);
                 rankList.setHasStableIds(true);
                 rankRv.setAdapter(rankList);

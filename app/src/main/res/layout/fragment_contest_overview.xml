@@ -1,190 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:id="@+id/scroll"
-        android:layout_height="wrap_content">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/resultLayout">
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rectangular_border"
-                    android:text=" Publish Result "
-                    android:id="@+id/pubBtn"
-                    android:gravity="center"
-                    android:padding="10dp"
-                    android:layout_margin="20dp"
-                    android:visibility="gone"
-
-                    android:layout_marginTop="5dp"
-                    android:layout_centerHorizontal="true"
-                    android:textColor="@color/black" />
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rectangular_border"
-                    android:text=" Result Published "
-                    android:id="@+id/pubBtn2"
-                    android:gravity="center"
-                    android:padding="10dp"
-
-                    android:layout_margin="20dp"
-                    android:visibility="gone"
-                    android:layout_marginTop="5dp"
-                    android:layout_centerHorizontal="true"
-                    android:textColor="@color/colorPrimary" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_below="@+id/resultLayout"
-                android:id="@+id/relWin">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Winners"
-                    android:id="@+id/winner"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_centerHorizontal="true"
-                    android:textColor="@color/colorPrimary" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/winner"
-                    android:id="@+id/recyclerWinner" />
-
-            </RelativeLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ranking"
-                android:id="@+id/rank"
-                android:layout_below="@+id/relWin"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginTop="30dp"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/colorPrimary" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rank"
-                android:layout_marginBottom="30dp"
-
-                android:id="@+id/relLayout">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:itemCount="10"
-                    android:layout_marginBottom="5dp"
-                    android:id="@+id/rankList" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="See all rankings"
-                    android:id="@+id/seeRank"
-                    android:layout_marginEnd="10dp"
-                    android:layout_below="@+id/rankList"
-                    android:layout_alignParentRight="true"
-                    android:textColor="@color/light_blue" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/relLayout"
-                android:id="@+id/juryvoteTable">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Jury Votes"
-                    android:textSize="18sp"
-                    android:gravity="center"
-                    android:textStyle="bold"
-                    android:layout_centerHorizontal="true"
-                    android:textColor="@color/colorPrimary" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/relLayout1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/juryvoteTable"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="30dp">
-
-                <include layout="@layout/layout_overvew_jury_table" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/relLayout1"
-                android:id="@+id/resultTable">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Result"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:layout_centerHorizontal="true"
-                    android:textColor="@color/colorPrimary" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/resultTable"
-                android:id="@+id/relLayout2">
-
-                <include layout="@layout/layout_jury_public_total" />
-            </RelativeLayout>
-        </RelativeLayout>
-    </ScrollView>
-
     <LinearLayout
+        android:id="@+id/pro"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:id="@+id/pro"
         android:background="#CC333232"
-        android:visibility="gone"
-        android:orientation="vertical">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/white_border"
+            android:layout_gravity="center"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
-            android:layout_gravity="center">
+            android:background="@drawable/white_border">
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -194,14 +30,185 @@
                 android:layout_marginLeft="10dp" />
 
             <TextView
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/progressBar"
                 android:layout_centerInParent="true"
-                android:textColor="@color/black"
+                android:layout_centerHorizontal="true"
                 android:text="Publishing Result..."
+                android:textColor="@color/black"
                 android:textSize="18sp" />
         </RelativeLayout>
     </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/resultLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/pubBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="20dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/rectangular_border"
+                    android:gravity="center"
+                    android:padding="10dp"
+
+                    android:text=" Publish Result "
+                    android:textColor="@color/black"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/pubBtn2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="20dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/rectangular_border"
+
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text=" Result Published "
+                    android:textColor="@color/colorPrimary"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relWin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/resultLayout"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/winner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="Winners"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerWinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/winner" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rank"
+
+                android:layout_marginBottom="30dp">
+
+                <TextView
+                    android:id="@+id/seeRank"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rankList"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginEnd="10dp"
+                    android:text="See all rankings"
+                    android:textColor="@color/light_blue" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rankList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    tools:itemCount="10" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/jutyRl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_below="@+id/relLayout">
+
+                <RelativeLayout
+                    android:id="@+id/juryvoteTable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:text="Jury Votes"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relLayout1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/juryvoteTable"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="30dp">
+
+                    <include layout="@layout/layout_overvew_jury_table" />
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/resultTable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/jutyRl">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="Result"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relLayout2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/resultTable">
+
+                <include layout="@layout/layout_jury_public_total" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/rank"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relWin"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:text="Ranking"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

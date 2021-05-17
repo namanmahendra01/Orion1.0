@@ -1174,7 +1174,8 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                 } else if (togglePrize.isChecked() && (prizeFirst.equals("") || prizeSecond.equals("")
                         || prizeThird.equals("") || prizeFirst.equals("0") || prizeSecond.equals("0")
                         || prizeThird.equals("0") || Integer.parseInt(prizeSecond) >= Integer.parseInt(prizeFirst) ||
-                        Integer.parseInt(prizeThird) >= Integer.parseInt(prizeSecond)||(Integer.parseInt(prizeThird)<=Integer.parseInt(fees)))) {
+                        Integer.parseInt(prizeThird) >= Integer.parseInt(prizeSecond)
+                        ||checkFee(fees,prizeThird))) {
                     if (prizeFirst.equals("") || prizeFirst.equals("0")) {
                         YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(firstPrize);
                         firstPrize.setError("Please enter some prize");
@@ -1206,16 +1207,27 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                         secondPrize.requestFocus();
                         thirdPrize.requestFocus();
                     }
-                    if ((Integer.parseInt(prizeThird)<=Integer.parseInt(fees))){
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mEntryFees);
-                        mEntryFees.setError("Entry fee must be less than each prize money");
-                        mEntryFees.requestFocus();
+                    if(!fees.equals("")) {
+                        if ((Integer.parseInt(prizeThird) <= Integer.parseInt(fees))) {
+                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mEntryFees);
+                            mEntryFees.setError("Entry fee must be less than each prize money");
+                            mEntryFees.requestFocus();
+                        }
                     }
                 } else
                     submit();
             }
         });
+
     }
+    private boolean checkFee(String fees, String prizeThird) {
+        if (fees.equals("")){
+            return false;
+        }else{
+            return Integer.parseInt(prizeThird) <= Integer.parseInt(fees);
+        }
+    }
+
 
     private void submit() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

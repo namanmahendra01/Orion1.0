@@ -248,10 +248,11 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
 
                                                         deleteRequest(mparticipantLists.getCi(), mparticipantLists.getJi(), mparticipantLists.getUi());
                                                         participantLists.remove(i);
+                                                        Log.d(TAG, "onSuccess: "+ mparticipantLists.getJi());
 
                                                         AdapterParticipantRequest.this.notifyItemRemoved(i);
 
-                                                        if (mparticipantLists.getMl() == null || mparticipantLists.getMl().equals("") || !mparticipantLists.getMl().substring(8, 23).equals("firebasestorage")) {
+                                                        if (mparticipantLists.getMl() == null || mparticipantLists.getMl().equals("") || checkSubstring()) {
 
                                                         } else {
                                                             StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMl());
@@ -272,6 +273,14 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
 
                                                         bottomSheetDialog.dismiss();
 
+                                                    }
+
+                                                    private boolean checkSubstring() {
+                                                        if (mparticipantLists.getMl().length()>23){
+                                                            return !mparticipantLists.getMl().substring(8, 23).equals("firebasestorage");
+                                                        }else{
+                                                            return true;
+                                                        }
                                                     }
                                                 });
                                     }
@@ -340,6 +349,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                 ParticipantList participantList = dataSnapshot.getValue(ParticipantList.class);
+                                                Log.d(TAG, "onSuccess: klkl2");
 
                                                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                                                 ref.child(mContext.getString(R.string.dbname_participantList))
@@ -349,6 +359,7 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
                                                             public void onSuccess(Void aVoid) {
+                                                                Log.d(TAG, "onSuccess: klkl1");
                                                                 HashMap<String, Object> hashMap3 = new HashMap<>();
                                                                 hashMap3.put(mContext.getString(R.string.field_jury_1), "");
                                                                 hashMap3.put(mContext.getString(R.string.field_jury_2), "");
@@ -369,6 +380,8 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                                                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                             @Override
                                                                             public void onSuccess(Void aVoid) {
+                                                                                Log.d(TAG, "onSuccess: klkl2");
+
                                                                                 deleteRequest(mparticipantLists.getCi(), mparticipantLists.getJi(), mparticipantLists.getUi());
                                                                                 bottomSheetDialog.dismiss();
 

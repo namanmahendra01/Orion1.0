@@ -320,7 +320,7 @@ public class jury_voting_media extends AppCompatActivity {
 //                setting 1st item of row i.e textview
                 TextView t1v = new TextView(jury_voting_media.this);
                 getU(joiningKey, t1v);
-                t1v.setTextColor(getResources().getColor(R.color.yellow));
+                t1v.setTextColor(getResources().getColor(R.color.red));
                 t1v.setGravity(Gravity.CENTER);
                 tbrow.addView(t1v);
 
