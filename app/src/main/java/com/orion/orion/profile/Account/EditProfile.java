@@ -39,6 +39,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.orion.orion.Notifications.Data;
 import com.orion.orion.R;
 import com.orion.orion.login.LoginActivity;
 import com.orion.orion.models.users;
@@ -460,14 +461,15 @@ public class EditProfile extends AppCompatActivity {
 
     private void checkifuserexist(final String username) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbname_users))
-                .child(username);
+        Query query = reference.child(getString(R.string.dbname_username)).child(username);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()) {
 //                    add the username
                     myRef.child(mContext.getString(R.string.dbname_users)).child(userID).child(mContext.getString(R.string.field_username)).setValue(username);
+                    myRef.child(getString(R.string.dbname_username)).child(setting.getU()).removeValue();
+                    myRef.child(getString(R.string.dbname_username)).child(username).setValue(userID);
                     Toast.makeText(EditProfile.this, "saved username", Toast.LENGTH_SHORT).show();
                 }
                 for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
