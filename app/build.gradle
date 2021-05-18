@@ -10,22 +10,22 @@ android {
         applicationId "com.orion.orion"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 5
+        versionCode 6
         multiDexEnabled true
-        versionName "1.4"
+        versionName "1.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-        debug {
-            shrinkResources false
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-//        release {
-//            shrinkResources true
-//            minifyEnabled true
+//        debug {
+//            shrinkResources false
+//            minifyEnabled false
 //            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 //        }
+        release {
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

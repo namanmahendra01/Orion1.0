@@ -725,7 +725,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/currentActive"
         android:background="@color/white"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -959,7 +959,7 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginEnd="25dp"
-                android:visibility="gone"
+                android:visibility="visible"
 
                 android:layout_marginRight="25dp"
                 android:gravity="center|start"
@@ -976,14 +976,14 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:layout_marginEnd="15dp"
                 android:layout_marginRight="15dp"
                 android:background="@drawable/circular_corner_rectangle_white_border"
                 android:backgroundTint="@color/white"
                 android:elevation="10dp"
                 android:gravity="top"
-                android:hint="Any rules you want to specify.\nPlease mention them in lines"
+                android:hint="Any rules you want to specify.\nPlease mention them here"
                 android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
                 android:padding="10dp"
                 android:textColor="@color/black"

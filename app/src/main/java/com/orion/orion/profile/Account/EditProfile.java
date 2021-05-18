@@ -390,7 +390,7 @@ public class EditProfile extends AppCompatActivity {
         final String description = mdescription.getText().toString();
         //if user made a change to username
         if (!setting.getU().equals(username))
-            checkifuserexist(username);
+            checkifuserexist(username,setting.getU());
 
         if (!displayName.equals("") && !setting.getDn().equals(displayName))
             myRef.child(getString(R.string.dbname_users)).child(userID).child(getString(R.string.field_display_name)).setValue(displayName);
@@ -458,9 +458,9 @@ public class EditProfile extends AppCompatActivity {
         }
     }
 
-    private void checkifuserexist(final String username) {
+    private void checkifuserexist(final String username, String oldUsername) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        Query query = reference.child(getString(R.string.dbname_users))
+        Query query = reference.child(getString(R.string.dbname_username))
                 .child(username);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -468,13 +468,19 @@ public class EditProfile extends AppCompatActivity {
                 if (!dataSnapshot.exists()) {
 //                    add the username
                     myRef.child(mContext.getString(R.string.dbname_users)).child(userID).child(mContext.getString(R.string.field_username)).setValue(username);
+                    myRef.child(mContext.getString(R.string.dbname_username))
+                            .child(username)
+                            .setValue(userID);
+                    myRef.child(mContext.getString(R.string.dbname_username))
+                            .child(oldUsername)
+                            .removeValue();
+
                     Toast.makeText(EditProfile.this, "saved username", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(EditProfile.this, "That Username already exist", Toast.LENGTH_SHORT).show();
+
                 }
-                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                    if (singleSnapshot.exists()) {
-                        Toast.makeText(EditProfile.this, "That Username already exist", Toast.LENGTH_SHORT).show();
-                    }
-                }
+
             }
 
             @Override

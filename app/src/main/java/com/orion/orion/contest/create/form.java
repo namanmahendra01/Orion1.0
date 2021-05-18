@@ -1095,7 +1095,37 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                             if (JuryName3.equals("")) {
                                 YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
                             }
-                        } else {
+                        }else if(JuryName1.equals(JuryName2)||JuryName1.equals(JuryName3)||JuryName2.equals(JuryName3)) {
+                            if (JuryName1.equals(JuryName2)){
+                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                juryName1.setError("Jury members must be different!");
+                                juryName1.requestFocus();
+
+                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                juryName2.setError("Jury members must be different!");
+                                juryName2.requestFocus();
+                            }
+                            if (JuryName1.equals(JuryName3)){
+                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                juryName1.setError("Jury members must be different!");
+                                juryName1.requestFocus();
+
+                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
+                                juryName3.setError("Jury members must be different!");
+                                juryName3.requestFocus();
+                            }
+                            if (JuryName3.equals(JuryName2)){
+                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
+                                juryName3.setError("Jury members must be different!");
+                                juryName3.requestFocus();
+
+                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                juryName2.setError("Jury members must be different!");
+                                juryName2.requestFocus();
+                            }
+
+                        }else
+                         {
                             layout3.setVisibility(View.VISIBLE);
                             layout2.setVisibility(View.GONE);
                             active2.setVisibility(View.INVISIBLE);
@@ -1364,6 +1394,10 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
         jury1Container.setVisibility(View.GONE);
         jury2Container.setVisibility(View.GONE);
         jury3Container.setVisibility(View.GONE);
+        j1Checked.setVisibility(View.GONE);
+        j2Checked.setVisibility(View.GONE);
+        j3Checked.setVisibility(View.GONE);
+
         publicVotingContainer.setVisibility(View.GONE);
         publicVotingContainerDates.setVisibility(View.GONE);
 

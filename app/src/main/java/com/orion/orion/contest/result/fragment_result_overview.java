@@ -79,6 +79,7 @@ public class fragment_result_overview extends Fragment {
 
     String Conteskey;
     TextView seeRank;
+    RelativeLayout juryRl;
 
 
     public fragment_result_overview() {
@@ -101,6 +102,8 @@ public class fragment_result_overview extends Fragment {
         relWinner.setVisibility(View.VISIBLE);
 
         seeRank = view.findViewById(R.id.seeRank);
+        juryRl = view.findViewById(R.id.jutyRl);
+
 
         seeRank.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,10 +134,33 @@ public class fragment_result_overview extends Fragment {
         winnerList.setHasStableIds(true);
         winnerRv.setAdapter(winnerList);
 
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child(getString(R.string.dbname_contestlist))
+                .child(Conteskey)
+                .child(getString(R.string.field_vote_type))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            if (snapshot.getValue().toString().equals("Public")) {
+                                juryRl.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
 
         getRank(Conteskey);
 
-        juryMarksTable(Conteskey);
+        if (juryRl.getVisibility() != View.GONE) {
+            juryMarksTable(Conteskey);
+
+        }
         juryAndPublicMarksTable(Conteskey);
 
 

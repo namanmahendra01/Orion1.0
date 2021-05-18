@@ -75,7 +75,7 @@ public class fragment_overview extends Fragment {
     RecyclerView winnerRv;
     private AdapterWinners winnerList;
     private RelativeLayout relWinner;
-
+    RelativeLayout juryRl;
 
     String Conteskey;
     TextView seeRank;
@@ -97,6 +97,7 @@ public class fragment_overview extends Fragment {
         Bundle b = getActivity().getIntent().getExtras();
         Conteskey = b.getString("contestId");
         relWinner = view.findViewById(R.id.relWin);
+        juryRl = view.findViewById(R.id.jutyRl);
 
         seeRank = view.findViewById(R.id.seeRank);
 
@@ -126,16 +127,17 @@ public class fragment_overview extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            if (dataSnapshot.getValue().toString().equals("true")){
+                            if (dataSnapshot.getValue().toString().equals("true")) {
                                 relWinner.setVisibility(View.VISIBLE);
                             }
                         }
                     }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                            }
-                        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
         getRank(Conteskey);
 //        **********************************************************
         participantLists2 = new ArrayList<>();
@@ -149,9 +151,32 @@ public class fragment_overview extends Fragment {
         winnerRv.setAdapter(winnerList);
 
 
+        ref.child(getString(R.string.dbname_contestlist))
+                .child(Conteskey)
+                .child(getString(R.string.field_vote_type))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            if (snapshot.getValue().toString().equals("Public")) {
+                                juryRl.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+
         getRank(Conteskey);
 
-        juryMarksTable(Conteskey);
+        if (juryRl.getVisibility() != View.GONE) {
+            juryMarksTable(Conteskey);
+
+        }
         juryAndPublicMarksTable(Conteskey);
 
 
@@ -192,7 +217,7 @@ public class fragment_overview extends Fragment {
                                             t1v.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+                                                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
                                                     Query userquery = ref
                                                             .child(getString(R.string.dbname_username))
@@ -200,8 +225,8 @@ public class fragment_overview extends Fragment {
                                                     userquery.addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                            if (dataSnapshot.exists()){
-                                                                String  username2 = dataSnapshot.getValue().toString();
+                                                            if (dataSnapshot.exists()) {
+                                                                String username2 = dataSnapshot.getValue().toString();
 
                                                                 Intent i = new Intent(getContext(), profile.class);
                                                                 i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
@@ -220,7 +245,6 @@ public class fragment_overview extends Fragment {
                                                             Log.d(TAG, "Query Cancelled");
                                                         }
                                                     });
-
 
 
                                                 }
@@ -324,7 +348,7 @@ public class fragment_overview extends Fragment {
                                             t1v.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View v) {
-                                                    DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+                                                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
                                                     Query userquery = ref
                                                             .child(getString(R.string.dbname_username))
@@ -332,8 +356,8 @@ public class fragment_overview extends Fragment {
                                                     userquery.addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                            if (dataSnapshot.exists()){
-                                                                String  username2 = dataSnapshot.getValue().toString();
+                                                            if (dataSnapshot.exists()) {
+                                                                String username2 = dataSnapshot.getValue().toString();
 
                                                                 Intent i = new Intent(getContext(), profile.class);
                                                                 i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
@@ -378,7 +402,6 @@ public class fragment_overview extends Fragment {
                                                 p = Long.parseLong(juryMarks.getJ3());
 
                                             }
-
 
 
 //
@@ -483,6 +506,7 @@ public class fragment_overview extends Fragment {
                         textView.setText(user);
 
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
