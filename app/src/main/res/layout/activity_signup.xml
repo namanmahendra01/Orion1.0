@@ -89,7 +89,7 @@
                         android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890_.@"
                         android:hint="E-mail"
                         android:imeOptions="actionNext"
-                        android:inputType="textFilter"
+                        android:inputType="textEmailAddress"
                         android:padding="10dp"
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey"

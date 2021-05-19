@@ -19,6 +19,8 @@
         android:name=".util.MyApplication"
         android:icon="@drawable/orion_logo_png_black"
         android:label="@string/app_name"
+        android:allowBackup="true"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/orion_logo_png_black"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
