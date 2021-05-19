@@ -517,7 +517,7 @@ public class ProfileActivity extends AppCompatActivity {
                         for (DataSnapshot singleSnapshot : snapshot.getChildren()) {
                             int rating = (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).getValue()
                                     + (int) (long) singleSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).getValue();
-                            if (rating > userRating && !user.getUid().equals(singleSnapshot.getKey()) && !singleSnapshot.getKey().equals(getString(R.string.orion_team_user_id)))
+                            if (rating >= userRating && !user.getUid().equals(singleSnapshot.getKey()) && !singleSnapshot.getKey().equals(getString(R.string.orion_team_user_id)))
                                 updateRank();
                         }
                     }
