@@ -270,7 +270,6 @@ public class form extends AppCompatActivity implements BottomSheetDomain.BottomS
                     .show();
         });
         selectPoster.setOnClickListener(v -> {
-            selectPoster.setEnabled(false);
             selectedImage = 1;
             if (checkPermissionArray(Permissions.PERMISSIONS)) {
                 isKitKat = true;

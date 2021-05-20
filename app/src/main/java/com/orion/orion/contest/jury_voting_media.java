@@ -127,17 +127,11 @@ public class jury_voting_media extends AppCompatActivity {
                 final int[] i = {0};
                 for (String joiningKey : participantlist) {
 
-                    String json = sp.getString(joiningKey, null);
-
-                    Type type = new TypeToken<ArrayList<String>>() {
-                    }.getType();
-                    markList = gson.fromJson(json, type);
-
                     TableRow row = (TableRow) juryTable.getChildAt(x);
                     EditText et = (EditText) row.getChildAt(2);
                     EditText et2 = (EditText) row.getChildAt(3);
-                    text = et.getText().toString();
-                    tex2t = et2.getText().toString();
+                    String text = et.getText().toString();
+                   String tex2t = et2.getText().toString();
 
                     DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
 
@@ -158,15 +152,16 @@ public class jury_voting_media extends AppCompatActivity {
 
 
                     } else {
-                        markList = new ArrayList<>(Collections.nCopies(4, "0"));
                         addUsernameAndMediaLinktoSP(joiningKey, text, tex2t);
 
+                        Log.d(TAG, "onClick: ");
                         ref2.child(getString(R.string.dbname_participantList))
                                 .child(contestkey)
                                 .child(joiningKey)
                                 .child(getString(R.string.juryMarks))
                                 .child(jury)
-                                .setValue(text).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                .setValue(text)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 ref2.child(getString(R.string.dbname_participantList))
@@ -174,7 +169,8 @@ public class jury_voting_media extends AppCompatActivity {
                                         .child(joiningKey)
                                         .child(getString(R.string.juryMarks))
                                         .child(comment)
-                                        .setValue(tex2t).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        .setValue(tex2t)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         i[0]++;
@@ -214,9 +210,7 @@ public class jury_voting_media extends AppCompatActivity {
 
     private void addUsernameAndMediaLinktoSP(String joiningKey, String text, String tex2t) {
         ArrayList<String> list = new ArrayList<>(Collections.nCopies(4, "0"));
-
         DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
-        ArrayList<String> finalList = list;
         ref2.child(getString(R.string.dbname_participantList))
                 .child(contestkey)
                 .child(joiningKey)
@@ -231,7 +225,7 @@ public class jury_voting_media extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         String username2 = snapshot.getValue().toString();
-                                        finalList.set(0, username2);
+                                        list.set(0, username2);
 
                                         ref2.child(getString(R.string.dbname_participantList))
                                                 .child(contestkey)
@@ -243,14 +237,14 @@ public class jury_voting_media extends AppCompatActivity {
 
 
                                                         String link = dataSnapshot1.getValue().toString();
-                                                        finalList.set(1, link);
-                                                        finalList.set(2, text);
-                                                        finalList.set(3, tex2t);
+                                                        list.set(1, link);
+                                                        list.set(2, text);
+                                                        list.set(3, tex2t);
 
                                                         //    Add newly Created ArrayList to Shared Preferences
-                                                        Log.d(TAG, "onDataChange: final "+finalList);
+                                                        Log.d(TAG, "onDataChange: final "+ list);
                                                         SharedPreferences.Editor editor = sp.edit();
-                                                        String json = gson.toJson(finalList);
+                                                        String json = gson.toJson(list);
                                                         editor.putString(joiningKey, json);
                                                         editor.apply();
 
@@ -354,6 +348,7 @@ public class jury_voting_media extends AppCompatActivity {
                 etList1.add(Et4v);
                 tbrow.addView(Et4v);
 
+                getMarksandComments(joiningKey,Et3v,Et4v);
 //                add row to jury table
                 juryTable.addView(tbrow);
 
@@ -581,6 +576,37 @@ public class jury_voting_media extends AppCompatActivity {
             }
 
         }
+    }
+
+    private void getMarksandComments(String joiningKey, EditText et3v, EditText et4v) {
+        DatabaseReference ref5 = FirebaseDatabase.getInstance().getReference();
+        ref5.child(getString(R.string.dbname_participantList))
+                .child(contestkey)
+                .child(joiningKey)
+                .child(getString(R.string.juryMarks)).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Log.d(TAG, "onDataChange: "+dataSnapshot.getValue());
+                        if (dataSnapshot.exists()) {
+                            String mark = dataSnapshot.child(jury).getValue().toString();
+                            String comnt = dataSnapshot.child(comment).getValue().toString();
+                            if (!mark.equals("-")) {
+                                et3v.setText(dataSnapshot.child(jury).getValue().toString());
+                            }
+
+                            if (!comnt.equals("-")) {
+                                et4v.setText(dataSnapshot.child(comment).getValue().toString());
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
     }
 
 

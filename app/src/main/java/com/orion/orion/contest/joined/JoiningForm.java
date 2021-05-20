@@ -219,6 +219,7 @@ public class JoiningForm extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 selectedImage = 1;
+                idBtn.setEnabled(true);
                 if (checkPermissionArray(Permissions.PERMISSIONS)) {
                     isKitKat = true;
                     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -235,7 +236,7 @@ public class JoiningForm extends AppCompatActivity {
         mediaBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mediaBtn.setEnabled(false);
+                mediaBtn.setEnabled(true);
                 selectedImage = 2;
                 if (checkPermissionArray(Permissions.PERMISSIONS)) {
                     isKitKat = true;

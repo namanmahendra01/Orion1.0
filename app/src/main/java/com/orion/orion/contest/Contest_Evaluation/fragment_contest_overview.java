@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.Gravity;
@@ -27,6 +29,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -70,12 +73,14 @@ public class fragment_contest_overview extends Fragment {
     private ArrayList<ParticipantList> participantLists;
     private ArrayList<ParticipantList> participantLists2;
     private RelativeLayout relWinner;
-
+    boolean flag1 = false;
+    private static int RETRY_DURATION = 1000;
+    private static final Handler handler = new Handler(Looper.getMainLooper());
     //    SP
     private Gson gson;
     private SharedPreferences sp;
     private users user = new users();
-
+    private SwipeRefreshLayout participantRefresh;
     public LinearLayout progress;
     private RecyclerView winnerRv;
     private Button pubBtn, pubBtn2;
@@ -103,6 +108,7 @@ public class fragment_contest_overview extends Fragment {
         TextView seeRank = view.findViewById(R.id.seeRank);
         progress = view.findViewById(R.id.pro);
         juryRl = view.findViewById(R.id.jutyRl);
+        participantRefresh = view.findViewById(R.id.participant_refresh);
 
 
         mFirebaseMethods = new FirebaseMethods(getActivity());
@@ -239,7 +245,24 @@ public class fragment_contest_overview extends Fragment {
                 Log.e(SNTPClient.TAG, e.getMessage());
             }
         });
+        participantRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                flag1 = false;
 
+                getParticipantListFromSP(true);
+
+                checkRefresh();
+            }
+
+            private void checkRefresh() {
+                if (participantRefresh.isRefreshing() && flag1) {
+                    participantRefresh.setRefreshing(false);
+                    handler.removeCallbacks(this::checkRefresh);
+                    flag1 = false;
+                } else handler.postDelayed(this::checkRefresh, RETRY_DURATION);
+            }
+        });
         pubBtn.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Publish Result");
@@ -250,7 +273,7 @@ public class fragment_contest_overview extends Fragment {
             builder.create().show();
 
         });
-        getParticipantListFromSP();
+        getParticipantListFromSP(false);
         return view;
     }
 
@@ -578,7 +601,7 @@ public class fragment_contest_overview extends Fragment {
 
 
     //  fetching ParticipantList  from SharedPreferences
-    private void getParticipantListFromSP() {
+    private void getParticipantListFromSP(boolean forReferesh) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(getString(R.string.dbname_participantList))
                 .child(Conteskey)
@@ -614,10 +637,13 @@ public class fragment_contest_overview extends Fragment {
                             Log.e(TAG, "onDataChange: " + e.getMessage());
                         }
 
-                        if (juryRl.getVisibility()!=View.GONE){
-                            juryMarksTable(Conteskey);
+                        if (!forReferesh) {
+                            if (juryRl.getVisibility() != View.GONE) {
+                                juryMarksTable(Conteskey);
+                            }
+                            juryAndPublicMarksTable(Conteskey);
+
                         }
-                        juryAndPublicMarksTable(Conteskey);
                         getRank();
 
                     }
@@ -642,6 +668,7 @@ public class fragment_contest_overview extends Fragment {
     }
 
     private void displayParticipantRank() {
+        flag1=true;
         ArrayList<ParticipantList> paginatedParticipantLists = new ArrayList<>();
         if (participantLists != null) {
             try {
