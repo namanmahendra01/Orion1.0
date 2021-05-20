@@ -1027,7 +1027,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
     private void setupBottomNavigationView() {
         Log.d(TAG, " setupBottomNavigationView:setting up BottomNavigationView");
         BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.BottomNavViewBar);
-        BottomNaavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
+        BottomNaavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx, this);
         BottomNaavigationViewHelper.enableNavigation(LeaderboardActivity.this, this, bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);

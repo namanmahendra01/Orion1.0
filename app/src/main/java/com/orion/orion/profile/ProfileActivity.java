@@ -912,7 +912,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void setupBottomNavigationView() {
         Log.d(TAG, " setupBottomNavigationView:setting up BottomNavigationView");
-        BottomNaavigationViewHelper.setupBottomNavigationView(bottomNavigationView);
+        BottomNaavigationViewHelper.setupBottomNavigationView(bottomNavigationView, this);
         BottomNaavigationViewHelper.enableNavigation(this, this, bottomNavigationView);
         Menu menu = bottomNavigationView.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);

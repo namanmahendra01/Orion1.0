@@ -60,7 +60,6 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
     SharedPreferences sp;
     private Context mContext;
     private List<ParticipantList> participantLists;
-    String name1 = "", profilelink = "", username1 = "", idLink = "", mediaLink = "", comment = "", college1 = "";
 
     public AdapterParticipantList(Context mContext, List<ParticipantList> participantLists) {
         this.mContext = mContext;
@@ -94,7 +93,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
         holder.time.setText(dateTime);
 
 
-        getparticipantDetails(mparticipantLists.getUi(), holder.username, holder.profile);
+        getparticipantDetails(mparticipantLists.getUi(), holder.username, holder.profile,holder);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,17 +113,17 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                 LinearLayout layout = bottomSheetView.findViewById(R.id.collegeLinear);
                 CircleImageView profileview = bottomSheetView.findViewById(R.id.profileBs);
 
-                name.setText(name1);
-                username.setText(username1);
+                name.setText(holder.name1);
+                username.setText(holder.username1);
                 Glide.with(mContext.getApplicationContext())
-                        .load(profilelink)
+                        .load(holder.profilelink)
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)
                         .placeholder(R.drawable.load)
                         .thumbnail(0.5f)
                         .into(profileview);
 
-                getparticipantform(mparticipantLists.getUi(), mparticipantLists.getJi(), mparticipantLists.getCi(), college, layout);
+                getparticipantform(mparticipantLists.getUi(), mparticipantLists.getJi(), mparticipantLists.getCi(), college, layout,holder);
 
                 remove.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -405,7 +404,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
 
     }
 
-    private void getparticipantform(String userid, String joiningkey, String contestkey, TextView college, LinearLayout layout) {
+    private void getparticipantform(String userid, String joiningkey, String contestkey, TextView college, LinearLayout layout, ViewHolder holder) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child(mContext.getString(R.string.dbname_contests))
                 .child(userid)
@@ -415,7 +414,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         JoinForm joinForm = dataSnapshot.getValue(JoinForm.class);
-                        college1 = joinForm.getClg();
+                        holder.college1 = joinForm.getClg();
                         String hostid = joinForm.getHst();
                         DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference();
                         ref1.child(mContext.getString(R.string.dbname_contests))
@@ -430,7 +429,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                                             layout.setVisibility(View.GONE);
                                         } else {
                                             layout.setVisibility(View.VISIBLE);
-                                            college.setText(college1);
+                                            college.setText(holder.college1);
                                         }
                                     }
 
@@ -464,6 +463,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
 
         private TextView username, time;
         private DatabaseReference mReference;
+        String name1 = "", profilelink = "", username1 = "", idLink = "", mediaLink = "", comment = "", college1 = "";
 
         private CircleImageView profile;
 
@@ -480,7 +480,7 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
     }
 
 
-    private void getparticipantDetails(String userid, TextView username, CircleImageView profile) {
+    private void getparticipantDetails(String userid, TextView username, CircleImageView profile, ViewHolder holder) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child(mContext.getString(R.string.dbname_users))
                 .child(userid)
@@ -488,13 +488,13 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user = dataSnapshot.getValue(users.class);
-                        name1 = user.getDn();
-                        username1 = user.getU();
-                        profilelink = user.getPp();
+                        holder.  name1 = user.getDn();
+                        holder. username1 = user.getU();
+                        holder.profilelink = user.getPp();
                         try {
 
                             Glide.with(mContext.getApplicationContext().getApplicationContext())
-                                    .load(profilelink)
+                                    .load(holder.profilelink)
                                     .placeholder(R.drawable.load)
                                     .error(R.drawable.default_image2)
                                     .placeholder(R.drawable.load)

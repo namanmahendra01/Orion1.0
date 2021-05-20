@@ -93,7 +93,7 @@ public class contestMainActivity extends AppCompatActivity {
     private void setupBottomNavigationView() {
         Log.d(TAG, " setupBottomNavigationView:setting up BottomNavigationView");
         BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.BottomNavViewBar);
-        BottomNaavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
+        BottomNaavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx,this);
         BottomNaavigationViewHelper.enableNavigation(contestMainActivity.this, this, bottomNavigationViewEx);
 
         Menu menu = bottomNavigationViewEx.getMenu();
