@@ -3,6 +3,8 @@ package com.orion.orion.contest.result;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.Gravity;
@@ -21,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -71,7 +74,10 @@ public class fragment_result_overview extends Fragment {
     int mResults;
 
     users user = new users();
-
+    private SwipeRefreshLayout participantRefresh;
+    boolean flag1 = false;
+    private static int RETRY_DURATION = 1000;
+    private static final Handler handler = new Handler(Looper.getMainLooper());
     RecyclerView winnerRv;
     private AdapterWinners winnerList;
     private RelativeLayout relWinner;
@@ -98,6 +104,7 @@ public class fragment_result_overview extends Fragment {
         Bundle b = getActivity().getIntent().getExtras();
         Conteskey = b.getString("contestId");
         relWinner = view.findViewById(R.id.relWin);
+        participantRefresh = view.findViewById(R.id.participant_refresh);
 
         relWinner.setVisibility(View.VISIBLE);
 
@@ -154,7 +161,24 @@ public class fragment_result_overview extends Fragment {
                     }
                 });
 
+        participantRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                flag1 = false;
 
+                getRank(Conteskey);
+
+                checkRefresh();
+            }
+
+            private void checkRefresh() {
+                if (participantRefresh.isRefreshing() && flag1) {
+                    participantRefresh.setRefreshing(false);
+                    handler.removeCallbacks(this::checkRefresh);
+                    flag1 = false;
+                } else handler.postDelayed(this::checkRefresh, RETRY_DURATION);
+            }
+        });
         getRank(Conteskey);
 
         if (juryRl.getVisibility() != View.GONE) {
@@ -555,6 +579,8 @@ public class fragment_result_overview extends Fragment {
     }
 
     private void displayParticipantRank() {
+        flag1=true;
+
         ArrayList<ParticipantList> paginatedParticipantLists = new ArrayList<>();
         if (participantLists != null) {
             try {

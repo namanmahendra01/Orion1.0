@@ -157,7 +157,6 @@ public class BottomNaavigationViewHelper {
                 final long[] x = {0};
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
 
-
                     refer.child(context.getString(R.string.dbname_ChatList))
                             .child(dataSnapshot.getValue().toString())
                             .orderByKey()
@@ -165,10 +164,7 @@ public class BottomNaavigationViewHelper {
                             .addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot1) {
-
-
                                     for (DataSnapshot ds : snapshot1.getChildren()) {
-
                                         if (ds.exists()) {
 
                                             Chat chat = ds.getValue(Chat.class);

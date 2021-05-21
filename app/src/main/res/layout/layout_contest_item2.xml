@@ -101,7 +101,7 @@
                 android:id="@+id/entryfee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Entry Fee: "
+                android:text="Entry Fee(₹): "
                 android:textColor="@color/grey"
                 android:textSize="12sp" />
 

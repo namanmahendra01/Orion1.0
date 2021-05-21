@@ -73,14 +73,18 @@ public class fragment_contest_overview extends Fragment {
     private ArrayList<ParticipantList> participantLists;
     private ArrayList<ParticipantList> participantLists2;
     private RelativeLayout relWinner;
-    boolean flag1 = false;
-    private static int RETRY_DURATION = 1000;
-    private static final Handler handler = new Handler(Looper.getMainLooper());
     //    SP
     private Gson gson;
     private SharedPreferences sp;
     private users user = new users();
+
     private SwipeRefreshLayout participantRefresh;
+    boolean flag1 = false;
+    private static int RETRY_DURATION = 1000;
+    private static final Handler handler = new Handler(Looper.getMainLooper());
+
+
+
     public LinearLayout progress;
     private RecyclerView winnerRv;
     private Button pubBtn, pubBtn2;

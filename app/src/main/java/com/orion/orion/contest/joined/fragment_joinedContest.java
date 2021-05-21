@@ -101,6 +101,7 @@ TextView noPost;
 
         fAuth=FirebaseAuth.getInstance();
         getJoinListFromSP();
+
         joinedContestRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {

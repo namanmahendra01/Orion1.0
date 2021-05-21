@@ -346,7 +346,6 @@ public class FirebaseMethods {
 
 
     public String compressImage(String imagePath) {
-        Log.d(TAG, "compressImage: " + imagePath);
 
         File file = new File(imagePath);
         if (file.exists() && file.canRead()) {

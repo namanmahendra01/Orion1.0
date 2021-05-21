@@ -3,6 +3,8 @@ package com.orion.orion.contest.joined;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.Gravity;
@@ -21,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -79,7 +82,10 @@ public class fragment_overview extends Fragment {
 
     String Conteskey;
     TextView seeRank;
-
+    private SwipeRefreshLayout participantRefresh;
+    boolean flag1 = false;
+    private static int RETRY_DURATION = 1000;
+    private static final Handler handler = new Handler(Looper.getMainLooper());
 
     public fragment_overview() {
     }
@@ -100,6 +106,7 @@ public class fragment_overview extends Fragment {
         juryRl = view.findViewById(R.id.jutyRl);
 
         seeRank = view.findViewById(R.id.seeRank);
+        participantRefresh = view.findViewById(R.id.participant_refresh);
 
         seeRank.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,7 +176,23 @@ public class fragment_overview extends Fragment {
 
                     }
                 });
+        participantRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                flag1 = false;
 
+                getRank(Conteskey);
+                checkRefresh();
+            }
+
+            private void checkRefresh() {
+                if (participantRefresh.isRefreshing() && flag1) {
+                    participantRefresh.setRefreshing(false);
+                    handler.removeCallbacks(this::checkRefresh);
+                    flag1 = false;
+                } else handler.postDelayed(this::checkRefresh, RETRY_DURATION);
+            }
+        });
 
         getRank(Conteskey);
 
@@ -560,6 +583,8 @@ public class fragment_overview extends Fragment {
     }
 
     private void displayParticipantRank() {
+        flag1=true;
+
         paginatedParticipantLists = new ArrayList<>();
         if (participantLists != null) {
 
