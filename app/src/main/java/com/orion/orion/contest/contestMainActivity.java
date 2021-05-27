@@ -42,32 +42,6 @@ public class contestMainActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
 
-    public class MyTask extends AsyncTask<String,Void,String>{
-
-
-        private void setupViewPager() {
-            SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
-            adapter.addFragment(new CreateContestFragment());
-            adapter.addFragment(new UpcomingContestFragment());
-            adapter.addFragment(new JoinedContestFragment());
-            mViewPager.postDelayed((Runnable) () -> {
-                mViewPager.setAdapter(adapter);
-                TabLayout tablayout = (TabLayout) findViewById(R.id.tabs);
-                tablayout.setupWithViewPager(mViewPager);
-                mViewPager.setCurrentItem(CREATE_CONTEST);
-//        for giving icon to them
-                tablayout.getTabAt(0).setText("create");
-                tablayout.getTabAt(1).setText("upcoming");
-                tablayout.getTabAt(2).setText("joined");
-            }, 1000);
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            setupViewPager();
-            return null;
-        }
-    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,17 +52,29 @@ public class contestMainActivity extends AppCompatActivity {
         setupBottomNavigationView();
         setupFirebaseAuth();
         checkCurrentuser(mAuth.getCurrentUser());
-        MyTask myTask = new MyTask();
-        myTask.execute();
+        setupViewPager();
         hideSoftKeyboard();
         Log.d(TAG, " context"+this+"  "+getContext()+"  "+getApplicationContext());
-
     }
 
     //    for adding 3 tabs -media,home,message
-
-
-
+    
+    private void setupViewPager() {
+        SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new CreateContestFragment());
+        adapter.addFragment(new UpcomingContestFragment());
+        adapter.addFragment(new JoinedContestFragment());
+        mViewPager.postDelayed((Runnable) () -> {
+            mViewPager.setAdapter(adapter);
+            TabLayout tablayout = (TabLayout) findViewById(R.id.tabs);
+            tablayout.setupWithViewPager(mViewPager);
+            mViewPager.setCurrentItem(CREATE_CONTEST);
+//        for giving icon to them
+            tablayout.getTabAt(0).setText("create");
+            tablayout.getTabAt(1).setText("upcoming");
+            tablayout.getTabAt(2).setText("joined");
+        }, 1000);
+    }
     @Override
     public void onBackPressed() {
         super.onBackPressed();
