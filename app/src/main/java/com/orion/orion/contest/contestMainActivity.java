@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -49,6 +50,7 @@ public class contestMainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: started.");
         mContext = contestMainActivity.this;
         mViewPager = findViewById(R.id.viewpager_container);
+        mViewPager.setOffscreenPageLimit(3);
         setupBottomNavigationView();
         setupFirebaseAuth();
         checkCurrentuser(mAuth.getCurrentUser());
@@ -58,13 +60,13 @@ public class contestMainActivity extends AppCompatActivity {
     }
 
     //    for adding 3 tabs -media,home,message
-    
+
     private void setupViewPager() {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new CreateContestFragment());
         adapter.addFragment(new UpcomingContestFragment());
         adapter.addFragment(new JoinedContestFragment());
-        mViewPager.postDelayed((Runnable) () -> {
+        mViewPager.postDelayed(() -> {
             mViewPager.setAdapter(adapter);
             TabLayout tablayout = (TabLayout) findViewById(R.id.tabs);
             tablayout.setupWithViewPager(mViewPager);

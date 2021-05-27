@@ -88,13 +88,18 @@ public class UpcomingContestFragment extends Fragment {
     String domain = "Overall", entryfee = "Overall";
 
 
-    View view;
+    private View view;
 
 
     private AdapterContestUpcoming contestUpcoming;
     private AdapterContestUpcomingGrid adapterContestUpcomingGrid;
     private AdapterContestSearch adapterContestSearch;
 
+    @Override
+    public void onActivityCreated(@Nullable  Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getContestFiltered(domain, entryfee);
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
@@ -248,8 +253,6 @@ public class UpcomingContestFragment extends Fragment {
                 } else handler.postDelayed(this::checkRefresh, RETRY_DURATION);
             }
         });
-
-        getContestFiltered(domain, entryfee);
 
         return view;
     }

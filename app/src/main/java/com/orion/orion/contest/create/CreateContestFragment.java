@@ -55,20 +55,25 @@ public class CreateContestFragment extends Fragment {
     private static int RETRY_DURATION = 1000;
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
+    private View view;
     //    SP
-    Gson gson;
-    SharedPreferences sp;
+    private Gson gson;
+    private SharedPreferences sp;
+
+    @Override
+    public void onActivityCreated(@Nullable  Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        gson = new Gson();
+        getCreateListFromSP();
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.activity_fragment_create_contest, container, false);
-
-        sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
-        gson = new Gson();
-
+        view = inflater.inflate(R.layout.activity_fragment_create_contest, container, false);
 
         floatbtn = view.findViewById(R.id.float_btn);
         contestRefresh=view.findViewById(R.id.contest_refresh);
@@ -118,7 +123,6 @@ public class CreateContestFragment extends Fragment {
             }
         });
 
-        getCreateListFromSP();
 
         return view;
     }

@@ -9,8 +9,6 @@
            android:layout_height="match_parent"
            android:id="@+id/viewpager_container">
 
-
-
        </androidx.viewpager.widget.ViewPager>
     </RelativeLayout>
 </merge>

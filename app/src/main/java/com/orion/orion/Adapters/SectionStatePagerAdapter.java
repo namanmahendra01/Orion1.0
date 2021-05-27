@@ -1,5 +1,7 @@
 package com.orion.orion.Adapters;
 
+import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -21,6 +23,16 @@ public class SectionStatePagerAdapter extends FragmentStatePagerAdapter {
         super(fm, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
     }
 
+    @Override
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+//        super.destroyItem(container, position, object);
+    }
+
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        return -1;
+    }
+
     @NonNull
     @Override
     public Fragment getItem(int position) {
@@ -40,31 +52,20 @@ public class SectionStatePagerAdapter extends FragmentStatePagerAdapter {
     }
 //    return the fragment with name
     public Integer getFragmentNumber(String FragmentName){
-        if(mfragmentnummbers.containsKey(FragmentName)){
-            return mfragmentnummbers.get(FragmentName);
-        }else {
-            return null;
-        }
+        if(mfragmentnummbers.containsKey(FragmentName)) return mfragmentnummbers.get(FragmentName);
+        else return null;
 
     }
     //    return the fragment with name
     public Integer getFragmentNumber(Fragment fragment){
-        if(mfragmentnummbers.containsKey(fragment)){
-            return mfragmentnummbers.get(fragment);
-        }else {
-            return null;
-        }
+        if(mfragmentnummbers.containsKey(fragment)) return mfragmentnummbers.get(fragment);
+        else return null;
 
     }
     //    return the fragment with name
     public String getFragmentName(Integer fragmentnumber){
-        if(mfragmentNames.containsKey(fragmentnumber)){
-            return mfragmentNames.get(fragmentnumber);
-        }else {
-            return null;
-        }
+        if(mfragmentNames.containsKey(fragmentnumber)) return mfragmentNames.get(fragmentnumber);
+        else return null;
 
     }
-
-
 }

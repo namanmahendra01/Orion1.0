@@ -66,8 +66,17 @@ public class JoinedContestFragment extends Fragment {
     private FirebaseAuth fAuth;
     private int mResults;
 
-
+    private View view;
     private AdapterContestJoined contestJoined;
+
+
+    @Override
+    public void onActivityCreated(@Nullable  Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        gson = new Gson();
+        getJoinListFromSP();
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Nullable
@@ -75,11 +84,7 @@ public class JoinedContestFragment extends Fragment {
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 
-        View view = inflater.inflate(R.layout.activity_fragment_joined_contest, container, false);
-
-        sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
-        gson = new Gson();
-        getJoinListFromSP();
+        view = inflater.inflate(R.layout.activity_fragment_joined_contest, container, false);
 
         contestRefresh = view.findViewById(R.id.contest_refresh);
         noPost = view.findViewById(R.id.noPost);
