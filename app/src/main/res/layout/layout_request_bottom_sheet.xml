@@ -86,7 +86,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="See his/her Submission"
+        android:text="See their Submission"
         android:textColor="#03A9F4"
         android:id="@+id/submissionBs"
         android:layout_gravity="center"
