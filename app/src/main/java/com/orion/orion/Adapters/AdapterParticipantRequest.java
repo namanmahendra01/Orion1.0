@@ -229,14 +229,14 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
 
                                 DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                                 db.child(mContext.getString(R.string.dbname_contests))
-                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(mparticipantLists.getUi())
                                         .child(mContext.getString(R.string.field_joined_updates))
                                         .child(mparticipantLists.getJi())
                                         .setValue("Rejected").addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         db.child(mContext.getString(R.string.dbname_contests))
-                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                .child(mparticipantLists.getUi())
                                                 .child(mContext.getString(R.string.joined_contest))
                                                 .child(mparticipantLists.getJi())
                                                 .child(mContext.getString(R.string.field_status))

@@ -10,9 +10,9 @@ android {
         applicationId "com.orion.orion"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 11
+        versionCode 12
         multiDexEnabled true
-        versionName "2.0"
+        versionName "2.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
