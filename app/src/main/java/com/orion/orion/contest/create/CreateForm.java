@@ -57,12 +57,17 @@ import com.orion.orion.dialogs.BottomSheetDomain;
 import com.orion.orion.login.LoginActivity;
 import com.orion.orion.util.Permissions;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
 import static com.orion.orion.profile.ProfileActivity.VERIFY_PERMISSION_REQUEST;
+import static com.orion.orion.util.FileUtils.generateFileName;
+import static com.orion.orion.util.FileUtils.getDocumentCacheDir;
+import static com.orion.orion.util.FileUtils.getFileName;
+import static com.orion.orion.util.FileUtils.saveFileFromUri;
 
 
 public class CreateForm extends AppCompatActivity implements BottomSheetDomain.BottomSheetListener {
@@ -1469,8 +1474,34 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
             // DownloadsProvider
             else if (isDownloadsDocument(uri)) {
                 final String id = DocumentsContract.getDocumentId(uri);
-                final Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
-                return getDataColumn(context, contentUri, null, null);
+                if (id != null && id.startsWith("raw:")) {
+                    return id.substring(4);
+                }
+                String[] contentUriPrefixesToTry = new String[]{
+                        "content://downloads/public_downloads",
+                        "content://downloads/my_downloads"
+                };
+                for (String contentUriPrefix : contentUriPrefixesToTry) {
+                    Uri contentUri = ContentUris.withAppendedId(Uri.parse(contentUriPrefix), Long.valueOf(id));
+                    try {
+                        String path = getDataColumn(context, contentUri, null, null);
+                        if (path != null) {
+                            return path;
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+
+                // path could not be retrieved using ContentResolver, therefore copy file to accessible cache using streams
+                String fileName = getFileName(context, uri);
+                File cacheDir = getDocumentCacheDir(context);
+                File file = generateFileName(fileName, cacheDir);
+                String destinationPath = null;
+                if (file != null) {
+                    destinationPath = file.getAbsolutePath();
+                    saveFileFromUri(context, uri, destinationPath);
+                }
+                return destinationPath;
             }
             // MediaProvider
             else if (isMediaDocument(uri)) {
@@ -1497,7 +1528,10 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
             return getDataColumn(context, uri, null, null);
         }
         // File
-        else if ("file".equalsIgnoreCase(uri.getScheme())) return uri.getPath();
+        else if ("file".equalsIgnoreCase(uri.getScheme()))
+            return uri.getPath();
+        else
+            Toast.makeText(context, "Unable to upload image", Toast.LENGTH_LONG).show();
         return null;
     }
 
@@ -1510,10 +1544,12 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
             Uri uri = data.getData();
             if (uri != null) {
                 imgPath = getPathFromUri(mContext, uri);
-                Log.d(TAG, "onActivityResult: path: " + imgPath);
-                Log.d(TAG, "onActivityResult: uri: " + uri);
-                imgurl = imgPath;
-                setImage();
+                if(imgPath!=null) {
+                    Log.d(TAG, "onActivityResult: path: " + imgPath);
+                    Log.d(TAG, "onActivityResult: uri: " + uri);
+                    imgurl = imgPath;
+                    setImage();
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

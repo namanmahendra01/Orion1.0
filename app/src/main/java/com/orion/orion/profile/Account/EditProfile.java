@@ -618,7 +618,8 @@ public class EditProfile extends AppCompatActivity {
                         if (path != null) {
                             return path;
                         }
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                    }
                 }
 
                 // path could not be retrieved using ContentResolver, therefore copy file to accessible cache using streams
@@ -657,7 +658,10 @@ public class EditProfile extends AppCompatActivity {
             return getDataColumn(context, uri, null, null);
         }
         // File
-        else if ("file".equalsIgnoreCase(uri.getScheme())) return uri.getPath();
+        else if ("file".equalsIgnoreCase(uri.getScheme()))
+            return uri.getPath();
+        else
+            Toast.makeText(context, "Unable to upload image", Toast.LENGTH_LONG).show();
         return null;
     }
 
@@ -670,9 +674,11 @@ public class EditProfile extends AppCompatActivity {
             Uri uri = data.getData();
             if (uri != null) {
                 imgPath = getPathFromUri(mContext, uri);
-                Log.d(TAG, "onActivityResult: path: " + imgPath);
-                Log.d(TAG, "onActivityResult: uri: " + uri);
-                setImage(imgPath);
+                if(imgPath!=null) {
+                    Log.d(TAG, "onActivityResult: path: " + imgPath);
+                    Log.d(TAG, "onActivityResult: uri: " + uri);
+                    setImage(imgPath);
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -681,15 +687,15 @@ public class EditProfile extends AppCompatActivity {
     private void setImage(String imgPath) {
         Log.d(TAG, "setImage next " + imgPath);
         imgURL = imgPath;
-        String mAppend = "file:/";
-        Glide.with(getApplicationContext())
-                .load(imgURL)
-                .placeholder(R.drawable.load)
-                .error(R.drawable.default_image2)
-                .placeholder(R.drawable.load)
-                .thumbnail(0.2f)
-                .into(mProfilephoto);
-        photoChanged = true;
+            String mAppend = "file:/";
+            Glide.with(getApplicationContext())
+                    .load(imgURL)
+                    .placeholder(R.drawable.load)
+                    .error(R.drawable.default_image2)
+                    .placeholder(R.drawable.load)
+                    .thumbnail(0.2f)
+                    .into(mProfilephoto);
+            photoChanged = true;
     }
 
 
