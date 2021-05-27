@@ -4,6 +4,7 @@ package com.orion.orion.contest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
@@ -21,9 +22,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Adapters.SectionPagerAdapter;
 import com.orion.orion.R;
-import com.orion.orion.contest.create.fragment_createContest;
-import com.orion.orion.contest.joined.fragment_joinedContest;
-import com.orion.orion.contest.upcoming.fragment_upcomingContest;
+import com.orion.orion.contest.create.CreateContestFragment;
+import com.orion.orion.contest.joined.JoinedContestFragment;
+import com.orion.orion.contest.upcoming.UpcomingContestFragment;
 import com.orion.orion.login.LoginActivity;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 
@@ -41,41 +42,51 @@ public class contestMainActivity extends AppCompatActivity {
 
     private ViewPager mViewPager;
 
+    public class MyTask extends AsyncTask<String,Void,String>{
+
+
+        private void setupViewPager() {
+            SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
+            adapter.addFragment(new CreateContestFragment());
+            adapter.addFragment(new UpcomingContestFragment());
+            adapter.addFragment(new JoinedContestFragment());
+            mViewPager.postDelayed((Runnable) () -> {
+                mViewPager.setAdapter(adapter);
+                TabLayout tablayout = (TabLayout) findViewById(R.id.tabs);
+                tablayout.setupWithViewPager(mViewPager);
+                mViewPager.setCurrentItem(CREATE_CONTEST);
+//        for giving icon to them
+                tablayout.getTabAt(0).setText("create");
+                tablayout.getTabAt(1).setText("upcoming");
+                tablayout.getTabAt(2).setText("joined");
+            }, 1000);
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            setupViewPager();
+            return null;
+        }
+    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contest);
         Log.d(TAG, "onCreate: started.");
         mContext = contestMainActivity.this;
-        mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
+        mViewPager = findViewById(R.id.viewpager_container);
         setupBottomNavigationView();
         setupFirebaseAuth();
         checkCurrentuser(mAuth.getCurrentUser());
+        MyTask myTask = new MyTask();
+        myTask.execute();
         hideSoftKeyboard();
-        setupViewPager();
         Log.d(TAG, " context"+this+"  "+getContext()+"  "+getApplicationContext());
 
     }
 
     //    for adding 3 tabs -media,home,message
-    private void setupViewPager() {
-        SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new fragment_createContest());
-        adapter.addFragment(new fragment_upcomingContest());
-        adapter.addFragment(new fragment_joinedContest());
 
-
-        mViewPager.postDelayed((Runnable) () -> {
-            mViewPager.setAdapter(adapter);
-            TabLayout tablayout = (TabLayout) findViewById(R.id.tabs);
-            tablayout.setupWithViewPager(mViewPager);
-            mViewPager.setCurrentItem(CREATE_CONTEST);
-//        for giving icon to them
-            tablayout.getTabAt(0).setText("create");
-            tablayout.getTabAt(1).setText("upcoming");
-            tablayout.getTabAt(2).setText("joined");
-        }, 1000);
-    }
 
 
     @Override
@@ -107,7 +118,6 @@ public class contestMainActivity extends AppCompatActivity {
         Log.d(TAG, "checkCurrentuser:check if current user logged in");
         if (user == null) startActivity(new Intent(contestMainActivity.this, LoginActivity.class));
     }
-
 
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");

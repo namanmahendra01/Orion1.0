@@ -70,7 +70,7 @@ public class AccountSettingActivity extends AppCompatActivity {
         options.add("Password Reset");
         options.add("Contest");
         options.add("Contact us");
-        options.add("Report a Bug/feedback form");
+        options.add("Report a Bug/feedback CreateForm");
         options.add("Privacy Policy");
         options.add("Terms and Conditions");
         options.add("About");

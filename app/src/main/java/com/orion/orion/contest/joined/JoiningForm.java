@@ -37,11 +37,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.contest.contestMainActivity;
 import com.orion.orion.login.LoginActivity;
-import com.orion.orion.models.CreateForm;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.Permissions;
 import com.orion.orion.util.SNTPClient;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,6 +55,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import static com.orion.orion.profile.ProfileActivity.VERIFY_PERMISSION_REQUEST;
+import static com.orion.orion.util.FileUtils.generateFileName;
+import static com.orion.orion.util.FileUtils.getDocumentCacheDir;
+import static com.orion.orion.util.FileUtils.getFileName;
+import static com.orion.orion.util.FileUtils.saveFileFromUri;
 
 public class JoiningForm extends AppCompatActivity {
     private static final String TAG = "JoiningForm";
@@ -119,13 +123,7 @@ public class JoiningForm extends AppCompatActivity {
         backArrow = findViewById(R.id.backarrow);
         decline = findViewById(R.id.decline);
 
-        backArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
+        backArrow.setOnClickListener(view -> finish());
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(getString(R.string.dbname_contests))
                 .child(userId)
@@ -134,10 +132,9 @@ public class JoiningForm extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        CreateForm createForm = dataSnapshot.getValue(CreateForm.class);
+                        com.orion.orion.models.CreateForm createForm = dataSnapshot.getValue(com.orion.orion.models.CreateForm.class);
                         openfor = createForm.getOf();
                         type = createForm.getFt();
-
                         if (type.equals("Image")) {
                             imageLinear.setVisibility(View.VISIBLE);
                             submissionIv.setVisibility(View.VISIBLE);
@@ -157,9 +154,7 @@ public class JoiningForm extends AppCompatActivity {
                             a1.setVisibility(View.GONE);
                             a2.setVisibility(View.GONE);
                             idIv.setVisibility(View.GONE);
-
                         }
-
                     }
 
                     @Override
@@ -175,14 +170,10 @@ public class JoiningForm extends AppCompatActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-
                         if (dataSnapshot.exists()) {
                             submitBtn.setEnabled(false);
                             warn.setVisibility(View.VISIBLE);
-
                         } else {
-
                             DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference();
                             ref1.child(mContext.getString(R.string.dbname_request))
                                     .child(mContext.getString(R.string.dbname_participantList))
@@ -195,8 +186,6 @@ public class JoiningForm extends AppCompatActivity {
                                             if (snapshot.exists()) {
                                                 submitBtn.setEnabled(false);
                                                 warn.setVisibility(View.VISIBLE);
-                                            } else {
-
                                             }
                                         }
 
@@ -206,7 +195,6 @@ public class JoiningForm extends AppCompatActivity {
                                         }
                                     });
                         }
-
                     }
 
                     @Override
@@ -215,232 +203,151 @@ public class JoiningForm extends AppCompatActivity {
                     }
                 });
 
-        idBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectedImage = 1;
-                idBtn.setEnabled(true);
-                if (checkPermissionArray(Permissions.PERMISSIONS)) {
-                    isKitKat = true;
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("image/*");
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
-                } else {
-                    verifyPermission(Permissions.PERMISSIONS);
-                }
-
-
-            }
+        idBtn.setOnClickListener(v -> {
+            selectedImage = 1;
+            idBtn.setEnabled(true);
+            if (checkPermissionArray(Permissions.PERMISSIONS)) {
+                isKitKat = true;
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+            } else verifyPermission(Permissions.PERMISSIONS);
         });
-        mediaBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mediaBtn.setEnabled(true);
-                selectedImage = 2;
-                if (checkPermissionArray(Permissions.PERMISSIONS)) {
-                    isKitKat = true;
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("image/*");
-                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
-                } else {
-                    verifyPermission(Permissions.PERMISSIONS);
-
-                }
-
+        mediaBtn.setOnClickListener(v -> {
+            mediaBtn.setEnabled(true);
+            selectedImage = 2;
+            if (checkPermissionArray(Permissions.PERMISSIONS)) {
+                isKitKat = true;
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+            } else {
+                verifyPermission(Permissions.PERMISSIONS);
             }
-
 
         });
         if (isJuryOrHost.equals("true")) {
             decline.setVisibility(View.VISIBLE);
             submitBtn.setEnabled(false);
         }
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setTitle("Submit Joining Form");
-                builder.setMessage("Are you sure you want to submit this form?");
+        submitBtn.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle("Submit Joining Form");
+            builder.setMessage("Are you sure you want to submit this CreateForm?");
 
 //                set buttons
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+            builder.setPositiveButton("Yes", (dialog, which) -> {
 
-
-                        boolean ok = checkValidity();
-                        if (ok) {
-
-                                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                linearLayout.setVisibility(View.VISIBLE);
-
-                                SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
-                                    @Override
-                                    public void onTimeReceived(String rawDate) {
-                                        // rawDate -> 2019-11-05T17:51:01+0530
-
-
-                                        String str_date = rawDate;
-                                        java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-                                        Date date = null;
-                                        try {
-                                            date = formatter.parse(str_date);
-                                        } catch (ParseException e) {
-                                            e.printStackTrace();
+                if (mediaLink == null || idLink == null) {
+                    boolean ok = checkValidity();
+                    if (ok) {
+                        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        linearLayout.setVisibility(View.VISIBLE);
+                        SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
+                            @Override
+                            public void onTimeReceived(String rawDate) {
+                                // rawDate -> 2019-11-05T17:51:01+0530
+                                String str_date = rawDate;
+                                java.text.DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+                                Date date = null;
+                                try {
+                                    date = formatter.parse(str_date);
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                String timeStamp = String.valueOf(date.getTime());
+                                DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
+                                String JoiningKey = db1.child(getString(R.string.dbname_contests))
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(getString(R.string.joined_contest))
+                                        .push().getKey();
+                                if (!type.equals("Image"))
+                                    mediaLink = urlEt.getText().toString();
+                                HashMap<String, Object> hashMap = new HashMap<>();
+                                hashMap.put(getString(R.string.field_college), collegeEt.getText().toString());
+                                hashMap.put(getString(R.string.field_status), "waiting");
+                                hashMap.put(getString(R.string.field_host), userId);
+                                hashMap.put(getString(R.string.field_contest_ID), contestId);
+                                hashMap.put(getString(R.string.field_timestamp), timeStamp);
+                                hashMap.put(getString(R.string.field_joining_ID), JoiningKey);
+                                hashMap.put(getString(R.string.field_id_link), idLink);
+                                hashMap.put(getString(R.string.field_media_link), mediaLink);
+                                hashMap.put(getString(R.string.field_user_id), FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                db1.child(getString(R.string.dbname_contests))
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .child(getString(R.string.joined_contest))
+                                        .child(JoiningKey)
+                                        .setValue(hashMap).addOnSuccessListener(aVoid -> {
+                                    DatabaseReference db2 = FirebaseDatabase.getInstance().getReference();
+                                    HashMap<String, Object> hashMap2 = new HashMap<>();
+                                    hashMap2.put(getString(R.string.field_timestamp), timeStamp);
+                                    hashMap2.put(getString(R.string.field_joining_ID), JoiningKey);
+                                    hashMap2.put(getString(R.string.field_total_score), 0);
+                                    hashMap2.put(getString(R.string.field_contest_ID), contestId);
+                                    hashMap2.put(getString(R.string.field_media_link), mediaLink);
+                                    hashMap2.put(getString(R.string.field_user_id), FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                    db2.child(getString(R.string.dbname_request))
+                                            .child(getString(R.string.dbname_participantList))
+                                            .child(contestId)
+                                            .child(JoiningKey)
+                                            .setValue(hashMap2).addOnSuccessListener(aVoid1 -> {
+                                        int c = 0;
+                                        if (!idLink.equals("")) {
+                                            mFirebaseMethods.uploadContest(imageCount, idLink, null, contestId, p5, JoiningKey);
+                                        } else {
+                                            c++;
                                         }
-                                        String timeStamp = String.valueOf(date.getTime());
-
-                                        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-
-                                        String JoiningKey = db.child(getString(R.string.dbname_contests))
-                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .child(getString(R.string.joined_contest))
-                                                .push().getKey();
-
-
-                                        if (!type.equals("Image")) {
-                                            mediaLink = urlEt.getText().toString();
+                                        if (type.equals("Image")) {
+                                            mFirebaseMethods.uploadContest(imageCount, mediaLink, null, contestId, p6, JoiningKey);
+                                        } else {
+                                            c++;
                                         }
-
-                                        HashMap<String, Object> hashMap = new HashMap<>();
-                                        hashMap.put(getString(R.string.field_college), collegeEt.getText().toString());
-                                        hashMap.put(getString(R.string.field_status), "waiting");
-                                        hashMap.put(getString(R.string.field_host), userId);
-                                        hashMap.put(getString(R.string.field_contest_ID), contestId);
-                                        hashMap.put(getString(R.string.field_timestamp), timeStamp);
-                                        hashMap.put(getString(R.string.field_joining_ID), JoiningKey);
-                                        hashMap.put(getString(R.string.field_id_link), idLink);
-                                        hashMap.put(getString(R.string.field_media_link), mediaLink);
-                                        hashMap.put(getString(R.string.field_user_id), FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                        db.child(getString(R.string.dbname_contests))
-                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                .child(getString(R.string.joined_contest))
-                                                .child(JoiningKey)
-                                                .setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                DatabaseReference db2 = FirebaseDatabase.getInstance().getReference();
-
-                                                HashMap<String, Object> hashMap2 = new HashMap<>();
-                                                hashMap2.put(getString(R.string.field_timestamp), timeStamp);
-                                                hashMap2.put(getString(R.string.field_joining_ID), JoiningKey);
-                                                hashMap2.put(getString(R.string.field_total_score), 0);
-                                                hashMap2.put(getString(R.string.field_contest_ID), contestId);
-                                                hashMap2.put(getString(R.string.field_media_link), mediaLink);
-                                                hashMap2.put(getString(R.string.field_user_id), FirebaseAuth.getInstance().getCurrentUser().getUid());
-                                                db2.child(getString(R.string.dbname_request))
-                                                        .child(getString(R.string.dbname_participantList))
-                                                        .child(contestId)
-                                                        .child(JoiningKey)
-                                                        .setValue(hashMap2).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        int c = 0;
-                                                        if (!idLink.equals("")) {
-                                                            mFirebaseMethods.uploadContest(imageCount, idLink, null, contestId, p5, JoiningKey);
-
-                                                        } else {
-                                                            c++;
-                                                        }
-                                                        if (type.equals("Image")) {
-                                                            mFirebaseMethods.uploadContest(imageCount, mediaLink, null, contestId, p6, JoiningKey);
-                                                        } else {
-                                                            c++;
-                                                        }
-
-                                                        if (c == 2) {
-                                                            linearLayout.setVisibility(View.GONE);
-                                                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                                            Intent i = new Intent(JoiningForm.this, contestMainActivity.class);
-                                                        startActivity(i);
-                                                            Toast.makeText(JoiningForm.this, "Your submission has been submitted.", Toast.LENGTH_SHORT).show();
-
-
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                        });
-
-
-                                        Log.e(SNTPClient.TAG, rawDate);
-
-                                    }
-
-                                    @Override
-                                    public void onError(Exception ex) {
-                                        Log.e(SNTPClient.TAG, ex.getMessage());
-                                    }
+                                        if (c == 2) {
+                                            linearLayout.setVisibility(View.GONE);
+                                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            Intent i1 = new Intent(JoiningForm.this, contestMainActivity.class);
+                                            startActivity(i1);
+                                            Toast.makeText(JoiningForm.this, "Your submission has been submitted.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                 });
 
+                                Log.e(SNTPClient.TAG, rawDate);
 
-
-                        }else{
-                                Toast.makeText(JoiningForm.this, "Please fill all the entries correctly!", Toast.LENGTH_SHORT).show();
                             }
-                        }
 
-                });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                            @Override
+                            public void onError(Exception ex) {
+                                Log.e(SNTPClient.TAG, ex.getMessage());
+                            }
+                        });
+
+
+                    } else {
+                        Toast.makeText(JoiningForm.this, "Please fill all the entries correctly!", Toast.LENGTH_SHORT).show();
                     }
-                });
-                builder.create().show();
+                }
+            }).setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+            builder.create().show();
 
-
-            }
         });
 
 
     }
 
     public boolean checkValidity() {
-
-        if (openfor.equals("Students")) {
-
-            if (collegeEt.getText().equals("") || idIv.getDrawable() == null || collegeEt.getText() == null) {
-
+        if (openfor.equals("Students"))
+            if (collegeEt.getText().equals("") || idIv.getDrawable() == null || collegeEt.getText() == null)
                 return false;
-            } else {
-
-                if (type.equals("Image")) {
-
-                    if (submissionIv.getDrawable() == null) {
-
-                        return false;
-
-                    }
-
-                } else {
-
-                    return isValidUrl(urlEt.getText().toString());
-                }
-            }
-
-        } else {
-
-            if (type.equals("Image")) {
-
-                if (submissionIv.getDrawable() == null) {
-
-                    return false;
-
-                }
-
-            } else {
-
-                return isValidUrl(urlEt.getText().toString());
-            }
-        }
-
-
+            else if (type.equals("Image")) {
+                if (submissionIv.getDrawable() == null) return false;
+            } else return isValidUrl(urlEt.getText().toString());
+        else if (type.equals("Image")) {
+            return submissionIv.getDrawable() != null;
+        } else return isValidUrl(urlEt.getText().toString());
         return true;
-
     }
 
     private boolean isValidUrl(String url) {
@@ -448,7 +355,6 @@ public class JoiningForm extends AppCompatActivity {
         Matcher m = p.matcher(url.toLowerCase());
         return m.matches();
     }
-
 
     public void verifyPermission(String[] permissions) {
         ActivityCompat.requestPermissions(
@@ -520,8 +426,34 @@ public class JoiningForm extends AppCompatActivity {
             // DownloadsProvider
             else if (isDownloadsDocument(uri)) {
                 final String id = DocumentsContract.getDocumentId(uri);
-                final Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.parseLong(id));
-                return getDataColumn(context, contentUri, null, null);
+                if (id != null && id.startsWith("raw:")) {
+                    return id.substring(4);
+                }
+                String[] contentUriPrefixesToTry = new String[]{
+                        "content://downloads/public_downloads",
+                        "content://downloads/my_downloads"
+                };
+                for (String contentUriPrefix : contentUriPrefixesToTry) {
+                    Uri contentUri = ContentUris.withAppendedId(Uri.parse(contentUriPrefix), Long.valueOf(id));
+                    try {
+                        String path = getDataColumn(context, contentUri, null, null);
+                        if (path != null) {
+                            return path;
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+
+                // path could not be retrieved using ContentResolver, therefore copy file to accessible cache using streams
+                String fileName = getFileName(context, uri);
+                File cacheDir = getDocumentCacheDir(context);
+                File file = generateFileName(fileName, cacheDir);
+                String destinationPath = null;
+                if (file != null) {
+                    destinationPath = file.getAbsolutePath();
+                    saveFileFromUri(context, uri, destinationPath);
+                }
+                return destinationPath;
             }
             // MediaProvider
             else if (isMediaDocument(uri)) {
@@ -548,7 +480,10 @@ public class JoiningForm extends AppCompatActivity {
             return getDataColumn(context, uri, null, null);
         }
         // File
-        else if ("file".equalsIgnoreCase(uri.getScheme())) return uri.getPath();
+        else if ("file".equalsIgnoreCase(uri.getScheme()))
+            return uri.getPath();
+        else
+            Toast.makeText(context, "Unable to upload image", Toast.LENGTH_LONG).show();
         return null;
     }
 
@@ -561,10 +496,12 @@ public class JoiningForm extends AppCompatActivity {
             Uri uri = data.getData();
             if (uri != null) {
                 imgPath = getPathFromUri(mContext, uri);
-                Log.d(TAG, "onActivityResult: path: " + imgPath);
-                Log.d(TAG, "onActivityResult: uri: " + uri);
-                imgurl = imgPath;
-                setImage();
+                if (imgPath != null) {
+                    Log.d(TAG, "onActivityResult: path: " + imgPath);
+                    Log.d(TAG, "onActivityResult: uri: " + uri);
+                    imgurl = imgPath;
+                    setImage();
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -572,7 +509,6 @@ public class JoiningForm extends AppCompatActivity {
 
     private void setImage() {
         if (selectedImage == 1) {
-
             idLink = imgurl;
             Glide.with(getApplicationContext())
                     .load(idLink)
@@ -583,9 +519,7 @@ public class JoiningForm extends AppCompatActivity {
                     .into(idIv);
         }
         if (selectedImage == 2) {
-
             mediaLink = imgurl;
-
             Glide.with(getApplicationContext())
                     .load(mediaLink)
                     .placeholder(R.drawable.load)

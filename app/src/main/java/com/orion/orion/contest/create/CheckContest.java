@@ -551,7 +551,7 @@ public class CheckContest extends AppCompatActivity {
         mFirebaseMethods.uploadContest(imageCount, jpic2, null, newContestKey, p2, "");
         mFirebaseMethods.uploadContest(imageCount, jpic3, null, newContestKey, p3, "");
         mFirebaseMethods.uploadContest(imageCount, posterlink, null, newContestKey, p4, "");
-//        fragment_createContest fragment = new fragment_createContest();
+//        CreateContestFragment fragment = new CreateContestFragment();
 //        FragmentTransaction transaction= getSupportFragmentManager().beginTransaction();
 //        transaction.replace(R.id.container,fragment);
 //        transaction.commit();

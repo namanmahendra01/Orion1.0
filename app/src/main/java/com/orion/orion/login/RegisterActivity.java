@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity implements BottomSheetDo
     private FirebaseAuth.AuthStateListener mAuthListener;
     private Context mContext;
     //widgets
-    private ScrollView rootView;
+    private RelativeLayout rootView;
     private ProgressBar mProgressBar;
     private EditText mUsername;
     private EditText mEmail;
@@ -123,8 +124,6 @@ public class RegisterActivity extends AppCompatActivity implements BottomSheetDo
         mContext = RegisterActivity.this;
         mProgressBar.setVisibility(View.GONE);
         domain = "";
-
-
         policy.setOnClickListener(view -> startRedirect(getString(R.string.Privacy_Policy)));
         terms.setOnClickListener(view -> startRedirect(getString(R.string.Terms_and_Condition)));
 
@@ -220,7 +219,6 @@ public class RegisterActivity extends AppCompatActivity implements BottomSheetDo
 
         rootView.setOnClickListener(v -> {
             InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Activity.INPUT_METHOD_SERVICE);
-            assert imm != null;
             imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
         });
 
