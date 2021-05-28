@@ -240,7 +240,7 @@ public class JoiningForm extends AppCompatActivity {
 //                set buttons
             builder.setPositiveButton("Yes", (dialog, which) -> {
 
-                if (mediaLink == null || idLink == null) {
+                if (mediaLink != null) {
                     boolean ok = checkValidity();
                     if (ok) {
                         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
