@@ -163,12 +163,12 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                 submission.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        boolean ok = mparticipantLists.getMl().length() > 23;
+
                         boolean ifNull = mparticipantLists.getMl() == null || mparticipantLists.getMl().equals("");
                         if (ifNull) {
                             Toast.makeText(mContext, "Invalid Link", Toast.LENGTH_SHORT).show();
 
-                        } else if (ok) {
+                        } else if (mparticipantLists.getMl().length() > 23) {
                             if (mparticipantLists.getMl().substring(8, 23).equals("firebasestorage")) {
                                 Intent i = new Intent(mContext.getApplicationContext(), activity_view_media.class);
                                 i.putExtra("imageLink", mparticipantLists.getMl());

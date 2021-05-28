@@ -110,7 +110,7 @@
         android:id="@+id/pro"
         android:background="#CC333232"
 
-        android:visibility="gone"
+        android:visibility="visible"
         android:orientation="vertical">
         <RelativeLayout
             android:layout_width="match_parent"
@@ -138,6 +138,7 @@
                 android:background="@drawable/rectangular_border"
                 android:layout_below="@+id/t"
                 android:id="@+id/msgReq"
+                android:maxHeight="300dp"
                 android:layout_marginTop="20dp"
                 android:hint="Type Message here"
                 android:padding="10dp"
