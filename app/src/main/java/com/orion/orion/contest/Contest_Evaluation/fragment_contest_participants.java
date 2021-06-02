@@ -53,7 +53,7 @@ public class fragment_contest_participants extends Fragment {
     private ArrayList<ParticipantList> paginatedparticipantList;
     private TextView request, partNum;
     private int mResults;
-    private String Conteskey;
+    private String Conteskey,contestTitle;
     boolean notify = false;
     private FirebaseMethods mFirebaseMethods;
 
@@ -85,6 +85,7 @@ public class fragment_contest_participants extends Fragment {
 
         Bundle b = getActivity().getIntent().getExtras();
         Conteskey = b.getString("contestId");
+        contestTitle=b.getString("title");
 //          Initialize SharedPreference variables
         sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
@@ -285,7 +286,7 @@ public class fragment_contest_participants extends Fragment {
 //                set buttons
                 builder.setPositiveButton("Send", (dialog, which) -> {
                     notify = true;
-                    String noti = "Contest Host send you Message.Click here to see.///" + msg1;
+                    String noti = contestTitle+" Host send you Message.Click here to see.///" + msg1;
                     for (int x = 0; x < participantLists.size(); x++) {
                         if (notify)
                             mFirebaseMethods.sendNotification(participantLists.get(x).getUi(), "", "Contest Host send you a Message.Its important.", "Contest");

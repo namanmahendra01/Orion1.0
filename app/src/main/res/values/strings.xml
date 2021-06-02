@@ -158,6 +158,8 @@
     <string name="message_string">Message</string>
     <string name="type_of_share">Select purpose you want to share for-</string>
     <string name="post_updates">pu</string>
+    <string name="dbname_Sponsors">sponsors</string>
+    <string name="field_intent_link">il</string>
 
 
     <string-array name="entryfee2">

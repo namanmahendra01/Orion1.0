@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/username"
-            android:text="HIs Username"
+            android:text="His Username"
             android:textStyle="bold"
             android:textColor="@color/black"/>
 
@@ -33,8 +33,7 @@
             android:layout_marginLeft="5dp"
             android:textColor="@color/black"
             android:id="@+id/comment"
-            android:text="followed you"
-            android:maxLines="5"/>
+         />
         </LinearLayout>
         <TextView
             android:layout_width="match_parent"

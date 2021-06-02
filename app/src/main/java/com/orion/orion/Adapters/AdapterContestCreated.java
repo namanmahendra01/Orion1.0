@@ -165,6 +165,7 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
 
         holder.entryFee.setText(mcreateForm.getEf());
         holder.domain.setText(mcreateForm.getD());
+
         Glide.with(holder.itemView.getContext().getApplicationContext())
                 .load(mcreateForm.getPo())
                 .placeholder(R.drawable.load)
@@ -176,10 +177,12 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
         holder.host.setText(mcreateForm.getHst());
         holder.regEnd.setText(mcreateForm.getRe());
         holder.totalP.setText(mcreateForm.getTp());
+
         holder.itemView.setOnClickListener(v -> {
             Intent i1 = new Intent(mContext.getApplicationContext(), contest_evaluation_activity.class);
             i1.putExtra("contestId", mcreateForm.getCi());
             i1.putExtra("userid", mcreateForm.getUi());
+            i1.putExtra("title", mcreateForm.getCt());
             mContext.startActivity(i1);
         });
     }

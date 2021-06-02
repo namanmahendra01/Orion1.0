@@ -1,10 +1,12 @@
 package com.orion.orion.Adapters;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -78,6 +80,66 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
 
 
+
+        if (i%3==0||i==0){
+            DatabaseReference db = FirebaseDatabase.getInstance()
+                    .getReference(mContext.getString(R.string.dbname_Sponsors))
+                    .child("sponsorId");
+
+                   db.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()){
+                                holder.medialink=snapshot
+                                       .child(mContext.getString(R.string.field_media_link))
+                                       .getValue().toString();
+                              holder.intentlink =snapshot
+                                        .child(mContext.getString(R.string.field_intent_link))
+                                        .getValue().toString();
+
+                              if (holder.medialink.equals("")||holder.intentlink.equals("")){
+                                  holder.sponsorImage.setVisibility(View.GONE);
+
+                              }else{
+                                  holder.sponsorImage.setVisibility(View.VISIBLE);
+                                  Glide.with(mContext.getApplicationContext())
+                                          .load(holder.medialink)
+                                          .placeholder(R.drawable.load)
+                                          .error(R.drawable.default_image2)
+                                          .placeholder(R.drawable.load)
+                                          .thumbnail(0.5f)
+                                          .override(1024,1024)
+                                          .into(holder.sponsorImage);
+                              }
+
+
+                            }else{
+                                holder.sponsorImage.setVisibility(View.GONE);
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+                   holder.sponsorImage.setOnClickListener(new View.OnClickListener() {
+                       @Override
+                       public void onClick(View v) {
+                           try{
+                               Uri uri = Uri.parse(holder.intentlink);
+                               Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                               mContext.startActivity(intent);
+
+                           }catch (ActivityNotFoundException e){
+                               Log.e(SNTPClient.TAG, "onClick: "+ e.getMessage());
+                           }
+                       }
+                   });
+
+        }
         ContestDetail mcontest = mContestDetail.get(i);
         String key = mcontest.getCi();
 
@@ -703,6 +765,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
 
     @Override
     public int getItemViewType(int position) {
+        Log.d(TAG, "getItemViewType: "+position);
         return position;
     }
 
@@ -721,12 +784,13 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
         private String juryusername1 = "", juryusername2 = "", juryusername3 = "";
 
         private TextView domain, title, regEnd, entryFee, host, totalP, ended, gp;
-        private ImageView poster, option, info, progress;
+        private ImageView poster, option, info, progress,sponsorImage;
         String vote = "No";
         String reg = "No";
         String voteS = "";
         String voteE = "";
         Boolean ok = false;
+        String intentlink,medialink;
         int p = 0;
         String username = "";
         String hostUsername = "";
@@ -752,6 +816,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
             gp = itemView.findViewById(R.id.gp);
             info = itemView.findViewById(R.id.info);
             progress = itemView.findViewById(R.id.progress);
+            sponsorImage = itemView.findViewById(R.id.sponsor);
 
 
 

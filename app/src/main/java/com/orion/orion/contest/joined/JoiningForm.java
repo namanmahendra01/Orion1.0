@@ -328,6 +328,9 @@ public class JoiningForm extends AppCompatActivity {
                     } else {
                         Toast.makeText(JoiningForm.this, "Please fill all the entries correctly!", Toast.LENGTH_SHORT).show();
                     }
+                }else{
+                    Toast.makeText(JoiningForm.this, "Sorry!There is something wrong.", Toast.LENGTH_SHORT).show();
+
                 }
             }).setNegativeButton("No", (dialog, which) -> dialog.dismiss());
             builder.create().show();
@@ -339,7 +342,7 @@ public class JoiningForm extends AppCompatActivity {
 
     public boolean checkValidity() {
         if (openfor.equals("Students"))
-            if (collegeEt.getText().equals("") || idIv.getDrawable() == null || collegeEt.getText() == null)
+            if (collegeEt.getText().equals("") || idIv.getDrawable() == null || collegeEt.getText() == null||idLink==null)
                 return false;
             else if (type.equals("Image")) {
                 if (submissionIv.getDrawable() == null) return false;

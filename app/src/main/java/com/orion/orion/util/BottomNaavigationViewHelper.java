@@ -18,6 +18,7 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.chat.MessagesActivity;
 import com.orion.orion.NotificationActivity;
 import com.orion.orion.R;
+import com.orion.orion.contest.UpcomingContestActivity;
 import com.orion.orion.contest.contestMainActivity;
 import com.orion.orion.LeaderboardActivity;
 import com.orion.orion.models.Chat;
@@ -79,7 +80,7 @@ public class BottomNaavigationViewHelper {
                     case R.id.ic_contest:
                         prevItem = curItem;
                         item.setEnabled(false);
-                        Intent intent1 = new Intent(context, contestMainActivity.class);
+                        Intent intent1 = new Intent(context, UpcomingContestActivity.class);
                         context.startActivity(intent1);
                         break;
                     case R.id.ic_chat:

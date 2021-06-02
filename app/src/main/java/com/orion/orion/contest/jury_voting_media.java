@@ -647,11 +647,18 @@ public class jury_voting_media extends AppCompatActivity {
 
     }
 
+
+
     protected void onPause() {
 
         super.onPause();
 
-        Log.d(TAG, "onPause: qwe");
+        saveMarks();
+
+
+    }
+
+    private void saveMarks() {
         for (String joiningKey : participantlist) {
 
             String json = sp.getString(joiningKey, null);
@@ -679,7 +686,6 @@ public class jury_voting_media extends AppCompatActivity {
 
         }
         y = 1;
-
 
 
     }
