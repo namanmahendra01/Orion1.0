@@ -30,8 +30,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.orion.orion.R;
-import com.orion.orion.contest.UpcomingContestActivity;
-import com.orion.orion.contest.contestMainActivity;
+import com.orion.orion.contest.upcoming.UpcomingContestActivity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -155,7 +154,7 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putString("yes", "no");
                                 editor.apply();
                                 progressDialog.dismiss();
-                                Intent intent = new Intent(LoginActivity.this, contestMainActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, UpcomingContestActivity.class);
                                 startActivity(intent);
                             } else {
                                 new AlertDialog.Builder(mContext)

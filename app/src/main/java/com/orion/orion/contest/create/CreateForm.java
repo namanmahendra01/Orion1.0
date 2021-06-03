@@ -44,6 +44,7 @@ import androidx.core.app.ActivityCompat;
 import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.google.android.gms.common.util.ArrayUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -59,8 +60,12 @@ import com.orion.orion.util.Permissions;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import static com.orion.orion.profile.ProfileActivity.VERIFY_PERMISSION_REQUEST;
@@ -87,7 +92,13 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     private View active3;
     private Button previousButton;
     private Button nextButton;
+    private ArrayList<Integer> criteriaFields=new ArrayList<Integer>(Arrays.asList(1,2,3,4,5,6,7,8,9,10));
 
+    private int count;
+
+    private ImageView cross1,cross2,cross3,cross4,cross5,cross6,cross7,cross8,cross9,cross10;
+    private TextView criteriaTv1,criteriaTv2,criteriaTv3,criteriaTv4,criteriaTv5,criteriaTv6,criteriaTv7,criteriaTv8,criteriaTv9,criteriaTv10;
+    private LinearLayout criteriaLL1,criteriaLL2,criteriaLL3,criteriaLL4,criteriaLL5,criteriaLL6,criteriaLL7,criteriaLL8,criteriaLL9,criteriaLL10;
     private ImageView backArrow;
 
     //layout1 widgets
@@ -95,6 +106,8 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     private LinearLayout selectPoster;
     private EditText eventTitle;
     private EditText hostedBy;
+    private EditText criteriaEt;
+    private TextView addCriteria,charCount;
     private EditText description;
     private RadioGroup AllStudents;
     private RadioButton all;
@@ -116,6 +129,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     private LinearLayout jury2Container;
     private LinearLayout jury3Container;
     private LinearLayout publicVotingContainer;
+    private LinearLayout criteriaContainer;
     private LinearLayout publicVotingContainerDates;
     private RadioGroup JuryNumber;
     private RadioButton one;
@@ -192,6 +206,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser mUser;
+
 
 
     public static boolean isDateAfter(String startDate, String endDate) {
@@ -580,6 +595,185 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                 }
             }
         });
+
+        cross1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                criteriaFields.add(1);
+                criteriaTv1.setText("");
+                criteriaLL1.setVisibility(View.GONE);
+            }
+        });
+        cross2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                criteriaFields.add(2);
+                criteriaTv2.setText("");
+                criteriaLL2.setVisibility(View.GONE);
+            }
+        });
+        cross3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                criteriaFields.add(3);
+                criteriaTv3.setText("");
+                criteriaLL3.setVisibility(View.GONE);
+            }
+        });
+        cross4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                criteriaFields.add(4);
+                criteriaTv4.setText("");
+                criteriaLL4.setVisibility(View.GONE);
+            }
+        });
+        cross5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                criteriaFields.add(5);
+                criteriaTv5.setText("");
+                criteriaLL5.setVisibility(View.GONE);
+            }
+        });
+        cross6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                criteriaFields.add(6);
+                criteriaTv6.setText("");
+                criteriaLL6.setVisibility(View.GONE);
+            }
+        });
+        cross7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                criteriaFields.add(7);
+
+                criteriaTv7.setText("");
+                criteriaLL7.setVisibility(View.GONE);
+            }
+        });
+        cross8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                criteriaFields.add(8);
+                criteriaTv8.setText("");
+                criteriaLL8.setVisibility(View.GONE);
+            }
+        });
+        cross9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                criteriaFields.add(9);
+
+                criteriaTv9.setText("");
+                criteriaLL9.setVisibility(View.GONE);
+            }
+        });
+        cross10.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                criteriaFields.add(10);
+
+                criteriaTv10.setText("");
+                criteriaLL10.setVisibility(View.GONE);
+            }
+        });
+
+        criteriaEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                charCount.setText(String.valueOf(count)+"/30");
+                if (count>30){
+                    criteriaEt.setError("Criteria length must be less than 30");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+
+
+            }
+        });
+
+        addCriteria.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (criteriaEt.getText() != null && !criteriaEt.getText().toString().equals("")) {
+                    if (criteriaEt.getText().toString().length()<=30) {
+                        try {
+                            if (criteriaFields.get(0).equals(1)) {
+                                criteriaFields.remove(0);
+                                criteriaLL1.setVisibility(View.VISIBLE);
+                                criteriaTv1.setText(criteriaEt.getText().toString());
+                                criteriaEt.setText("");
+                            } else if (criteriaFields.get(0).equals(2)) {
+                                criteriaFields.remove(0);
+                                criteriaLL2.setVisibility(View.VISIBLE);
+                                criteriaTv2.setText(criteriaEt.getText().toString());
+                                criteriaEt.setText("");
+                            } else if (criteriaFields.get(0).equals(3)) {
+                                criteriaFields.remove(0);
+                                criteriaLL3.setVisibility(View.VISIBLE);
+                                criteriaTv3.setText(criteriaEt.getText().toString());
+                                criteriaEt.setText("");
+                            } else if (criteriaFields.get(0).equals(4)) {
+                                criteriaFields.remove(0);
+                                criteriaLL4.setVisibility(View.VISIBLE);
+                                criteriaTv4.setText(criteriaEt.getText().toString());
+                                criteriaEt.setText("");
+                            } else if (criteriaFields.get(0).equals(5)) {
+                                criteriaFields.remove(0);
+                                criteriaLL5.setVisibility(View.VISIBLE);
+                                criteriaTv5.setText(criteriaEt.getText().toString());
+                                criteriaEt.setText("");
+                            } else if (criteriaFields.get(0).equals(6)) {
+                                criteriaFields.remove(0);
+                                criteriaLL6.setVisibility(View.VISIBLE);
+                                criteriaTv6.setText(criteriaEt.getText().toString());
+                                criteriaEt.setText("");
+                            } else if (criteriaFields.get(0).equals(7)) {
+                                criteriaFields.remove(0);
+                                criteriaLL7.setVisibility(View.VISIBLE);
+                                criteriaTv7.setText(criteriaEt.getText().toString());
+                                criteriaEt.setText("");
+                            } else if (criteriaFields.get(0).equals(8)) {
+                                criteriaFields.remove(0);
+                                criteriaLL8.setVisibility(View.VISIBLE);
+                                criteriaTv8.setText(criteriaEt.getText().toString());
+                                criteriaEt.setText("");
+                            } else if (criteriaFields.get(0).equals(9)) {
+                                criteriaFields.remove(0);
+                                criteriaLL9.setVisibility(View.VISIBLE);
+                                criteriaTv9.setText(criteriaEt.getText().toString());
+                                criteriaEt.setText("");
+                            } else if (criteriaFields.get(0).equals(10)) {
+                                criteriaFields.remove(0);
+                                criteriaLL10.setVisibility(View.VISIBLE);
+                                criteriaTv10.setText(criteriaEt.getText().toString());
+                                criteriaEt.setText("");
+                            }
+
+                        } catch (IndexOutOfBoundsException e) {
+                            Toast.makeText(mContext, "Only 10 criteria can be added", Toast.LENGTH_LONG).show();
+                        }
+                    }else{
+                        Toast.makeText(mContext, "Criteria length must be less than 30", Toast.LENGTH_LONG).show();
+
+                    }
+
+                }else{
+                    criteriaEt.setError("Please enter something");
+                }
+            }
+        });
+
         juryName1.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -857,6 +1051,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                 prizeThird="";
             }
         });
+
         if (firstPrize.getVisibility() == View.VISIBLE || secondPrize.getVisibility() == View.VISIBLE || thirdPrize.getVisibility() == View.VISIBLE) {
             firstPrize.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -1071,7 +1266,12 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                         }
                     }
                     if (votingType.equals("Jury")) {
-                        if (noOfJury.equals("")) {
+                        if (criteriaFields.size()==10){
+                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(criteriaContainer);
+                            Toast.makeText(mContext, "Please enter criteria atleast 1", Toast.LENGTH_SHORT).show();
+                            criteriaContainer.requestFocus();
+                        }
+                      else  if (noOfJury.equals("")) {
                             YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(jurySelectionContainer);
                             Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
                             jurySelectionContainer.requestFocus();
@@ -1138,7 +1338,12 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                         }
                     }
                     if (votingType.equals("Jury and Public")) {
-                        if (noOfJury.equals("")) {
+                        if (criteriaFields.size()==10){
+                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(criteriaContainer);
+                            Toast.makeText(mContext, "Please enter criteria atleast 1", Toast.LENGTH_SHORT).show();
+                            criteriaContainer.requestFocus();
+                        }
+                        else if (noOfJury.equals("")) {
                             Log.d(TAG, "onCreate: outerouter");
                             YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(jurySelectionContainer);
                             Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
@@ -1394,6 +1599,46 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
         j1Checked = findViewById(R.id.j1Checked);
         j2Checked = findViewById(R.id.j2Checked);
         j3Checked = findViewById(R.id.j3Checked);
+
+        criteriaEt = findViewById(R.id.criteriaEt);
+        addCriteria = findViewById(R.id.add);
+        charCount = findViewById(R.id.txtCount);
+        criteriaContainer = findViewById(R.id.judgingCriteria);
+
+        cross1=findViewById(R.id.cross1);
+        cross2=findViewById(R.id.cross2);
+        cross3=findViewById(R.id.cross3);
+        cross4=findViewById(R.id.cross4);
+        cross5=findViewById(R.id.cross5);
+        cross6=findViewById(R.id.cross6);
+        cross7=findViewById(R.id.cross7);
+        cross8=findViewById(R.id.cross8);
+        cross9=findViewById(R.id.cross9);
+        cross10=findViewById(R.id.cross10);
+
+        criteriaTv1=findViewById(R.id.c1);
+        criteriaTv2=findViewById(R.id.c2);
+        criteriaTv3=findViewById(R.id.c3);
+        criteriaTv4=findViewById(R.id.c4);
+        criteriaTv5=findViewById(R.id.c5);
+        criteriaTv6=findViewById(R.id.c6);
+        criteriaTv7=findViewById(R.id.c7);
+        criteriaTv8=findViewById(R.id.c8);
+        criteriaTv9=findViewById(R.id.c9);
+        criteriaTv10=findViewById(R.id.c10);
+
+        criteriaLL1=findViewById(R.id.criteriaLinear1);
+        criteriaLL2=findViewById(R.id.criteriaLinear2);
+        criteriaLL3=findViewById(R.id.criteriaLinear3);
+        criteriaLL4=findViewById(R.id.criteriaLinear4);
+        criteriaLL5=findViewById(R.id.criteriaLinear5);
+        criteriaLL6=findViewById(R.id.criteriaLinear6);
+        criteriaLL7=findViewById(R.id.criteriaLinear7);
+        criteriaLL8=findViewById(R.id.criteriaLinear8);
+        criteriaLL9=findViewById(R.id.criteriaLinear9);
+        criteriaLL10=findViewById(R.id.criteriaLinear10);
+
+
         jurySelectionContainer.setVisibility(View.GONE);
         jury1Container.setVisibility(View.GONE);
         jury2Container.setVisibility(View.GONE);
@@ -1401,6 +1646,8 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
         j1Checked.setVisibility(View.GONE);
         j2Checked.setVisibility(View.GONE);
         j3Checked.setVisibility(View.GONE);
+
+
 
         publicVotingContainer.setVisibility(View.GONE);
         publicVotingContainerDates.setVisibility(View.GONE);

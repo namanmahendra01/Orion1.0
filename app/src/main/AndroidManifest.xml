@@ -17,7 +17,7 @@
         tools:targetApi="m">
         <activity android:name=".contest.create.CreatedActivity"></activity>
         <activity android:name=".contest.joined.JoinedActivity" />
-        <activity android:name=".contest.UpcomingContestActivity" />
+        <activity android:name=".contest.upcoming.UpcomingContestActivity" />
         <activity android:name=".NotificationActivity" />
         <activity android:name=".chat.MessagesActivity" /> <!-- Activities -->
         <!-- Splash Screen -->
@@ -50,9 +50,7 @@
         <activity android:name=".contest.result.ResultDeclaredActivity" />
         <activity android:name=".contest.jury_voting_media" />
         <activity android:name=".contest.public_voting_media" />
-        <activity
-            android:name=".contest.contestMainActivity"
-            android:windowSoftInputMode="adjustNothing" /> <!-- Leaderboard Section -->
+        <!-- Leaderboard Section -->
         <activity android:name=".LeaderboardActivity" /> <!-- Profile Section -->
         <activity
             android:name=".profile.profile"

@@ -35,7 +35,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
-import com.orion.orion.contest.contestMainActivity;
 import com.orion.orion.login.LoginActivity;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.Permissions;
@@ -307,7 +306,7 @@ public class JoiningForm extends AppCompatActivity {
                                         if (c == 2) {
                                             linearLayout.setVisibility(View.GONE);
                                             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                            Intent i1 = new Intent(JoiningForm.this, contestMainActivity.class);
+                                            Intent i1 = new Intent(JoiningForm.this, JoinedActivity.class);
                                             startActivity(i1);
                                             Toast.makeText(JoiningForm.this, "Your submission has been submitted.", Toast.LENGTH_SHORT).show();
                                         }

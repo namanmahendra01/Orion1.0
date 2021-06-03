@@ -23,7 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.orion.orion.R;
-import com.orion.orion.contest.contestMainActivity;
+import com.orion.orion.contest.upcoming.UpcomingContestActivity;
 
 import java.util.Random;
 
@@ -72,7 +72,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         int i = rand.nextInt();
         Log.d(TAG, "sendNormalNotification: vo1 " + i);
 
-        Intent intent = new Intent(this, contestMainActivity.class);
+        Intent intent = new Intent(this, UpcomingContestActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(getString(R.string.his_uid), user);
         intent.putExtras(bundle);
@@ -121,7 +121,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         Log.d(TAG, "sendOAndAboveNotification: rand  " + rand.nextInt());
         int i = rand.nextInt();
         Log.d(TAG, "sendNormalNotification: vo " + String.valueOf(i));
-        Intent intent = new Intent(this, contestMainActivity.class);
+        Intent intent = new Intent(this, UpcomingContestActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(getString(R.string.his_uid), user);
         intent.putExtras(bundle);

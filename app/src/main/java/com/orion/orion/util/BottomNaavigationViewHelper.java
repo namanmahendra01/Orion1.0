@@ -18,13 +18,10 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.chat.MessagesActivity;
 import com.orion.orion.NotificationActivity;
 import com.orion.orion.R;
-import com.orion.orion.contest.UpcomingContestActivity;
-import com.orion.orion.contest.contestMainActivity;
+import com.orion.orion.contest.upcoming.UpcomingContestActivity;
 import com.orion.orion.LeaderboardActivity;
 import com.orion.orion.models.Chat;
 import com.orion.orion.profile.profile;
-
-import java.security.AccessControlContext;
 
 public class BottomNaavigationViewHelper {
 

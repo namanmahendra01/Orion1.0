@@ -258,7 +258,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/currentActive"
         android:background="@color/white"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -495,6 +495,357 @@
                         android:visibility="gone"
                         app:tint="#4CAF50" />
                 </LinearLayout>
+                 <LinearLayout
+                    android:id="@+id/judgingCriteria"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Add Judging Criteria"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+                     <TextView
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:text="Example- 'lighting','composition' for Photography type contests."
+                         android:layout_marginLeft="1dp"/>
+                     <LinearLayout
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:orientation="horizontal"
+                         android:weightSum="10">
+                     <EditText
+                         android:layout_width="0dp"
+                         android:layout_weight="8.5"
+                         android:layout_height="wrap_content"
+                         android:hint="Enter Criteria"
+                         android:layout_marginTop="6dp"
+                         android:id="@+id/criteriaEt"
+                         android:background="@drawable/rectangular_border"
+                         android:padding="10dp"/>
+                         <TextView
+                             android:layout_width="0dp"
+                             android:layout_height="wrap_content"
+                             android:text="ADD"
+                             android:textStyle="bold"
+                             android:gravity="center"
+                             android:layout_gravity="center"
+                             android:layout_weight="1.5"
+                             android:textSize="20sp"
+                             android:textColor="@color/light_blue"
+                             android:padding="3dp"
+                             android:id="@+id/add"/>
+</LinearLayout>
+                     <TextView
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:text="0/30"
+                         android:id="@+id/txtCount"
+                         android:textColor="@color/red"
+                         android:layout_marginLeft="5dp"/>
+                     <LinearLayout
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:background="@drawable/rectangular_border"
+                         android:weightSum="10"
+                         android:padding="3dp"
+                         android:visibility="gone"
+                         android:id="@+id/criteriaLinear1"
+                         android:layout_marginTop="2dp"
+                         android:orientation="horizontal">
+                     <TextView
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_weight="8.5"
+                         android:padding="2dp"
+                         android:maxLines="1"
+                         android:id="@+id/c1"
+                         android:textColor="@color/colorPrimary"
+                         />
+                         <ImageView
+                             android:layout_width="18dp"
+                             android:layout_height="18dp"
+                             android:src="@drawable/ic_white_cross"
+                             android:layout_gravity="center"
+                             android:id="@+id/cross1"
+
+                             android:layout_weight="1.5"/>
+                     </LinearLayout>
+                     <LinearLayout
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:background="@drawable/rectangular_border"
+                         android:weightSum="10"
+                         android:id="@+id/criteriaLinear2"
+
+                         android:padding="3dp"
+                         android:visibility="gone"
+
+                         android:layout_marginTop="2dp"
+                         android:orientation="horizontal">
+                         <TextView
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_weight="8.5"
+                             android:padding="2dp"
+                             android:maxLines="1"
+                             android:id="@+id/c2"
+                             android:textColor="@color/colorPrimary"
+                             />
+                         <ImageView
+                             android:layout_width="18dp"
+                             android:layout_height="18dp"
+                             android:id="@+id/cross2"
+
+                             android:src="@drawable/ic_white_cross"
+                             android:layout_gravity="center"
+                             android:layout_weight="1.5"/>
+                     </LinearLayout>
+                     <LinearLayout
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:background="@drawable/rectangular_border"
+                         android:weightSum="10"
+                         android:padding="3dp"
+                         android:id="@+id/criteriaLinear3"
+
+                         android:visibility="gone"
+
+                         android:layout_marginTop="2dp"
+                         android:orientation="horizontal">
+                         <TextView
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_weight="8.5"
+                             android:padding="2dp"
+                             android:maxLines="1"
+                             android:id="@+id/c3"
+                             android:textColor="@color/colorPrimary"
+                             />
+                         <ImageView
+                             android:layout_width="18dp"
+                             android:layout_height="18dp"
+                             android:id="@+id/cross3"
+
+                             android:src="@drawable/ic_white_cross"
+                             android:layout_gravity="center"
+                             android:layout_weight="1.5"/>
+                     </LinearLayout>
+                     <LinearLayout
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:background="@drawable/rectangular_border"
+                         android:weightSum="10"
+                         android:id="@+id/criteriaLinear4"
+
+                         android:padding="3dp"
+                         android:visibility="gone"
+
+                         android:layout_marginTop="2dp"
+                         android:orientation="horizontal">
+                         <TextView
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_weight="8.5"
+                             android:padding="2dp"
+                             android:maxLines="1"
+                             android:id="@+id/c4"
+                             android:textColor="@color/colorPrimary"
+                             />
+                         <ImageView
+                             android:layout_width="18dp"
+                             android:layout_height="18dp"
+                             android:id="@+id/cross4"
+
+                             android:src="@drawable/ic_white_cross"
+                             android:layout_gravity="center"
+                             android:layout_weight="1.5"/>
+                     </LinearLayout>
+                     <LinearLayout
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:background="@drawable/rectangular_border"
+                         android:weightSum="10"
+                         android:padding="3dp"
+                         android:id="@+id/criteriaLinear5"
+
+                         android:visibility="gone"
+
+                         android:layout_marginTop="2dp"
+                         android:orientation="horizontal">
+                         <TextView
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_weight="8.5"
+                             android:padding="2dp"
+                             android:maxLines="1"
+                             android:id="@+id/c5"
+                             android:textColor="@color/colorPrimary"
+                             />
+                         <ImageView
+                             android:layout_width="18dp"
+                             android:layout_height="18dp"
+                             android:id="@+id/cross5"
+
+                             android:src="@drawable/ic_white_cross"
+                             android:layout_gravity="center"
+                             android:layout_weight="1.5"/>
+                     </LinearLayout>
+                     <LinearLayout
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:background="@drawable/rectangular_border"
+                         android:weightSum="10"
+                         android:padding="3dp"
+                         android:id="@+id/criteriaLinear6"
+
+                         android:visibility="gone"
+
+                         android:layout_marginTop="2dp"
+                         android:orientation="horizontal">
+                         <TextView
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_weight="8.5"
+                             android:padding="2dp"
+                             android:maxLines="1"
+                             android:id="@+id/c6"
+                             android:textColor="@color/colorPrimary"
+                             />
+                         <ImageView
+                             android:layout_width="18dp"
+                             android:layout_height="18dp"
+                             android:id="@+id/cross6"
+
+                             android:src="@drawable/ic_white_cross"
+                             android:layout_gravity="center"
+                             android:layout_weight="1.5"/>
+                     </LinearLayout>
+                     <LinearLayout
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:background="@drawable/rectangular_border"
+                         android:weightSum="10"
+                         android:id="@+id/criteriaLinear7"
+
+                         android:visibility="gone"
+
+                         android:padding="3dp"
+                         android:layout_marginTop="2dp"
+                         android:orientation="horizontal">
+                         <TextView
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_weight="8.5"
+                             android:padding="2dp"
+                             android:maxLines="1"
+                             android:id="@+id/c7"
+                             android:textColor="@color/colorPrimary"
+                             />
+                         <ImageView
+                             android:layout_width="18dp"
+                             android:layout_height="18dp"
+                             android:src="@drawable/ic_white_cross"
+                             android:layout_gravity="center"
+                             android:id="@+id/cross7"
+
+                             android:layout_weight="1.5"/>
+                     </LinearLayout>
+                     <LinearLayout
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:background="@drawable/rectangular_border"
+                         android:weightSum="10"
+                         android:id="@+id/criteriaLinear8"
+
+                         android:visibility="gone"
+
+                         android:padding="3dp"
+                         android:layout_marginTop="2dp"
+                         android:orientation="horizontal">
+                         <TextView
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_weight="8.5"
+                             android:padding="2dp"
+                             android:maxLines="1"
+                             android:id="@+id/c8"
+                             android:textColor="@color/colorPrimary"
+                             />
+                         <ImageView
+                             android:layout_width="18dp"
+                             android:layout_height="18dp"
+                             android:id="@+id/cross8"
+
+                             android:src="@drawable/ic_white_cross"
+                             android:layout_gravity="center"
+                             android:layout_weight="1.5"/>
+                     </LinearLayout>
+                     <LinearLayout
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:id="@+id/criteriaLinear9"
+
+                         android:background="@drawable/rectangular_border"
+                         android:weightSum="10"
+                         android:padding="3dp"
+                         android:visibility="gone"
+
+                         android:layout_marginTop="2dp"
+                         android:orientation="horizontal">
+                         <TextView
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_weight="8.5"
+                             android:padding="2dp"
+                             android:maxLines="1"
+                             android:id="@+id/c9"
+                             android:textColor="@color/colorPrimary"
+                             />
+                         <ImageView
+                             android:layout_width="18dp"
+                             android:layout_height="18dp"
+                             android:id="@+id/cross9"
+
+                             android:src="@drawable/ic_white_cross"
+                             android:layout_gravity="center"
+                             android:layout_weight="1.5"/>
+                     </LinearLayout>
+                     <LinearLayout
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:background="@drawable/rectangular_border"
+                         android:weightSum="10"
+                         android:id="@+id/criteriaLinear10"
+
+                         android:padding="3dp"
+                         android:visibility="gone"
+                         android:layout_marginTop="2dp"
+                         android:orientation="horizontal">
+                         <TextView
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_weight="8.5"
+                             android:padding="2dp"
+                             android:maxLines="1"
+                             android:id="@+id/c10"
+                             android:textColor="@color/colorPrimary"
+                             />
+                         <ImageView
+                             android:layout_width="18dp"
+                             android:layout_height="18dp"
+                             android:src="@drawable/ic_white_cross"
+                             android:layout_gravity="center"
+                             android:id="@+id/cross10"
+                             android:layout_weight="1.5"/>
+                     </LinearLayout>
+
+                 </LinearLayout>
             </LinearLayout>
 
             <TextView
