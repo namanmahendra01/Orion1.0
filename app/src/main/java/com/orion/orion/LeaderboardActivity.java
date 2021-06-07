@@ -66,6 +66,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
     private static final int ACTIVITY_NUM = 2;
     private static final int ANIMATION_DURATION = 500;
     private static final int LEADERBOAD_SIZE = 20;
+    private final static String DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZ";
     private Context mContext;
     FirebaseMethods firebaseMethods;
     private TextView userItemUsername;
@@ -91,6 +92,110 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser mUser;
 
+
+    @SuppressLint("ClickableViewAccessibility")
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_leaderboard);
+        Log.d(TAG, "onCreate: started.");
+        setupBottomNavigationView();
+        setupFirebaseAuth();
+        initializeWidgets();
+
+
+        SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
+            @Override
+            public void onTimeReceived(String currentTimeStamp) {
+                Log.d(TAG, "currentTimeStamp: " + currentTimeStamp);
+                Query query = reference.child(getString(R.string.last_updated));
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (!snapshot.exists()) {
+                            updateLeaderboard(currentTimeStamp);
+                        } else {
+                            Date currentDate = parseDate(currentTimeStamp);
+                            Date fetchedDate = parseDate(snapshot.getValue().toString());
+//                            Log.d(TAG, "DATE: currentDate: " + currentTimeStamp);
+//                            Log.d(TAG, "DATE: fetchedDate: " + currentTimeStamp);
+                            if (moreThanADay(fetchedDate, currentDate))
+                                updateLeaderboard(currentTimeStamp);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onError(Exception ex) {
+
+            }
+        });
+
+        checkOrGetLocation();
+        filter();
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+        sortedByTime.setOnClickListener(v -> {
+            String[] timeList = {"All Time", "This Year", "Last Month", "This Month", "Last Week", "This Week"};
+            BottomSheetFilter bottomSheet = new BottomSheetFilter(timeList);
+            bottomSheet.show(getSupportFragmentManager(), "Time Filter");
+        });
+        sortedByLocation.setOnClickListener(v -> {
+            String[] locationList = {"World", "Country", "City", "Area"};
+            BottomSheetFilter bottomSheet = new BottomSheetFilter(locationList);
+            bottomSheet.show(getSupportFragmentManager(), "location Filter");
+        });
+//        sortedByType.setOnClickListener(v -> {
+//            String[] typeList = {"Overall", "Posts", "Followers", "Contests"};
+//            BottomSheetFilter bottomSheet = new BottomSheetFilter(typeList);
+//            bottomSheet.show(getSupportFragmentManager(), "Type Filter");
+//        });
+        sortedByDomain.setOnClickListener(v -> {
+            String[] domainList = getResources().getStringArray(R.array.domain2);
+            BottomSheetFilter bottomSheet = new BottomSheetFilter(domainList);
+            bottomSheet.show(getSupportFragmentManager(), "Type Filter");
+        });
+        swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.setEnabled(false);
+        swipeRefreshLayout.setColorSchemeResources(
+                R.color.black,
+                R.color.scheme2,
+                R.color.purple,
+                R.color.dark_orange,
+                R.color.scheme5,
+                R.color.scheme6,
+                R.color.scheme7,
+                R.color.colorPrimary,
+                R.color.scheme9,
+                R.color.brown,
+                R.color.yellow,
+                R.color.red
+        );
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            mRecyclerView.setVisibility(View.GONE);
+            filter();
+        });
+    }
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -99,25 +204,61 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                 Toast.makeText(LeaderboardActivity.this, "Permission Granted", Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void onButtonClicked(String text) {
+        Log.d(TAG, "onButtonClicked: filter received" + text);
+        if (!swipeRefreshLayout.isRefreshing()) switch (text) {
+            case "All Time":
+            case "Last Week":
+            case "This Year":
+            case "Last Month":
+            case "This Month":
+            case "This Week":
+                sortedByTime.setText(text);
+                sortedByTime.setBackgroundResource(R.drawable.circular_gradient_background);
+                YoYo.with(Techniques.ZoomIn).duration(ANIMATION_DURATION).playOn(sortedByTime);
+                break;
+            case "World":
+            case "Country":
+            case "City":
+            case "Area":
+                sortedByLocation.setText(text);
+                sortedByLocation.setBackgroundResource(R.drawable.circular_gradient_background);
+                sortedByLocation.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+                YoYo.with(Techniques.ZoomIn).duration(ANIMATION_DURATION).playOn(sortedByLocation);
+                break;
+//            case "Overall":
+//            case "Posts":
+//            case "Followers":
+//            case "Contests":
+//                sortedByType.setText(text);
+//                sortedByType.setBackgroundResource(R.drawable.circular_gradient_background);
+//                YoYo.with(Techniques.ZoomIn).duration(ANIMATION_DURATION).playOn(sortedByType);
+//                break;
+            default:
+                sortedByDomain.setText(text);
+                sortedByDomain.setBackgroundResource(R.drawable.circular_gradient_background);
+                YoYo.with(Techniques.ZoomIn).duration(ANIMATION_DURATION).playOn(sortedByDomain);
+                break;
+        }
+        filter();
+    }
 
-    private void updateLeaderboard() {
-        SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
-            @Override
-            public void onTimeReceived(String currentTimeStamp) {
-                //initializing formatting for current date
-                int currentYear = Integer.parseInt(currentTimeStamp.substring(0, 4));
-                int currentMonth = Integer.parseInt(currentTimeStamp.substring(5, 7));
-                int currentDate = Integer.parseInt(currentTimeStamp.substring(8, 10));
+    private void updateLeaderboard(String currentTimeStamp) {
+        //initializing formatting for current date
+        int currentYear = Integer.parseInt(currentTimeStamp.substring(0, 4));
+        int currentMonth = Integer.parseInt(currentTimeStamp.substring(5, 7));
+        int currentDate = Integer.parseInt(currentTimeStamp.substring(8, 10));
 //                String currentTime = currentTimeStamp.substring(12, currentTimeStamp.length() - 1);
-                String currentDateFormat = currentDate + "/" + currentMonth + "/" + currentYear;
-                Date date = new Date(currentDateFormat);
-                int currentDay = date.getDay();
+        String currentDateFormat = currentDate + "/" + currentMonth + "/" + currentYear;
+        Date date = new Date(currentDateFormat);
+        int currentDay = date.getDay();
 
-                Query query = reference.child(getString(R.string.dbname_users));
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+        Query query = reference.child(getString(R.string.dbname_users));
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
 //                            Log.d(TAG, "updateLeaderboard: " + singleSnapshot);
 //                            users currentUser;
 //                            currentUser=singleSnapshot.getValue(users.class);
@@ -135,30 +276,30 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 //                            if(currentUser.getCf()!=null && currentUser.getCf().equals("false")) changedFollowers = currentUser.getCf().equals("true");
 //                            if(currentUser.getCjc()!=null && currentUser.getCjc().equals("false")) changedJoinedContest = currentUser.getCjc().equals("true");
 //                            if(currentUser.getCcc()!=null && currentUser.getCcc().equals("false")) changedCreateContest = currentUser.getCcc().equals("true");
-                            String user_id = singleSnapshot.getKey();
-                            assert user_id != null;
-                            String username = (String) singleSnapshot.child(getString(R.string.field_username)).getValue();
-                            String domain = (String) singleSnapshot.child(getString(R.string.field_domain)).getValue();
-                            String profilePhoto = (String) singleSnapshot.child(getString(R.string.profile_photo)).getValue();
-                            boolean changedFollowers = false;
-                            boolean changedJoinedContest = false;
-                            boolean changedCreateContest = false;
-                            if (singleSnapshot.child(getString(R.string.changedFollowers)).getValue() != null && Objects.equals(singleSnapshot.child(getString(R.string.changedFollowers)).getValue(), "true"))
-                                changedFollowers = true;
-                            if (singleSnapshot.child(getString(R.string.changedJoinedContest)).getValue() != null && Objects.equals(singleSnapshot.child(getString(R.string.changedJoinedContest)).getValue(), "true"))
-                                changedJoinedContest = true;
-                            if (singleSnapshot.child(getString(R.string.changedCreatedContest)).getValue() != null && Objects.equals(singleSnapshot.child(getString(R.string.changedCreatedContest)).getValue(), "true"))
-                                changedCreateContest = true;
+                    String user_id = singleSnapshot.getKey();
+                    assert user_id != null;
+                    String username = (String) singleSnapshot.child(getString(R.string.field_username)).getValue();
+                    String domain = (String) singleSnapshot.child(getString(R.string.field_domain)).getValue();
+                    String profilePhoto = (String) singleSnapshot.child(getString(R.string.profile_photo)).getValue();
+                    boolean changedFollowers = false;
+                    boolean changedJoinedContest = false;
+                    boolean changedCreateContest = false;
+                    if (singleSnapshot.child(getString(R.string.changedFollowers)).getValue() != null && Objects.equals(singleSnapshot.child(getString(R.string.changedFollowers)).getValue(), "true"))
+                        changedFollowers = true;
+                    if (singleSnapshot.child(getString(R.string.changedJoinedContest)).getValue() != null && Objects.equals(singleSnapshot.child(getString(R.string.changedJoinedContest)).getValue(), "true"))
+                        changedJoinedContest = true;
+                    if (singleSnapshot.child(getString(R.string.changedCreatedContest)).getValue() != null && Objects.equals(singleSnapshot.child(getString(R.string.changedCreatedContest)).getValue(), "true"))
+                        changedCreateContest = true;
 
-                            //location update
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            assert user != null;
+                    //location update
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    assert user != null;
 
 //                            if (user.getUid().equals(user_id)) checkOrGetLocation();
 
-                            Log.d(TAG, "updateLeaderboard: USERID: " + user_id);
-                            Log.d(TAG, "updateLeaderboard: posts update");
-                            //for posts parameters of leaders according the photos
+                    Log.d(TAG, "updateLeaderboard: USERID: " + user_id);
+                    Log.d(TAG, "updateLeaderboard: posts update");
+                    //for posts parameters of leaders according the photos
 //                            Query query1 = reference.child(getString(R.string.dbname_user_photos)).child(user_id);
 //                            query1.addListenerForSingleValueEvent(new ValueEventListener() {
 //                                @Override
@@ -240,382 +381,379 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 //
 //                            });
 
-                            Log.d(TAG, "updateLeaderboard: followers update");
-                            if (changedFollowers
-                                    || !dataSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).exists()
-                                    || !dataSnapshot.child(getString(R.string.field_yearly)).child(getString(R.string.field_followers)).exists()
-                                    || !dataSnapshot.child(getString(R.string.field_last_month)).child(getString(R.string.field_followers)).exists()
-                                    || !dataSnapshot.child(getString(R.string.field_this_month)).child(getString(R.string.field_followers)).exists()
-                                    || !dataSnapshot.child(getString(R.string.field_last_week)).child(getString(R.string.field_followers)).exists()
-                                    || !dataSnapshot.child(getString(R.string.field_this_week)).child(getString(R.string.field_followers)).exists()) {
-                                //for updating follow parameter of database
-                                Query query2 = reference.child(getString(R.string.dbname_follower)).child(user_id);
-                                query2.addListenerForSingleValueEvent(new ValueEventListener() {
+                    Log.d(TAG, "updateLeaderboard: followers update");
+                    if (changedFollowers
+                            || !dataSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).exists()
+                            || !dataSnapshot.child(getString(R.string.field_yearly)).child(getString(R.string.field_followers)).exists()
+                            || !dataSnapshot.child(getString(R.string.field_last_month)).child(getString(R.string.field_followers)).exists()
+                            || !dataSnapshot.child(getString(R.string.field_this_month)).child(getString(R.string.field_followers)).exists()
+                            || !dataSnapshot.child(getString(R.string.field_last_week)).child(getString(R.string.field_followers)).exists()
+                            || !dataSnapshot.child(getString(R.string.field_this_week)).child(getString(R.string.field_followers)).exists()) {
+                        //for updating follow parameter of database
+                        Query query2 = reference.child(getString(R.string.dbname_follower)).child(user_id);
+                        query2.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                //getting updates for contests
+                                int currentNoOfFollowers = (int) dataSnapshot.getChildrenCount();
+                                Query query21 = reference.child(getString(R.string.dbname_leaderboard)).child(user_id);
+                                query21.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        //getting updates for contests
-                                        int currentNoOfFollowers = (int) dataSnapshot.getChildrenCount();
-                                        Query query21 = reference.child(getString(R.string.dbname_leaderboard)).child(user_id);
-                                        query21.addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                //details entries
-                                                int previousNoOfFollowers = 0;
-                                                if (dataSnapshot.child(getString(R.string.field_followers)).getValue() != null)
-                                                    previousNoOfFollowers = (int) (long) dataSnapshot.child(getString(R.string.field_followers)).getValue();
+                                        //details entries
+                                        int previousNoOfFollowers = 0;
+                                        if (dataSnapshot.child(getString(R.string.field_followers)).getValue() != null)
+                                            previousNoOfFollowers = (int) (long) dataSnapshot.child(getString(R.string.field_followers)).getValue();
 
-                                                int all_time;
-                                                int yearly = 0;
-                                                if (dataSnapshot.child(getString(R.string.field_yearly)).child(getString(R.string.field_followers)).getValue() != null)
-                                                    yearly = (int) (long) dataSnapshot.child(getString(R.string.field_yearly)).child(getString(R.string.field_followers)).getValue();
-                                                int last_month = 0;
-                                                if (dataSnapshot.child(getString(R.string.field_last_month)).child(getString(R.string.field_followers)).getValue() != null)
-                                                    last_month = (int) (long) dataSnapshot.child(getString(R.string.field_last_month)).child(getString(R.string.field_followers)).getValue();
-                                                int this_month = 0;
-                                                if (dataSnapshot.child(getString(R.string.field_this_month)).child(getString(R.string.field_followers)).getValue() != null)
-                                                    this_month = (int) (long) dataSnapshot.child(getString(R.string.field_this_month)).child(getString(R.string.field_followers)).getValue();
-                                                int last_week = 0;
-                                                if (dataSnapshot.child(getString(R.string.field_last_week)).child(getString(R.string.field_followers)).getValue() != null)
-                                                    last_week = (int) (long) dataSnapshot.child(getString(R.string.field_last_week)).child(getString(R.string.field_followers)).getValue();
-                                                int this_week = 0;
-                                                if (dataSnapshot.child(getString(R.string.field_this_week)).child(getString(R.string.field_followers)).getValue() != null)
-                                                    this_week = (int) (long) dataSnapshot.child(getString(R.string.field_this_week)).child(getString(R.string.field_followers)).getValue();
+                                        int all_time;
+                                        int yearly = 0;
+                                        if (dataSnapshot.child(getString(R.string.field_yearly)).child(getString(R.string.field_followers)).getValue() != null)
+                                            yearly = (int) (long) dataSnapshot.child(getString(R.string.field_yearly)).child(getString(R.string.field_followers)).getValue();
+                                        int last_month = 0;
+                                        if (dataSnapshot.child(getString(R.string.field_last_month)).child(getString(R.string.field_followers)).getValue() != null)
+                                            last_month = (int) (long) dataSnapshot.child(getString(R.string.field_last_month)).child(getString(R.string.field_followers)).getValue();
+                                        int this_month = 0;
+                                        if (dataSnapshot.child(getString(R.string.field_this_month)).child(getString(R.string.field_followers)).getValue() != null)
+                                            this_month = (int) (long) dataSnapshot.child(getString(R.string.field_this_month)).child(getString(R.string.field_followers)).getValue();
+                                        int last_week = 0;
+                                        if (dataSnapshot.child(getString(R.string.field_last_week)).child(getString(R.string.field_followers)).getValue() != null)
+                                            last_week = (int) (long) dataSnapshot.child(getString(R.string.field_last_week)).child(getString(R.string.field_followers)).getValue();
+                                        int this_week = 0;
+                                        if (dataSnapshot.child(getString(R.string.field_this_week)).child(getString(R.string.field_followers)).getValue() != null)
+                                            this_week = (int) (long) dataSnapshot.child(getString(R.string.field_this_week)).child(getString(R.string.field_followers)).getValue();
 
-                                                //getting last updated entries
-                                                String lastUpdatedTimestamp = (String) dataSnapshot.child(getString(R.string.field_last_updated)).getValue();
-                                                int lastUpdatedYear = 0;
-                                                int lastUpdatedMonth = 0;
-                                                int lastUpdatedDate = 0;
+                                        //getting last updated entries
+                                        String lastUpdatedTimestamp = (String) dataSnapshot.child(getString(R.string.field_last_updated)).getValue();
+                                        int lastUpdatedYear = 0;
+                                        int lastUpdatedMonth = 0;
+                                        int lastUpdatedDate = 0;
 //                                          String lastUpdatedTime = "";
-                                                assert lastUpdatedTimestamp != null;
-                                                if (lastUpdatedTimestamp.length() > 12) {
-                                                    lastUpdatedYear = Integer.parseInt(lastUpdatedTimestamp.substring(0, 4));
-                                                    lastUpdatedMonth = Integer.parseInt(lastUpdatedTimestamp.substring(5, 7));
-                                                    lastUpdatedDate = Integer.parseInt(lastUpdatedTimestamp.substring(8, 10));
+                                        assert lastUpdatedTimestamp != null;
+                                        if (lastUpdatedTimestamp.length() > 12) {
+                                            lastUpdatedYear = Integer.parseInt(lastUpdatedTimestamp.substring(0, 4));
+                                            lastUpdatedMonth = Integer.parseInt(lastUpdatedTimestamp.substring(5, 7));
+                                            lastUpdatedDate = Integer.parseInt(lastUpdatedTimestamp.substring(8, 10));
 //                                              lastUpdatedTime = lastUpdatedTimestamp.substring(12, lastUpdatedTimestamp.length() - 1);
-                                                }
-                                                String lastUpdatedDateFormat = lastUpdatedDate + "/" + lastUpdatedMonth + "/" + lastUpdatedYear;
-                                                int finalLastUpdatedYear = lastUpdatedYear;
-                                                int finalLastUpdatedMonth = lastUpdatedMonth;
+                                        }
+                                        String lastUpdatedDateFormat = lastUpdatedDate + "/" + lastUpdatedMonth + "/" + lastUpdatedYear;
+                                        int finalLastUpdatedYear = lastUpdatedYear;
+                                        int finalLastUpdatedMonth = lastUpdatedMonth;
 
-                                                //calculating difference of dates in post and current one
-                                                @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
-                                                long elapsedDays = 0;
-                                                try {
-                                                    Date date1 = simpleDateFormat.parse(lastUpdatedDateFormat);
-                                                    Date date2 = simpleDateFormat.parse(currentDateFormat);
+                                        //calculating difference of dates in post and current one
+                                        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
+                                        long elapsedDays = 0;
+                                        try {
+                                            Date date1 = simpleDateFormat.parse(lastUpdatedDateFormat);
+                                            Date date2 = simpleDateFormat.parse(currentDateFormat);
 //                                                    Log.d(TAG, "onTimeReceived: " + date1);
 //                                                    Log.d(TAG, "onTimeReceived: " + date2);
-                                                    assert date1 != null;
-                                                    assert date2 != null;
-                                                    elapsedDays = (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24);
+                                            assert date1 != null;
+                                            assert date2 != null;
+                                            elapsedDays = (date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24);
 //                                                    Log.d(TAG, "onDataChange: " + elapsedDays);
 //                                                    Log.d(TAG, "onDataChange: " + currentDay);
-                                                } catch (ParseException e) {
-                                                    e.printStackTrace();
-                                                }
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
 
 
-                                                //updating for transition days of different year
-                                                if (finalLastUpdatedYear < currentYear) {
-                                                    yearly = 0;
-                                                    this_month = 0;
-                                                    //updating for transition days of different month in different year
-                                                    if (finalLastUpdatedMonth == 12 && currentMonth == 1) {
-                                                        last_month = this_month;
-                                                        //updating for transition days of different month different year of time span of more than 2 weeks
-                                                        if (elapsedDays > currentDay + 7) {
-                                                            last_week = 0;
-                                                            this_week = 0;
-                                                        }
-                                                        //updating for transition days of different month different year of previous week
-                                                        else if (elapsedDays > currentDay && elapsedDays <= currentDay + 7) {
-                                                            last_week = this_week;
-                                                            this_week = 0;
-                                                        }
-                                                    } else last_month = 0;
+                                        //updating for transition days of different year
+                                        if (finalLastUpdatedYear < currentYear) {
+                                            yearly = 0;
+                                            this_month = 0;
+                                            //updating for transition days of different month in different year
+                                            if (finalLastUpdatedMonth == 12 && currentMonth == 1) {
+                                                last_month = this_month;
+                                                //updating for transition days of different month different year of time span of more than 2 weeks
+                                                if (elapsedDays > currentDay + 7) {
+                                                    last_week = 0;
+                                                    this_week = 0;
                                                 }
-                                                //updating for transition days of same year
-                                                else {
-                                                    //updating for transition days of different month in different year
-                                                    if (finalLastUpdatedMonth < currentMonth) {
-                                                        this_month = 0;
-                                                        //updating for transition days of just previous month
-                                                        if ((finalLastUpdatedMonth - currentMonth) == 1) {
-                                                            last_month = this_month;
-                                                            //updating for transition days of different month different year of time span of more than 2 weeks
-                                                            if (elapsedDays > currentDay + 7) {
-                                                                last_week = 0;
-                                                                this_week = 0;
-                                                            }
-                                                            //updating for transition days of different month different year of previous week
-                                                            else if (elapsedDays > currentDay && elapsedDays <= currentDay + 7) {
-                                                                last_week = this_week;
-                                                                this_week = 0;
-                                                            }
-                                                        } else {
-                                                            last_month = 0;
-                                                            last_week = 0;
-                                                            this_week = 0;
-                                                        }
-                                                    } else {
-                                                        //updating for transition days of same month same year of time span of more than 2 weeks
-                                                        if (elapsedDays < currentDay + 7) {
-                                                            last_week = 0;
-                                                            this_week = 0;
-                                                        }
-                                                        //updating for transition days of same month same year of time span of less than 2 weeks
-                                                        else if (elapsedDays > currentDay && elapsedDays <= currentDay + 7) {
-                                                            last_week = this_week;
-                                                            this_week = 0;
-                                                        }
+                                                //updating for transition days of different month different year of previous week
+                                                else if (elapsedDays > currentDay && elapsedDays <= currentDay + 7) {
+                                                    last_week = this_week;
+                                                    this_week = 0;
+                                                }
+                                            } else last_month = 0;
+                                        }
+                                        //updating for transition days of same year
+                                        else {
+                                            //updating for transition days of different month in different year
+                                            if (finalLastUpdatedMonth < currentMonth) {
+                                                this_month = 0;
+                                                //updating for transition days of just previous month
+                                                if ((finalLastUpdatedMonth - currentMonth) == 1) {
+                                                    last_month = this_month;
+                                                    //updating for transition days of different month different year of time span of more than 2 weeks
+                                                    if (elapsedDays > currentDay + 7) {
+                                                        last_week = 0;
+                                                        this_week = 0;
                                                     }
+                                                    //updating for transition days of different month different year of previous week
+                                                    else if (elapsedDays > currentDay && elapsedDays <= currentDay + 7) {
+                                                        last_week = this_week;
+                                                        this_week = 0;
+                                                    }
+                                                } else {
+                                                    last_month = 0;
+                                                    last_week = 0;
+                                                    this_week = 0;
                                                 }
-
-
-                                                //calculating rating for joined
-                                                int rating = currentNoOfFollowers - previousNoOfFollowers;
-                                                //updating current instance of increasing followers list
-                                                all_time = currentNoOfFollowers;
-                                                if (finalLastUpdatedYear == currentYear) {
-                                                    yearly += rating;
-                                                    if (finalLastUpdatedMonth == currentMonth)
-                                                        this_month += rating;
+                                            } else {
+                                                //updating for transition days of same month same year of time span of more than 2 weeks
+                                                if (elapsedDays < currentDay + 7) {
+                                                    last_week = 0;
+                                                    this_week = 0;
                                                 }
-                                                if (elapsedDays <= currentDay) this_week += rating;
-
-                                                Log.d(TAG, "updateLeaderboard: followers " + all_time + "," + yearly + "," + last_month + "," + this_month + "," + last_week + "," + this_week);
-                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).setValue(all_time);
-                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_yearly)).child(getString(R.string.field_followers)).setValue(yearly);
-                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_month)).child(getString(R.string.field_followers)).setValue(last_month);
-                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_this_month)).child(getString(R.string.field_followers)).setValue(this_month);
-                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_week)).child(getString(R.string.field_followers)).setValue(last_week);
-                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_this_week)).child(getString(R.string.field_followers)).setValue(this_week);
-                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_followers)).setValue(currentNoOfFollowers);
-
-                                                reference.child(getString(R.string.dbname_users)).child(user_id).child(getString(R.string.changedFollowers)).setValue("false");
+                                                //updating for transition days of same month same year of time span of less than 2 weeks
+                                                else if (elapsedDays > currentDay && elapsedDays <= currentDay + 7) {
+                                                    last_week = this_week;
+                                                    this_week = 0;
+                                                }
                                             }
+                                        }
 
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                                            }
-                                        });
 
+                                        //calculating rating for joined
+                                        int rating = currentNoOfFollowers - previousNoOfFollowers;
+                                        //updating current instance of increasing followers list
+                                        all_time = currentNoOfFollowers;
+                                        if (finalLastUpdatedYear == currentYear) {
+                                            yearly += rating;
+                                            if (finalLastUpdatedMonth == currentMonth)
+                                                this_month += rating;
+                                        }
+                                        if (elapsedDays <= currentDay) this_week += rating;
+
+                                        Log.d(TAG, "updateLeaderboard: followers " + all_time + "," + yearly + "," + last_month + "," + this_month + "," + last_week + "," + this_week);
+                                        reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_all_time)).child(getString(R.string.field_followers)).setValue(all_time);
+                                        reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_yearly)).child(getString(R.string.field_followers)).setValue(yearly);
+                                        reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_month)).child(getString(R.string.field_followers)).setValue(last_month);
+                                        reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_this_month)).child(getString(R.string.field_followers)).setValue(this_month);
+                                        reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_week)).child(getString(R.string.field_followers)).setValue(last_week);
+                                        reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_this_week)).child(getString(R.string.field_followers)).setValue(this_week);
+                                        reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_followers)).setValue(currentNoOfFollowers);
+
+                                        reference.child(getString(R.string.dbname_users)).child(user_id).child(getString(R.string.changedFollowers)).setValue("false");
                                     }
 
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError databaseError) {
                                     }
                                 });
+
                             }
 
-                            Log.d(TAG, "updateLeaderboard: contests update");
-                            if (changedJoinedContest || changedCreateContest
-                                    || !dataSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).exists()
-                                    || !dataSnapshot.child(getString(R.string.field_yearly)).child(getString(R.string.field_contest)).exists()
-                                    || !dataSnapshot.child(getString(R.string.field_last_month)).child(getString(R.string.field_contest)).exists()
-                                    || !dataSnapshot.child(getString(R.string.field_this_month)).child(getString(R.string.field_contest)).exists()
-                                    || !dataSnapshot.child(getString(R.string.field_last_week)).child(getString(R.string.field_contest)).exists()
-                                    || !dataSnapshot.child(getString(R.string.field_this_week)).child(getString(R.string.field_contest)).exists()) {
-                                //for competition parameters of leaders
-                                Query query3 = reference.child(getString(R.string.dbname_contests)).child(user_id);
-                                query3.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                            }
+                        });
+                    }
+
+                    Log.d(TAG, "updateLeaderboard: contests update");
+                    if (changedJoinedContest || changedCreateContest
+                            || !dataSnapshot.child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).exists()
+                            || !dataSnapshot.child(getString(R.string.field_yearly)).child(getString(R.string.field_contest)).exists()
+                            || !dataSnapshot.child(getString(R.string.field_last_month)).child(getString(R.string.field_contest)).exists()
+                            || !dataSnapshot.child(getString(R.string.field_this_month)).child(getString(R.string.field_contest)).exists()
+                            || !dataSnapshot.child(getString(R.string.field_last_week)).child(getString(R.string.field_contest)).exists()
+                            || !dataSnapshot.child(getString(R.string.field_this_week)).child(getString(R.string.field_contest)).exists()) {
+                        //for competition parameters of leaders
+                        Query query3 = reference.child(getString(R.string.dbname_contests)).child(user_id);
+                        query3.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                //getting updates for contests
+                                int joinedContest = (int) dataSnapshot.child(getString(R.string.joined_contest)).getChildrenCount();
+                                int createdContest = (int) dataSnapshot.child(getString(R.string.created_contest)).getChildrenCount();
+
+                                Query query31 = reference.child(getString(R.string.dbname_leaderboard)).child(user_id);
+                                query31.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                                        //getting updates for contests
-                                        int joinedContest = (int) dataSnapshot.child(getString(R.string.joined_contest)).getChildrenCount();
-                                        int createdContest = (int) dataSnapshot.child(getString(R.string.created_contest)).getChildrenCount();
+                                        //details entries
+                                        int previousJoinedContests = 0;
+                                        if (dataSnapshot.child(getString(R.string.joined_contest)).getValue() != null)
+                                            previousJoinedContests = (int) (long) dataSnapshot.child(getString(R.string.joined_contest)).getValue();
+                                        int previousCreatedContest = 0;
+                                        if (dataSnapshot.child(getString(R.string.created_contest)).getValue() != null)
+                                            previousCreatedContest = (int) (long) dataSnapshot.child(getString(R.string.created_contest)).getValue();
 
-                                        Query query31 = reference.child(getString(R.string.dbname_leaderboard)).child(user_id);
-                                        query31.addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        int all_time = 0;
+                                        int yearly = 0;
+                                        if (dataSnapshot.child(getString(R.string.field_yearly)).child(getString(R.string.field_contest)).getValue() != null)
+                                            yearly = (int) (long) dataSnapshot.child(getString(R.string.field_yearly)).child(getString(R.string.field_contest)).getValue();
+                                        int last_month = 0;
+                                        if (dataSnapshot.child(getString(R.string.field_last_month)).child(getString(R.string.field_contest)).getValue() != null)
+                                            last_month = (int) (long) dataSnapshot.child(getString(R.string.field_last_month)).child(getString(R.string.field_contest)).getValue();
+                                        int this_month = 0;
+                                        if (dataSnapshot.child(getString(R.string.field_this_month)).child(getString(R.string.field_contest)).getValue() != null)
+                                            this_month = (int) (long) dataSnapshot.child(getString(R.string.field_this_month)).child(getString(R.string.field_contest)).getValue();
+                                        int last_week = 0;
+                                        if (dataSnapshot.child(getString(R.string.field_last_week)).child(getString(R.string.field_contest)).getValue() != null)
+                                            last_week = (int) (long) dataSnapshot.child(getString(R.string.field_last_week)).child(getString(R.string.field_contest)).getValue();
+                                        int this_week = 0;
+                                        if (dataSnapshot.child(getString(R.string.field_this_week)).child(getString(R.string.field_contest)).getValue() != null)
+                                            this_week = (int) (long) dataSnapshot.child(getString(R.string.field_this_week)).child(getString(R.string.field_contest)).getValue();
 
-                                                //details entries
-                                                int previousJoinedContests = 0;
-                                                if (dataSnapshot.child(getString(R.string.joined_contest)).getValue() != null)
-                                                    previousJoinedContests = (int) (long) dataSnapshot.child(getString(R.string.joined_contest)).getValue();
-                                                int previousCreatedContest = 0;
-                                                if (dataSnapshot.child(getString(R.string.created_contest)).getValue() != null)
-                                                    previousCreatedContest = (int) (long) dataSnapshot.child(getString(R.string.created_contest)).getValue();
+                                        //getting last updated entries
+                                        String lastUpdatedTimestamp = (String) dataSnapshot.child(getString(R.string.field_last_updated)).getValue();
+                                        int lastUpdatedYear = 0;
+                                        int lastUpdatedMonth = 0;
+                                        int lastUpdatedDate = 0;
+                                        //                                          String lastUpdatedTime = "";
+                                        assert lastUpdatedTimestamp != null;
+                                        if (lastUpdatedTimestamp.length() > 12) {
+                                            lastUpdatedYear = Integer.parseInt(lastUpdatedTimestamp.substring(0, 4));
+                                            lastUpdatedMonth = Integer.parseInt(lastUpdatedTimestamp.substring(5, 7));
+                                            lastUpdatedDate = Integer.parseInt(lastUpdatedTimestamp.substring(8, 10));
+                                            //                                              lastUpdatedTime = lastUpdatedTimestamp.substring(12, lastUpdatedTimestamp.length() - 1);
+                                        }
+                                        String lastUpdatedDateFormat = lastUpdatedDate + "/" + lastUpdatedMonth + "/" + lastUpdatedYear;
+                                        int finalLastUpdatedYear = lastUpdatedYear;
+                                        int finalLastUpdatedMonth = lastUpdatedMonth;
 
-                                                int all_time = 0;
-                                                int yearly = 0;
-                                                if (dataSnapshot.child(getString(R.string.field_yearly)).child(getString(R.string.field_contest)).getValue() != null)
-                                                    yearly = (int) (long) dataSnapshot.child(getString(R.string.field_yearly)).child(getString(R.string.field_contest)).getValue();
-                                                int last_month = 0;
-                                                if (dataSnapshot.child(getString(R.string.field_last_month)).child(getString(R.string.field_contest)).getValue() != null)
-                                                    last_month = (int) (long) dataSnapshot.child(getString(R.string.field_last_month)).child(getString(R.string.field_contest)).getValue();
-                                                int this_month = 0;
-                                                if (dataSnapshot.child(getString(R.string.field_this_month)).child(getString(R.string.field_contest)).getValue() != null)
-                                                    this_month = (int) (long) dataSnapshot.child(getString(R.string.field_this_month)).child(getString(R.string.field_contest)).getValue();
-                                                int last_week = 0;
-                                                if (dataSnapshot.child(getString(R.string.field_last_week)).child(getString(R.string.field_contest)).getValue() != null)
-                                                    last_week = (int) (long) dataSnapshot.child(getString(R.string.field_last_week)).child(getString(R.string.field_contest)).getValue();
-                                                int this_week = 0;
-                                                if (dataSnapshot.child(getString(R.string.field_this_week)).child(getString(R.string.field_contest)).getValue() != null)
-                                                    this_week = (int) (long) dataSnapshot.child(getString(R.string.field_this_week)).child(getString(R.string.field_contest)).getValue();
-
-                                                //getting last updated entries
-                                                String lastUpdatedTimestamp = (String) dataSnapshot.child(getString(R.string.field_last_updated)).getValue();
-                                                int lastUpdatedYear = 0;
-                                                int lastUpdatedMonth = 0;
-                                                int lastUpdatedDate = 0;
-                                                //                                          String lastUpdatedTime = "";
-                                                assert lastUpdatedTimestamp != null;
-                                                if (lastUpdatedTimestamp.length() > 12) {
-                                                    lastUpdatedYear = Integer.parseInt(lastUpdatedTimestamp.substring(0, 4));
-                                                    lastUpdatedMonth = Integer.parseInt(lastUpdatedTimestamp.substring(5, 7));
-                                                    lastUpdatedDate = Integer.parseInt(lastUpdatedTimestamp.substring(8, 10));
-                                                    //                                              lastUpdatedTime = lastUpdatedTimestamp.substring(12, lastUpdatedTimestamp.length() - 1);
-                                                }
-                                                String lastUpdatedDateFormat = lastUpdatedDate + "/" + lastUpdatedMonth + "/" + lastUpdatedYear;
-                                                int finalLastUpdatedYear = lastUpdatedYear;
-                                                int finalLastUpdatedMonth = lastUpdatedMonth;
-
-                                                //calculating difference of dates in post and current one
-                                                @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
-                                                long elapsedDays = 0;
-                                                try {
-                                                    Date date1 = simpleDateFormat.parse(lastUpdatedDateFormat);
-                                                    Date date2 = simpleDateFormat.parse(currentDateFormat);
+                                        //calculating difference of dates in post and current one
+                                        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/M/yyyy");
+                                        long elapsedDays = 0;
+                                        try {
+                                            Date date1 = simpleDateFormat.parse(lastUpdatedDateFormat);
+                                            Date date2 = simpleDateFormat.parse(currentDateFormat);
 //                                                    Log.d(TAG, "onTimeReceived: " + date1);
 //                                                    Log.d(TAG, "onTimeReceived: " + date2);
-                                                    assert date1 != null;
-                                                    assert date2 != null;
-                                                    elapsedDays = (date2.getTime() - date1.getTime()) / (ANIMATION_DURATION * 60 * 60 * 24);
+                                            assert date1 != null;
+                                            assert date2 != null;
+                                            elapsedDays = (date2.getTime() - date1.getTime()) / (ANIMATION_DURATION * 60 * 60 * 24);
 //                                                    Log.d(TAG, "onDataChange: " + elapsedDays);
 //                                                    Log.d(TAG, "onDataChange: " + currentDay);
-                                                } catch (ParseException e) {
-                                                    e.printStackTrace();
-                                                }
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
 
 
-                                                //updating for transition days of different year
-                                                if (finalLastUpdatedYear < currentYear) {
-                                                    yearly = 0;
-                                                    this_month = 0;
-                                                    //updating for transition days of different month in different year
-                                                    if (finalLastUpdatedMonth == 12 && currentMonth == 1) {
-                                                        last_month = this_month;
-                                                        //updating for transition days of different month different year of time span of more than 2 weeks
-                                                        if (elapsedDays > currentDay + 7) {
-                                                            last_week = 0;
-                                                            this_week = 0;
-                                                        }
-                                                        //updating for transition days of different month different year of previous week
-                                                        else if (elapsedDays > currentDay && elapsedDays <= currentDay + 7) {
-                                                            last_week = this_week;
-                                                            this_week = 0;
-                                                        }
-                                                    } else last_month = 0;
+                                        //updating for transition days of different year
+                                        if (finalLastUpdatedYear < currentYear) {
+                                            yearly = 0;
+                                            this_month = 0;
+                                            //updating for transition days of different month in different year
+                                            if (finalLastUpdatedMonth == 12 && currentMonth == 1) {
+                                                last_month = this_month;
+                                                //updating for transition days of different month different year of time span of more than 2 weeks
+                                                if (elapsedDays > currentDay + 7) {
+                                                    last_week = 0;
+                                                    this_week = 0;
                                                 }
-                                                //updating for transition days of same year
-                                                else {
-                                                    //updating for transition days of different month in different year
-                                                    if (finalLastUpdatedMonth < currentMonth) {
-                                                        this_month = 0;
-                                                        //updating for transition days of just previous month
-                                                        if ((finalLastUpdatedMonth - currentMonth) == 1) {
-                                                            last_month = this_month;
-                                                            //updating for transition days of different month different year of time span of more than 2 weeks
-                                                            if (elapsedDays > currentDay + 7) {
-                                                                last_week = 0;
-                                                                this_week = 0;
-                                                            }
-                                                            //updating for transition days of different month different year of previous week
-                                                            else if (elapsedDays > currentDay && elapsedDays <= currentDay + 7) {
-                                                                last_week = this_week;
-                                                                this_week = 0;
-                                                            }
-                                                        } else {
-                                                            last_month = 0;
-                                                            last_week = 0;
-                                                            this_week = 0;
-                                                        }
-                                                    } else {
-                                                        //updating for transition days of same month same year of time span of more than 2 weeks
-                                                        if (elapsedDays > currentDay + 7) {
-                                                            last_week = 0;
-                                                            this_week = 0;
-                                                        }
-                                                        //updating for transition days of same month same year of time span of less than 2 weeks
-                                                        else if (elapsedDays > currentDay && elapsedDays <= currentDay + 7) {
-                                                            last_week = this_week;
-                                                            this_week = 0;
-                                                        }
+                                                //updating for transition days of different month different year of previous week
+                                                else if (elapsedDays > currentDay && elapsedDays <= currentDay + 7) {
+                                                    last_week = this_week;
+                                                    this_week = 0;
+                                                }
+                                            } else last_month = 0;
+                                        }
+                                        //updating for transition days of same year
+                                        else {
+                                            //updating for transition days of different month in different year
+                                            if (finalLastUpdatedMonth < currentMonth) {
+                                                this_month = 0;
+                                                //updating for transition days of just previous month
+                                                if ((finalLastUpdatedMonth - currentMonth) == 1) {
+                                                    last_month = this_month;
+                                                    //updating for transition days of different month different year of time span of more than 2 weeks
+                                                    if (elapsedDays > currentDay + 7) {
+                                                        last_week = 0;
+                                                        this_week = 0;
                                                     }
+                                                    //updating for transition days of different month different year of previous week
+                                                    else if (elapsedDays > currentDay && elapsedDays <= currentDay + 7) {
+                                                        last_week = this_week;
+                                                        this_week = 0;
+                                                    }
+                                                } else {
+                                                    last_month = 0;
+                                                    last_week = 0;
+                                                    this_week = 0;
                                                 }
-
-
-                                                //calculating rating for joined
-                                                int rating = (int) (2.5 * (joinedContest - previousJoinedContests));
-                                                //updating current instance of increasing followers list
-                                                all_time += (2.5 * joinedContest);
-                                                if (finalLastUpdatedYear == currentYear) {
-                                                    yearly += rating;
-                                                    if (finalLastUpdatedMonth == currentMonth)
-                                                        this_month += rating;
+                                            } else {
+                                                //updating for transition days of same month same year of time span of more than 2 weeks
+                                                if (elapsedDays > currentDay + 7) {
+                                                    last_week = 0;
+                                                    this_week = 0;
                                                 }
-                                                if (elapsedDays <= currentDay)
-                                                    this_week += rating;
-
-                                                //calculating rating for created
-                                                rating = 5 * (createdContest - previousCreatedContest);
-                                                //updating current instance of increasing followers list
-                                                all_time += (5 * createdContest);
-                                                if (finalLastUpdatedYear == currentYear) {
-                                                    yearly += rating;
-                                                    if (finalLastUpdatedMonth == currentMonth)
-                                                        this_month += rating;
+                                                //updating for transition days of same month same year of time span of less than 2 weeks
+                                                else if (elapsedDays > currentDay && elapsedDays <= currentDay + 7) {
+                                                    last_week = this_week;
+                                                    this_week = 0;
                                                 }
-                                                if (elapsedDays <= currentDay) this_week += rating;
-
-                                                Log.d(TAG, "updateLeaderboard: contests " + all_time + "," + yearly + "," + last_month + "," + this_month + "," + last_week + "," + this_week);
-                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).setValue(all_time);
-                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_yearly)).child(getString(R.string.field_contest)).setValue(yearly);
-                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_month)).child(getString(R.string.field_contest)).setValue(last_month);
-                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_this_month)).child(getString(R.string.field_contest)).setValue(this_month);
-                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_week)).child(getString(R.string.field_contest)).setValue(last_week);
-                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_this_week)).child(getString(R.string.field_contest)).setValue(this_week);
-                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.joined_contest)).setValue(joinedContest);
-                                                reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.created_contest)).setValue(createdContest);
-
-                                                reference.child(getString(R.string.dbname_users)).child(user_id).child(getString(R.string.changedCreatedContest)).setValue("false");
-                                                reference.child(getString(R.string.dbname_users)).child(user_id).child(getString(R.string.changedJoinedContest)).setValue("false");
                                             }
+                                        }
 
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                                            }
-                                        });
 
+                                        //calculating rating for joined
+                                        int rating = (int) (2.5 * (joinedContest - previousJoinedContests));
+                                        //updating current instance of increasing followers list
+                                        all_time += (2.5 * joinedContest);
+                                        if (finalLastUpdatedYear == currentYear) {
+                                            yearly += rating;
+                                            if (finalLastUpdatedMonth == currentMonth)
+                                                this_month += rating;
+                                        }
+                                        if (elapsedDays <= currentDay)
+                                            this_week += rating;
+
+                                        //calculating rating for created
+                                        rating = 5 * (createdContest - previousCreatedContest);
+                                        //updating current instance of increasing followers list
+                                        all_time += (5 * createdContest);
+                                        if (finalLastUpdatedYear == currentYear) {
+                                            yearly += rating;
+                                            if (finalLastUpdatedMonth == currentMonth)
+                                                this_month += rating;
+                                        }
+                                        if (elapsedDays <= currentDay) this_week += rating;
+
+                                        Log.d(TAG, "updateLeaderboard: contests " + all_time + "," + yearly + "," + last_month + "," + this_month + "," + last_week + "," + this_week);
+                                        reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_all_time)).child(getString(R.string.field_contest)).setValue(all_time);
+                                        reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_yearly)).child(getString(R.string.field_contest)).setValue(yearly);
+                                        reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_month)).child(getString(R.string.field_contest)).setValue(last_month);
+                                        reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_this_month)).child(getString(R.string.field_contest)).setValue(this_month);
+                                        reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_week)).child(getString(R.string.field_contest)).setValue(last_week);
+                                        reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_this_week)).child(getString(R.string.field_contest)).setValue(this_week);
+                                        reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.joined_contest)).setValue(joinedContest);
+                                        reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.created_contest)).setValue(createdContest);
+
+                                        reference.child(getString(R.string.dbname_users)).child(user_id).child(getString(R.string.changedCreatedContest)).setValue("false");
+                                        reference.child(getString(R.string.dbname_users)).child(user_id).child(getString(R.string.changedJoinedContest)).setValue("false");
                                     }
 
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError databaseError) {
                                     }
                                 });
+
                             }
 
-                            //updating username and domain
-                            reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_username)).setValue(username);
-                            reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_domain)).setValue(domain);
-                            reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.profile_photo)).setValue(profilePhoto);
-                            reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_updated)).setValue(currentTimeStamp);
-                        }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                            }
+                        });
                     }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                    }
-                });
+                    //updating username and domain
+                    reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_username)).setValue(username);
+                    reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_domain)).setValue(domain);
+                    reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.profile_photo)).setValue(profilePhoto);
+                    reference.child(getString(R.string.dbname_leaderboard)).child(user_id).child(getString(R.string.field_last_updated)).setValue(currentTimeStamp);
+                }
+
+                //final date update
+                reference.child(getString(R.string.last_updated)).setValue(currentTimeStamp);
+
             }
 
             @Override
-            public void onError(Exception ex) {
-                Log.e(SNTPClient.TAG, Objects.requireNonNull(ex.getMessage()));
+            public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
     }
@@ -660,111 +798,38 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         }
     }
 
-
-    @SuppressLint("ClickableViewAccessibility")
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_leaderboard);
-        Log.d(TAG, "onCreate: started.");
-        setupBottomNavigationView();
-        setupFirebaseAuth();
-        initializeWidgets();
-        checkOrGetLocation();
-        updateLeaderboard();
-        filter();
-
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
-        sortedByTime.setOnClickListener(v -> {
-            String[] timeList = {"All Time", "This Year", "Last Month", "This Month", "Last Week", "This Week"};
-            BottomSheetFilter bottomSheet = new BottomSheetFilter(timeList);
-            bottomSheet.show(getSupportFragmentManager(), "Time Filter");
-        });
-        sortedByLocation.setOnClickListener(v -> {
-            String[] locationList = {"World", "Country", "City", "Area"};
-            BottomSheetFilter bottomSheet = new BottomSheetFilter(locationList);
-            bottomSheet.show(getSupportFragmentManager(), "location Filter");
-        });
-//        sortedByType.setOnClickListener(v -> {
-//            String[] typeList = {"Overall", "Posts", "Followers", "Contests"};
-//            BottomSheetFilter bottomSheet = new BottomSheetFilter(typeList);
-//            bottomSheet.show(getSupportFragmentManager(), "Type Filter");
-//        });
-        sortedByDomain.setOnClickListener(v -> {
-            String[] domainList = getResources().getStringArray(R.array.domain2);
-            BottomSheetFilter bottomSheet = new BottomSheetFilter(domainList);
-            bottomSheet.show(getSupportFragmentManager(), "Type Filter");
-        });
-        swipeRefreshLayout.setColorSchemeResources(
-                R.color.black,
-                R.color.scheme2,
-                R.color.purple,
-                R.color.dark_orange,
-                R.color.scheme5,
-                R.color.scheme6,
-                R.color.scheme7,
-                R.color.colorPrimary,
-                R.color.scheme9,
-                R.color.brown,
-                R.color.yellow,
-                R.color.red
-        );
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            mRecyclerView.setVisibility(View.GONE);
-            filter();
-        });
+    public static Date parseDate(String stringToParse) {
+        Date date = null;
+        try {
+            date = new SimpleDateFormat(DATE_FORMAT_PATTERN).parse(stringToParse);
+            return date;
+        } catch (ParseException e) {
+            Log.d(TAG, "parseDate: " + e);
+        }
+        return null;
     }
 
-    @Override
-    public void onButtonClicked(String text) {
-        Log.d(TAG, "onButtonClicked: filter received" + text);
-        if (!swipeRefreshLayout.isRefreshing()) switch (text) {
-            case "All Time":
-            case "Last Week":
-            case "This Year":
-            case "Last Month":
-            case "This Month":
-            case "This Week":
-                sortedByTime.setText(text);
-                sortedByTime.setBackgroundResource(R.drawable.circular_gradient_background);
-                YoYo.with(Techniques.ZoomIn).duration(ANIMATION_DURATION).playOn(sortedByTime);
-                break;
-            case "World":
-            case "Country":
-            case "City":
-            case "Area":
-                sortedByLocation.setText(text);
-                sortedByLocation.setBackgroundResource(R.drawable.circular_gradient_background);
-                sortedByLocation.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
-                YoYo.with(Techniques.ZoomIn).duration(ANIMATION_DURATION).playOn(sortedByLocation);
-                break;
-//            case "Overall":
-//            case "Posts":
-//            case "Followers":
-//            case "Contests":
-//                sortedByType.setText(text);
-//                sortedByType.setBackgroundResource(R.drawable.circular_gradient_background);
-//                YoYo.with(Techniques.ZoomIn).duration(ANIMATION_DURATION).playOn(sortedByType);
-//                break;
-            default:
-                sortedByDomain.setText(text);
-                sortedByDomain.setBackgroundResource(R.drawable.circular_gradient_background);
-                YoYo.with(Techniques.ZoomIn).duration(ANIMATION_DURATION).playOn(sortedByDomain);
-                break;
-        }
-        filter();
+    private boolean moreThanADay(Date previous, Date current) {
+
+        long diff = current.getTime() - previous.getTime();
+        long diffSeconds = diff / 1000 % 60;
+        long diffMinutes = diff / (60 * 1000) % 60;
+        long diffHours = diff / (60 * 60 * 1000);
+        int diffInDays = (int) ((current.getTime() - current.getTime()) / (1000 * 60 * 60 * 24));
+
+        Log.d(TAG, "moreThanADay: diff:" + diff);
+        Log.d(TAG, "moreThanADay: diffSeconds:" + diffSeconds);
+        Log.d(TAG, "moreThanADay: diffMinutes:" + diffMinutes);
+        Log.d(TAG, "moreThanADay: diffHours:" + diffHours);
+        Log.d(TAG, "moreThanADay: diffInDays:" + diffInDays);
+
+//        if (diffInDays > 1 || diffHours >= 24) {
+//            return true;
+//        }
+//        return false;
+
+
+        return diffInDays > 1 || diffHours >= 24;
     }
 
     private void filter() {
@@ -842,6 +907,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                     Query query1 = reference.child(getString(R.string.dbname_leaderboard));
                     query1.addListenerForSingleValueEvent(new ValueEventListener() {
                         int rank = 1;
+
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
@@ -866,7 +932,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                                                 if (dataSnapshot.exists()) {
                                                     String userLocation = (String) dataSnapshot.getValue();
                                                     String testLocation = (String) singleSnapshot.child(getString(R.string.field_last_known_location)).child(finalLocationParameter).getValue();
-                                                    if (testLocation!=null && testLocation.equals(userLocation) && !user_id.equals(getString(R.string.orion_team_user_id)))
+                                                    if (testLocation != null && testLocation.equals(userLocation) && !user_id.equals(getString(R.string.orion_team_user_id)))
                                                         rank = addToLeaderboard(rank, userRating, username, rating, profileUrl, user_id);
                                                     mRecyclerView.setVisibility(View.VISIBLE);
                                                     mAdapter.notifyDataSetChanged();
@@ -912,7 +978,17 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                     });
                 } else {
                     Toast.makeText(mContext, "Waiting for leaderboard to update", Toast.LENGTH_LONG).show();
-                    updateLeaderboard();
+                    SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
+                        @Override
+                        public void onTimeReceived(String rawDate) {
+                            updateLeaderboard(rawDate);
+                        }
+
+                        @Override
+                        public void onError(Exception ex) {
+
+                        }
+                    });
                 }
             }
 

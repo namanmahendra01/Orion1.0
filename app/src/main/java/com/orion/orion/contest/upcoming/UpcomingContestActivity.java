@@ -42,6 +42,7 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Adapters.AdapterContestSearch;
 import com.orion.orion.Adapters.AdapterContestUpcoming;
 import com.orion.orion.Adapters.AdapterContestUpcomingGrid;
+import com.orion.orion.QuizActivity;
 import com.orion.orion.R;
 import com.orion.orion.contest.create.CreatedActivity;
 import com.orion.orion.contest.joined.JoinedActivity;
@@ -119,7 +120,7 @@ public class UpcomingContestActivity extends AppCompatActivity {
         created.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(UpcomingContestActivity.this, CreatedActivity.class);
+                Intent i = new Intent(UpcomingContestActivity.this, QuizActivity.class);
                 startActivity(i);
             }
         });

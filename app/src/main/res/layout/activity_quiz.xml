@@ -1,0 +1,138 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".QuizActivity">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/snippet_top_bar" />
+        </RelativeLayout>
+
+
+        <ProgressBar
+            android:layout_below="@+id/top"
+            android:id="@+id/progressbar"
+
+            style="@android:style/Widget.Material.ProgressBar.Horizontal"
+            android:max="100"
+            android:background="@color/black"
+            android:progress="0"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/bottom_header_relativelayout"
+            />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/progressbar"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true">
+
+
+            <RelativeLayout
+                android:id="@+id/questionBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:background="@color/colorAccent"
+                android:minHeight="300dp">
+
+                <TextView
+                    android:id="@+id/questionTag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:text="Question :->"
+                    android:layout_margin="10dp"
+                    android:textSize="26sp"
+                    android:fontFamily="@font/orion"
+                    android:textColor="@color/white"
+                    android:textAlignment="center"
+                    android:gravity="center_horizontal"/>
+
+
+                <TextView
+                    android:id="@+id/question"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/questionTag"
+                    android:text="Your Question goes here"
+                    android:layout_margin="30sp"
+                    android:longClickable="false"
+                    android:clickable="false"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:textAlignment="center"
+                    android:gravity="center_horizontal"/>
+
+
+
+
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/optionsBox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/questionBox"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:background="@color/white">
+
+
+                <include
+                    android:id="@+id/option1"
+                    layout="@layout/snippet_option_select"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <include
+                    android:id="@+id/option2"
+                    layout="@layout/snippet_option_select"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/option1" />
+
+                <include
+                    android:id="@+id/option3"
+                    layout="@layout/snippet_option_select"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/option2" />
+
+                <include
+                    android:id="@+id/option4"
+                    layout="@layout/snippet_option_select"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/option3" />
+
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</ScrollView>
