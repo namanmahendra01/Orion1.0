@@ -226,6 +226,8 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
                     i.putExtra("userId", joiningForm.getHst());
                     i.putExtra("contestId", joiningForm.getCi());
                     i.putExtra("joiningKey", joiningForm.getJi());
+                    i.putExtra("hostId", joiningForm.getHst());
+
 
                     mContext.startActivity(i);
                 }

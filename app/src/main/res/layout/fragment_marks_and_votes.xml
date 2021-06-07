@@ -11,14 +11,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/relLayout"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:layout_below="@+id/juryMarks">
 
-                <include layout="@layout/layout_participant_marks" />
-            </RelativeLayout>
+                <include layout="@layout/item_judge1"
+                    />
+                <include layout="@layout/item_judge2"
+                    />
+                <include layout="@layout/item_judge3"
+
+                    />
+
+            </LinearLayout>
 
             <RelativeLayout
                 android:id="@+id/relLayout1"

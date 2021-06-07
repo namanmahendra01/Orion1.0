@@ -579,7 +579,6 @@ public class AdapterJudge extends RecyclerView.Adapter<AdapterJudge.ViewHolder> 
     }
 
     private void setRecyclerViews(ViewHolder holder) {
-        Log.d(TAG, "setRecyclerViews: " + criterias.length);
         for (int x = 1; x <= criterias.length; x++) {
             if (x == 1) {
                 holder.lec1.setVisibility(View.VISIBLE);
