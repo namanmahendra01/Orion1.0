@@ -160,6 +160,8 @@
     <string name="post_updates">pu</string>
     <string name="dbname_Sponsors">sponsors</string>
     <string name="field_intent_link">il</string>
+    <string name="field_judge_criteria">cr</string>
+    <string name="expanded_marks">xj</string>
 
 
     <string-array name="entryfee2">

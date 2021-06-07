@@ -36,9 +36,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.contest.ViewContestDetails;
 import com.orion.orion.contest.joined.JoiningForm;
-import com.orion.orion.contest.jury_voting_media;
 import com.orion.orion.contest.public_voting_media;
 import com.orion.orion.contest.result.ResultDeclaredActivity;
+import com.orion.orion.contest.jury_voting_Activity;
 import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.util.SNTPClient;
@@ -320,7 +320,6 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
                         CreateForm mCreateForm = dataSnapshot.getValue(CreateForm.class);
 
                         holder.juryusername1 = mCreateForm.getJn1();
-                        Log.d(TAG, "onDataChange: "+holder.juryusername1);
                         holder.juryusername2 = mCreateForm.getJn2();
                         holder.juryusername3 = mCreateForm.getJn3();
 
@@ -562,32 +561,37 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
                 } else {
 
                     if (holder.username.equals(holder.juryusername1)) {
-                        Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
+                        Intent i = new Intent(mContext.getApplicationContext(), jury_voting_Activity.class);
                         i.putExtra("userId", mcontest.getUi());
                         i.putExtra("contestId", mcontest.getCi());
                         i.putExtra("jury", "jury1");
                         i.putExtra("comment", "comment1");
+                        i.putExtra("mediaType", mcontest.getMlt());
+
                         mContext.startActivity(i);
 
                     } else if (holder.username.equals(holder.juryusername2)) {
-                        Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
+                        Intent i = new Intent(mContext.getApplicationContext(), jury_voting_Activity.class);
                         i.putExtra("userId", mcontest.getUi());
                         i.putExtra("contestId", mcontest.getCi());
                         i.putExtra("jury", "jury2");
                         i.putExtra("comment", "comment2");
+                        i.putExtra("mediaType", mcontest.getMlt());
+
 
                         mContext.startActivity(i);
 
                     } else if (holder.username.equals(holder.juryusername3)) {
-                        Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
+                        Intent i = new Intent(mContext.getApplicationContext(), jury_voting_Activity.class);
                         i.putExtra("userId", mcontest.getUi());
                         i.putExtra("contestId", mcontest.getCi());
                         i.putExtra("jury", "jury3");
                         i.putExtra("comment", "comment3");
+                        i.putExtra("mediaType", mcontest.getMlt());
+
                         mContext.startActivity(i);
 
                     } else {
-                        Log.d(TAG, "onClick: yessssssssssssss"+holder.username+holder.juryusername1);
                         Intent i = new Intent(mContext.getApplicationContext(), public_voting_media.class);
                         i.putExtra("userId", mcontest.getUi());
                         i.putExtra("contestId", mcontest.getCi());

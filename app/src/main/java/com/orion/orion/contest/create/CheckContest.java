@@ -42,12 +42,12 @@ public class CheckContest extends AppCompatActivity {
     private static final int ACTIVITY_NUM = 3;
 
 
-    private TextView entryfee, title, descrip, rules, totalprize, maxPart, voteType,gp,
+    private TextView entryfee, title, descrip, rules, totalprize, maxPart, voteType,gp,jcTv,jcTv2,
             regBegin, regEnd, voteBegin, voteEnd, domain, openfor, juryname1, juryname2, juryname3, jury, jurypl1, jurypl2, jurypl3, hostedby, filetype, windate, p1Tv, p2Tv, p3Tv;
     private ImageView poster, jurypic1, jurypic2, jurypic3;
     private String mAppend = "file:/";
-    private String jpic1 = "", jpic2 = "", jpic3 = "", posterlink = "";
-    private CardView cardView;
+    private String jpic1 = "", jpic2 = "", jpic3 = "", posterlink = "",judgingCriterias="";
+    private CardView cardView,jcCard;
     private Button postContest;
    public LinearLayout progress;
    RelativeLayout topLayout1;
@@ -109,6 +109,9 @@ public class CheckContest extends AppCompatActivity {
         p3Tv = findViewById(R.id.p3Tv);
         postContest = findViewById(R.id.postContest);
         prizeLinear = findViewById(R.id.prizell);
+        jcTv = findViewById(R.id.jc);
+        jcTv2 = findViewById(R.id.jcTv2);
+        jcCard = findViewById(R.id.jccard);
 
         gp =findViewById(R.id.gp);
 
@@ -155,6 +158,7 @@ public class CheckContest extends AppCompatActivity {
         if (intent.getStringExtra("jname_1").equals("")) {
             jury.setVisibility(View.GONE);
             cardView.setVisibility(View.GONE);
+
         }
         if (!intent.getStringExtra("jname_1").equals("") && intent.getStringExtra("jname_2").equals("")) {
             jury.setVisibility(View.VISIBLE);
@@ -452,6 +456,23 @@ public class CheckContest extends AppCompatActivity {
 
         }
 
+        if(intent.getStringExtra("votetype").equals("Jury")||intent.getStringExtra("votetype").equals("Jury and Public")){
+          String f_string="";
+            jcCard.setVisibility(View.VISIBLE);
+            jcTv.setVisibility(View.VISIBLE);
+            judgingCriterias = intent.getStringExtra("judgeCriteria");
+            String[] array=judgingCriterias.split("///");
+            for (String a:
+                 array) {
+                f_string=f_string+"\n"+a;
+
+            }
+            Log.d(TAG, "onCreate: "+f_string);
+            jcTv2.setText(f_string);
+
+
+        }
+
         title.setText(intent.getStringExtra("title"));
         descrip.setText(intent.getStringExtra("descrip"));
         rules.setText(intent.getStringExtra("rule"));
@@ -485,8 +506,7 @@ public class CheckContest extends AppCompatActivity {
                         postcontest();
                         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                        Intent intent1=new Intent(CheckContest.this, contestMainActivity.class);
-//                        startActivity(intent1);
+
                     })
                     .show();
         });
@@ -525,6 +545,7 @@ public class CheckContest extends AppCompatActivity {
         hashMap.put(getString(R.string.field_contest_ID), newContestKey);
         hashMap.put(getString(R.string.field_user_id), FirebaseAuth.getInstance().getCurrentUser().getUid());
         hashMap.put(getString(R.string.field_status), "waiting");
+        hashMap.put(getString(R.string.field_judge_criteria), judgingCriterias);
 
 
         HashMap<String, Object> hashMap2 = new HashMap<>();

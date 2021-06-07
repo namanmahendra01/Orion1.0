@@ -34,7 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.contest.ViewContestDetails;
 import com.orion.orion.contest.joined.JoiningForm;
-import com.orion.orion.contest.jury_voting_media;
+import com.orion.orion.contest.jury_voting_Activity;
 import com.orion.orion.contest.public_voting_media;
 import com.orion.orion.contest.result.ResultDeclaredActivity;
 import com.orion.orion.models.ContestDetail;
@@ -524,28 +524,33 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
                                 user = dataSnapshot.getValue(users.class);
                                 String username = user.getU();
                                 if (username.equals(holder.juryusername1)) {
-                                    Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
+                                    Intent i = new Intent(mContext.getApplicationContext(), jury_voting_Activity.class);
                                     i.putExtra("userId", mcontest.getUi());
                                     i.putExtra("contestId", mcontest.getCi());
                                     i.putExtra("jury", "jury1");
                                     i.putExtra("comment", "comment1");
+                                    i.putExtra("mediaType", mcontest.getMlt());
+
                                     mContext.startActivity(i);
 
                                 } else if (username.equals(holder.juryusername2)) {
-                                    Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
+                                    Intent i = new Intent(mContext.getApplicationContext(), jury_voting_Activity.class);
                                     i.putExtra("userId", mcontest.getUi());
                                     i.putExtra("contestId", mcontest.getCi());
                                     i.putExtra("jury", "jury2");
                                     i.putExtra("comment", "comment2");
+                                    i.putExtra("mediaType", mcontest.getMlt());
 
                                     mContext.startActivity(i);
 
                                 } else if (username.equals(holder.juryusername3)) {
-                                    Intent i = new Intent(mContext.getApplicationContext(), jury_voting_media.class);
+                                    Intent i = new Intent(mContext.getApplicationContext(), jury_voting_Activity.class);
                                     i.putExtra("userId", mcontest.getUi());
                                     i.putExtra("contestId", mcontest.getCi());
                                     i.putExtra("jury", "jury3");
                                     i.putExtra("comment", "comment3");
+                                    i.putExtra("mediaType", mcontest.getMlt());
+
                                     mContext.startActivity(i);
 
                                 } else {

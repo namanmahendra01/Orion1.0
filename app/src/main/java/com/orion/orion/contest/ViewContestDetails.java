@@ -39,6 +39,7 @@ import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.users;
 import com.orion.orion.profile.profile;
 
+
 public class ViewContestDetails extends AppCompatActivity {
 
     private static final String TAG = "ViewContestDetails";
@@ -52,7 +53,10 @@ public class ViewContestDetails extends AppCompatActivity {
     String username="",currentUser="",hostUsername="";
     Boolean ok = false;
     ImageView backArrrow;
-
+    private TextView jcTv,jcTv2;
+    private String judgingCriterias="";
+    private CardView jcCard;
+    CreateForm mCreateForm;
     int p = 0;
 
 
@@ -72,7 +76,9 @@ public class ViewContestDetails extends AppCompatActivity {
         setContentView(R.layout.activity_contest_details);
 
         setupFirebaseAuth();
-
+        jcTv = findViewById(R.id.jc);
+        jcTv2 = findViewById(R.id.jcTv2);
+        jcCard = findViewById(R.id.jccard);
         entryfee = findViewById(R.id.entryfeeTv);
         title = findViewById(R.id.titleTv);
         descrip = findViewById(R.id.descripTv);
@@ -262,7 +268,7 @@ public class ViewContestDetails extends AppCompatActivity {
         ref2.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                CreateForm mCreateForm = dataSnapshot.getValue(CreateForm.class);
+                 mCreateForm = dataSnapshot.getValue(CreateForm.class);
                 assert mCreateForm != null;
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
                 ref.child(mCreateForm.getUi())
@@ -624,7 +630,22 @@ public class ViewContestDetails extends AppCompatActivity {
                 }
                 posterlink = mCreateForm.getPo();
 
+                if(mCreateForm.getVt().equals("Jury")||mCreateForm.getVt().equals("Jury and Public")){
+                    String f_string="";
+                    jcCard.setVisibility(View.VISIBLE);
+                    jcTv.setVisibility(View.VISIBLE);
+                    judgingCriterias = mCreateForm.getCr();
+                    String[] array=judgingCriterias.split("///");
+                    for (String a:
+                            array) {
+                        f_string=f_string+"\n"+a;
 
+                    }
+                    Log.d(TAG, "onCreate: "+f_string);
+                    jcTv2.setText(f_string);
+
+
+                }
                 Glide.with(getApplicationContext())
                         .load(posterlink)
                         .placeholder(R.drawable.load)
@@ -796,28 +817,32 @@ public class ViewContestDetails extends AppCompatActivity {
                                     user = dataSnapshot.getValue(users.class);
                                     String username = user.getU();
                                     if (username.equals(juryusername1)) {
-                                        Intent i = new Intent(ViewContestDetails.this, jury_voting_media.class);
+                                        Intent i = new Intent(ViewContestDetails.this, jury_voting_Activity.class);
                                         i.putExtra("userId", userId);
                                         i.putExtra("contestId", contestId);
                                         i.putExtra("jury", "jury1");
                                         i.putExtra("comment", "comment1");
+                                        i.putExtra("mediaType", mCreateForm.getMlt());
                                         startActivity(i);
 
                                     } else if (username.equals(juryusername2)) {
-                                        Intent i = new Intent(ViewContestDetails.this, jury_voting_media.class);
+                                        Intent i = new Intent(ViewContestDetails.this, jury_voting_Activity.class);
                                         i.putExtra("userId", userId);
                                         i.putExtra("contestId", contestId);
                                         i.putExtra("jury", "jury2");
                                         i.putExtra("comment", "comment2");
+                                        i.putExtra("mediaType", mCreateForm.getMlt());
 
                                         startActivity(i);
 
                                     } else if (username.equals(juryusername3)) {
-                                        Intent i = new Intent(ViewContestDetails.this, jury_voting_media.class);
+                                        Intent i = new Intent(ViewContestDetails.this, jury_voting_Activity.class);
                                         i.putExtra("userId", userId);
                                         i.putExtra("contestId", contestId);
                                         i.putExtra("jury", "jury3");
                                         i.putExtra("comment", "comment3");
+                                        i.putExtra("mediaType", mCreateForm.getMlt());
+
                                         startActivity(i);
 
                                     } else {

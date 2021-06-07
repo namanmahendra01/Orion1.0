@@ -37,6 +37,7 @@ public class juryMarks {
     }
 
 
+
     @Override
     public String toString() {
         return "juryMarks{" +
@@ -49,6 +50,7 @@ public class juryMarks {
                 ", jn1='" + jn1 + '\'' +
                 ", jn2='" + jn2 + '\'' +
                 ", jn3='" + jn3 + '\'' +
+
                 '}';
     }
 }

@@ -353,17 +353,6 @@ android:visibility="gone"
                 android:textStyle="bold" />
 
 
-            <TextView
-                android:id="@+id/jury"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/detailTable"
-                android:text="Jury: "
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/detailTable"
                 android:layout_width="match_parent"
@@ -468,7 +457,7 @@ android:visibility="gone"
                             android:layout_weight="1"
                             android:gravity="center_horizontal"
 
-                            android:text="15"
+                            android:text=""
                             android:textColor="@color/black" />
 
                         <TextView
@@ -478,7 +467,7 @@ android:visibility="gone"
                             android:layout_weight="1"
                             android:gravity="center_horizontal"
 
-                            android:text="public"
+                            android:text=""
 
                             android:textColor="@color/black" />
 
@@ -521,7 +510,7 @@ android:visibility="gone"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_horizontal"
-                            android:text="3/3/2020"
+                            android:text=""
                             android:textColor="@color/black" />
 
                         <TextView
@@ -530,7 +519,7 @@ android:visibility="gone"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_horizontal"
-                            android:text="9/3/2020"
+                            android:text=""
                             android:textColor="@color/black" />
 
                     </TableRow>
@@ -572,7 +561,7 @@ android:visibility="gone"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_horizontal"
-                            android:text="Film Maker"
+                            android:text=""
                             android:textColor="@color/black" />
 
                         <TextView
@@ -581,7 +570,7 @@ android:visibility="gone"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_horizontal"
-                            android:text="All"
+                            android:text=""
                             android:textColor="@color/black" />
 
                     </TableRow>
@@ -624,7 +613,7 @@ android:visibility="gone"
                             android:layout_weight="1"
 
                             android:gravity="center_horizontal"
-                            android:text="5/3/2020"
+                            android:text=""
                             android:textColor="@color/black" />
 
                         <TextView
@@ -634,7 +623,7 @@ android:visibility="gone"
                             android:layout_weight="1"
 
                             android:gravity="center_horizontal"
-                            android:text="7/3/2020"
+                            android:text=""
                             android:textColor="@color/black" />
                     </TableRow>
 
@@ -676,7 +665,7 @@ android:visibility="gone"
                             android:layout_weight="1"
 
                             android:gravity="center_horizontal"
-                            android:text="5/3/2020"
+                            android:text=""
                             android:textColor="@color/black" />
 
                         <TextView
@@ -686,7 +675,7 @@ android:visibility="gone"
                             android:layout_weight="1"
 
                             android:gravity="center_horizontal"
-                            android:text="Picture"
+                            android:text=""
                             android:textColor="@color/black" />
 
                     </TableRow>
@@ -694,6 +683,52 @@ android:visibility="gone"
                 </TableLayout>
 
             </androidx.cardview.widget.CardView>
+            <TextView
+                android:id="@+id/jc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Judging criteria:"
+                android:textColor="@color/black"
+                android:layout_below="@+id/detailTable"
+                android:visibility="gone"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/jccard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/jc"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="2dp"
+                android:layout_centerHorizontal="true"
+                android:visibility="gone"
+
+                app:cardUseCompatPadding="true"
+                app:contentPadding="3dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/jcTv2"
+                    android:textSize="18sp"
+                    android:layout_gravity="center"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:textColor="@color/grey" />
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/jury"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/jccard"
+                android:text="Jury: "
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/jurydetail"
@@ -752,7 +787,7 @@ android:visibility="gone"
                             android:layout_weight="1"
 
                             android:gravity="center_horizontal"
-                            android:text="Naman"
+                            android:text=""
                             android:textAlignment="center"
                             android:textColor="@color/black"
                             android:textSize="18sp"
@@ -767,7 +802,7 @@ android:visibility="gone"
                             android:layout_weight="1"
 
                             android:gravity="center_horizontal"
-                            android:text="Naman"
+                            android:text=""
                             android:textAlignment="center"
                             android:textColor="@color/black"
                             android:textSize="18sp"
@@ -839,7 +874,7 @@ android:visibility="gone"
                             android:layout_weight="1"
 
                             android:gravity="center_horizontal"
-                            android:text="Naman"
+                            android:text=""
                             android:textAlignment="center"
                             android:textColor="@color/black"
                             android:textSize="15sp"
