@@ -703,6 +703,13 @@ public class ViewContestDetails extends AppCompatActivity {
 
             }
         });
+        userTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                juryProfile(userTv.getText().toString());
+
+            }
+        });
         jurypl1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -881,12 +888,9 @@ public class ViewContestDetails extends AppCompatActivity {
 
                 if (dataSnapshot.exists()) {
                     username = dataSnapshot.getValue().toString();
-                    Log.d(TAG, "juryProfile: "+username);
-
 
                     Intent i = new Intent(ViewContestDetails.this, profile.class);
                     i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
                     i.putExtra(getString(R.string.intent_user), username);
                     startActivity(i);
 

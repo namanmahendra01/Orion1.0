@@ -154,6 +154,20 @@
             android:layout_marginTop="5dp"
 
             android:background="@drawable/rectangular_round"/>
+                    <Button
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:visibility="gone"
+                        android:textColor="#FF1100"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:padding="10dp"
+                        android:text="Check Rejection Reason"
+                        android:id="@+id/rejectionBtn"
+                        android:layout_marginTop="5dp"
+
+                        android:background="@drawable/rectangular_round"/>
     </LinearLayout>
 
         <RelativeLayout

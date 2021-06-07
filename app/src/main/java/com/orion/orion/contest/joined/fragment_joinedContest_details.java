@@ -538,7 +538,13 @@ public class fragment_joinedContest_details extends Fragment {
             }
         });
 
+        userTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                juryProfile(userTv.getText().toString());
 
+            }
+        });
         jurypic1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

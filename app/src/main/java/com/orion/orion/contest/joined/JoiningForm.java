@@ -64,7 +64,7 @@ public class JoiningForm extends AppCompatActivity {
     private final Context mContext = JoiningForm.this;
 
     private TextView mTopBarTitle;
-    private EditText collegeEt, urlEt;
+    private EditText collegeEt, urlEt,desET;
     private ImageView idIv, submissionIv, backArrow;
     TextView warn, decline;
     private Button submitBtn, idBtn, mediaBtn;
@@ -110,6 +110,7 @@ public class JoiningForm extends AppCompatActivity {
         submitBtn = findViewById(R.id.submitBtn);
         idBtn = findViewById(R.id.selectid);
         mediaBtn = findViewById(R.id.selectSubmission);
+        desET = findViewById(R.id.des);
 
         idIv = findViewById(R.id.idIv);
         submissionIv = findViewById(R.id.submisionIv);
@@ -256,6 +257,10 @@ public class JoiningForm extends AppCompatActivity {
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
+                                String des=desET.getText().toString();
+                                if (des==null||des.equals("")){
+                                    des="";
+                                }
                                 String timeStamp = String.valueOf(date.getTime());
                                 DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
                                 String JoiningKey = db1.child(getString(R.string.dbname_contests))
@@ -274,6 +279,7 @@ public class JoiningForm extends AppCompatActivity {
                                 hashMap.put(getString(R.string.field_id_link), idLink);
                                 hashMap.put(getString(R.string.field_media_link), mediaLink);
                                 hashMap.put(getString(R.string.field_user_id), FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                String finalDes = des;
                                 db1.child(getString(R.string.dbname_contests))
                                         .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                         .child(getString(R.string.joined_contest))
@@ -286,6 +292,7 @@ public class JoiningForm extends AppCompatActivity {
                                     hashMap2.put(getString(R.string.field_total_score), 0);
                                     hashMap2.put(getString(R.string.field_contest_ID), contestId);
                                     hashMap2.put(getString(R.string.field_media_link), mediaLink);
+                                    hashMap2.put(getString(R.string.submission_description), finalDes);
                                     hashMap2.put(getString(R.string.field_user_id), FirebaseAuth.getInstance().getCurrentUser().getUid());
                                     db2.child(getString(R.string.dbname_request))
                                             .child(getString(R.string.dbname_participantList))

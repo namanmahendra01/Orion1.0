@@ -1,5 +1,6 @@
 package com.orion.orion.Adapters;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -128,183 +131,8 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
                 remove.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                        builder.setTitle("Remove Participant");
-                        builder.setMessage(R.string.remove_participant_prompt);
-
-//                set buttons
-                        builder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-
-                                db.child(mContext.getString(R.string.dbname_contests))
-                                        .child(mparticipantLists.getUi())
-                                        .child(mContext.getString(R.string.joined_contest))
-                                        .child(mparticipantLists.getJi())
-                                        .child(mContext.getString(R.string.field_status))
-                                        .setValue("Rejected");
-
-                                db.child(mContext.getString(R.string.dbname_contests))
-                                        .child(mparticipantLists.getUi())
-                                        .child(mContext.getString(R.string.field_joined_updates))
-                                        .child(mparticipantLists.getJi())
-                                        .setValue("Rejected");
-
-                                db.child(mContext.getString(R.string.dbname_participantList))
-                                        .child(mparticipantLists.getCi())
-                                        .child(mparticipantLists.getJi())
-                                        .removeValue();
-
-                                db.child(mContext.getString(R.string.dbname_contestlist))
-                                        .child(mparticipantLists.getCi())
-                                        .child(mContext.getString(R.string.field_Participant_List))
-                                        .child(mparticipantLists.getUi())
-                                        .removeValue()
-                                        .addOnSuccessListener(aVoid -> {
-                                            if (mparticipantLists.getMl().length()<23)
-                                            {
-                                                deleteUrl();
-                                            }
-                                           else if (mparticipantLists.getMl() == null || mparticipantLists.getMl().equals("")
-                                                    || !mparticipantLists.getMl().substring(8, 23).equals("firebasestorage")) {
-
-                                               deleteUrl();
-
-
-                                            } else {
-
-                                               deleteImage();
-
-                                            }
-
-                                        });
-
-
-                            }
-
-                            private void deleteImage() {
-                                DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-
-                                StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMl());
-                                photoRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-
-                                        DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
-                                        ref2.child(mContext.getString(R.string.dbname_participantList))
-                                                .child(mparticipantLists.getCi())
-                                                .child(mparticipantLists.getJi())
-                                                .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                //    Add newly Created ArrayList to Shared Preferences
-                                                String json = sp.getString(mparticipantLists.getCi(), null);
-
-                                                Type type = new TypeToken<ArrayList<ParticipantList>>() {
-                                                }.getType();
-                                                ArrayList<ParticipantList> participantList=new ArrayList<>();
-
-                                                participantList = gson.fromJson(json, type);
-
-                                                if (participantList==null){
-
-                                                }else{
-                                                    ArrayList<ParticipantList> participantList2=new ArrayList<>(participantList);
-
-
-                                                    for (ParticipantList a:participantList){
-                                                        if (a.getJi().equals(mparticipantLists.getJi())){
-                                                            participantList2.remove(a);
-                                                        }
-                                                    }
-
-                                                    participantList.remove(mparticipantLists);
-
-                                                    SharedPreferences.Editor editor = sp.edit();
-                                                    json = gson.toJson(participantList2);
-                                                    editor.putString(mparticipantLists.getCi(), json);
-                                                    editor.apply();
-
-                                                }
-
-
-                                                participantLists.remove(participantLists.get(i));
-
-                                                AdapterParticipantList.this.notifyItemRemoved(i);
-
-
-                                                db.child(mContext.getString(R.string.dbname_users))
-                                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                                        .child(mContext.getString(R.string.changedJoinedContest))
-                                                        .setValue("true");
-
-
-                                                bottomSheetDialog.dismiss();
-                                            }
-                                        });
-
-                                    }
-                                });
-                            }
-
-                            private void deleteUrl() {
-                                DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-
-                                //    Add newly Created ArrayList to Shared Preferences
-                                String json = sp.getString(mparticipantLists.getCi(), null);
-
-                                Type type = new TypeToken<ArrayList<ParticipantList>>() {
-                                }.getType();
-                                ArrayList<ParticipantList> participantList=new ArrayList<>();
-
-                                participantList = gson.fromJson(json, type);
-
-                                if (participantList==null){
-
-                                }else{
-                                    ArrayList<ParticipantList> participantList2=new ArrayList<>(participantList);
-
-
-                                    for (ParticipantList a:participantList){
-
-                                        if (a.getJi().equals(participantList.get(i).getJi())){
-                                            participantList2.remove(a);
-                                        }
-                                    }
-
-                                    participantList.remove(participantLists.get(i));
-
-                                    SharedPreferences.Editor editor = sp.edit();
-                                    json = gson.toJson(participantList2);
-                                    editor.putString(mparticipantLists.getCi(), json);
-                                    editor.apply();
-
-                                }
-
-
-                                participantLists.remove(participantLists.get(i));
-
-                                AdapterParticipantList.this.notifyItemRemoved(i);
-
-                                db.child(mContext.getString(R.string.dbname_users))
-                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                        .child(mContext.getString(R.string.changedJoinedContest))
-                                        .setValue("true");
-                                bottomSheetDialog.dismiss();
-                            }
-
-
-                        });
-                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                        builder.create().show();
-
+                        bottomSheetDialog.dismiss();
+                        bottomsheet(mparticipantLists,i);
 
                     }
                 });
@@ -403,7 +231,215 @@ public class AdapterParticipantList extends RecyclerView.Adapter<AdapterParticip
         });
 
     }
+    private void bottomsheet(ParticipantList mparticipantLists, int i) {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mContext, R.style.BottomSheetDialogTheme);
+        View bottomSheetView = ((Activity)mContext).getLayoutInflater().inflate(R.layout.layout_bottom_sheet_rejection, bottomSheetDialog.findViewById(R.id.layout_bottom_sheet_container));
+        EditText msg = bottomSheetView.findViewById(R.id.msg);
+        TextView send = bottomSheetView.findViewById(R.id.send);
+        TextView cancel = bottomSheetView.findViewById(R.id.cancel);
+        send.setOnClickListener(v -> {
+            String msg1 = msg.getText().toString();
+            if (msg1.equals(""))
+                Toast.makeText(mContext, "Write Something", Toast.LENGTH_SHORT).show();
+            else {
 
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("Remove Participant");
+                builder.setMessage(R.string.reject_participant_prompt);
+
+//                set buttons
+                builder.setPositiveButton("Remove", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+
+                        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+                        db.child(mContext.getString(R.string.dbname_contests))
+                                .child(mparticipantLists.getUi())
+                                .child(mContext.getString(R.string.joined_contest))
+                                .child(mparticipantLists.getJi())
+                                .child(mContext.getString(R.string.rejection_reason))
+                                .setValue(msg1)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+
+                                        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+
+                                        db.child(mContext.getString(R.string.dbname_contests))
+                                                .child(mparticipantLists.getUi())
+                                                .child(mContext.getString(R.string.joined_contest))
+                                                .child(mparticipantLists.getJi())
+                                                .child(mContext.getString(R.string.field_status))
+                                                .setValue("Rejected");
+
+                                        db.child(mContext.getString(R.string.dbname_contests))
+                                                .child(mparticipantLists.getUi())
+                                                .child(mContext.getString(R.string.field_joined_updates))
+                                                .child(mparticipantLists.getJi())
+                                                .setValue("Rejected");
+
+                                        db.child(mContext.getString(R.string.dbname_participantList))
+                                                .child(mparticipantLists.getCi())
+                                                .child(mparticipantLists.getJi())
+                                                .removeValue();
+
+                                        db.child(mContext.getString(R.string.dbname_contestlist))
+                                                .child(mparticipantLists.getCi())
+                                                .child(mContext.getString(R.string.field_Participant_List))
+                                                .child(mparticipantLists.getUi())
+                                                .removeValue()
+                                                .addOnSuccessListener(aVoid -> {
+                                                    if (mparticipantLists.getMl().length()<23)
+                                                    {
+                                                        deleteUrl();
+                                                    }
+                                                    else if (mparticipantLists.getMl() == null || mparticipantLists.getMl().equals("")
+                                                            || !mparticipantLists.getMl().substring(8, 23).equals("firebasestorage")) {
+
+                                                        deleteUrl();
+
+
+                                                    } else {
+
+                                                        deleteImage();
+
+                                                    }
+
+                                                });
+
+
+
+                                    }
+                                });
+
+
+                    }
+                    private void deleteImage() {
+                        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+
+                        StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMl());
+                        photoRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+
+                                DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
+                                ref2.child(mContext.getString(R.string.dbname_participantList))
+                                        .child(mparticipantLists.getCi())
+                                        .child(mparticipantLists.getJi())
+                                        .removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        //    Add newly Created ArrayList to Shared Preferences
+                                        String json = sp.getString(mparticipantLists.getCi(), null);
+
+                                        Type type = new TypeToken<ArrayList<ParticipantList>>() {
+                                        }.getType();
+                                        ArrayList<ParticipantList> participantList=new ArrayList<>();
+
+                                        participantList = gson.fromJson(json, type);
+
+                                        if (participantList==null){
+
+                                        }else{
+                                            ArrayList<ParticipantList> participantList2=new ArrayList<>(participantList);
+
+
+                                            for (ParticipantList a:participantList){
+                                                if (a.getJi().equals(mparticipantLists.getJi())){
+                                                    participantList2.remove(a);
+                                                }
+                                            }
+
+                                            participantList.remove(mparticipantLists);
+
+                                            SharedPreferences.Editor editor = sp.edit();
+                                            json = gson.toJson(participantList2);
+                                            editor.putString(mparticipantLists.getCi(), json);
+                                            editor.apply();
+
+                                        }
+
+
+                                        participantLists.remove(participantLists.get(i));
+
+                                        AdapterParticipantList.this.notifyItemRemoved(i);
+
+
+                                        db.child(mContext.getString(R.string.dbname_users))
+                                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                .child(mContext.getString(R.string.changedJoinedContest))
+                                                .setValue("true");
+
+
+                                        bottomSheetDialog.dismiss();
+                                    }
+                                });
+
+                            }
+                        });
+                    }
+
+                    private void deleteUrl() {
+                        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+
+                        //    Add newly Created ArrayList to Shared Preferences
+                        String json = sp.getString(mparticipantLists.getCi(), null);
+
+                        Type type = new TypeToken<ArrayList<ParticipantList>>() {
+                        }.getType();
+                        ArrayList<ParticipantList> participantList=new ArrayList<>();
+
+                        participantList = gson.fromJson(json, type);
+
+                        if (participantList==null){
+
+                        }else{
+                            ArrayList<ParticipantList> participantList2=new ArrayList<>(participantList);
+
+
+                            for (ParticipantList a:participantList){
+
+                                if (a.getJi().equals(participantList.get(i).getJi())){
+                                    participantList2.remove(a);
+                                }
+                            }
+
+                            participantList.remove(participantLists.get(i));
+
+                            SharedPreferences.Editor editor = sp.edit();
+                            json = gson.toJson(participantList2);
+                            editor.putString(mparticipantLists.getCi(), json);
+                            editor.apply();
+
+                        }
+
+
+                        participantLists.remove(participantLists.get(i));
+
+                        AdapterParticipantList.this.notifyItemRemoved(i);
+
+                        db.child(mContext.getString(R.string.dbname_users))
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .child(mContext.getString(R.string.changedJoinedContest))
+                                .setValue("true");
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
+            }
+        });
+
+        cancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
+        bottomSheetDialog.setContentView(bottomSheetView);
+        bottomSheetDialog.show();
+    }
     private void getparticipantform(String userid, String joiningkey, String contestkey, TextView college, LinearLayout layout, ViewHolder holder) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child(mContext.getString(R.string.dbname_contests))

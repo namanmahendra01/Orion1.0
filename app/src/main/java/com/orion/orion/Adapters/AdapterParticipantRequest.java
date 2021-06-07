@@ -1,5 +1,6 @@
 package com.orion.orion.Adapters;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -216,85 +218,8 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                 reject.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                        builder.setTitle("Reject Participant");
-                        builder.setMessage(R.string.reject_participant_prompt);
-
-//                set buttons
-                        builder.setPositiveButton("Reject", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Log.d(TAG, "Rejecting: rejected ");
-
-                                DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-                                db.child(mContext.getString(R.string.dbname_contests))
-                                        .child(mparticipantLists.getUi())
-                                        .child(mContext.getString(R.string.field_joined_updates))
-                                        .child(mparticipantLists.getJi())
-                                        .setValue("Rejected").addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        db.child(mContext.getString(R.string.dbname_contests))
-                                                .child(mparticipantLists.getUi())
-                                                .child(mContext.getString(R.string.joined_contest))
-                                                .child(mparticipantLists.getJi())
-                                                .child(mContext.getString(R.string.field_status))
-                                                .setValue("Rejected")
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-
-                                                        deleteRequest(mparticipantLists.getCi(), mparticipantLists.getJi(), mparticipantLists.getUi());
-                                                        participantLists.remove(i);
-                                                        Log.d(TAG, "onSuccess: "+ mparticipantLists.getJi());
-
-                                                        AdapterParticipantRequest.this.notifyItemRemoved(i);
-
-                                                        if (mparticipantLists.getMl() == null || mparticipantLists.getMl().equals("") || checkSubstring()) {
-
-                                                        } else {
-                                                            StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMl());
-                                                            photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                @Override
-                                                                public void onSuccess(Void aVoid) {
-                                                                    // File deleted successfully
-                                                                    Log.d(TAG, "onSuccess: deleted file");
-                                                                }
-                                                            }).addOnFailureListener(new OnFailureListener() {
-                                                                @Override
-                                                                public void onFailure(@NonNull Exception exception) {
-                                                                    // Uh-oh, an error occurred!
-                                                                    Log.d(TAG, "onFailure: did not delete file");
-                                                                }
-                                                            });
-                                                        }
-
-                                                        bottomSheetDialog.dismiss();
-
-                                                    }
-
-                                                    private boolean checkSubstring() {
-                                                        if (mparticipantLists.getMl().length()>23){
-                                                            return !mparticipantLists.getMl().substring(8, 23).equals("firebasestorage");
-                                                        }else{
-                                                            return true;
-                                                        }
-                                                    }
-                                                });
-                                    }
-                                });
-
-
-                            }
-                        });
-                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                        builder.create().show();
+                        bottomSheetDialog.dismiss();
+                       bottomsheet(mparticipantLists,i);
 
                     }
                 });
@@ -492,6 +417,117 @@ public class AdapterParticipantRequest extends RecyclerView.Adapter<AdapterParti
                 .child(joiningKey)
                 .removeValue();
 
+    }
+    private void bottomsheet(ParticipantList mparticipantLists, int i) {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mContext, R.style.BottomSheetDialogTheme);
+        View bottomSheetView = ((Activity)mContext).getLayoutInflater().inflate(R.layout.layout_bottom_sheet_rejection, bottomSheetDialog.findViewById(R.id.layout_bottom_sheet_container));
+        EditText msg = bottomSheetView.findViewById(R.id.msg);
+        TextView send = bottomSheetView.findViewById(R.id.send);
+        TextView cancel = bottomSheetView.findViewById(R.id.cancel);
+        send.setOnClickListener(v -> {
+            String msg1 = msg.getText().toString();
+            if (msg1.equals(""))
+                Toast.makeText(mContext, "Write Something", Toast.LENGTH_SHORT).show();
+            else {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("Reject Participant");
+                builder.setMessage(R.string.reject_participant_prompt);
+
+//                set buttons
+                builder.setPositiveButton("Reject", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "Rejecting: rejected ");
+
+
+                        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+                        db.child(mContext.getString(R.string.dbname_contests))
+                                .child(mparticipantLists.getUi())
+                                .child(mContext.getString(R.string.joined_contest))
+                                .child(mparticipantLists.getJi())
+                                .child(mContext.getString(R.string.rejection_reason))
+                                .setValue(msg1)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+
+                        db.child(mContext.getString(R.string.dbname_contests))
+                                .child(mparticipantLists.getUi())
+                                .child(mContext.getString(R.string.field_joined_updates))
+                                .child(mparticipantLists.getJi())
+                                .setValue("Rejected").addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                db.child(mContext.getString(R.string.dbname_contests))
+                                        .child(mparticipantLists.getUi())
+                                        .child(mContext.getString(R.string.joined_contest))
+                                        .child(mparticipantLists.getJi())
+                                        .child(mContext.getString(R.string.field_status))
+                                        .setValue("Rejected")
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+
+                                                deleteRequest(mparticipantLists.getCi(), mparticipantLists.getJi(), mparticipantLists.getUi());
+                                                participantLists.remove(i);
+                                                Log.d(TAG, "onSuccess: "+ mparticipantLists.getJi());
+
+                                                AdapterParticipantRequest.this.notifyItemRemoved(i);
+
+                                                if (mparticipantLists.getMl() == null || mparticipantLists.getMl().equals("") || checkSubstring()) {
+
+                                                } else {
+                                                    StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(mparticipantLists.getMl());
+                                                    photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            // File deleted successfully
+                                                            Log.d(TAG, "onSuccess: deleted file");
+                                                        }
+                                                    }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception exception) {
+                                                            // Uh-oh, an error occurred!
+                                                            Log.d(TAG, "onFailure: did not delete file");
+                                                        }
+                                                    });
+                                                }
+
+                                                bottomSheetDialog.dismiss();
+
+                                            }
+
+                                            private boolean checkSubstring() {
+                                                if (mparticipantLists.getMl().length()>23){
+                                                    return !mparticipantLists.getMl().substring(8, 23).equals("firebasestorage");
+                                                }else{
+                                                    return true;
+                                                }
+                                            }
+                                        });
+                            }
+                        });
+
+                                    }
+                                });
+
+
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
+            }
+        });
+
+        cancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
+        bottomSheetDialog.setContentView(bottomSheetView);
+        bottomSheetDialog.show();
     }
 
     private void getparticipantform(String userid, String joiningkey, String contestkey, TextView college, LinearLayout layout, ViewHolder holder) {

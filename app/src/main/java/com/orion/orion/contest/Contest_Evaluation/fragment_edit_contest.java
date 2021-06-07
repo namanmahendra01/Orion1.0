@@ -586,7 +586,13 @@ public class fragment_edit_contest extends Fragment {
 
                     }
                 });
+        userTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                juryProfile(userTv.getText().toString());
 
+            }
+        });
 
         saveBtn.setOnClickListener(v -> {
             DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));

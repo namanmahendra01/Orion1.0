@@ -103,7 +103,9 @@ public class AdapterJudge extends RecyclerView.Adapter<AdapterJudge.ViewHolder> 
             holder.View.setVisibility(View.VISIBLE);
         }
         holder.count.setText(String.valueOf(i + 1) + "-");
-//        holder.des.setText(participant.getDes());
+        if (participant.getDes()!=null && !participant.getDes().equals("")){
+                    holder.des.setText(participant.getDes());
+        }
 
 
         Glide.with(mContext.getApplicationContext())

@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
@@ -64,6 +65,33 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests));
+        ref2.child(mcreateForm.getUi())
+                .child(mContext.getString(R.string.created_contest))
+                .child(mcreateForm.getCi())
+                .child(mContext.getString(R.string.rejection_reason))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            holder.rejectBtn.setVisibility(View.VISIBLE);
+                            holder.reason=dataSnapshot.getValue().toString();
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+        holder.rejectBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reasonDialoge(holder.reason);
             }
         });
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist));
@@ -239,7 +267,18 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
             }
         });
     }
-
+    private void reasonDialoge(String s) {
+        AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+        alertDialog.setTitle("Rejection Reason");
+        alertDialog.setMessage(s);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
     private void ReportPost(String contestId, String userid, int p) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(mContext.getString(R.string.dbname_contestlist))
@@ -318,6 +357,8 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
         private ImageView option;
         private ImageView info;
         private RelativeLayout relStatus;
+        private Button rejectBtn;
+        String reason;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -333,6 +374,7 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
             option = itemView.findViewById(R.id.optionC);
             gp = itemView.findViewById(R.id.gp);
             info = itemView.findViewById(R.id.info);
+            rejectBtn = itemView.findViewById(R.id.rejectionBtn);
 
 
         }
