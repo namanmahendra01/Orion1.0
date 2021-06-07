@@ -43,6 +43,9 @@ public class fragment_contest_detail_result extends Fragment {
     private String posterlink="";
     private CardView cardView;
     RelativeLayout topLayout;
+    private TextView jcTv,jcTv2;
+    private String judgingCriterias="";
+    private CardView jcCard;
 
     private LinearLayout prizeLinear;
     String userid,Contestkey;
@@ -53,7 +56,9 @@ public class fragment_contest_detail_result extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_contest_details, container, false);
 
-
+        jcTv = view.findViewById(R.id.jc);
+        jcTv2 = view.findViewById(R.id.jcTv2);
+        jcCard = view.findViewById(R.id.jccard);
         entryfee=view.findViewById(R.id.entryfeeTv);
         title=view.findViewById(R.id.titleTv);
         descrip=view.findViewById(R.id.descripTv);
@@ -466,7 +471,22 @@ public class fragment_contest_detail_result extends Fragment {
                 }
 
                 posterlink=mCreateForm.getPo();
+                if(mCreateForm.getVt().equals("Jury")||mCreateForm.getVt().equals("Jury and Public")){
+                    String f_string="";
+                    jcCard.setVisibility(View.VISIBLE);
+                    jcTv.setVisibility(View.VISIBLE);
+                    judgingCriterias = mCreateForm.getCr();
+                    String[] array=judgingCriterias.split("///");
+                    for (String a:
+                            array) {
+                        f_string=f_string+"\n"+a;
 
+                    }
+                    Log.d(TAG, "onCreate: "+f_string);
+                    jcTv2.setText(f_string);
+
+
+                }
                 Glide.with(getActivity().getApplicationContext())
                         .load(posterlink)
                         .placeholder(R.drawable.load)

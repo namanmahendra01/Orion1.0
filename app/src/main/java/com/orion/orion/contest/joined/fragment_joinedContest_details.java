@@ -47,6 +47,9 @@ public class fragment_joinedContest_details extends Fragment {
     users user = new users();
     String username;
     RelativeLayout topLayout;
+    private TextView jcTv,jcTv2;
+    private String judgingCriterias="";
+    private CardView jcCard;
 
     private LinearLayout prizeLinear;
     String userid,Contestkey;
@@ -100,7 +103,9 @@ public class fragment_joinedContest_details extends Fragment {
         prizeLinear=view.findViewById(R.id.prizell);
         userTv = view.findViewById(R.id.usernameCreator);
 
-
+        jcTv = view.findViewById(R.id.jc);
+        jcTv2 = view.findViewById(R.id.jcTv2);
+        jcCard = view.findViewById(R.id.jccard);
 
         gp = view.findViewById(R.id.gp);
 
@@ -489,7 +494,22 @@ public class fragment_joinedContest_details extends Fragment {
                         .error(R.drawable.default_image2)
                         .placeholder(R.drawable.load)
                         .into(poster);
+                if(mCreateForm.getVt().equals("Jury")||mCreateForm.getVt().equals("Jury and Public")){
+                    String f_string="";
+                    jcCard.setVisibility(View.VISIBLE);
+                    jcTv.setVisibility(View.VISIBLE);
+                    judgingCriterias = mCreateForm.getCr();
+                    String[] array=judgingCriterias.split("///");
+                    for (String a:
+                            array) {
+                        f_string=f_string+"\n"+a;
 
+                    }
+                    Log.d(TAG, "onCreate: "+f_string);
+                    jcTv2.setText(f_string);
+
+
+                }
                 title.setText(mCreateForm.getCt());
                 descrip.setText(mCreateForm.getDes());
                 rules.setText(mCreateForm.getRul());

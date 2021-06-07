@@ -5,10 +5,10 @@ import android.os.Parcelable;
 
 public class ParticipantList  implements Parcelable {
 
-    String ui, tim, ji, ml, il, ci;
+    String ui, tim, ji, ml, il, ci,des;
     int ts;
 
-    public ParticipantList(String ui, String tim, String ji, String ml, String il, String ci, int ts) {
+    public ParticipantList(String ui, String tim, String ji, String ml, String il, String ci, int ts,String des) {
         this.ui = ui;
         this.tim = tim;
         this.ji = ji;
@@ -16,6 +16,8 @@ public class ParticipantList  implements Parcelable {
         this.il = il;
         this.ci = ci;
         this.ts = ts;
+        this.des = des;
+
     }
 
     public ParticipantList(){}
@@ -28,6 +30,8 @@ public class ParticipantList  implements Parcelable {
         il = in.readString();
         ci = in.readString();
         ts = in.readInt();
+        des = in.readString();
+
     }
 
     @Override
@@ -39,6 +43,7 @@ public class ParticipantList  implements Parcelable {
         dest.writeString(il);
         dest.writeString(ci);
         dest.writeInt(ts);
+        dest.writeString(des);
     }
 
     @Override
@@ -113,6 +118,14 @@ public class ParticipantList  implements Parcelable {
     public void setTotalScore(int totalScore) {
         this.ts = totalScore;
     }
+    public String getDes() {
+        return des;
+    }
+    public void setDes(String des) {
+        this.des = des;
+    }
+
+
 
     @Override
     public String toString() {
@@ -124,6 +137,8 @@ public class ParticipantList  implements Parcelable {
                 ", il='" + il + '\'' +
                 ", ci='" + ci + '\'' +
                 ", ts=" + ts +
+                ", des=" + des +
+
                 '}';
     }
 }

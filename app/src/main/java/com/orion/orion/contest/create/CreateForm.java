@@ -92,6 +92,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     private View active3;
     private Button previousButton;
     private Button nextButton;
+    int l=0;
     private ArrayList<Integer> criteriaFields=new ArrayList<Integer>(Arrays.asList(1,2,3,4,5,6,7,8,9,10));
 
     private int count;
@@ -326,6 +327,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
         VotingType.setOnCheckedChangeListener((group, checkedId) -> {
             for (int i = 0; i < group.getChildCount(); i++) {
                 if (Public.getId() == checkedId) {
+                    criteriaContainer.setVisibility(View.GONE);
                     votingType = Public.getText().toString();
 
                     Public.setClickable(false);
@@ -366,6 +368,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     }
                 }
                 else if (Jury.getId() == checkedId) {
+                    criteriaContainer.setVisibility(View.VISIBLE);
                     votingType = Jury.getText().toString();
 
                     Public.setClickable(true);
@@ -455,6 +458,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     }
                 }
                 else {
+                    criteriaContainer.setVisibility(View.VISIBLE);
                     votingType = PublicAndJury.getText().toString();
 
                     Public.setClickable(true);
@@ -1299,36 +1303,66 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                             if (JuryName3.equals("")) {
                                 YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
                             }
-                        }else if(JuryName1.equals(JuryName2)||JuryName1.equals(JuryName3)||JuryName2.equals(JuryName3)) {
-                            if (JuryName1.equals(JuryName2)){
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
-                                juryName1.setError("Jury members must be different!");
-                                juryName1.requestFocus();
+                        }else if(noOfJury.equals("2")||noOfJury.equals("3")){
+                          boolean ok =false;
+                          if (noOfJury.equals("2")){
+                              if(JuryName1.equals(JuryName2)){
+                                  ok=true;
+                                  YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                  juryName1.setError("Jury members must be different!");
+                                  juryName1.requestFocus();
 
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
-                                juryName2.setError("Jury members must be different!");
-                                juryName2.requestFocus();
+                                  YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                  juryName2.setError("Jury members must be different!");
+                                  juryName2.requestFocus();
+                              }
+
+                          }
+                            if (noOfJury.equals("3")){
+
+                                if(JuryName1.equals(JuryName2)||JuryName1.equals(JuryName3)||JuryName2.equals(JuryName3)) {
+                                    ok=true;
+                                    if (JuryName1.equals(JuryName2)){
+                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                        juryName1.setError("Jury members must be different!");
+                                        juryName1.requestFocus();
+
+                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                        juryName2.setError("Jury members must be different!");
+                                        juryName2.requestFocus();
+                                    }
+                                    if (JuryName1.equals(JuryName3)){
+                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                        juryName1.setError("Jury members must be different!");
+                                        juryName1.requestFocus();
+
+                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
+                                        juryName3.setError("Jury members must be different!");
+                                        juryName3.requestFocus();
+                                    }
+                                    if (JuryName3.equals(JuryName2)){
+                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
+                                        juryName3.setError("Jury members must be different!");
+                                        juryName3.requestFocus();
+
+                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                        juryName2.setError("Jury members must be different!");
+                                        juryName2.requestFocus();
+                                    }
+
+                                }
                             }
-                            if (JuryName1.equals(JuryName3)){
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
-                                juryName1.setError("Jury members must be different!");
-                                juryName1.requestFocus();
 
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
-                                juryName3.setError("Jury members must be different!");
-                                juryName3.requestFocus();
-                            }
-                            if (JuryName3.equals(JuryName2)){
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
-                                juryName3.setError("Jury members must be different!");
-                                juryName3.requestFocus();
-
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
-                                juryName2.setError("Jury members must be different!");
-                                juryName2.requestFocus();
+                            if(!ok){
+                                layout3.setVisibility(View.VISIBLE);
+                                layout2.setVisibility(View.GONE);
+                                active2.setVisibility(View.INVISIBLE);
+                                active3.setVisibility(View.VISIBLE);
+                                layoutActive = 3;
                             }
 
-                        }else
+                        }
+                      else
                          {
                             layout3.setVisibility(View.VISIBLE);
                             layout2.setVisibility(View.GONE);
@@ -1384,6 +1418,64 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                                     mDisplayDateVE.setError("Please enter a date");
                                     mDisplayDateVE.requestFocus();
                                 }
+                            }else if(noOfJury.equals("2")||noOfJury.equals("3")){
+                                boolean ok=false;
+                                if (noOfJury.equals("2")){
+                                    if(JuryName1.equals(JuryName2)){
+                                        ok=true;
+                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                        juryName1.setError("Jury members must be different!");
+                                        juryName1.requestFocus();
+                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                        juryName2.setError("Jury members must be different!");
+                                        juryName2.requestFocus();
+                                    }
+
+                                }
+                                if (noOfJury.equals("3")){
+
+                                    if(JuryName1.equals(JuryName2)||JuryName1.equals(JuryName3)||JuryName2.equals(JuryName3)) {
+                                        ok=true;
+
+                                        if (JuryName1.equals(JuryName2)){
+                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                            juryName1.setError("Jury members must be different!");
+                                            juryName1.requestFocus();
+
+                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                            juryName2.setError("Jury members must be different!");
+                                            juryName2.requestFocus();
+                                        }
+                                        if (JuryName1.equals(JuryName3)){
+                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                            juryName1.setError("Jury members must be different!");
+                                            juryName1.requestFocus();
+
+                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
+                                            juryName3.setError("Jury members must be different!");
+                                            juryName3.requestFocus();
+                                        }
+                                        if (JuryName3.equals(JuryName2)){
+                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
+                                            juryName3.setError("Jury members must be different!");
+                                            juryName3.requestFocus();
+
+                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                            juryName2.setError("Jury members must be different!");
+                                            juryName2.requestFocus();
+                                        }
+
+                                    }
+                                }
+                                if(!ok){
+                                    layout3.setVisibility(View.VISIBLE);
+                                    layout2.setVisibility(View.GONE);
+                                    active2.setVisibility(View.INVISIBLE);
+                                    active3.setVisibility(View.VISIBLE);
+                                    layoutActive = 3;
+                                }
+
+
                             } else {
                                 layout3.setVisibility(View.VISIBLE);
                                 layout2.setVisibility(View.GONE);
@@ -1509,12 +1601,70 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     i.putExtra("jname_3", JuryName3);
                     i.putExtra("openfor", openFor);
                     i.putExtra("host", hosted);
+                    if (votingType.equals("Jury")||votingType.equals("Jury and Public")){
+                        String judging_criterias= getJudgingString();
+                        i.putExtra("judgeCriteria", judging_criterias);
+                    }
                     startActivity(i);
                 })
                 .setNegativeButton("No", (dialog, id) -> {
                     dialog.cancel();
                 })
                 .show();
+    }
+
+    private String getJudgingString() {
+       String f_string = "";
+       String addString="";
+       boolean ok=true;
+        for (int x = 1; x <= 10; x++) {
+            addString = getStringFromTV(x);
+            if (addString == null || addString.equals("")) {
+            } else {
+                if (ok) {
+                    f_string = addString;
+                    ok = false;
+                } else{
+                    f_string = f_string + "///" + addString;
+
+                }
+            }
+
+        }
+       return f_string;
+    }
+
+    private  String getStringFromTV(int l) {
+         if(l==1){
+          return(criteriaTv1.getText().toString());
+       }else if(l==2){
+
+             return(criteriaTv2.getText().toString());
+        }else if(l==3){
+
+             return(criteriaTv3.getText().toString());
+        }else if(l==4){
+
+             return(criteriaTv4.getText().toString());
+        }else if(l==5){
+
+             return(criteriaTv5.getText().toString());
+        }else if(l==6){
+
+             return(criteriaTv6.getText().toString());
+        }else if(l==7){
+
+             return(criteriaTv7.getText().toString());
+        }else if(l==8){
+
+             return(criteriaTv8.getText().toString());
+        }else if(l==9){
+
+             return(criteriaTv9.getText().toString());
+        }else if(l==10){
+
+             return(criteriaTv10.getText().toString());
+        }else return null;
     }
 
     private void updateTotal() {

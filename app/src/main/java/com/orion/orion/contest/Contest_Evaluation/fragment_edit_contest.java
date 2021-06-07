@@ -80,6 +80,9 @@ public class fragment_edit_contest extends Fragment {
     private String rule2 = "";
     private String username = "";
 
+    private TextView jcTv,jcTv2;
+    private String judgingCriterias="";
+    private CardView jcCard;
 
     private String userid;
     private String Contestkey;
@@ -126,7 +129,9 @@ public class fragment_edit_contest extends Fragment {
         p2Tv = view.findViewById(R.id.p2Tv);
         p3Tv = view.findViewById(R.id.p3Tv);
         userTv = view.findViewById(R.id.usernameCreator);
-
+        jcTv = view.findViewById(R.id.jc);
+        jcTv2 = view.findViewById(R.id.jcTv2);
+        jcCard = view.findViewById(R.id.jccard);
         prizeLinear = view.findViewById(R.id.prizell);
         Button saveBtn = view.findViewById(R.id.save);
         TextView gp = view.findViewById(R.id.gp);
@@ -481,7 +486,22 @@ public class fragment_edit_contest extends Fragment {
                                 }
                             });
                 }
+                if(mCreateForm.getVt().equals("Jury")||mCreateForm.getVt().equals("Jury and Public")){
+                    String f_string="";
+                    jcCard.setVisibility(View.VISIBLE);
+                    jcTv.setVisibility(View.VISIBLE);
+                    judgingCriterias = mCreateForm.getCr();
+                    String[] array=judgingCriterias.split("///");
+                    for (String a:
+                            array) {
+                        f_string=f_string+"\n"+a;
 
+                    }
+                    Log.d(TAG, "onCreate: "+f_string);
+                    jcTv2.setText(f_string);
+
+
+                }
                 posterlink = mCreateForm.getPo();
                 Glide.with(getActivity().getApplicationContext())
                         .load(posterlink)

@@ -8,13 +8,13 @@ public class CreateForm {
     String ef, ct, des, po, ft, d, vt, rul, rb, re,
             vb, ve, wd, mlt, p1, p2, p3, tp,
             jn1, jn2, jn3, jp1, jp2, jp3, tim, ci,
-            hst, of, ui, st;
+            hst, of, ui, st,cr;
 
     public CreateForm(String ef, String ct, String des, String po,
                       String ft, String d, String vt, String rul, String rb,
 
                       String re, String vb, String ve, String wd, String mlt, String p1,
-                      String p2, String p3, String tp, String jn1, String jn2, String jn3,
+                      String p2, String p3, String tp, String jn1, String jn2, String jn3,String cr,
 
                       String jp1, String jp2, String jp3, String tim, String ci, String hst, String of, String ui, String st) {
         this.ef = ef;
@@ -47,6 +47,7 @@ public class CreateForm {
         this.of = of;
         this.ui = ui;
         this.st = st;
+        this.cr = cr;
     }
 
     public String getEf() {
@@ -270,10 +271,16 @@ public class CreateForm {
         return st;
     }
 
+    public void setCr(String judge_criteria) {
+        this.cr = judge_criteria;
+    }
+    public String getCr() {
+        return cr;
+    }
+
     public void setSt(String status) {
         this.st = status;
     }
-
     @Override
     public String toString() {
         return "CreateForm{" +
@@ -307,6 +314,8 @@ public class CreateForm {
                 ", of='" + of + '\'' +
                 ", ui='" + ui + '\'' +
                 ", st='" + st + '\'' +
+                ", cr='" + cr + '\'' +
+
                 '}';
     }
 }
