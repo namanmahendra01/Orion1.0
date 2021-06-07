@@ -110,7 +110,7 @@
         android:id="@+id/pro"
         android:background="#CC333232"
 
-        android:visibility="visible"
+        android:visibility="gone"
         android:orientation="vertical">
         <RelativeLayout
             android:layout_width="match_parent"

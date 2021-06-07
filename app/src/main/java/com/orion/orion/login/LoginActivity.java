@@ -178,8 +178,8 @@ public class LoginActivity extends AppCompatActivity {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithEmail:failure", task.getException());
                         new AlertDialog.Builder(mContext)
-                                .setTitle("Sorry")
-                                .setMessage("We ran into an error \n Please try again later")
+                                .setTitle("Wrong credentials")
+                                .setMessage(task.getException().getLocalizedMessage())
                                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                     dialog.dismiss();
                                     mEmail.setFocusableInTouchMode(true);
