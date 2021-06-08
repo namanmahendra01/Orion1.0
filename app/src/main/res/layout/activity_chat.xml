@@ -10,10 +10,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/relLayout1">
+         <TextView
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:text="Chat Room"
+             android:textStyle="bold"
+             android:textAllCaps="true"
+             android:id="@+id/abc"
+             android:layout_centerHorizontal="true"
+             android:padding="10dp"
+             android:visibility="gone"
+             android:gravity="center"
+             android:textSize="25sp"/>
     <include layout="@layout/snippet_chat_toolbar" />
 
 
 </RelativeLayout>
+
 
 
 <RelativeLayout

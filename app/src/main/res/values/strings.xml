@@ -165,6 +165,8 @@
     <string name="expanded_marks">xj</string>
     <string name="submission_description">des</string>
     <string name="rejection_reason">rr</string>
+    <string name="dbname_Participant_Chat_Room">ParticipantChatRoom</string>
+    <string name="search_activity">Search Activity</string>
 
 
     <string-array name="entryfee2">

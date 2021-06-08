@@ -2,6 +2,7 @@ package com.orion.orion.Adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
+import com.orion.orion.contest.ViewContestDetails;
 import com.orion.orion.models.Chat;
+import com.orion.orion.profile.profile;
 
 import java.util.Calendar;
 import java.util.List;
@@ -36,10 +39,12 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
     Context context;
     List<Chat> chatList;
     FirebaseUser fUser;
+    String chatType;
 
-    public AdapterChat(Context context, List<Chat> chatList) {
+    public AdapterChat(Context context, List<Chat> chatList, String chat) {
         this.context = context;
         this.chatList = chatList;
+        this.chatType = chat;
     }
 
     @NonNull
@@ -56,6 +61,20 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
 //        get data
         String message = chatList.get(i).getMsg();
         String timeStamp = chatList.get(i).getTim();
+        if (chatType.equals("ChatRoom")){
+            myHolder.username.setVisibility(View.VISIBLE);
+            getUsername(chatList.get(i).getSid(),myHolder);
+
+            myHolder.username.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent a = new Intent(context, profile.class);
+                    a.putExtra(context.getString(R.string.calling_activity), context.getString(R.string.home));
+                    a.putExtra(context.getString(R.string.intent_user), chatList.get(i).getSid());
+                    context.startActivity(a);
+                }
+            });
+        }
 
 //        convert time stamp to date and time
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
@@ -80,6 +99,27 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
 
             return true;
         });
+    }
+
+    private void getUsername(String rid, MyHolder myHolder) {
+        DatabaseReference dbTs1 = FirebaseDatabase.getInstance().getReference();
+        dbTs1.child(context.getString(R.string.dbname_users))
+                .child(rid)
+                .child(context.getString(R.string.field_username))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            myHolder.username.setText(snapshot.getValue().toString());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
     }
 
     private void DeleteMessage(int position) {
@@ -135,7 +175,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
     }
     static class MyHolder extends RecyclerView.ViewHolder {
 
-        TextView messageTv, timeTv;
+        TextView messageTv, timeTv,username;
         LinearLayout messageLayout;
 
         public MyHolder(@NonNull View itemView) {
@@ -143,6 +183,8 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.MyHolder> {
 
 
             messageTv = itemView.findViewById(R.id.messagetv);
+            username = itemView.findViewById(R.id.username);
+
             timeTv = itemView.findViewById(R.id.TimeTv);
             messageLayout = itemView.findViewById(R.id.messageLayout);
 

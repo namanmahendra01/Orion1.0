@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
@@ -37,6 +38,7 @@ import com.orion.orion.Adapters.AdapterContestCreated;
 import com.orion.orion.Adapters.AdapterRankList;
 import com.orion.orion.Adapters.AdapterWinners;
 import com.orion.orion.R;
+import com.orion.orion.contest.Contest_Evaluation.ChatRoomActivity;
 import com.orion.orion.contest.ranking;
 import com.orion.orion.models.ContestDetail;
 import com.orion.orion.models.CreateForm;
@@ -80,6 +82,7 @@ public class fragment_overview extends Fragment {
     private RelativeLayout relWinner;
     RelativeLayout juryRl;
 
+    Button chatRoom;
     String Conteskey;
     TextView seeRank;
     private SwipeRefreshLayout participantRefresh;
@@ -97,17 +100,28 @@ public class fragment_overview extends Fragment {
 
         juryTable = view.findViewById(R.id.jurytable);
         juryTable2 = view.findViewById(R.id.jurytable2);
+        chatRoom = view.findViewById(R.id.chatRoom);
 
         juryTable.setStretchAllColumns(true);
         juryTable2.setStretchAllColumns(true);
+
         Bundle b = getActivity().getIntent().getExtras();
         Conteskey = b.getString("contestId");
+
         relWinner = view.findViewById(R.id.relWin);
         juryRl = view.findViewById(R.id.jutyRl);
 
         seeRank = view.findViewById(R.id.seeRank);
         participantRefresh = view.findViewById(R.id.participant_refresh);
 
+        chatRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getContext(), ChatRoomActivity.class);
+                i.putExtra("ContestId", Conteskey);
+                startActivity(i);
+            }
+        });
         seeRank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

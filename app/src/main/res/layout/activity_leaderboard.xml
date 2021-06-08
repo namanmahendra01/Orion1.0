@@ -57,18 +57,24 @@
         android:gravity="center"
         android:paddingTop="10dp"
         android:paddingBottom="5dp">
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:id="@+id/top">
+    <include layout="@layout/snippet_searchbar"/>
+</RelativeLayout>
 
         <LinearLayout
             android:id="@+id/filter"
+            android:layout_below="@+id/top"
             android:layout_width="wrap_content"
             android:minWidth="400dp"
             android:layout_height="40dp"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="20dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/circular_corner_rectangle"
+            android:background="@drawable/rectangular_border"
             android:backgroundTint="@color/white"
             android:elevation="2dp"
             android:gravity="center"
@@ -154,5 +160,11 @@
             tools:listitem="@layout/item_leaderboard" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <ListView
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/filterBox"
+        android:visibility="visible" />
     <include layout="@layout/layout_bottom_navigation_view" />
 </RelativeLayout>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/black">
+
+        <TextView
+            android:id="@+id/created"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/rectangular_border"
+            android:fontFamily="@font/orion"
+            android:gravity="center"
+            android:padding="3dp"
+            android:text="Created"
+            android:textAllCaps="true"
+            android:textColor="@color/colorAccent"
+
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/joined"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/rectangular_border"
+            android:fontFamily="@font/orion"
+
+            android:gravity="center"
+            android:padding="3dp"
+            android:text="Joined"
+            android:textAllCaps="true"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:fontFamily="@font/orion"
+            android:gravity="center"
+            android:text="ORION"
+            android:textColor="@color/colorAccent"
+            android:textSize="40sp" />
+    </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_below="@+id/top"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@id/relparent"
+                android:layout_margin="10dp"
+                android:background="@drawable/rectangular_round_searchbar"
+                android:gravity="center"
+                android:hint="Enter contest Key" />
+
+            <RelativeLayout
+                android:id="@+id/relparent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:visibility="visible">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/pink_round_button">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/domain"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+
+                                android:text="Domain: "
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/entryfee"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:paddingLeft="10dp"
+
+                                android:paddingRight="10dp"
+                                android:text="Entry Fee: "
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="5dp"
+
+                            android:layout_marginBottom="10dp"
+                            android:orientation="vertical">
+
+                            <Spinner
+                                android:id="@+id/domainspinner"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/white_round_button"
+                                android:entries="@array/domain2"
+                                android:gravity="center" />
+
+                            <Spinner
+                                android:id="@+id/entryfeeSpinner"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+
+                                android:background="@drawable/white_round_button"
+
+                                android:entries="@array/entryfee2"
+                                android:textAlignment="center" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/drag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/search"
+                android:background="#CCFFFFFF">
+
+                <ImageView
+                    android:id="@+id/filter"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/ic_filter_black"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/filteryellow"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/ic_filter_peach"
+                    android:visibility="visible" />
+
+
+                <ImageView
+                    android:id="@+id/gridB"
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/ic_grid_black" />
+
+                <ImageView
+                    android:id="@+id/columnY"
+                    android:layout_width="27dp"
+                    android:layout_height="27dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/ic_column_yellow" />
+
+                <ImageView
+                    android:id="@+id/gridY"
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/ic_grid_yellow"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/columnB"
+                    android:layout_width="27dp"
+                    android:layout_height="27dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/ic_column_black"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+        </RelativeLayout>
+</RelativeLayout>

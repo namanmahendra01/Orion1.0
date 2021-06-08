@@ -37,6 +37,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.orion.orion.Adapters.AdapterContestCreated;
 import com.orion.orion.R;
+import com.orion.orion.contest.upcoming.UpcomingContestActivity;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -416,20 +417,7 @@ public class CreatedActivity extends AppCompatActivity {
     private Boolean exit = false;
     @Override
     public void onBackPressed() {
-        if (exit) {
-            moveTaskToBack(true); // finish activity
-        } else {
-            Toast.makeText(this, "Press Back again to Exit.",
-                    Toast.LENGTH_SHORT).show();
-            exit = true;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    exit = false;
-                }
-            }, 2 * 1000);
-
-        }
-
+        Intent i = new Intent(CreatedActivity.this, UpcomingContestActivity.class);
+        startActivity(i);
     }
 }

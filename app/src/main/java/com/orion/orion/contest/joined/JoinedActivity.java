@@ -1,6 +1,7 @@
 package com.orion.orion.contest.joined;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,6 +37,8 @@ import com.google.gson.reflect.TypeToken;
 import com.orion.orion.Adapters.AdapterContestCreated;
 import com.orion.orion.Adapters.AdapterContestJoined;
 import com.orion.orion.R;
+import com.orion.orion.contest.create.CreatedActivity;
+import com.orion.orion.contest.upcoming.UpcomingContestActivity;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.JoinForm;
 
@@ -401,20 +404,7 @@ public class JoinedActivity extends AppCompatActivity {
     private Boolean exit = false;
     @Override
     public void onBackPressed() {
-        if (exit) {
-            moveTaskToBack(true); // finish activity
-        } else {
-            Toast.makeText(this, "Press Back again to Exit.",
-                    Toast.LENGTH_SHORT).show();
-            exit = true;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    exit = false;
-                }
-            }, 2 * 1000);
-
-        }
-
+        Intent i = new Intent(JoinedActivity.this, UpcomingContestActivity.class);
+        startActivity(i);
     }
 }

@@ -24,8 +24,23 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Enter Chat Room"
+                android:textColor="@color/colorPrimary"
+                android:id="@+id/chatRoom"
+                android:padding="5dp"
+                android:gravity="center"
+                android:textAllCaps="true"
+                android:layout_margin="3dp"
+                android:background="@drawable/rectangular_border"
+                android:layout_centerHorizontal="true"
+                android:textSize="16dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Participants: 0"
                 android:textColor="@color/white"
+                android:layout_below="@+id/chatRoom"
                 android:layout_margin="10dp"
                 android:layout_alignParentLeft="true"
 
@@ -38,6 +53,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/request"
             android:gravity="end"
+            android:layout_below="@+id/chatRoom"
+
             android:textColor="@color/white"
             android:textSize="18sp"
             android:layout_alignParentRight="true"
