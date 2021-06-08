@@ -9,6 +9,7 @@ public class QuizQuestion implements Comparable<QuizQuestion>{
     private String option3;
     private String option4;
     private String answer;
+    private String selected;
 
     public QuizQuestion() {
         question = "";
@@ -17,6 +18,7 @@ public class QuizQuestion implements Comparable<QuizQuestion>{
         option3 = "";
         option4 = "";
         answer = "";
+        selected = "";
     }
 
 
@@ -92,5 +94,13 @@ public class QuizQuestion implements Comparable<QuizQuestion>{
     @Override
     public int compareTo(QuizQuestion o) {
         return question.compareTo(o.question);
+    }
+
+    public String getSelected() {
+        return selected;
+    }
+
+    public void setSelected(String selected) {
+        this.selected = selected;
     }
 }

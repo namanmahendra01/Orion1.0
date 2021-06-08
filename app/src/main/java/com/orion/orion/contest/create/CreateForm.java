@@ -208,8 +208,6 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser mUser;
 
-
-
     public static boolean isDateAfter(String startDate, String endDate) {
         try {
             String myFormatString = "dd-M-yyyy"; // for example

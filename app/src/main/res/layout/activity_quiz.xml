@@ -9,130 +9,240 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:id="@+id/top"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <include layout="@layout/snippet_top_bar" />
-        </RelativeLayout>
-
-
-        <ProgressBar
-            android:layout_below="@+id/top"
-            android:id="@+id/progressbar"
-
-            style="@android:style/Widget.Material.ProgressBar.Horizontal"
-            android:max="100"
-            android:background="@color/black"
-            android:progress="0"
+            android:id="@+id/startLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/bottom_header_relativelayout"
-            />
+            android:visibility="visible">
 
+
+            <ImageView
+                android:id="@+id/closeButton"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/ic_white_cross"
+                app:tint="@color/white_grey" />
+
+
+            <TextView
+                android:id="@+id/timer"
+                android:layout_below="@id/closeButton"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:lines="3"
+                android:text="Your quiz will be live in "
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/rule"
+                android:layout_below="@id/timer"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:lines="5"
+                android:text="Remember, each question is compulsory, has a time limit and after start of quiz you can't attempt it again"
+                android:textColor="@color/black" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/startButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_below="@+id/rule"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/circular_gradient_background"
+                android:backgroundTint="@color/colorPrimary"
+                android:elevation="2dp"
+                android:text="START"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                />
+
+        </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/quizLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/progressbar"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true">
+            android:visibility="gone">
 
 
             <RelativeLayout
-                android:id="@+id/questionBox"
+                android:id="@+id/top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/snippet_top_bar" />
+            </RelativeLayout>
+
+
+            <ProgressBar
+                android:id="@+id/progressbar"
+                style="@android:style/Widget.Material.ProgressBar.Horizontal"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:background="@color/colorAccent"
-                android:minHeight="300dp">
+                android:layout_above="@+id/bottom_header_relativelayout"
+                android:layout_below="@+id/top"
+                android:background="@color/black"
+                android:max="100"
+                android:progress="0" />
 
-                <TextView
-                    android:id="@+id/questionTag"
-                    android:layout_width="wrap_content"
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/progressbar"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true">
+
+
+                <RelativeLayout
+                    android:id="@+id/questionBox"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
-                    android:text="Question :->"
-                    android:layout_margin="10dp"
-                    android:textSize="26sp"
-                    android:fontFamily="@font/orion"
-                    android:textColor="@color/white"
-                    android:textAlignment="center"
-                    android:gravity="center_horizontal"/>
+                    android:layout_alignParentEnd="true"
+                    android:background="@color/colorAccent"
+                    android:minHeight="300dp">
+
+                    <TextView
+                        android:id="@+id/questionTag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_margin="10dp"
+                        android:fontFamily="@font/orion"
+                        android:gravity="center_horizontal"
+                        android:text="Question :->"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="26sp" />
 
 
-                <TextView
-                    android:id="@+id/question"
+                    <TextView
+                        android:id="@+id/question"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/questionTag"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_margin="30sp"
+                        android:clickable="false"
+                        android:gravity="center_horizontal"
+                        android:longClickable="false"
+                        android:text="Your Question goes here"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/optionsBox"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/questionBox"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_below="@id/questionTag"
-                    android:text="Your Question goes here"
-                    android:layout_margin="30sp"
-                    android:longClickable="false"
-                    android:clickable="false"
-                    android:textSize="18sp"
-                    android:textColor="@color/black"
-                    android:textAlignment="center"
-                    android:gravity="center_horizontal"/>
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/white">
 
 
+                    <include
+                        android:id="@+id/option1"
+                        layout="@layout/snippet_option_select"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <include
+                        android:id="@+id/option2"
+                        layout="@layout/snippet_option_select"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/option1" />
+
+                    <include
+                        android:id="@+id/option3"
+                        layout="@layout/snippet_option_select"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/option2" />
+
+                    <include
+                        android:id="@+id/option4"
+                        layout="@layout/snippet_option_select"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/option3" />
 
 
+                </RelativeLayout>
 
 
             </RelativeLayout>
+        </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/optionsBox"
+        <RelativeLayout
+            android:id="@+id/endLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+
+            <TextView
+                android:id="@+id/endMessage"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:lines="5"
+                android:text="Congratulations on completing the quiz. Please wait for the results they will be announced soon. Thank You"
+                android:textColor="@color/black" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/doneButton"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@id/questionBox"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:background="@color/white">
-
-
-                <include
-                    android:id="@+id/option1"
-                    layout="@layout/snippet_option_select"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <include
-                    android:id="@+id/option2"
-                    layout="@layout/snippet_option_select"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/option1" />
-
-                <include
-                    android:id="@+id/option3"
-                    layout="@layout/snippet_option_select"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/option2" />
-
-                <include
-                    android:id="@+id/option4"
-                    layout="@layout/snippet_option_select"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/option3" />
-
-
-            </RelativeLayout>
-
+                android:layout_height="60dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_below="@+id/endMessage"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/circular_gradient_background"
+                android:backgroundTint="@color/colorPrimary"
+                android:elevation="2dp"
+                android:text="Done"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                />
 
         </RelativeLayout>
+
     </RelativeLayout>
+
 
 </ScrollView>
