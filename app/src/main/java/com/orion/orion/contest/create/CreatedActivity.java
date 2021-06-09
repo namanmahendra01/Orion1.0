@@ -13,8 +13,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,7 +58,7 @@ public class CreatedActivity extends AppCompatActivity {
     boolean flag1 = false;
     private static int RETRY_DURATION = 1000;
     private static final Handler handler = new Handler(Looper.getMainLooper());
-
+    ImageView backArrrow;
     //    SP
     private Gson gson;
     private SharedPreferences sp;
@@ -74,7 +76,14 @@ public class CreatedActivity extends AppCompatActivity {
         noPost=findViewById(R.id.noPost);
         bottomProgress=findViewById(R.id.pro2);
         createdContestRv = findViewById(R.id.recycler_view3);
+        backArrrow= findViewById(R.id.backarrow);
 
+        backArrrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         contestlist = new ArrayList<>();
 
@@ -404,5 +413,23 @@ public class CreatedActivity extends AppCompatActivity {
         }
 
     }
+    private Boolean exit = false;
+    @Override
+    public void onBackPressed() {
+        if (exit) {
+            moveTaskToBack(true); // finish activity
+        } else {
+            Toast.makeText(this, "Press Back again to Exit.",
+                    Toast.LENGTH_SHORT).show();
+            exit = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exit = false;
+                }
+            }, 2 * 1000);
 
+        }
+
+    }
 }

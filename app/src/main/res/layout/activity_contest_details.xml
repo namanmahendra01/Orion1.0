@@ -64,10 +64,13 @@
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/createdBy"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/host"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/rectangular_border"
                 android:gravity="center"
+                android:padding="10dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -80,8 +83,9 @@
                     android:id="@+id/usernameCreator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:textColor="@color/black"
+
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="17sp"
                     />
             </LinearLayout>

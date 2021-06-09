@@ -68,9 +68,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:layout_margin="3dp"
+                android:textColor="@color/grey"
+                android:textSize="16sp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:gravity="center"
+                android:layout_gravity="center"
                 android:id="@+id/des"/>
             <LinearLayout
                 android:layout_width="match_parent"

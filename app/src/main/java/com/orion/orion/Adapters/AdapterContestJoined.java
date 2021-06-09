@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
@@ -79,6 +80,33 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
             }
         });
 
+        DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests));
+        ref2.child(joiningForm.getUi())
+                .child(mContext.getString(R.string.joined_contest))
+                .child(joiningForm.getJi())
+                .child(mContext.getString(R.string.rejection_reason))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            holder.rejectBtn.setVisibility(View.VISIBLE);
+                            holder.reason=dataSnapshot.getValue().toString();
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+        holder.rejectBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reasonDialoge(holder.reason);
+            }
+        });
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist));
         ref.child(key)
                 .child(mContext.getString(R.string.field_Participant_List))
@@ -254,7 +282,10 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
         private TextView domain, title, regEnd, entryFee, host, totalP,status,statusTv,gp;
         private ImageView poster,option,progress;
         RelativeLayout relStatus;
+        private Button rejectBtn;
+        String reason;
         Boolean ok = false;
+
         int p = 0;
 
         public ViewHolder(@NonNull View itemView) {
@@ -275,6 +306,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
             gp = itemView.findViewById(R.id.gp);
             relStatus = itemView.findViewById(R.id.relStatus);
             progress = itemView.findViewById(R.id.progress);
+            rejectBtn = itemView.findViewById(R.id.rejectionBtn);
 
 
 
@@ -398,7 +430,18 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
         });
     }
 
-
+    private void reasonDialoge(String s) {
+        AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+        alertDialog.setTitle("Rejection Reason");
+        alertDialog.setMessage(s);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
     private  void getcontestDetails(String userid, String contestid, ImageView poster, TextView title,
                                     TextView host, TextView regend, TextView totalp, TextView entryfee, TextView domain, ImageView progress){
         DatabaseReference ref= FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))

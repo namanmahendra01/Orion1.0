@@ -99,7 +99,7 @@
     <string name="remove_participant_prompt">Are you sure, you want to remove this Participant?</string>
     <string name="field_status">st</string>
     <string name="field_joined_updates">ju</string>
-    <string name="reject_participant_prompt">Are you sure, you want to Reject this Participant?</string>
+    <string name="reject_participant_prompt">Are you sure, you want to Remove this Participant?</string>
     <string name="allow_participanr_prompt">Are you sure, you want to Allow this Participant?</string>
     <string name="field_open_for">of</string>
     <string name="field_view">v</string>
@@ -163,6 +163,8 @@
     <string name="last_updated">lu</string>
     <string name="field_judge_criteria">cr</string>
     <string name="expanded_marks">xj</string>
+    <string name="submission_description">des</string>
+    <string name="rejection_reason">rr</string>
 
 
     <string-array name="entryfee2">

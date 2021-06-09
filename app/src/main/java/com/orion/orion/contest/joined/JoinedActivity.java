@@ -10,8 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -66,7 +68,7 @@ public class JoinedActivity extends AppCompatActivity {
     SharedPreferences sp;
     private FirebaseAuth fAuth;
     private int mResults;
-
+    ImageView backArrrow;
     private AdapterContestJoined contestJoined;
 
 
@@ -83,7 +85,14 @@ public class JoinedActivity extends AppCompatActivity {
         noPost = findViewById(R.id.noPost);
         bottomProgress = findViewById(R.id.pro2);
         joinedContestRv = findViewById(R.id.recycler_view2);
+        backArrrow= findViewById(R.id.backarrow);
 
+        backArrrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
         fAuth = FirebaseAuth.getInstance();
         contestlist = new ArrayList<>();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -389,5 +398,23 @@ public class JoinedActivity extends AppCompatActivity {
         }
 
     }
+    private Boolean exit = false;
+    @Override
+    public void onBackPressed() {
+        if (exit) {
+            moveTaskToBack(true); // finish activity
+        } else {
+            Toast.makeText(this, "Press Back again to Exit.",
+                    Toast.LENGTH_SHORT).show();
+            exit = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exit = false;
+                }
+            }, 2 * 1000);
 
+        }
+
+    }
 }
