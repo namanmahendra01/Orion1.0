@@ -120,7 +120,7 @@ public class UpcomingContestActivity extends AppCompatActivity {
         created.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(UpcomingContestActivity.this, QuizActivity.class);
+                Intent i = new Intent(UpcomingContestActivity.this, CreatedActivity.class);
                 startActivity(i);
             }
         });

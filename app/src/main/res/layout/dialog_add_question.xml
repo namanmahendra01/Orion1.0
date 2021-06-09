@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp">
+
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rectangular_border"
+        android:gravity="top"
+        android:hint="Question"
+        android:imeOptions="actionDone"
+        android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
+        android:lines="5"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/grey"
+        android:textSize="18sp" />
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/optionsBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:weightSum="4"
+        android:layout_below="@id/question"
+        android:paddingTop="10dp">
+
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="10">
+
+            <ImageView
+                android:id="@+id/option1"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_baseline_check_circle_24"
+                android:textSize="16sp" />
+            
+            <EditText
+                android:id="@+id/option1Value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Option 1 here"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="10">
+
+            <ImageView
+                android:id="@+id/option2"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_baseline_check_circle_24"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/option2Value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Option 2 here"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="10">
+
+            <ImageView
+                android:id="@+id/option3"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_baseline_check_circle_24"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/option3Value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Option 3 here"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="10">
+
+            <ImageView
+                android:id="@+id/option4"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_baseline_check_circle_24"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/option4Value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Option 4 here"/>
+
+        </LinearLayout>
+        
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    <Button
+        android:id="@+id/addButton"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/optionsBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/circular_button"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="ADD"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
+</RelativeLayout>

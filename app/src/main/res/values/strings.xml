@@ -194,7 +194,17 @@
         <item>Sports</item>
         <item>Writer</item>
         <item>Digital Art</item>
+    </string-array>
 
+    <string-array name="quiz_duration_array">
+        <item>10s</item>
+        <item>20s</item>
+        <item>30s</item>
+        <item>40s</item>
+        <item>50s</item>
+        <item>60s</item>
+        <item>75s</item>
+        <item>90s</item>
     </string-array>
 
 

@@ -4,14 +4,17 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,6 +27,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -32,6 +37,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +46,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
@@ -54,8 +61,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
+import com.orion.orion.dialogs.AddQuestionDialog;
 import com.orion.orion.dialogs.BottomSheetDomain;
 import com.orion.orion.login.LoginActivity;
+import com.orion.orion.models.QuizQuestion;
+import com.orion.orion.util.CustomDateTimePicker;
 import com.orion.orion.util.Permissions;
 
 import java.io.File;
@@ -81,9 +91,11 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     boolean isKitKat;
     int layoutActive = 1;
 
-    private TextView mTopBarTitle;
+
+    private CustomDateTimePicker customDateTimePicker;
 
     //Widgets
+    private TextView mTopBarTitle;
     private ScrollView layout1;
     private ScrollView layout2;
     private ScrollView layout3;
@@ -92,14 +104,14 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     private View active3;
     private Button previousButton;
     private Button nextButton;
-    int l=0;
-    private ArrayList<Integer> criteriaFields=new ArrayList<Integer>(Arrays.asList(1,2,3,4,5,6,7,8,9,10));
+    int l = 0;
+    private ArrayList<Integer> criteriaFields = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
 
     private int count;
 
-    private ImageView cross1,cross2,cross3,cross4,cross5,cross6,cross7,cross8,cross9,cross10;
-    private TextView criteriaTv1,criteriaTv2,criteriaTv3,criteriaTv4,criteriaTv5,criteriaTv6,criteriaTv7,criteriaTv8,criteriaTv9,criteriaTv10;
-    private LinearLayout criteriaLL1,criteriaLL2,criteriaLL3,criteriaLL4,criteriaLL5,criteriaLL6,criteriaLL7,criteriaLL8,criteriaLL9,criteriaLL10;
+    private ImageView cross1, cross2, cross3, cross4, cross5, cross6, cross7, cross8, cross9, cross10;
+    private TextView criteriaTv1, criteriaTv2, criteriaTv3, criteriaTv4, criteriaTv5, criteriaTv6, criteriaTv7, criteriaTv8, criteriaTv9, criteriaTv10;
+    private LinearLayout criteriaLL1, criteriaLL2, criteriaLL3, criteriaLL4, criteriaLL5, criteriaLL6, criteriaLL7, criteriaLL8, criteriaLL9, criteriaLL10;
     private ImageView backArrow;
 
     //layout1 widgets
@@ -108,11 +120,15 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     private EditText eventTitle;
     private EditText hostedBy;
     private EditText criteriaEt;
-    private TextView addCriteria,charCount;
+    private TextView addCriteria, charCount;
     private EditText description;
     private RadioGroup AllStudents;
     private RadioButton all;
     private RadioButton students;
+    private LinearLayout submissionTypeContainer;
+    private RadioGroup QuizSubmission;
+    private RadioButton quiz;
+    private RadioButton submission;
     private RadioGroup PictureVideoDocument;
     private RadioButton picture;
     private RadioButton mediaLink;
@@ -121,6 +137,24 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
 
 
     //layout 2
+
+    //question
+
+    private EditText question;
+    private ImageView option1;
+    private ImageView option2;
+    private ImageView option3;
+    private ImageView option4;
+    private EditText option1value;
+    private EditText option2value;
+    private EditText option3value;
+    private EditText option4value;
+    private Spinner durationSelector;
+    private LinearLayout quizStartDateTimeContainer;
+    private LinearLayout quizStartDateTimePickerContainer;
+    private LinearLayout judgingCriteriaBox;
+    private RelativeLayout questionAdditionBox;
+    private TextView addQuestionButton;
     private RadioGroup VotingType;
     private RadioButton Public;
     private RadioButton Jury;
@@ -141,6 +175,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     private EditText mDisplayDateVB;
     private EditText mDisplayDateVE;
     private EditText mDisplayDateWin;
+    private EditText mDisplayDateTimeQS;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private DatePickerDialog.OnDateSetListener mDateSetListener2;
     private DatePickerDialog.OnDateSetListener mDateSetListener3;
@@ -173,6 +208,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
 
     //Values
     private int selectedImage;
+    private String contestType = "";
     private String imgurl = "";
     private String posterLink = "";
     private String title;
@@ -201,52 +237,16 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     private String prizeTotal = "";
     private String extraRule = "";
 
+    private int option_selected_num;
+    private ArrayList<QuizQuestion> quizQuestionArrayList;
+    private QuizQuestion quizQuestion;
+
 
     //firebase
     private Context mContext;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser mUser;
-
-    public static boolean isDateAfter(String startDate, String endDate) {
-        try {
-            String myFormatString = "dd-M-yyyy"; // for example
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat(myFormatString);
-            Date date1 = df.parse(endDate);
-            Date startingDate = df.parse(startDate);
-            assert date1 != null;
-            return date1.after(startingDate);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private void disableEmoji() {
-        InputFilter emojiFilter = (source, start, end, dest, dstart, dend) -> {
-            for (int index = start; index < end - 1; index++) {
-                int type = Character.getType(source.charAt(index));
-                if (type == Character.SURROGATE) return "";
-            }
-            return null;
-        };
-        eventTitle.setFilters(new InputFilter[]{emojiFilter});
-        hostedBy.setFilters(new InputFilter[]{emojiFilter});
-        description.setFilters(new InputFilter[]{emojiFilter});
-        juryName1.setFilters(new InputFilter[]{emojiFilter});
-        juryName2.setFilters(new InputFilter[]{emojiFilter});
-        juryName3.setFilters(new InputFilter[]{emojiFilter});
-        firstPrize.setFilters(new InputFilter[]{emojiFilter});
-        secondPrize.setFilters(new InputFilter[]{emojiFilter});
-        thirdPrize.setFilters(new InputFilter[]{emojiFilter});
-        totalPrize.setFilters(new InputFilter[]{emojiFilter});
-        extraRules.setFilters(new InputFilter[]{emojiFilter});
-    }
-
-    public static void hideKeyboardFrom(Context context, View view) {
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
 
     @Override
     public void onButtonClicked(String text) {
@@ -271,11 +271,37 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
         setContentView(R.layout.activity_create_contest);
 
         mContext = CreateForm.this;
-        mTopBarTitle = findViewById(R.id.titleTopBar);
-        mTopBarTitle.setText("Create Contest");
+
+
         setupFirebaseAuth();
         initializeWidgets();
         disableEmoji();
+
+        quizQuestionArrayList = new ArrayList<>();
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.quiz_duration_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        durationSelector.setAdapter(adapter);
+
+        customDateTimePicker = new CustomDateTimePicker(this, new CustomDateTimePicker.ICustomDateTimeListener() {
+            @Override
+            public void onSet(Dialog dialog, Calendar calendarSelected,
+                              Date dateSelected, int year, String monthFullName,
+                              String monthShortName, int monthNumber, int day,
+                              String weekDayFullName, String weekDayShortName,
+                              int hour24, int hour12, int min, int sec,
+                              String AM_PM) {
+                //                        ((TextInputEditText) findViewById(R.id.edtEventDateTime))
+                mDisplayDateTimeQS.setText("");
+                mDisplayDateTimeQS.setText(String.format("%d-%d-%d %d:%d:%d", year, monthNumber + 1, calendarSelected.get(Calendar.DAY_OF_MONTH), hour24, min, sec));
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+        });
+
         layout1.setOnClickListener(v -> hideKeyboardFrom(mContext, layout1));
         layout2.setOnClickListener(v -> hideKeyboardFrom(mContext, layout2));
         layout3.setOnClickListener(v -> hideKeyboardFrom(mContext, layout3));
@@ -305,16 +331,34 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                 if (students.getId() == checkedId) openFor = students.getText().toString();
             }
         });
+        QuizSubmission.setOnCheckedChangeListener((group, checkedId) -> {
+            hideKeyboardFrom(mContext, QuizSubmission);
+            for (int i = 0; i < group.getChildCount(); i++) {
+                if (quiz.getId() == checkedId) {
+                    contestType = quiz.getText().toString();
+                    submissionTypeContainer.setVisibility(View.GONE);
+                    judgingCriteriaBox.setVisibility(View.GONE);
+                    questionAdditionBox.setVisibility(View.VISIBLE);
+                    quizStartDateTimeContainer.setVisibility(View.VISIBLE);
+                    quizStartDateTimePickerContainer.setVisibility(View.VISIBLE);
+                    picture.setChecked(false);
+                    mediaLink.setChecked(false);
+                }
+                if (submission.getId() == checkedId) {
+                    contestType = submission.getText().toString();
+                    submissionTypeContainer.setVisibility(View.VISIBLE);
+                    judgingCriteriaBox.setVisibility(View.VISIBLE);
+                    questionAdditionBox.setVisibility(View.GONE);
+                    quizStartDateTimeContainer.setVisibility(View.GONE);
+                    quizStartDateTimePickerContainer.setVisibility(View.GONE);
+                }
+            }
+        });
         PictureVideoDocument.setOnCheckedChangeListener((group, checkedId) -> {
             hideKeyboardFrom(mContext, PictureVideoDocument);
             for (int i = 0; i < group.getChildCount(); i++) {
-                if (picture.getId() == checkedId) {
-                    fileType = picture.getText().toString();
-                }
-                if (mediaLink.getId() == checkedId) {
-                    fileType = mediaLink.getText().toString();
-                }
-
+                if (picture.getId() == checkedId) fileType = picture.getText().toString();
+                if (mediaLink.getId() == checkedId) fileType = mediaLink.getText().toString();
             }
         });
         selectDomain.setOnClickListener(v -> {
@@ -322,6 +366,147 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
             BottomSheetDomain bottomSheetDomain = new BottomSheetDomain();
             bottomSheetDomain.show(getSupportFragmentManager(), "Domain Selection");
         });
+        option1.setOnClickListener(v -> {
+            Drawable buttonDrawable = option1.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.GREEN);
+
+            buttonDrawable = option2.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
+            buttonDrawable = option3.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
+            buttonDrawable = option4.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
+            option_selected_num = 1;
+        });
+        option2.setOnClickListener(v -> {
+            Drawable buttonDrawable = option2.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.GREEN);
+            buttonDrawable = option1.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
+            buttonDrawable = option3.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
+            buttonDrawable = option4.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
+            option_selected_num = 2;
+
+        });
+        option3.setOnClickListener(v -> {
+
+            Drawable buttonDrawable = option3.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.GREEN);
+
+            buttonDrawable = option1.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
+            buttonDrawable = option2.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
+            buttonDrawable = option4.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
+            option_selected_num = 3;
+
+        });
+        option4.setOnClickListener(v -> {
+            Drawable buttonDrawable = option4.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.GREEN);
+
+            buttonDrawable = option1.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
+            buttonDrawable = option2.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
+            buttonDrawable = option3.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
+            option_selected_num = 4;
+
+        });
+        addQuestionButton.setOnClickListener(v -> {
+            if (question.getText().toString().equals("") || option1value.getText().toString().equals("") || option2value.getText().toString().equals("") || option3value.getText().toString().equals("") || option4value.getText().toString().equals("") || option_selected_num < 1 || option_selected_num > 1) {
+                if (question.getText().toString().equals("")) {
+                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(question);
+                    question.requestFocus();
+                    question.setError("Empty!");
+                } else if (option1value.getText().toString().equals("")) {
+                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option1value);
+                    option1value.requestFocus();
+                    option1value.setError("Empty!");
+                } else if (option2value.getText().toString().equals("")) {
+                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option2value);
+                    option2value.requestFocus();
+                    option2value.setError("Empty!");
+                } else if (option3value.getText().toString().equals("")) {
+                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option3value);
+                    option3value.requestFocus();
+                    option3value.setError("Empty!");
+                } else if (option4value.getText().toString().equals("")) {
+                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option4value);
+                    option4value.requestFocus();
+                    option4value.setError("Empty!");
+                } else {
+                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option1);
+                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option2);
+                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option3);
+                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option4);
+                    Toast.makeText(mContext, "Make a selection", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                //adding questions to arraylist
+                quizQuestion = new QuizQuestion();
+                quizQuestion.setQuestion(question.getText().toString());
+                quizQuestion.setOption1(option1value.getText().toString().trim());
+                quizQuestion.setOption2(option2value.getText().toString().trim());
+                quizQuestion.setOption3(option3value.getText().toString().trim());
+                quizQuestion.setOption4(option4value.getText().toString().trim());
+                if (option_selected_num == 1)
+                    quizQuestion.setAnswer(quizQuestion.getOption1());
+                else if (option_selected_num == 2)
+                    quizQuestion.setAnswer(quizQuestion.getOption2());
+                else if (option_selected_num == 3)
+                    quizQuestion.setAnswer(quizQuestion.getOption3());
+                else
+                    quizQuestion.setAnswer(quizQuestion.getOption4());
+                quizQuestionArrayList.add(quizQuestion);
+
+                //resetting the fields
+                question.setText("");
+                option1value.setText("");
+                option2value.setText("");
+                option3value.setText("");
+                option4value.setText("");
+                option_selected_num = 0;
+                Drawable buttonDrawable = option1.getBackground();
+                buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+                DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
+                buttonDrawable = option2.getBackground();
+                buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+                DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
+                buttonDrawable = option3.getBackground();
+                buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+                DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
+                buttonDrawable = option4.getBackground();
+                buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+                DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
+            }
+        });
+//        durationSelector.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//            }
+//        });
         VotingType.setOnCheckedChangeListener((group, checkedId) -> {
             for (int i = 0; i < group.getChildCount(); i++) {
                 if (Public.getId() == checkedId) {
@@ -337,13 +522,13 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     two.setChecked(false);
                     three.setChecked(false);
 
-                    noOfJury ="";
+                    noOfJury = "";
                     juryName1.setText("");
-                    JuryName1="";
+                    JuryName1 = "";
                     juryName2.setText("");
-                    JuryName2="";
+                    JuryName2 = "";
                     juryName3.setText("");
-                    JuryName3="";
+                    JuryName3 = "";
 
                     if (jurySelectionContainer.getVisibility() == View.VISIBLE) {
                         YoYo.with(Techniques.FadeOutUp).duration(ANIMATION_DURATION).playOn(jurySelectionContainer);
@@ -364,8 +549,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                         YoYo.with(Techniques.FadeInDown).duration(ANIMATION_DURATION).playOn(publicVotingContainer);
                         YoYo.with(Techniques.FadeInDown).duration(ANIMATION_DURATION).playOn(publicVotingContainerDates);
                     }
-                }
-                else if (Jury.getId() == checkedId) {
+                } else if (Jury.getId() == checkedId) {
                     criteriaContainer.setVisibility(View.VISIBLE);
                     votingType = Jury.getText().toString();
 
@@ -378,17 +562,17 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     two.setChecked(false);
                     three.setChecked(false);
 
-                    noOfJury ="";
+                    noOfJury = "";
                     juryName1.setText("");
-                    JuryName1="";
+                    JuryName1 = "";
                     juryName2.setText("");
-                    JuryName2="";
+                    JuryName2 = "";
                     juryName3.setText("");
-                    JuryName3="";
+                    JuryName3 = "";
                     mDisplayDateVB.setText("");
                     mDisplayDateVE.setText("");
-                    date3="";
-                    date4="";
+                    date3 = "";
+                    date4 = "";
 
                     jury1Container.setVisibility(View.GONE);
                     jury2Container.setVisibility(View.GONE);
@@ -408,8 +592,8 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     }
                     if (noOfJury.equals("1")) {
                         noOfJury = one.getText().toString();
-                        JuryName2="";
-                        JuryName3="";
+                        JuryName2 = "";
+                        JuryName3 = "";
                         if (jury1Container.getVisibility() == View.GONE) {
                             jury1Container.setVisibility(View.VISIBLE);
                             YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(jury1Container);
@@ -425,7 +609,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     }
                     if (noOfJury.equals("2")) {
                         noOfJury = two.getText().toString();
-                        JuryName3="";
+                        JuryName3 = "";
                         if (jury1Container.getVisibility() == View.GONE) {
                             jury1Container.setVisibility(View.VISIBLE);
                             YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(jury1Container);
@@ -454,8 +638,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                             YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(jury3Container);
                         }
                     }
-                }
-                else {
+                } else {
                     criteriaContainer.setVisibility(View.VISIBLE);
                     votingType = PublicAndJury.getText().toString();
 
@@ -468,13 +651,13 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     two.setChecked(false);
                     three.setChecked(false);
 
-                    noOfJury ="";
+                    noOfJury = "";
                     juryName1.setText("");
-                    JuryName1="";
+                    JuryName1 = "";
                     juryName2.setText("");
-                    JuryName2="";
+                    JuryName2 = "";
                     juryName3.setText("");
-                    JuryName3="";
+                    JuryName3 = "";
 
                     jury1Container.setVisibility(View.GONE);
                     jury2Container.setVisibility(View.GONE);
@@ -494,8 +677,8 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                         noOfJury = one.getText().toString();
                         juryName2.setText("");
                         juryName3.setText("");
-                        JuryName2="";
-                        JuryName3="";
+                        JuryName2 = "";
+                        JuryName3 = "";
                         if (jury1Container.getVisibility() == View.GONE) {
                             jury1Container.setVisibility(View.VISIBLE);
                             YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(jury1Container);
@@ -512,7 +695,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     if (noOfJury.equals("2")) {
                         noOfJury = two.getText().toString();
                         juryName3.setText("");
-                        JuryName3="";
+                        JuryName3 = "";
                         if (jury1Container.getVisibility() == View.GONE) {
                             jury1Container.setVisibility(View.VISIBLE);
                             YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(jury1Container);
@@ -550,8 +733,8 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     noOfJury = one.getText().toString();
                     juryName2.setText("");
                     juryName3.setText("");
-                    JuryName2="";
-                    JuryName3="";
+                    JuryName2 = "";
+                    JuryName3 = "";
                     if (jury1Container.getVisibility() == View.GONE) {
                         jury1Container.setVisibility(View.VISIBLE);
                         YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(jury1Container);
@@ -567,7 +750,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                 } else if (two.getId() == checkedId) {
                     noOfJury = two.getText().toString();
                     juryName3.setText("");
-                    JuryName3="";
+                    JuryName3 = "";
                     if (jury1Container.getVisibility() == View.GONE) {
                         jury1Container.setVisibility(View.VISIBLE);
                         YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(jury1Container);
@@ -597,92 +780,59 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                 }
             }
         });
+        cross1.setOnClickListener(v -> {
+            criteriaFields.add(1);
+            criteriaTv1.setText("");
+            criteriaLL1.setVisibility(View.GONE);
+        });
+        cross2.setOnClickListener(v -> {
+            criteriaFields.add(2);
+            criteriaTv2.setText("");
+            criteriaLL2.setVisibility(View.GONE);
+        });
+        cross3.setOnClickListener(v -> {
+            criteriaFields.add(3);
+            criteriaTv3.setText("");
+            criteriaLL3.setVisibility(View.GONE);
+        });
+        cross4.setOnClickListener(v -> {
+            criteriaFields.add(4);
+            criteriaTv4.setText("");
+            criteriaLL4.setVisibility(View.GONE);
+        });
+        cross5.setOnClickListener(v -> {
+            criteriaFields.add(5);
+            criteriaTv5.setText("");
+            criteriaLL5.setVisibility(View.GONE);
+        });
+        cross6.setOnClickListener(v -> {
+            criteriaFields.add(6);
+            criteriaTv6.setText("");
+            criteriaLL6.setVisibility(View.GONE);
+        });
+        cross7.setOnClickListener(v -> {
+            criteriaFields.add(7);
 
-        cross1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            criteriaTv7.setText("");
+            criteriaLL7.setVisibility(View.GONE);
+        });
+        cross8.setOnClickListener(v -> {
+            criteriaFields.add(8);
+            criteriaTv8.setText("");
+            criteriaLL8.setVisibility(View.GONE);
+        });
+        cross9.setOnClickListener(v -> {
+            criteriaFields.add(9);
 
-                criteriaFields.add(1);
-                criteriaTv1.setText("");
-                criteriaLL1.setVisibility(View.GONE);
-            }
+            criteriaTv9.setText("");
+            criteriaLL9.setVisibility(View.GONE);
         });
-        cross2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                criteriaFields.add(2);
-                criteriaTv2.setText("");
-                criteriaLL2.setVisibility(View.GONE);
-            }
-        });
-        cross3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                criteriaFields.add(3);
-                criteriaTv3.setText("");
-                criteriaLL3.setVisibility(View.GONE);
-            }
-        });
-        cross4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                criteriaFields.add(4);
-                criteriaTv4.setText("");
-                criteriaLL4.setVisibility(View.GONE);
-            }
-        });
-        cross5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                criteriaFields.add(5);
-                criteriaTv5.setText("");
-                criteriaLL5.setVisibility(View.GONE);
-            }
-        });
-        cross6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                criteriaFields.add(6);
-                criteriaTv6.setText("");
-                criteriaLL6.setVisibility(View.GONE);
-            }
-        });
-        cross7.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                criteriaFields.add(7);
+        cross10.setOnClickListener(v -> {
+            criteriaFields.add(10);
 
-                criteriaTv7.setText("");
-                criteriaLL7.setVisibility(View.GONE);
-            }
+            criteriaTv10.setText("");
+            criteriaLL10.setVisibility(View.GONE);
         });
-        cross8.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                criteriaFields.add(8);
-                criteriaTv8.setText("");
-                criteriaLL8.setVisibility(View.GONE);
-            }
-        });
-        cross9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                criteriaFields.add(9);
-
-                criteriaTv9.setText("");
-                criteriaLL9.setVisibility(View.GONE);
-            }
-        });
-        cross10.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                criteriaFields.add(10);
-
-                criteriaTv10.setText("");
-                criteriaLL10.setVisibility(View.GONE);
-            }
-        });
-
         criteriaEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -690,8 +840,8 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                charCount.setText(String.valueOf(count)+"/30");
-                if (count>30){
+                charCount.setText(String.valueOf(count) + "/30");
+                if (count > 30) {
                     criteriaEt.setError("Criteria length must be less than 30");
                 }
             }
@@ -700,82 +850,76 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
             public void afterTextChanged(Editable s) {
 
 
-
             }
         });
-
-        addCriteria.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (criteriaEt.getText() != null && !criteriaEt.getText().toString().equals("")) {
-                    if (criteriaEt.getText().toString().length()<=30) {
-                        try {
-                            if (criteriaFields.get(0).equals(1)) {
-                                criteriaFields.remove(0);
-                                criteriaLL1.setVisibility(View.VISIBLE);
-                                criteriaTv1.setText(criteriaEt.getText().toString());
-                                criteriaEt.setText("");
-                            } else if (criteriaFields.get(0).equals(2)) {
-                                criteriaFields.remove(0);
-                                criteriaLL2.setVisibility(View.VISIBLE);
-                                criteriaTv2.setText(criteriaEt.getText().toString());
-                                criteriaEt.setText("");
-                            } else if (criteriaFields.get(0).equals(3)) {
-                                criteriaFields.remove(0);
-                                criteriaLL3.setVisibility(View.VISIBLE);
-                                criteriaTv3.setText(criteriaEt.getText().toString());
-                                criteriaEt.setText("");
-                            } else if (criteriaFields.get(0).equals(4)) {
-                                criteriaFields.remove(0);
-                                criteriaLL4.setVisibility(View.VISIBLE);
-                                criteriaTv4.setText(criteriaEt.getText().toString());
-                                criteriaEt.setText("");
-                            } else if (criteriaFields.get(0).equals(5)) {
-                                criteriaFields.remove(0);
-                                criteriaLL5.setVisibility(View.VISIBLE);
-                                criteriaTv5.setText(criteriaEt.getText().toString());
-                                criteriaEt.setText("");
-                            } else if (criteriaFields.get(0).equals(6)) {
-                                criteriaFields.remove(0);
-                                criteriaLL6.setVisibility(View.VISIBLE);
-                                criteriaTv6.setText(criteriaEt.getText().toString());
-                                criteriaEt.setText("");
-                            } else if (criteriaFields.get(0).equals(7)) {
-                                criteriaFields.remove(0);
-                                criteriaLL7.setVisibility(View.VISIBLE);
-                                criteriaTv7.setText(criteriaEt.getText().toString());
-                                criteriaEt.setText("");
-                            } else if (criteriaFields.get(0).equals(8)) {
-                                criteriaFields.remove(0);
-                                criteriaLL8.setVisibility(View.VISIBLE);
-                                criteriaTv8.setText(criteriaEt.getText().toString());
-                                criteriaEt.setText("");
-                            } else if (criteriaFields.get(0).equals(9)) {
-                                criteriaFields.remove(0);
-                                criteriaLL9.setVisibility(View.VISIBLE);
-                                criteriaTv9.setText(criteriaEt.getText().toString());
-                                criteriaEt.setText("");
-                            } else if (criteriaFields.get(0).equals(10)) {
-                                criteriaFields.remove(0);
-                                criteriaLL10.setVisibility(View.VISIBLE);
-                                criteriaTv10.setText(criteriaEt.getText().toString());
-                                criteriaEt.setText("");
-                            }
-
-                        } catch (IndexOutOfBoundsException e) {
-                            Toast.makeText(mContext, "Only 10 criteria can be added", Toast.LENGTH_LONG).show();
+        addCriteria.setOnClickListener(v -> {
+            if (criteriaEt.getText() != null && !criteriaEt.getText().toString().equals("")) {
+                if (criteriaEt.getText().toString().length() <= 30) {
+                    try {
+                        if (criteriaFields.get(0).equals(1)) {
+                            criteriaFields.remove(0);
+                            criteriaLL1.setVisibility(View.VISIBLE);
+                            criteriaTv1.setText(criteriaEt.getText().toString());
+                            criteriaEt.setText("");
+                        } else if (criteriaFields.get(0).equals(2)) {
+                            criteriaFields.remove(0);
+                            criteriaLL2.setVisibility(View.VISIBLE);
+                            criteriaTv2.setText(criteriaEt.getText().toString());
+                            criteriaEt.setText("");
+                        } else if (criteriaFields.get(0).equals(3)) {
+                            criteriaFields.remove(0);
+                            criteriaLL3.setVisibility(View.VISIBLE);
+                            criteriaTv3.setText(criteriaEt.getText().toString());
+                            criteriaEt.setText("");
+                        } else if (criteriaFields.get(0).equals(4)) {
+                            criteriaFields.remove(0);
+                            criteriaLL4.setVisibility(View.VISIBLE);
+                            criteriaTv4.setText(criteriaEt.getText().toString());
+                            criteriaEt.setText("");
+                        } else if (criteriaFields.get(0).equals(5)) {
+                            criteriaFields.remove(0);
+                            criteriaLL5.setVisibility(View.VISIBLE);
+                            criteriaTv5.setText(criteriaEt.getText().toString());
+                            criteriaEt.setText("");
+                        } else if (criteriaFields.get(0).equals(6)) {
+                            criteriaFields.remove(0);
+                            criteriaLL6.setVisibility(View.VISIBLE);
+                            criteriaTv6.setText(criteriaEt.getText().toString());
+                            criteriaEt.setText("");
+                        } else if (criteriaFields.get(0).equals(7)) {
+                            criteriaFields.remove(0);
+                            criteriaLL7.setVisibility(View.VISIBLE);
+                            criteriaTv7.setText(criteriaEt.getText().toString());
+                            criteriaEt.setText("");
+                        } else if (criteriaFields.get(0).equals(8)) {
+                            criteriaFields.remove(0);
+                            criteriaLL8.setVisibility(View.VISIBLE);
+                            criteriaTv8.setText(criteriaEt.getText().toString());
+                            criteriaEt.setText("");
+                        } else if (criteriaFields.get(0).equals(9)) {
+                            criteriaFields.remove(0);
+                            criteriaLL9.setVisibility(View.VISIBLE);
+                            criteriaTv9.setText(criteriaEt.getText().toString());
+                            criteriaEt.setText("");
+                        } else if (criteriaFields.get(0).equals(10)) {
+                            criteriaFields.remove(0);
+                            criteriaLL10.setVisibility(View.VISIBLE);
+                            criteriaTv10.setText(criteriaEt.getText().toString());
+                            criteriaEt.setText("");
                         }
-                    }else{
-                        Toast.makeText(mContext, "Criteria length must be less than 30", Toast.LENGTH_LONG).show();
 
+                    } catch (IndexOutOfBoundsException e) {
+                        Toast.makeText(mContext, "Only 10 criteria can be added", Toast.LENGTH_LONG).show();
                     }
+                } else {
+                    Toast.makeText(mContext, "Criteria length must be less than 30", Toast.LENGTH_LONG).show();
 
-                }else{
-                    criteriaEt.setError("Please enter something");
                 }
+
+            } else {
+                criteriaEt.setError("Please enter something");
             }
         });
-
         juryName1.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -969,6 +1113,9 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
             Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.show();
         });
+        mDisplayDateTimeQS.setOnClickListener(v -> {
+            customDateTimePicker.showDialog();
+        });
         mDisplayDateWin.setOnClickListener(v -> {
             Calendar cal = Calendar.getInstance();
             int year = cal.get(Calendar.YEAR);
@@ -997,7 +1144,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
             } else {
                 participantType = "Unlimited";
                 mLimitedNoOfParticipants.setText("");
-                noOfParticipants="";
+                noOfParticipants = "";
                 YoYo.with(Techniques.FadeOutLeft).duration(ANIMATION_DURATION).playOn(mLimitedNoOfParticipants);
                 new Handler().postDelayed(() -> mLimitedNoOfParticipants.setVisibility(View.GONE), ANIMATION_DURATION);
             }
@@ -1022,7 +1169,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                 mLimitedNoOfParticipants.setVisibility(View.GONE);
                 new Handler().postDelayed(() -> mEntryFees.setVisibility(View.GONE), ANIMATION_DURATION);
                 mEntryFees.setText("");
-                fees="";
+                fees = "";
                 togglePrize.setClickable(true);
             }
         });
@@ -1048,9 +1195,392 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                 firstPrize.setText("");
                 secondPrize.setText("");
                 thirdPrize.setText("");
-                prizeFirst="";
-                prizeSecond="";
-                prizeThird="";
+                prizeFirst = "";
+                prizeSecond = "";
+                prizeThird = "";
+            }
+        });
+
+        previousButton.setOnClickListener(v -> {
+            if (layoutActive == 2) {
+                layout2.setVisibility(View.GONE);
+                layout1.setVisibility(View.VISIBLE);
+                active2.setVisibility(View.INVISIBLE);
+                active1.setVisibility(View.VISIBLE);
+                layoutActive = 1;
+            }
+            if (layoutActive == 3) {
+                layout3.setVisibility(View.GONE);
+                layout2.setVisibility(View.VISIBLE);
+                active3.setVisibility(View.INVISIBLE);
+                active2.setVisibility(View.VISIBLE);
+                layoutActive = 2;
+            }
+        });
+        nextButton.setOnClickListener(v -> {
+            if (layoutActive == 1) {
+                title = eventTitle.getText().toString();
+                hosted = hostedBy.getText().toString();
+                des = description.getText().toString();
+                if (posterLink.equals("") || title.equals("") || hosted.equals("") || des.equals("") || openFor.equals("") || contestType.equals("") || domain.equals("")) {
+                    if (posterLink.equals("")) {
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(selectPoster);
+                        Toast.makeText(mContext, "Please select a poster", Toast.LENGTH_SHORT).show();
+                    }
+                    if (title.equals("")) {
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(eventTitle);
+                        eventTitle.setError("Please enter a title");
+                        eventTitle.requestFocus();
+                    }
+                    if (hosted.equals("")) {
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(hostedBy);
+                        hostedBy.setError("Please enter a username of host");
+                        hostedBy.requestFocus();
+                    }
+                    if (des.equals("")) {
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(description);
+                        description.setError("Please enter some description at least");
+                        description.requestFocus();
+                    }
+                    if (openFor.equals("")) {
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(AllStudents);
+                        Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
+                        AllStudents.requestFocus();
+                    }
+                    if (contestType.equals("")) {
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(QuizSubmission);
+                        Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
+                        QuizSubmission.requestFocus();
+                    }
+                    if (domain.equals("")) {
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(selectDomain);
+                        Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
+                        selectDomain.requestFocus();
+                    }
+                } else if (contestType.equals("Submission") && fileType.equals("")) {
+                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(PictureVideoDocument);
+                    Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
+                    PictureVideoDocument.requestFocus();
+                } else {
+                    Log.d(TAG, "onCreate: button clicked");
+                    Log.d(TAG, "onCreate: " + title + hosted + des + openFor + fileType);
+                    layout1.setVisibility(View.GONE);
+                    previousButton.setVisibility(View.VISIBLE);
+                    layout2.setVisibility(View.VISIBLE);
+                    layoutActive = 2;
+                    active1.setVisibility(View.INVISIBLE);
+                    active2.setVisibility(View.VISIBLE);
+                }
+            } else if (layoutActive == 2) {
+                if (contestType.equals("Quiz")) {
+//                    if(quizQuestionArrayList.size()<5 || )
+                } else {
+                    if (votingType.equals("") || date1.equals("") || date2.equals("") || date5.equals("")) {
+                        if (votingType.equals("")) {
+                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(VotingType);
+                            Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
+                        }
+                        if (date1.equals("")) {
+                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateRB);
+                        }
+                        if (date2.equals("")) {
+                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateRE);
+                        }
+                        if (date5.equals("")) {
+                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateWin);
+                        }
+                    } else {
+                        if (votingType.equals("Public")) {
+                            if (date3.equals("") || date4.equals("")) {
+                                if (date3.equals("")) {
+                                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateVB);
+                                }
+                                if (date4.equals("")) {
+                                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateVE);
+                                }
+                            } else {
+                                layout3.setVisibility(View.VISIBLE);
+                                layout2.setVisibility(View.GONE);
+                                active2.setVisibility(View.INVISIBLE);
+                                active3.setVisibility(View.VISIBLE);
+                                layoutActive = 3;
+                            }
+                        }
+                        if (votingType.equals("Jury")) {
+                            if (criteriaFields.size() == 10) {
+                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(criteriaContainer);
+                                Toast.makeText(mContext, "Please enter criteria atleast 1", Toast.LENGTH_SHORT).show();
+                                criteriaContainer.requestFocus();
+                            } else if (noOfJury.equals("")) {
+                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(jurySelectionContainer);
+                                Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
+                                jurySelectionContainer.requestFocus();
+                            } else if (noOfJury.equals("1") && juryName1.getCurrentTextColor() != (Color.GREEN)) {
+                                Log.d(TAG, "onCreate: outer1");
+                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                juryName1.setError("Please enter a valid username");
+                                juryName1.requestFocus();
+                            } else if (noOfJury.equals("2") && (juryName1.getCurrentTextColor() != (Color.GREEN) || juryName2.getCurrentTextColor() != (Color.GREEN))) {
+                                Log.d(TAG, "onCreate: outer2");
+                                if (JuryName1.equals("")) {
+                                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                }
+                                if (JuryName2.equals("")) {
+                                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                }
+                            } else if (noOfJury.equals("3") && (juryName1.getCurrentTextColor() != (Color.GREEN) || juryName2.getCurrentTextColor() != (Color.GREEN) || juryName3.getCurrentTextColor() != (Color.GREEN))) {
+                                Log.d(TAG, "onCreate: outer3");
+                                if (JuryName1.equals("")) {
+                                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                }
+                                if (JuryName2.equals("")) {
+                                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                }
+                                if (JuryName3.equals("")) {
+                                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
+                                }
+                            } else if (noOfJury.equals("2") || noOfJury.equals("3")) {
+                                boolean ok = false;
+                                if (noOfJury.equals("2")) {
+                                    if (JuryName1.equals(JuryName2)) {
+                                        ok = true;
+                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                        juryName1.setError("Jury members must be different!");
+                                        juryName1.requestFocus();
+
+                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                        juryName2.setError("Jury members must be different!");
+                                        juryName2.requestFocus();
+                                    }
+
+                                }
+                                if (noOfJury.equals("3")) {
+
+                                    if (JuryName1.equals(JuryName2) || JuryName1.equals(JuryName3) || JuryName2.equals(JuryName3)) {
+                                        ok = true;
+                                        if (JuryName1.equals(JuryName2)) {
+                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                            juryName1.setError("Jury members must be different!");
+                                            juryName1.requestFocus();
+
+                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                            juryName2.setError("Jury members must be different!");
+                                            juryName2.requestFocus();
+                                        }
+                                        if (JuryName1.equals(JuryName3)) {
+                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                            juryName1.setError("Jury members must be different!");
+                                            juryName1.requestFocus();
+
+                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
+                                            juryName3.setError("Jury members must be different!");
+                                            juryName3.requestFocus();
+                                        }
+                                        if (JuryName3.equals(JuryName2)) {
+                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
+                                            juryName3.setError("Jury members must be different!");
+                                            juryName3.requestFocus();
+
+                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                            juryName2.setError("Jury members must be different!");
+                                            juryName2.requestFocus();
+                                        }
+
+                                    }
+                                }
+
+                                if (!ok) {
+                                    layout3.setVisibility(View.VISIBLE);
+                                    layout2.setVisibility(View.GONE);
+                                    active2.setVisibility(View.INVISIBLE);
+                                    active3.setVisibility(View.VISIBLE);
+                                    layoutActive = 3;
+                                }
+
+                            } else {
+                                layout3.setVisibility(View.VISIBLE);
+                                layout2.setVisibility(View.GONE);
+                                active2.setVisibility(View.INVISIBLE);
+                                active3.setVisibility(View.VISIBLE);
+                                layoutActive = 3;
+                            }
+                        }
+                        if (votingType.equals("Jury and Public")) {
+                            if (criteriaFields.size() == 10) {
+                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(criteriaContainer);
+                                Toast.makeText(mContext, "Please enter criteria atleast 1", Toast.LENGTH_SHORT).show();
+                                criteriaContainer.requestFocus();
+                            } else if (noOfJury.equals("")) {
+                                Log.d(TAG, "onCreate: outerouter");
+                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(jurySelectionContainer);
+                                Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
+                                jurySelectionContainer.requestFocus();
+                            } else if (noOfJury.equals("1") && juryName1.getCurrentTextColor() != (Color.GREEN)) {
+                                Log.d(TAG, "onCreate: outer1");
+                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                juryName1.setError("Please enter a valid username");
+                                juryName1.requestFocus();
+                            } else if (noOfJury.equals("2") && (juryName1.getCurrentTextColor() != (Color.GREEN) || juryName2.getCurrentTextColor() != (Color.GREEN))) {
+                                Log.d(TAG, "onCreate: outer2");
+                                if (JuryName1.equals("")) {
+                                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                }
+                                if (JuryName2.equals("")) {
+                                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                }
+                            } else if (noOfJury.equals("3") && (juryName1.getCurrentTextColor() != (Color.GREEN) || juryName2.getCurrentTextColor() != (Color.GREEN) || juryName3.getCurrentTextColor() != (Color.GREEN))) {
+                                Log.d(TAG, "onCreate: outer3");
+                                if (JuryName1.equals("")) {
+                                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                }
+                                if (JuryName2.equals("")) {
+                                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                }
+                                if (JuryName3.equals("")) {
+                                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
+                                }
+                            } else {
+                                if (date3.equals("") || date4.equals("")) {
+                                    if (date3.equals("")) {
+                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateVB);
+                                        mDisplayDateVB.setError("Please enter a date");
+                                        mDisplayDateVB.requestFocus();
+                                    }
+                                    if (date4.equals("")) {
+                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateVE);
+                                        mDisplayDateVE.setError("Please enter a date");
+                                        mDisplayDateVE.requestFocus();
+                                    }
+                                } else if (noOfJury.equals("2") || noOfJury.equals("3")) {
+                                    boolean ok = false;
+                                    if (noOfJury.equals("2")) {
+                                        if (JuryName1.equals(JuryName2)) {
+                                            ok = true;
+                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                            juryName1.setError("Jury members must be different!");
+                                            juryName1.requestFocus();
+                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                            juryName2.setError("Jury members must be different!");
+                                            juryName2.requestFocus();
+                                        }
+
+                                    }
+                                    if (noOfJury.equals("3")) {
+
+                                        if (JuryName1.equals(JuryName2) || JuryName1.equals(JuryName3) || JuryName2.equals(JuryName3)) {
+                                            ok = true;
+
+                                            if (JuryName1.equals(JuryName2)) {
+                                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                                juryName1.setError("Jury members must be different!");
+                                                juryName1.requestFocus();
+
+                                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                                juryName2.setError("Jury members must be different!");
+                                                juryName2.requestFocus();
+                                            }
+                                            if (JuryName1.equals(JuryName3)) {
+                                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
+                                                juryName1.setError("Jury members must be different!");
+                                                juryName1.requestFocus();
+
+                                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
+                                                juryName3.setError("Jury members must be different!");
+                                                juryName3.requestFocus();
+                                            }
+                                            if (JuryName3.equals(JuryName2)) {
+                                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
+                                                juryName3.setError("Jury members must be different!");
+                                                juryName3.requestFocus();
+
+                                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
+                                                juryName2.setError("Jury members must be different!");
+                                                juryName2.requestFocus();
+                                            }
+
+                                        }
+                                    }
+                                    if (!ok) {
+                                        layout3.setVisibility(View.VISIBLE);
+                                        layout2.setVisibility(View.GONE);
+                                        active2.setVisibility(View.INVISIBLE);
+                                        active3.setVisibility(View.VISIBLE);
+                                        layoutActive = 3;
+                                    }
+
+
+                                } else {
+                                    layout3.setVisibility(View.VISIBLE);
+                                    layout2.setVisibility(View.GONE);
+                                    active2.setVisibility(View.INVISIBLE);
+                                    active3.setVisibility(View.VISIBLE);
+                                    layoutActive = 3;
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if (layoutActive == 3) {
+
+                if (mLimitedNoOfParticipants.getVisibility() == View.VISIBLE)
+                    noOfParticipants = mLimitedNoOfParticipants.getText().toString();
+                if (mEntryFees.getVisibility() == View.VISIBLE)
+                    fees = mEntryFees.getText().toString();
+                extraRule = extraRules.getText().toString();
+
+                if (toggleLimitedNoOfParticipants.isChecked() && noOfParticipants.equals("")) {
+                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mLimitedNoOfParticipants);
+                    mLimitedNoOfParticipants.setError("Please enter a number");
+                    mLimitedNoOfParticipants.requestFocus();
+                } else if (toggleEntryFees.isChecked() && fees.equals("")) {
+                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mEntryFees);
+                    mEntryFees.setError("Please enter a number");
+                    mEntryFees.requestFocus();
+                } else if (togglePrize.isChecked() && (prizeFirst.equals("") || prizeSecond.equals("")
+                        || prizeThird.equals("") || prizeFirst.equals("0") || prizeSecond.equals("0")
+                        || prizeThird.equals("0") || Integer.parseInt(prizeSecond) >= Integer.parseInt(prizeFirst) ||
+                        Integer.parseInt(prizeThird) >= Integer.parseInt(prizeSecond)
+                        || checkFee(fees, prizeThird))) {
+                    if (prizeFirst.equals("") || prizeFirst.equals("0")) {
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(firstPrize);
+                        firstPrize.setError("Please enter some prize");
+                        firstPrize.requestFocus();
+                    }
+                    if (prizeSecond.equals("") || prizeSecond.equals("0")) {
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(secondPrize);
+                        secondPrize.setError("Please enter some prize");
+                        secondPrize.requestFocus();
+                    }
+                    if (prizeThird.equals("") || prizeThird.equals("0")) {
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(thirdPrize);
+                        thirdPrize.setError("Please enter some prize");
+                        thirdPrize.requestFocus();
+                    }
+                    if (Integer.parseInt(prizeSecond) >= Integer.parseInt(prizeFirst)) {
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(firstPrize);
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(secondPrize);
+                        firstPrize.setError("2nd prize cannot be more than 1st");
+                        secondPrize.setError("2nd prize cannot be more than 1st");
+                        firstPrize.requestFocus();
+                        secondPrize.requestFocus();
+                    }
+                    if (Integer.parseInt(prizeThird) >= Integer.parseInt(prizeSecond)) {
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(secondPrize);
+                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(thirdPrize);
+                        secondPrize.setError("3nd prize cannot be more than 2nd");
+                        thirdPrize.setError("3rd prize cannot be more than 2nd");
+                        secondPrize.requestFocus();
+                        thirdPrize.requestFocus();
+                    }
+                    if (!fees.equals("")) {
+                        if ((Integer.parseInt(prizeThird) <= Integer.parseInt(fees))) {
+                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mEntryFees);
+                            mEntryFees.setError("Entry fee must be less than each prize money");
+                            mEntryFees.requestFocus();
+                        }
+                    }
+                } else
+                    submit();
             }
         });
 
@@ -1169,394 +1699,56 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                 }
             });
         }
-        previousButton.setOnClickListener(v -> {
-            if (layoutActive == 2) {
-                layout2.setVisibility(View.GONE);
-                layout1.setVisibility(View.VISIBLE);
-                active2.setVisibility(View.INVISIBLE);
-                active1.setVisibility(View.VISIBLE);
-                layoutActive = 1;
-            }
-            if (layoutActive == 3) {
-                layout3.setVisibility(View.GONE);
-                layout2.setVisibility(View.VISIBLE);
-                active3.setVisibility(View.INVISIBLE);
-                active2.setVisibility(View.VISIBLE);
-                layoutActive = 2;
-            }
-        });
-        nextButton.setOnClickListener(v -> {
-            if (layoutActive == 1) {
-                title = eventTitle.getText().toString();
-                hosted = hostedBy.getText().toString();
-                des = description.getText().toString();
-                if (posterLink.equals("") || title.equals("") || hosted.equals("") || des.equals("") || openFor.equals("") || fileType.equals("") || domain.equals("")) {
-                    if (posterLink.equals("")) {
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(selectPoster);
-                        Toast.makeText(mContext, "Please select a poster", Toast.LENGTH_SHORT).show();
-                    }
-                    if (title.equals("")) {
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(eventTitle);
-                        eventTitle.setError("Please enter a title");
-                        eventTitle.requestFocus();
-                    }
-                    if (hosted.equals("")) {
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(hostedBy);
-                        hostedBy.setError("Please enter a username of host");
-                        hostedBy.requestFocus();
-                    }
-                    if (des.equals("")) {
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(description);
-                        description.setError("Please enter some description at least");
-                        description.requestFocus();
-                    }
-                    if (openFor.equals("")) {
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(AllStudents);
-                        Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
-                        AllStudents.requestFocus();
-                    }
-                    if (fileType.equals("")) {
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(PictureVideoDocument);
-                        Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
-                        PictureVideoDocument.requestFocus();
-                    }
-                    if (domain.equals("")) {
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(selectDomain);
-                        Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
-                        selectDomain.requestFocus();
-                    }
-                } else {
-                    Log.d(TAG, "onCreate: button clicked");
-                    Log.d(TAG, "onCreate: " + title + hosted + des + openFor + fileType);
-                    layout1.setVisibility(View.GONE);
-                    previousButton.setVisibility(View.VISIBLE);
-                    layout2.setVisibility(View.VISIBLE);
-                    layoutActive = 2;
-                    active1.setVisibility(View.INVISIBLE);
-                    active2.setVisibility(View.VISIBLE);
-                }
-            } else if (layoutActive == 2) {
-                if (votingType.equals("") || date1.equals("") || date2.equals("") || date5.equals("")) {
-                    if (votingType.equals("")) {
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(VotingType);
-                        Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
-                    }
-                    if (date1.equals("")) {
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateRB);
-                    }
-                    if (date2.equals("")) {
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateRE);
-                    }
-                    if (date5.equals("")) {
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateWin);
-                    }
-                } else {
-                    if (votingType.equals("Public")) {
-                        if (date3.equals("") || date4.equals("")) {
-                            if (date3.equals("")) {
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateVB);
-                            }
-                            if (date4.equals("")) {
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateVE);
-                            }
-                        } else {
-                            layout3.setVisibility(View.VISIBLE);
-                            layout2.setVisibility(View.GONE);
-                            active2.setVisibility(View.INVISIBLE);
-                            active3.setVisibility(View.VISIBLE);
-                            layoutActive = 3;
-                        }
-                    }
-                    if (votingType.equals("Jury")) {
-                        if (criteriaFields.size()==10){
-                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(criteriaContainer);
-                            Toast.makeText(mContext, "Please enter criteria atleast 1", Toast.LENGTH_SHORT).show();
-                            criteriaContainer.requestFocus();
-                        }
-                      else  if (noOfJury.equals("")) {
-                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(jurySelectionContainer);
-                            Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
-                            jurySelectionContainer.requestFocus();
-                        } else if (noOfJury.equals("1") && juryName1.getCurrentTextColor() != (Color.GREEN)) {
-                            Log.d(TAG, "onCreate: outer1");
-                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
-                            juryName1.setError("Please enter a valid username");
-                            juryName1.requestFocus();
-                        } else if (noOfJury.equals("2") && (juryName1.getCurrentTextColor() != (Color.GREEN) || juryName2.getCurrentTextColor() != (Color.GREEN))) {
-                            Log.d(TAG, "onCreate: outer2");
-                            if (JuryName1.equals("")) {
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
-                            }
-                            if (JuryName2.equals("")) {
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
-                            }
-                        } else if (noOfJury.equals("3") && (juryName1.getCurrentTextColor() != (Color.GREEN) || juryName2.getCurrentTextColor() != (Color.GREEN) || juryName3.getCurrentTextColor() != (Color.GREEN))) {
-                            Log.d(TAG, "onCreate: outer3");
-                            if (JuryName1.equals("")) {
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
-                            }
-                            if (JuryName2.equals("")) {
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
-                            }
-                            if (JuryName3.equals("")) {
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
-                            }
-                        }else if(noOfJury.equals("2")||noOfJury.equals("3")){
-                          boolean ok =false;
-                          if (noOfJury.equals("2")){
-                              if(JuryName1.equals(JuryName2)){
-                                  ok=true;
-                                  YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
-                                  juryName1.setError("Jury members must be different!");
-                                  juryName1.requestFocus();
-
-                                  YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
-                                  juryName2.setError("Jury members must be different!");
-                                  juryName2.requestFocus();
-                              }
-
-                          }
-                            if (noOfJury.equals("3")){
-
-                                if(JuryName1.equals(JuryName2)||JuryName1.equals(JuryName3)||JuryName2.equals(JuryName3)) {
-                                    ok=true;
-                                    if (JuryName1.equals(JuryName2)){
-                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
-                                        juryName1.setError("Jury members must be different!");
-                                        juryName1.requestFocus();
-
-                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
-                                        juryName2.setError("Jury members must be different!");
-                                        juryName2.requestFocus();
-                                    }
-                                    if (JuryName1.equals(JuryName3)){
-                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
-                                        juryName1.setError("Jury members must be different!");
-                                        juryName1.requestFocus();
-
-                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
-                                        juryName3.setError("Jury members must be different!");
-                                        juryName3.requestFocus();
-                                    }
-                                    if (JuryName3.equals(JuryName2)){
-                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
-                                        juryName3.setError("Jury members must be different!");
-                                        juryName3.requestFocus();
-
-                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
-                                        juryName2.setError("Jury members must be different!");
-                                        juryName2.requestFocus();
-                                    }
-
-                                }
-                            }
-
-                            if(!ok){
-                                layout3.setVisibility(View.VISIBLE);
-                                layout2.setVisibility(View.GONE);
-                                active2.setVisibility(View.INVISIBLE);
-                                active3.setVisibility(View.VISIBLE);
-                                layoutActive = 3;
-                            }
-
-                        }
-                      else
-                         {
-                            layout3.setVisibility(View.VISIBLE);
-                            layout2.setVisibility(View.GONE);
-                            active2.setVisibility(View.INVISIBLE);
-                            active3.setVisibility(View.VISIBLE);
-                            layoutActive = 3;
-                        }
-                    }
-                    if (votingType.equals("Jury and Public")) {
-                        if (criteriaFields.size()==10){
-                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(criteriaContainer);
-                            Toast.makeText(mContext, "Please enter criteria atleast 1", Toast.LENGTH_SHORT).show();
-                            criteriaContainer.requestFocus();
-                        }
-                        else if (noOfJury.equals("")) {
-                            Log.d(TAG, "onCreate: outerouter");
-                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(jurySelectionContainer);
-                            Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
-                            jurySelectionContainer.requestFocus();
-                        } else if (noOfJury.equals("1") && juryName1.getCurrentTextColor() != (Color.GREEN)) {
-                            Log.d(TAG, "onCreate: outer1");
-                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
-                            juryName1.setError("Please enter a valid username");
-                            juryName1.requestFocus();
-                        } else if (noOfJury.equals("2") && (juryName1.getCurrentTextColor() != (Color.GREEN) || juryName2.getCurrentTextColor() != (Color.GREEN))) {
-                            Log.d(TAG, "onCreate: outer2");
-                            if (JuryName1.equals("")) {
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
-                            }
-                            if (JuryName2.equals("")) {
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
-                            }
-                        } else if (noOfJury.equals("3") && (juryName1.getCurrentTextColor() != (Color.GREEN) || juryName2.getCurrentTextColor() != (Color.GREEN) || juryName3.getCurrentTextColor() != (Color.GREEN))) {
-                            Log.d(TAG, "onCreate: outer3");
-                            if (JuryName1.equals("")) {
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
-                            }
-                            if (JuryName2.equals("")) {
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
-                            }
-                            if (JuryName3.equals("")) {
-                                YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
-                            }
-                        } else {
-                            if (date3.equals("") || date4.equals("")) {
-                                if (date3.equals("")) {
-                                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateVB);
-                                    mDisplayDateVB.setError("Please enter a date");
-                                    mDisplayDateVB.requestFocus();
-                                }
-                                if (date4.equals("")) {
-                                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateVE);
-                                    mDisplayDateVE.setError("Please enter a date");
-                                    mDisplayDateVE.requestFocus();
-                                }
-                            }else if(noOfJury.equals("2")||noOfJury.equals("3")){
-                                boolean ok=false;
-                                if (noOfJury.equals("2")){
-                                    if(JuryName1.equals(JuryName2)){
-                                        ok=true;
-                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
-                                        juryName1.setError("Jury members must be different!");
-                                        juryName1.requestFocus();
-                                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
-                                        juryName2.setError("Jury members must be different!");
-                                        juryName2.requestFocus();
-                                    }
-
-                                }
-                                if (noOfJury.equals("3")){
-
-                                    if(JuryName1.equals(JuryName2)||JuryName1.equals(JuryName3)||JuryName2.equals(JuryName3)) {
-                                        ok=true;
-
-                                        if (JuryName1.equals(JuryName2)){
-                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
-                                            juryName1.setError("Jury members must be different!");
-                                            juryName1.requestFocus();
-
-                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
-                                            juryName2.setError("Jury members must be different!");
-                                            juryName2.requestFocus();
-                                        }
-                                        if (JuryName1.equals(JuryName3)){
-                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName1);
-                                            juryName1.setError("Jury members must be different!");
-                                            juryName1.requestFocus();
-
-                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
-                                            juryName3.setError("Jury members must be different!");
-                                            juryName3.requestFocus();
-                                        }
-                                        if (JuryName3.equals(JuryName2)){
-                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName3);
-                                            juryName3.setError("Jury members must be different!");
-                                            juryName3.requestFocus();
-
-                                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(juryName2);
-                                            juryName2.setError("Jury members must be different!");
-                                            juryName2.requestFocus();
-                                        }
-
-                                    }
-                                }
-                                if(!ok){
-                                    layout3.setVisibility(View.VISIBLE);
-                                    layout2.setVisibility(View.GONE);
-                                    active2.setVisibility(View.INVISIBLE);
-                                    active3.setVisibility(View.VISIBLE);
-                                    layoutActive = 3;
-                                }
-
-
-                            } else {
-                                layout3.setVisibility(View.VISIBLE);
-                                layout2.setVisibility(View.GONE);
-                                active2.setVisibility(View.INVISIBLE);
-                                active3.setVisibility(View.VISIBLE);
-                                layoutActive = 3;
-                            }
-                        }
-                    }
-                }
-            } else if (layoutActive == 3) {
-
-                if (mLimitedNoOfParticipants.getVisibility() == View.VISIBLE)
-                    noOfParticipants = mLimitedNoOfParticipants.getText().toString();
-                if (mEntryFees.getVisibility() == View.VISIBLE)
-                    fees = mEntryFees.getText().toString();
-                extraRule = extraRules.getText().toString();
-
-                if (toggleLimitedNoOfParticipants.isChecked() && noOfParticipants.equals("")) {
-                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mLimitedNoOfParticipants);
-                    mLimitedNoOfParticipants.setError("Please enter a number");
-                    mLimitedNoOfParticipants.requestFocus();
-                } else if (toggleEntryFees.isChecked() && fees.equals("")) {
-                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mEntryFees);
-                    mEntryFees.setError("Please enter a number");
-                    mEntryFees.requestFocus();
-                } else if (togglePrize.isChecked() && (prizeFirst.equals("") || prizeSecond.equals("")
-                        || prizeThird.equals("") || prizeFirst.equals("0") || prizeSecond.equals("0")
-                        || prizeThird.equals("0") || Integer.parseInt(prizeSecond) >= Integer.parseInt(prizeFirst) ||
-                        Integer.parseInt(prizeThird) >= Integer.parseInt(prizeSecond)
-                        ||checkFee(fees,prizeThird))) {
-                    if (prizeFirst.equals("") || prizeFirst.equals("0")) {
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(firstPrize);
-                        firstPrize.setError("Please enter some prize");
-                        firstPrize.requestFocus();
-                    }
-                    if (prizeSecond.equals("") || prizeSecond.equals("0")) {
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(secondPrize);
-                        secondPrize.setError("Please enter some prize");
-                        secondPrize.requestFocus();
-                    }
-                    if (prizeThird.equals("") || prizeThird.equals("0")) {
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(thirdPrize);
-                        thirdPrize.setError("Please enter some prize");
-                        thirdPrize.requestFocus();
-                    }
-                    if (Integer.parseInt(prizeSecond) >= Integer.parseInt(prizeFirst)) {
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(firstPrize);
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(secondPrize);
-                        firstPrize.setError("2nd prize cannot be more than 1st");
-                        secondPrize.setError("2nd prize cannot be more than 1st");
-                        firstPrize.requestFocus();
-                        secondPrize.requestFocus();
-                    }
-                    if (Integer.parseInt(prizeThird) >= Integer.parseInt(prizeSecond)) {
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(secondPrize);
-                        YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(thirdPrize);
-                        secondPrize.setError("3nd prize cannot be more than 2nd");
-                        thirdPrize.setError("3rd prize cannot be more than 2nd");
-                        secondPrize.requestFocus();
-                        thirdPrize.requestFocus();
-                    }
-                    if(!fees.equals("")) {
-                        if ((Integer.parseInt(prizeThird) <= Integer.parseInt(fees))) {
-                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mEntryFees);
-                            mEntryFees.setError("Entry fee must be less than each prize money");
-                            mEntryFees.requestFocus();
-                        }
-                    }
-                } else
-                    submit();
-            }
-        });
 
     }
-    private boolean checkFee(String fees, String prizeThird) {
-        if (fees.equals("")){
+
+
+    public static boolean isDateAfter(String startDate, String endDate) {
+        try {
+            String myFormatString = "dd-M-yyyy"; // for example
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat df = new SimpleDateFormat(myFormatString);
+            Date date1 = df.parse(endDate);
+            Date startingDate = df.parse(startDate);
+            assert date1 != null;
+            return date1.after(startingDate);
+        } catch (Exception e) {
             return false;
-        }else{
-            return Integer.parseInt(prizeThird) <= Integer.parseInt(fees);
         }
     }
 
+    private void disableEmoji() {
+        InputFilter emojiFilter = (source, start, end, dest, dstart, dend) -> {
+            for (int index = start; index < end - 1; index++) {
+                int type = Character.getType(source.charAt(index));
+                if (type == Character.SURROGATE) return "";
+            }
+            return null;
+        };
+        eventTitle.setFilters(new InputFilter[]{emojiFilter});
+        hostedBy.setFilters(new InputFilter[]{emojiFilter});
+        description.setFilters(new InputFilter[]{emojiFilter});
+        juryName1.setFilters(new InputFilter[]{emojiFilter});
+        juryName2.setFilters(new InputFilter[]{emojiFilter});
+        juryName3.setFilters(new InputFilter[]{emojiFilter});
+        firstPrize.setFilters(new InputFilter[]{emojiFilter});
+        secondPrize.setFilters(new InputFilter[]{emojiFilter});
+        thirdPrize.setFilters(new InputFilter[]{emojiFilter});
+        totalPrize.setFilters(new InputFilter[]{emojiFilter});
+        extraRules.setFilters(new InputFilter[]{emojiFilter});
+    }
+
+    public static void hideKeyboardFrom(Context context, View view) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    private boolean checkFee(String fees, String prizeThird) {
+        if (fees.equals("")) {
+            return false;
+        } else {
+            return Integer.parseInt(prizeThird) <= Integer.parseInt(fees);
+        }
+    }
 
     private void submit() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -1599,8 +1791,8 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     i.putExtra("jname_3", JuryName3);
                     i.putExtra("openfor", openFor);
                     i.putExtra("host", hosted);
-                    if (votingType.equals("Jury")||votingType.equals("Jury and Public")){
-                        String judging_criterias= getJudgingString();
+                    if (votingType.equals("Jury") || votingType.equals("Jury and Public")) {
+                        String judging_criterias = getJudgingString();
                         i.putExtra("judgeCriteria", judging_criterias);
                     }
                     startActivity(i);
@@ -1612,9 +1804,9 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     }
 
     private String getJudgingString() {
-       String f_string = "";
-       String addString="";
-       boolean ok=true;
+        String f_string = "";
+        String addString = "";
+        boolean ok = true;
         for (int x = 1; x <= 10; x++) {
             addString = getStringFromTV(x);
             if (addString == null || addString.equals("")) {
@@ -1622,47 +1814,47 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                 if (ok) {
                     f_string = addString;
                     ok = false;
-                } else{
+                } else {
                     f_string = f_string + "///" + addString;
 
                 }
             }
 
         }
-       return f_string;
+        return f_string;
     }
 
-    private  String getStringFromTV(int l) {
-         if(l==1){
-          return(criteriaTv1.getText().toString());
-       }else if(l==2){
+    private String getStringFromTV(int l) {
+        if (l == 1) {
+            return (criteriaTv1.getText().toString());
+        } else if (l == 2) {
 
-             return(criteriaTv2.getText().toString());
-        }else if(l==3){
+            return (criteriaTv2.getText().toString());
+        } else if (l == 3) {
 
-             return(criteriaTv3.getText().toString());
-        }else if(l==4){
+            return (criteriaTv3.getText().toString());
+        } else if (l == 4) {
 
-             return(criteriaTv4.getText().toString());
-        }else if(l==5){
+            return (criteriaTv4.getText().toString());
+        } else if (l == 5) {
 
-             return(criteriaTv5.getText().toString());
-        }else if(l==6){
+            return (criteriaTv5.getText().toString());
+        } else if (l == 6) {
 
-             return(criteriaTv6.getText().toString());
-        }else if(l==7){
+            return (criteriaTv6.getText().toString());
+        } else if (l == 7) {
 
-             return(criteriaTv7.getText().toString());
-        }else if(l==8){
+            return (criteriaTv7.getText().toString());
+        } else if (l == 8) {
 
-             return(criteriaTv8.getText().toString());
-        }else if(l==9){
+            return (criteriaTv8.getText().toString());
+        } else if (l == 9) {
 
-             return(criteriaTv9.getText().toString());
-        }else if(l==10){
+            return (criteriaTv9.getText().toString());
+        } else if (l == 10) {
 
-             return(criteriaTv10.getText().toString());
-        }else return null;
+            return (criteriaTv10.getText().toString());
+        } else return null;
     }
 
     private void updateTotal() {
@@ -1688,6 +1880,8 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     private void initializeWidgets() {
         //back arrow
         backArrow = findViewById(R.id.backarrow);
+        mTopBarTitle = findViewById(R.id.titleTopBar);
+        mTopBarTitle.setText("Create Contest");
 
         //layouts
         layout1 = findViewById(R.id.layout1);
@@ -1716,12 +1910,33 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
         AllStudents = findViewById(R.id.AllStudents);
         all = findViewById(R.id.All);
         students = findViewById(R.id.student);
+        submissionTypeContainer = findViewById(R.id.submissionTypeContainer);
+        QuizSubmission = findViewById(R.id.QuizSubmission);
+        quiz = findViewById(R.id.quiz);
+        submission = findViewById(R.id.submission);
         PictureVideoDocument = findViewById(R.id.PictureVideoDocument);
         picture = findViewById(R.id.picture);
         mediaLink = findViewById(R.id.Media_Link);
         selectDomain = findViewById(R.id.selectDomain);
 
         //layout 2 widgets
+
+        question = findViewById(R.id.question);
+        option1 = findViewById(R.id.option1);
+        option2 = findViewById(R.id.option2);
+        option3 = findViewById(R.id.option3);
+        option4 = findViewById(R.id.option4);
+        option1value = findViewById(R.id.option1Value);
+        option2value = findViewById(R.id.option2Value);
+        option3value = findViewById(R.id.option3Value);
+        option4value = findViewById(R.id.option4Value);
+        durationSelector = findViewById(R.id.durationSelector);
+        quizStartDateTimeContainer = findViewById(R.id.quizStartDateTimeContainer);
+        quizStartDateTimePickerContainer = findViewById(R.id.quizStartDateTimePickerContainer);
+
+        judgingCriteriaBox = findViewById(R.id.judgingCriteriaBox);
+        questionAdditionBox = findViewById(R.id.questionAdditionBox);
+        addQuestionButton = findViewById(R.id.addQuestionButton);
         VotingType = findViewById(R.id.votingType);
         Public = findViewById(R.id.publicVote);
         Jury = findViewById(R.id.juryVote);
@@ -1737,6 +1952,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
         mDisplayDateVB = findViewById(R.id.datepicker3);
         mDisplayDateVE = findViewById(R.id.datepicker4);
         mDisplayDateWin = findViewById(R.id.datepicker5);
+        mDisplayDateTimeQS = findViewById(R.id.datetimePicker);
         JuryNumber = findViewById(R.id.jurySelection);
         one = findViewById(R.id.one);
         two = findViewById(R.id.two);
@@ -1753,38 +1969,38 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
         charCount = findViewById(R.id.txtCount);
         criteriaContainer = findViewById(R.id.judgingCriteria);
 
-        cross1=findViewById(R.id.cross1);
-        cross2=findViewById(R.id.cross2);
-        cross3=findViewById(R.id.cross3);
-        cross4=findViewById(R.id.cross4);
-        cross5=findViewById(R.id.cross5);
-        cross6=findViewById(R.id.cross6);
-        cross7=findViewById(R.id.cross7);
-        cross8=findViewById(R.id.cross8);
-        cross9=findViewById(R.id.cross9);
-        cross10=findViewById(R.id.cross10);
+        cross1 = findViewById(R.id.cross1);
+        cross2 = findViewById(R.id.cross2);
+        cross3 = findViewById(R.id.cross3);
+        cross4 = findViewById(R.id.cross4);
+        cross5 = findViewById(R.id.cross5);
+        cross6 = findViewById(R.id.cross6);
+        cross7 = findViewById(R.id.cross7);
+        cross8 = findViewById(R.id.cross8);
+        cross9 = findViewById(R.id.cross9);
+        cross10 = findViewById(R.id.cross10);
 
-        criteriaTv1=findViewById(R.id.c1);
-        criteriaTv2=findViewById(R.id.c2);
-        criteriaTv3=findViewById(R.id.c3);
-        criteriaTv4=findViewById(R.id.c4);
-        criteriaTv5=findViewById(R.id.c5);
-        criteriaTv6=findViewById(R.id.c6);
-        criteriaTv7=findViewById(R.id.c7);
-        criteriaTv8=findViewById(R.id.c8);
-        criteriaTv9=findViewById(R.id.c9);
-        criteriaTv10=findViewById(R.id.c10);
+        criteriaTv1 = findViewById(R.id.c1);
+        criteriaTv2 = findViewById(R.id.c2);
+        criteriaTv3 = findViewById(R.id.c3);
+        criteriaTv4 = findViewById(R.id.c4);
+        criteriaTv5 = findViewById(R.id.c5);
+        criteriaTv6 = findViewById(R.id.c6);
+        criteriaTv7 = findViewById(R.id.c7);
+        criteriaTv8 = findViewById(R.id.c8);
+        criteriaTv9 = findViewById(R.id.c9);
+        criteriaTv10 = findViewById(R.id.c10);
 
-        criteriaLL1=findViewById(R.id.criteriaLinear1);
-        criteriaLL2=findViewById(R.id.criteriaLinear2);
-        criteriaLL3=findViewById(R.id.criteriaLinear3);
-        criteriaLL4=findViewById(R.id.criteriaLinear4);
-        criteriaLL5=findViewById(R.id.criteriaLinear5);
-        criteriaLL6=findViewById(R.id.criteriaLinear6);
-        criteriaLL7=findViewById(R.id.criteriaLinear7);
-        criteriaLL8=findViewById(R.id.criteriaLinear8);
-        criteriaLL9=findViewById(R.id.criteriaLinear9);
-        criteriaLL10=findViewById(R.id.criteriaLinear10);
+        criteriaLL1 = findViewById(R.id.criteriaLinear1);
+        criteriaLL2 = findViewById(R.id.criteriaLinear2);
+        criteriaLL3 = findViewById(R.id.criteriaLinear3);
+        criteriaLL4 = findViewById(R.id.criteriaLinear4);
+        criteriaLL5 = findViewById(R.id.criteriaLinear5);
+        criteriaLL6 = findViewById(R.id.criteriaLinear6);
+        criteriaLL7 = findViewById(R.id.criteriaLinear7);
+        criteriaLL8 = findViewById(R.id.criteriaLinear8);
+        criteriaLL9 = findViewById(R.id.criteriaLinear9);
+        criteriaLL10 = findViewById(R.id.criteriaLinear10);
 
 
         jurySelectionContainer.setVisibility(View.GONE);
@@ -1794,7 +2010,6 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
         j1Checked.setVisibility(View.GONE);
         j2Checked.setVisibility(View.GONE);
         j3Checked.setVisibility(View.GONE);
-
 
 
         publicVotingContainer.setVisibility(View.GONE);
@@ -1820,6 +2035,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
         P2.setVisibility(View.GONE);
         P3.setVisibility(View.GONE);
     }
+
     public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
         Cursor cursor = null;
         final String column = "_data";
@@ -1939,7 +2155,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
             Uri uri = data.getData();
             if (uri != null) {
                 imgPath = getPathFromUri(mContext, uri);
-                if(imgPath!=null) {
+                if (imgPath != null) {
                     Log.d(TAG, "onActivityResult: path: " + imgPath);
                     Log.d(TAG, "onActivityResult: uri: " + uri);
                     imgurl = imgPath;
@@ -1957,9 +2173,9 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
             String mAppend = "file:/";
             Log.d(TAG, "setImage: mAppend" + mAppend);
             if (!posterLink.equals("")) {
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)selectPoster.getLayoutParams();
-                params.addRule(RelativeLayout.ALIGN_PARENT_END,RelativeLayout.TRUE);
-                params.addRule(RelativeLayout.ALIGN_PARENT_TOP,RelativeLayout.TRUE);
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) selectPoster.getLayoutParams();
+                params.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE);
+                params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
                 selectPoster.setLayoutParams(params);
                 selectPoster.setAlpha(0.5f);
                 ((TextView) findViewById(R.id.selectPosterText)).setText("Change Poster");
@@ -1971,7 +2187,8 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)
                         .placeholder(R.drawable.load)
-                        .into(poster);                 }
+                        .into(poster);
+            }
         }
     }
 
@@ -1992,6 +2209,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     private void usernameExist(EditText juryname) {
         juryname.setTextColor(Color.GREEN);
     }
+
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
         mAuth = FirebaseAuth.getInstance();

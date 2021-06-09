@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
@@ -15,34 +16,35 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/currentActive"
         android:layout_width="match_parent"
         android:layout_height="5dp"
-        android:orientation="horizontal"
-        android:id="@+id/currentActive"
         android:layout_below="@id/reLayout1"
+        android:orientation="horizontal"
         android:weightSum="3">
+
         <View
             android:id="@+id/active1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/colorPrimary" />
+
         <View
             android:id="@+id/active2"
-            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
-            />
+            android:visibility="invisible" />
+
         <View
             android:id="@+id/active3"
-            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@color/colorPrimary"
-            />
+            android:visibility="invisible" />
     </LinearLayout>
 
     <ScrollView
@@ -51,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/currentActive"
         android:background="@color/white"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -75,8 +77,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    android:gravity="end|top"
                     android:background="@drawable/circular_corner_rectangle_white_border"
+                    android:gravity="end|top"
                     android:orientation="horizontal"
                     android:padding="5dp">
 
@@ -106,11 +108,11 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
-                android:hint="Event Title"
-                android:padding="10dp"
                 android:background="@drawable/rectangular_border"
+                android:hint="Event Title"
                 android:imeOptions="actionNext"
                 android:inputType="textFilter"
+                android:padding="10dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/grey"
                 android:textSize="18sp" />
@@ -123,11 +125,11 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
                 android:background="@drawable/rectangular_border"
-                android:padding="10dp"
-
                 android:hint="Hosted By"
+
                 android:imeOptions="actionNext"
                 android:inputType="textFilter"
+                android:padding="10dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/grey"
                 android:textSize="18sp" />
@@ -139,12 +141,12 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="15dp"
+                android:background="@drawable/rectangular_border"
                 android:gravity="top"
                 android:hint="Description"
                 android:imeOptions="actionDone"
-                android:padding="10dp"
-                android:background="@drawable/rectangular_border"
                 android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
+                android:padding="10dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/grey"
                 android:textSize="18sp" />
@@ -193,6 +195,18 @@
 
                 </LinearLayout>
 
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="15dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -203,7 +217,44 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
-                        android:text="Allowed Files Type"
+                        android:text="Competition Type:"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <RadioGroup
+                        android:id="@+id/QuizSubmission"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RadioButton
+                            android:id="@+id/quiz"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Quiz" />
+
+                        <RadioButton
+                            android:id="@+id/submission"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Submission" />
+                    </RadioGroup>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/submissionTypeContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:text="Submission Type"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
 
@@ -239,13 +290,13 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:padding="10dp"
+                android:layout_marginBottom="50dp"
                 android:background="@drawable/white_round_button"
                 android:gravity="center_vertical"
 
+                android:padding="10dp"
                 android:text="Select your Domain"
                 android:textColor="@color/black"
-                android:layout_marginBottom="50dp"
 
                 android:textSize="18sp" />
 
@@ -274,12 +325,13 @@
                 android:layout_marginEnd="25dp"
                 android:layout_marginRight="25dp"
                 android:gravity="center|start"
-                android:text="Judging Details :"
+                android:text="Judging Criteria :"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="18dp" />
+                android:textSize="18dp"
+                android:textStyle="bold" />
 
             <LinearLayout
+                android:id="@+id/judgingCriteriaBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
@@ -291,7 +343,8 @@
                 android:backgroundTint="@color/white"
                 android:elevation="10dp"
                 android:orientation="vertical"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:visibility="gone">
 
                 <!--Voting Type-->
                 <LinearLayout
@@ -495,14 +548,15 @@
                         android:visibility="gone"
                         app:tint="#4CAF50" />
                 </LinearLayout>
-                 <LinearLayout
+
+                <LinearLayout
                     android:id="@+id/judgingCriteria"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
 
-                     android:visibility="gone"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -510,343 +564,556 @@
                         android:text="Add Judging Criteria"
                         android:textColor="@color/black"
                         android:textSize="20sp" />
-                     <TextView
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:text="Example- 'lighting','composition' for Photography type contests."
-                         android:layout_marginLeft="1dp"/>
-                     <LinearLayout
-                         android:layout_width="match_parent"
-                         android:layout_height="wrap_content"
-                         android:orientation="horizontal"
-                         android:weightSum="10">
-                     <EditText
-                         android:layout_width="0dp"
-                         android:layout_weight="8.5"
-                         android:layout_height="wrap_content"
-                         android:hint="Enter Criteria"
-                         android:layout_marginTop="6dp"
-                         android:id="@+id/criteriaEt"
-                         android:background="@drawable/rectangular_border"
-                         android:padding="10dp"/>
-                         <TextView
-                             android:layout_width="0dp"
-                             android:layout_height="wrap_content"
-                             android:text="ADD"
-                             android:textStyle="bold"
-                             android:gravity="center"
-                             android:layout_gravity="center"
-                             android:layout_weight="1.5"
-                             android:textSize="20sp"
-                             android:textColor="@color/light_blue"
-                             android:padding="3dp"
-                             android:id="@+id/add"/>
-</LinearLayout>
-                     <TextView
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:text="0/30"
-                         android:id="@+id/txtCount"
-                         android:textColor="@color/red"
-                         android:layout_marginLeft="5dp"/>
-                     <LinearLayout
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:background="@drawable/rectangular_border"
-                         android:weightSum="10"
-                         android:padding="3dp"
-                         android:visibility="gone"
-                         android:id="@+id/criteriaLinear1"
-                         android:layout_marginTop="2dp"
-                         android:orientation="horizontal">
-                     <TextView
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:layout_weight="8.5"
-                         android:padding="2dp"
-                         android:maxLines="1"
-                         android:id="@+id/c1"
-                         android:textColor="@color/colorPrimary"
-                         />
-                         <ImageView
-                             android:layout_width="18dp"
-                             android:layout_height="18dp"
-                             android:src="@drawable/ic_white_cross"
-                             android:layout_gravity="center"
-                             android:id="@+id/cross1"
 
-                             android:layout_weight="1.5"/>
-                     </LinearLayout>
-                     <LinearLayout
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:background="@drawable/rectangular_border"
-                         android:weightSum="10"
-                         android:id="@+id/criteriaLinear2"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="1dp"
+                        android:text="Example- 'lighting','composition' for Photography type contests." />
 
-                         android:padding="3dp"
-                         android:visibility="gone"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="10">
 
-                         android:layout_marginTop="2dp"
-                         android:orientation="horizontal">
-                         <TextView
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:layout_weight="8.5"
-                             android:padding="2dp"
-                             android:maxLines="1"
-                             android:id="@+id/c2"
-                             android:textColor="@color/colorPrimary"
-                             />
-                         <ImageView
-                             android:layout_width="18dp"
-                             android:layout_height="18dp"
-                             android:id="@+id/cross2"
+                        <EditText
+                            android:id="@+id/criteriaEt"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:layout_weight="8.5"
+                            android:background="@drawable/rectangular_border"
+                            android:hint="Enter Criteria"
+                            android:padding="10dp" />
 
-                             android:src="@drawable/ic_white_cross"
-                             android:layout_gravity="center"
-                             android:layout_weight="1.5"/>
-                     </LinearLayout>
-                     <LinearLayout
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:background="@drawable/rectangular_border"
-                         android:weightSum="10"
-                         android:padding="3dp"
-                         android:id="@+id/criteriaLinear3"
+                        <TextView
+                            android:id="@+id/add"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1.5"
+                            android:gravity="center"
+                            android:padding="3dp"
+                            android:text="ADD"
+                            android:textColor="@color/light_blue"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
 
-                         android:visibility="gone"
+                    <TextView
+                        android:id="@+id/txtCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="0/30"
+                        android:textColor="@color/red" />
 
-                         android:layout_marginTop="2dp"
-                         android:orientation="horizontal">
-                         <TextView
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:layout_weight="8.5"
-                             android:padding="2dp"
-                             android:maxLines="1"
-                             android:id="@+id/c3"
-                             android:textColor="@color/colorPrimary"
-                             />
-                         <ImageView
-                             android:layout_width="18dp"
-                             android:layout_height="18dp"
-                             android:id="@+id/cross3"
+                    <LinearLayout
+                        android:id="@+id/criteriaLinear1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:background="@drawable/rectangular_border"
+                        android:orientation="horizontal"
+                        android:padding="3dp"
+                        android:visibility="gone"
+                        android:weightSum="10">
 
-                             android:src="@drawable/ic_white_cross"
-                             android:layout_gravity="center"
-                             android:layout_weight="1.5"/>
-                     </LinearLayout>
-                     <LinearLayout
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:background="@drawable/rectangular_border"
-                         android:weightSum="10"
-                         android:id="@+id/criteriaLinear4"
+                        <TextView
+                            android:id="@+id/c1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="8.5"
+                            android:maxLines="1"
+                            android:padding="2dp"
+                            android:textColor="@color/colorPrimary" />
 
-                         android:padding="3dp"
-                         android:visibility="gone"
+                        <ImageView
+                            android:id="@+id/cross1"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:layout_weight="1.5"
 
-                         android:layout_marginTop="2dp"
-                         android:orientation="horizontal">
-                         <TextView
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:layout_weight="8.5"
-                             android:padding="2dp"
-                             android:maxLines="1"
-                             android:id="@+id/c4"
-                             android:textColor="@color/colorPrimary"
-                             />
-                         <ImageView
-                             android:layout_width="18dp"
-                             android:layout_height="18dp"
-                             android:id="@+id/cross4"
+                            android:src="@drawable/ic_white_cross" />
+                    </LinearLayout>
 
-                             android:src="@drawable/ic_white_cross"
-                             android:layout_gravity="center"
-                             android:layout_weight="1.5"/>
-                     </LinearLayout>
-                     <LinearLayout
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:background="@drawable/rectangular_border"
-                         android:weightSum="10"
-                         android:padding="3dp"
-                         android:id="@+id/criteriaLinear5"
+                    <LinearLayout
+                        android:id="@+id/criteriaLinear2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:background="@drawable/rectangular_border"
 
-                         android:visibility="gone"
+                        android:orientation="horizontal"
+                        android:padding="3dp"
 
-                         android:layout_marginTop="2dp"
-                         android:orientation="horizontal">
-                         <TextView
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:layout_weight="8.5"
-                             android:padding="2dp"
-                             android:maxLines="1"
-                             android:id="@+id/c5"
-                             android:textColor="@color/colorPrimary"
-                             />
-                         <ImageView
-                             android:layout_width="18dp"
-                             android:layout_height="18dp"
-                             android:id="@+id/cross5"
+                        android:visibility="gone"
+                        android:weightSum="10">
 
-                             android:src="@drawable/ic_white_cross"
-                             android:layout_gravity="center"
-                             android:layout_weight="1.5"/>
-                     </LinearLayout>
-                     <LinearLayout
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:background="@drawable/rectangular_border"
-                         android:weightSum="10"
-                         android:padding="3dp"
-                         android:id="@+id/criteriaLinear6"
+                        <TextView
+                            android:id="@+id/c2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="8.5"
+                            android:maxLines="1"
+                            android:padding="2dp"
+                            android:textColor="@color/colorPrimary" />
 
-                         android:visibility="gone"
+                        <ImageView
+                            android:id="@+id/cross2"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
 
-                         android:layout_marginTop="2dp"
-                         android:orientation="horizontal">
-                         <TextView
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:layout_weight="8.5"
-                             android:padding="2dp"
-                             android:maxLines="1"
-                             android:id="@+id/c6"
-                             android:textColor="@color/colorPrimary"
-                             />
-                         <ImageView
-                             android:layout_width="18dp"
-                             android:layout_height="18dp"
-                             android:id="@+id/cross6"
+                            android:layout_gravity="center"
+                            android:layout_weight="1.5"
+                            android:src="@drawable/ic_white_cross" />
+                    </LinearLayout>
 
-                             android:src="@drawable/ic_white_cross"
-                             android:layout_gravity="center"
-                             android:layout_weight="1.5"/>
-                     </LinearLayout>
-                     <LinearLayout
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:background="@drawable/rectangular_border"
-                         android:weightSum="10"
-                         android:id="@+id/criteriaLinear7"
+                    <LinearLayout
+                        android:id="@+id/criteriaLinear3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:background="@drawable/rectangular_border"
+                        android:orientation="horizontal"
 
-                         android:visibility="gone"
+                        android:padding="3dp"
 
-                         android:padding="3dp"
-                         android:layout_marginTop="2dp"
-                         android:orientation="horizontal">
-                         <TextView
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:layout_weight="8.5"
-                             android:padding="2dp"
-                             android:maxLines="1"
-                             android:id="@+id/c7"
-                             android:textColor="@color/colorPrimary"
-                             />
-                         <ImageView
-                             android:layout_width="18dp"
-                             android:layout_height="18dp"
-                             android:src="@drawable/ic_white_cross"
-                             android:layout_gravity="center"
-                             android:id="@+id/cross7"
+                        android:visibility="gone"
+                        android:weightSum="10">
 
-                             android:layout_weight="1.5"/>
-                     </LinearLayout>
-                     <LinearLayout
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:background="@drawable/rectangular_border"
-                         android:weightSum="10"
-                         android:id="@+id/criteriaLinear8"
+                        <TextView
+                            android:id="@+id/c3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="8.5"
+                            android:maxLines="1"
+                            android:padding="2dp"
+                            android:textColor="@color/colorPrimary" />
 
-                         android:visibility="gone"
+                        <ImageView
+                            android:id="@+id/cross3"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
 
-                         android:padding="3dp"
-                         android:layout_marginTop="2dp"
-                         android:orientation="horizontal">
-                         <TextView
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:layout_weight="8.5"
-                             android:padding="2dp"
-                             android:maxLines="1"
-                             android:id="@+id/c8"
-                             android:textColor="@color/colorPrimary"
-                             />
-                         <ImageView
-                             android:layout_width="18dp"
-                             android:layout_height="18dp"
-                             android:id="@+id/cross8"
+                            android:layout_gravity="center"
+                            android:layout_weight="1.5"
+                            android:src="@drawable/ic_white_cross" />
+                    </LinearLayout>
 
-                             android:src="@drawable/ic_white_cross"
-                             android:layout_gravity="center"
-                             android:layout_weight="1.5"/>
-                     </LinearLayout>
-                     <LinearLayout
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:id="@+id/criteriaLinear9"
+                    <LinearLayout
+                        android:id="@+id/criteriaLinear4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:background="@drawable/rectangular_border"
 
-                         android:background="@drawable/rectangular_border"
-                         android:weightSum="10"
-                         android:padding="3dp"
-                         android:visibility="gone"
+                        android:orientation="horizontal"
+                        android:padding="3dp"
 
-                         android:layout_marginTop="2dp"
-                         android:orientation="horizontal">
-                         <TextView
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:layout_weight="8.5"
-                             android:padding="2dp"
-                             android:maxLines="1"
-                             android:id="@+id/c9"
-                             android:textColor="@color/colorPrimary"
-                             />
-                         <ImageView
-                             android:layout_width="18dp"
-                             android:layout_height="18dp"
-                             android:id="@+id/cross9"
+                        android:visibility="gone"
+                        android:weightSum="10">
 
-                             android:src="@drawable/ic_white_cross"
-                             android:layout_gravity="center"
-                             android:layout_weight="1.5"/>
-                     </LinearLayout>
-                     <LinearLayout
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:background="@drawable/rectangular_border"
-                         android:weightSum="10"
-                         android:id="@+id/criteriaLinear10"
+                        <TextView
+                            android:id="@+id/c4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="8.5"
+                            android:maxLines="1"
+                            android:padding="2dp"
+                            android:textColor="@color/colorPrimary" />
 
-                         android:padding="3dp"
-                         android:visibility="gone"
-                         android:layout_marginTop="2dp"
-                         android:orientation="horizontal">
-                         <TextView
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:layout_weight="8.5"
-                             android:padding="2dp"
-                             android:maxLines="1"
-                             android:id="@+id/c10"
-                             android:textColor="@color/colorPrimary"
-                             />
-                         <ImageView
-                             android:layout_width="18dp"
-                             android:layout_height="18dp"
-                             android:src="@drawable/ic_white_cross"
-                             android:layout_gravity="center"
-                             android:id="@+id/cross10"
-                             android:layout_weight="1.5"/>
-                     </LinearLayout>
+                        <ImageView
+                            android:id="@+id/cross4"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
 
-                 </LinearLayout>
+                            android:layout_gravity="center"
+                            android:layout_weight="1.5"
+                            android:src="@drawable/ic_white_cross" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/criteriaLinear5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:background="@drawable/rectangular_border"
+                        android:orientation="horizontal"
+
+                        android:padding="3dp"
+
+                        android:visibility="gone"
+                        android:weightSum="10">
+
+                        <TextView
+                            android:id="@+id/c5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="8.5"
+                            android:maxLines="1"
+                            android:padding="2dp"
+                            android:textColor="@color/colorPrimary" />
+
+                        <ImageView
+                            android:id="@+id/cross5"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+
+                            android:layout_gravity="center"
+                            android:layout_weight="1.5"
+                            android:src="@drawable/ic_white_cross" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/criteriaLinear6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:background="@drawable/rectangular_border"
+                        android:orientation="horizontal"
+
+                        android:padding="3dp"
+
+                        android:visibility="gone"
+                        android:weightSum="10">
+
+                        <TextView
+                            android:id="@+id/c6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="8.5"
+                            android:maxLines="1"
+                            android:padding="2dp"
+                            android:textColor="@color/colorPrimary" />
+
+                        <ImageView
+                            android:id="@+id/cross6"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+
+                            android:layout_gravity="center"
+                            android:layout_weight="1.5"
+                            android:src="@drawable/ic_white_cross" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/criteriaLinear7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:background="@drawable/rectangular_border"
+
+                        android:orientation="horizontal"
+
+                        android:padding="3dp"
+                        android:visibility="gone"
+                        android:weightSum="10">
+
+                        <TextView
+                            android:id="@+id/c7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="8.5"
+                            android:maxLines="1"
+                            android:padding="2dp"
+                            android:textColor="@color/colorPrimary" />
+
+                        <ImageView
+                            android:id="@+id/cross7"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:layout_weight="1.5"
+
+                            android:src="@drawable/ic_white_cross" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/criteriaLinear8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:background="@drawable/rectangular_border"
+
+                        android:orientation="horizontal"
+
+                        android:padding="3dp"
+                        android:visibility="gone"
+                        android:weightSum="10">
+
+                        <TextView
+                            android:id="@+id/c8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="8.5"
+                            android:maxLines="1"
+                            android:padding="2dp"
+                            android:textColor="@color/colorPrimary" />
+
+                        <ImageView
+                            android:id="@+id/cross8"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+
+                            android:layout_gravity="center"
+                            android:layout_weight="1.5"
+                            android:src="@drawable/ic_white_cross" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/criteriaLinear9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginTop="2dp"
+                        android:background="@drawable/rectangular_border"
+                        android:orientation="horizontal"
+                        android:padding="3dp"
+
+                        android:visibility="gone"
+                        android:weightSum="10">
+
+                        <TextView
+                            android:id="@+id/c9"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="8.5"
+                            android:maxLines="1"
+                            android:padding="2dp"
+                            android:textColor="@color/colorPrimary" />
+
+                        <ImageView
+                            android:id="@+id/cross9"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+
+                            android:layout_gravity="center"
+                            android:layout_weight="1.5"
+                            android:src="@drawable/ic_white_cross" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/criteriaLinear10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:background="@drawable/rectangular_border"
+
+                        android:orientation="horizontal"
+                        android:padding="3dp"
+                        android:visibility="gone"
+                        android:weightSum="10">
+
+                        <TextView
+                            android:id="@+id/c10"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="8.5"
+                            android:maxLines="1"
+                            android:padding="2dp"
+                            android:textColor="@color/colorPrimary" />
+
+                        <ImageView
+                            android:id="@+id/cross10"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_gravity="center"
+                            android:layout_weight="1.5"
+                            android:src="@drawable/ic_white_cross" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/questionAdditionBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/circular_corner_rectangle_white_border"
+                android:backgroundTint="@color/white"
+                android:elevation="10dp"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:visibility="gone">
+
+
+                <TextView
+                    android:id="@+id/addQuestionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:text="ADD"
+                    android:textColor="@color/light_blue"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/question"
+                    android:layout_below="@id/addQuestionButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/rectangular_border"
+                    android:gravity="top"
+                    android:hint="Question"
+                    android:imeOptions="actionDone"
+                    android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
+                    android:lines="5"
+                    android:padding="10dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/grey"
+                    android:textSize="18sp" />
+
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/optionsBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/question"
+                    android:orientation="vertical"
+                    android:paddingTop="10dp"
+                    android:weightSum="4">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:id="@+id/option1"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/ic_baseline_check_circle_24"
+                            android:backgroundTint="@android:color/darker_gray"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/option1Value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Enter Option 1 here" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:id="@+id/option2"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/ic_baseline_check_circle_24"
+                            android:backgroundTint="@android:color/darker_gray"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/option2Value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Enter Option 2 here" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:id="@+id/option3"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/ic_baseline_check_circle_24"
+                            android:backgroundTint="@android:color/darker_gray"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/option3Value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Enter Option 3 here" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:weightSum="10">
+
+                        <ImageView
+                            android:id="@+id/option4"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/ic_baseline_check_circle_24"
+                            android:backgroundTint="@android:color/darker_gray"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/option4Value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Enter Option 4 here" />
+
+                    </LinearLayout>
+
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/circular_corner_rectangle_white_border"
+                android:backgroundTint="@color/white"
+                android:elevation="10dp"
+                android:padding="10dp">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|start"
+                    android:text="Duration : "
+                    android:textColor="@color/black"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/durationSelector"
+                    android:layout_marginStart="25dp"
+                    android:gravity="center|start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
             </LinearLayout>
 
             <TextView
@@ -860,8 +1127,8 @@
                 android:gravity="center|start"
                 android:text="Date Entries :"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="18dp" />
+                android:textSize="18dp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -888,7 +1155,8 @@
                         android:layout_height="40dp"
                         android:paddingStart="10dp"
                         android:paddingLeft="10dp"
-                        android:src="@drawable/ic_calender" />
+                        android:src="@drawable/ic_calender"
+                        app:tint="@color/colorPrimary" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -921,8 +1189,8 @@
                         android:hint="Start Date"
                         android:imeOptions="actionNext"
                         android:inputType="none"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="10dp"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="10dp"
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey" />
 
@@ -955,18 +1223,19 @@
                         android:layout_height="40dp"
                         android:layout_gravity="right"
                         android:paddingStart="10dp"
-                        android:paddingLeft="10dp"
-                        android:src="@drawable/ic_calender" />
+                        android:src="@drawable/ic_calender"
+                        app:tint="@color/colorPrimary"
+                        tools:ignore="RtlSymmetry" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center|left"
                         android:paddingStart="15dp"
-                        android:paddingLeft="15dp"
                         android:text="Public Voting"
                         android:textColor="@color/black"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        tools:ignore="RtlSymmetry" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -990,8 +1259,8 @@
                         android:hint="Start Date"
                         android:imeOptions="actionNext"
                         android:inputType="none"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="10dp"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="10dp"
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey" />
 
@@ -1013,6 +1282,61 @@
                         android:textColorHint="@color/grey" />
                 </LinearLayout>
 
+
+                <LinearLayout
+                    android:id="@+id/quizStartDateTimeContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="end"
+                        android:paddingStart="10dp"
+                        android:src="@drawable/ic_baseline_clock_24"
+                        app:tint="@color/colorPrimary"
+                        tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center|start"
+                        android:paddingStart="15dp"
+                        android:text="Quiz Start Time"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        tools:ignore="RtlSymmetry" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/quizStartDateTimePickerContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/datetimePicker"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/white_border"
+                        android:elevation="2dp"
+                        android:focusable="false"
+                        android:gravity="center"
+                        android:hint="Select date time"
+                        android:imeOptions="actionNext"
+                        android:inputType="none"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="10dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/grey" />
+
+                </LinearLayout>
+
                 <!--Winners Announcement  Dates-->
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -1024,25 +1348,25 @@
                         android:layout_height="40dp"
                         android:layout_gravity="right"
                         android:paddingStart="10dp"
-                        android:paddingLeft="10dp"
-                        android:src="@drawable/ic_calender" />
+                        android:src="@drawable/ic_calender"
+                        app:tint="@color/colorPrimary"
+                        tools:ignore="RtlSymmetry" />
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:gravity="center|left"
                         android:paddingStart="15dp"
-                        android:paddingLeft="15dp"
-                        android:text="Winners Announcement  Date"
+                        android:text="Results Announcement"
                         android:textColor="@color/black"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        tools:ignore="RtlSymmetry" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="40dp"
-                    android:layout_marginLeft="40dp"
                     android:orientation="horizontal"
                     android:weightSum="2">
 
@@ -1055,16 +1379,22 @@
                         android:background="@drawable/white_border"
                         android:elevation="2dp"
                         android:focusable="false"
-                        android:hint="Select date"
                         android:gravity="center"
+                        android:hint="Select date"
                         android:imeOptions="actionNext"
                         android:inputType="none"
-                        android:paddingLeft="15dp"
-                        android:paddingRight="10dp"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="10dp"
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey" />
 
                 </LinearLayout>
+
+
+
+
+
+
             </LinearLayout>
 
 
@@ -1083,8 +1413,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:paddingBottom="50dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="50dp">
 
             <!--Limited No. of participants window-->
             <LinearLayout
@@ -1141,8 +1471,8 @@
                 android:gravity="center|start"
                 android:text="Fees/Prize Details:"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="18dp" />
+                android:textSize="18dp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -1152,10 +1482,10 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginRight="15dp"
+                android:layout_marginBottom="50dp"
                 android:background="@drawable/circular_corner_rectangle_white_border"
                 android:backgroundTint="@color/white"
                 android:elevation="10dp"
-                android:layout_marginBottom="50dp"
                 android:orientation="vertical"
                 android:padding="10dp">
 
@@ -1227,9 +1557,9 @@
                         android:layout_width="150dp"
                         android:layout_height="40dp"
                         android:hint="1st Prize"
-                        android:text="0"
                         android:imeOptions="actionNext"
                         android:inputType="number"
+                        android:text="0"
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey" />
 
@@ -1253,9 +1583,9 @@
                         android:layout_width="150dp"
                         android:layout_height="40dp"
                         android:hint="2nd Prize"
-                        android:text="0"
                         android:imeOptions="actionNext"
                         android:inputType="number"
+                        android:text="0"
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey" />
 
@@ -1280,10 +1610,10 @@
                         android:layout_width="150dp"
                         android:layout_height="40dp"
                         android:hint="3rd Prize"
-                        android:text="0"
-
                         android:imeOptions="actionDone"
+
                         android:inputType="number"
+                        android:text="0"
                         android:textColorHint="@color/grey" />
 
                     <TextView
@@ -1311,26 +1641,25 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginEnd="25dp"
-                android:visibility="visible"
-
                 android:layout_marginRight="25dp"
+
                 android:gravity="center|start"
                 android:text="Rules:"
                 android:textColor="@color/black"
+                android:textSize="18dp"
                 android:textStyle="bold"
-                android:textSize="18dp" />
+                android:visibility="visible" />
 
             <EditText
-                android:layout_marginBottom="10dp"
                 android:id="@+id/extraRules"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="15dp"
-                android:visibility="visible"
                 android:layout_marginEnd="15dp"
                 android:layout_marginRight="15dp"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/circular_corner_rectangle_white_border"
                 android:backgroundTint="@color/white"
                 android:elevation="10dp"
@@ -1339,7 +1668,8 @@
                 android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
                 android:padding="10dp"
                 android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:visibility="visible" />
 
         </LinearLayout>
     </ScrollView>
@@ -1356,8 +1686,8 @@
         android:backgroundTint="#E5E6EB"
         android:elevation="5dp"
 
-        android:text="Previous"
         android:padding="10dp"
+        android:text="Previous"
         android:textColor="@color/white"
         android:textSize="15sp" />
 
@@ -1366,13 +1696,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_margin="5dp"
         android:layout_alignParentBottom="true"
+        android:layout_margin="5dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/circular_button"
         android:backgroundTint="@color/colorPrimary"
-        android:elevation="5dp"
 
-        android:layout_marginBottom="10dp"
+        android:elevation="5dp"
         android:text="NEXT"
         android:textColor="@color/white"
         android:textSize="15sp" />
