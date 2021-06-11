@@ -7,19 +7,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.orion.orion.Adapters.AdapterRankList;
 import com.orion.orion.Adapters.AdapterRankListFull;
 import com.orion.orion.R;
-import com.orion.orion.contest.Contest_Evaluation.Participant_Request;
 import com.orion.orion.models.ParticipantList;
 
 import java.util.ArrayList;
 
-import static com.android.volley.VolleyLog.TAG;
 public class ranking extends AppCompatActivity {
     private static final String TAG = "ranking";
 

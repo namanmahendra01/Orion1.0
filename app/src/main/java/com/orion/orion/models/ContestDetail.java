@@ -3,7 +3,7 @@ package com.orion.orion.models;
 public class ContestDetail {
 
 
-    String ef, d, ui, ci, vt, tim, rb, re, vb, ve, wd, mlt;
+    private String cty, ef, d, ui, ci, vt, tim, rb, re, vb, ve, wd, mlt;
     Boolean r;
 
  public ContestDetail(){}
@@ -129,5 +129,13 @@ public class ContestDetail {
                 ", mlt='" + mlt + '\'' +
                 ", r=" + r +
                 '}';
+    }
+
+    public String getCty() {
+        return cty;
+    }
+
+    public void setCty(String cty) {
+        this.cty = cty;
     }
 }

@@ -129,7 +129,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:background="@drawable/circular_button"
-        android:backgroundTint="@color/colorPrimary"
+        android:backgroundTint="@color/option_background_pressed"
         android:text="ADD"
         android:textColor="@color/white"
         android:textSize="16sp" />

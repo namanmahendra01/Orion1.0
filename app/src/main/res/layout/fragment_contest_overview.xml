@@ -86,7 +86,7 @@
                     android:gravity="center"
                     android:padding="10dp"
                     android:text=" Result Published "
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/option_background_pressed"
                     android:visibility="gone" />
             </RelativeLayout>
 
@@ -103,7 +103,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:text="Winners"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/option_background_pressed"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -145,7 +145,6 @@
                 android:id="@+id/jutyRl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:layout_below="@+id/relLayout">
 
                 <RelativeLayout
@@ -159,7 +158,7 @@
                         android:layout_centerHorizontal="true"
                         android:gravity="center"
                         android:text="Jury Votes"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/option_background_pressed"
                         android:textSize="18sp"
                         android:textStyle="bold" />
                 </RelativeLayout>
@@ -172,7 +171,42 @@
                     android:layout_marginTop="0dp"
                     android:layout_marginBottom="30dp">
 
-                    <include layout="@layout/layout_overvew_jury_table" />
+                    <include layout="@layout/snippet_jury_table" />
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/pointsRl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/jutyRl">
+
+                <RelativeLayout
+                    android:id="@+id/pointsTable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:text="Quiz Points"
+                        android:textColor="@color/option_background_pressed"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relLayout3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/pointsTable"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="30dp">
+
+                    <include layout="@layout/snippet_points_table" />
 
                 </RelativeLayout>
             </RelativeLayout>
@@ -181,14 +215,14 @@
                 android:id="@+id/resultTable"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/jutyRl">
+                android:layout_below="@+id/pointsRl">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:text="Result"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/option_background_pressed"
                     android:textSize="18sp"
                     android:textStyle="bold" />
             </RelativeLayout>
@@ -200,6 +234,7 @@
                 android:layout_below="@id/resultTable">
 
                 <include layout="@layout/layout_jury_public_total" />
+
             </RelativeLayout>
 
             <TextView
@@ -210,7 +245,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="30dp"
                 android:text="Ranking"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/option_background_pressed"
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </RelativeLayout>

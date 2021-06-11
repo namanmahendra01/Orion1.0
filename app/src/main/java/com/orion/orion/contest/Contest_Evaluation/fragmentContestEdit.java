@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,10 +38,13 @@ import com.orion.orion.profile.profile;
 
 import static com.android.volley.VolleyLog.TAG;
 
-public class fragment_edit_contest extends Fragment {
-    public fragment_edit_contest() {
+public class fragmentContestEdit extends Fragment {
+    public fragmentContestEdit() {
     }
 
+    private TextView contestType;
+    private TextView quizDateTime;
+    private TableLayout publicVotingContainer;
     private TextView entryfee;
     private TextView title;
     private TextView totalprize;
@@ -50,7 +54,7 @@ public class fragment_edit_contest extends Fragment {
     private TextView regEnd;
     private TextView voteBegin;
     private TextView voteEnd;
-    private TextView domain,userTv;
+    private TextView domain, userTv;
     private TextView openfor;
     private TextView juryname1;
     private TextView juryname2;
@@ -80,8 +84,8 @@ public class fragment_edit_contest extends Fragment {
     private String rule2 = "";
     private String username = "";
 
-    private TextView jcTv,jcTv2;
-    private String judgingCriterias="";
+    private TextView jcTv, jcTv2;
+    private String judgingCriterias = "";
     private CardView jcCard;
 
     private String userid;
@@ -95,6 +99,10 @@ public class fragment_edit_contest extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_contest_details, container, false);
         setupFirebaseAuth();
+
+        contestType = view.findViewById(R.id.contestTypeTv);
+        quizDateTime = view.findViewById(R.id.quizDateTime);
+        publicVotingContainer = view.findViewById(R.id.publicVotingContainer);
         entryfee = view.findViewById(R.id.entryfeeTv);
         title = view.findViewById(R.id.titleTv);
         descrip = view.findViewById(R.id.descripEv);
@@ -149,50 +157,75 @@ public class fragment_edit_contest extends Fragment {
         Contestkey = b1.getString("contestId");
         userid = b1.getString("userid");
         setgp(userid, gp);
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests))
-                .child(userid)
-                .child(getString(R.string.created_contest))
-                .child(Contestkey);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests)).child(userid).child(getString(R.string.created_contest)).child(Contestkey);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 CreateForm mCreateForm = dataSnapshot.getValue(CreateForm.class);
-                if (mCreateForm.getEf().equals("")) {
-                    entryfee.setText("Free");
+
+                if (mCreateForm.getCty().equals("")) {
+
                 } else {
-                    entryfee.setText(mCreateForm.getEf());
+
                 }
+                title.setText(mCreateForm.getCt());
+                hostedby.setText(mCreateForm.getHst());
+                descrip.setText(mCreateForm.getDes());
+                rules.setText(mCreateForm.getRul());
+                if (mCreateForm.getEf().equals(""))
+                    entryfee.setText("Free");
+                else
+                    entryfee.setText(mCreateForm.getEf());
                 if (mCreateForm.getTp().equals("")) {
                     prizeLinear.setVisibility(View.GONE);
                     totalprize.setText("-");
-
                 } else {
                     totalprize.setText(mCreateForm.getTp());
                     prizeLinear.setVisibility(View.VISIBLE);
                 }
-                if (mCreateForm.getMlt().equals("")) {
+//                contestType
+                contestType.setText(mCreateForm.getCty());
+                if (mCreateForm.getCty().equals("Quiz"))
+                    publicVotingContainer.setVisibility(View.GONE);
+                else
+                    publicVotingContainer.setVisibility(View.VISIBLE);
+                //voting type
+                if (mCreateForm.getVt().equals(""))
+                    voteType.setText("-");
+                else
+                    voteType.setText(mCreateForm.getVt());
+                domain.setText(mCreateForm.getD());
+                openfor.setText(mCreateForm.getOf());
+                //participant
+                if (mCreateForm.getMlt().equals(""))
                     maxPart.setText("Unlimited");
-
-                } else {
+                else
                     maxPart.setText(mCreateForm.getMlt());
-                }
-                if (mCreateForm.getVb().equals("")) {
+                filetype.setText(mCreateForm.getFt());
+                regBegin.setText(mCreateForm.getRb());
+                regEnd.setText(mCreateForm.getRe());
+                //vote dates
+                if (mCreateForm.getVb().equals("") || mCreateForm.getVe().equals("")) {
                     voteBegin.setText("-");
-
-                } else {
-                    voteBegin.setText(mCreateForm.getVb());
-
-                }
-                if (mCreateForm.getVe().equals("")) {
                     voteEnd.setText("-");
                 } else {
+                    voteBegin.setText(mCreateForm.getVb());
                     voteEnd.setText(mCreateForm.getVe());
                 }
+                windate.setText(mCreateForm.getWd());
+                quizDateTime.setText(mCreateForm.getQdt());
+
+                p1Tv.setText(mCreateForm.getP1());
+                p2Tv.setText(mCreateForm.getP2());
+                p3Tv.setText(mCreateForm.getP3());
+
+
                 if (mCreateForm.getJn1().equals("")) {
                     jury.setVisibility(View.GONE);
                     cardView.setVisibility(View.GONE);
                 }
-                if (!mCreateForm.getJn1().equals("") &&  mCreateForm.getJn2().equals("")){
+                if (!mCreateForm.getJn1().equals("")
+                        && mCreateForm.getJn2().equals("")) {
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -204,14 +237,13 @@ public class fragment_edit_contest extends Fragment {
                     jurypic3.setVisibility(View.GONE);
                     juryname3.setVisibility(View.GONE);
                     jurypl3.setVisibility(View.GONE);
-
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                     db.child(getString(R.string.dbname_username))
                             .child(mCreateForm.getJn1())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -224,13 +256,14 @@ public class fragment_edit_contest extends Fragment {
                                                         juryname1.setText(user.getDn());
                                                         jurypl1.setText(user.getU());
 
-                                                        Glide.with(fragment_edit_contest.this)
+                                                        Glide.with(fragmentContestEdit.this)
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
                                                                 .thumbnail(0.25f)
-                                                                .into(jurypic1);                                                    }
+                                                                .into(jurypic1);
+                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -248,10 +281,10 @@ public class fragment_edit_contest extends Fragment {
                             });
 
 
-
                 }
-                if(!mCreateForm.getJn1().equals("") &&  !mCreateForm.getJn2().equals("")
-                        && mCreateForm.getJn3().equals("")){
+                if (!mCreateForm.getJn1().equals("")
+                        && !mCreateForm.getJn2().equals("")
+                        && mCreateForm.getJn3().equals("")) {
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -269,7 +302,7 @@ public class fragment_edit_contest extends Fragment {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -288,7 +321,8 @@ public class fragment_edit_contest extends Fragment {
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
                                                                 .thumbnail(0.25f)
-                                                                .into(jurypic1);                                                      }
+                                                                .into(jurypic1);
+                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -310,7 +344,7 @@ public class fragment_edit_contest extends Fragment {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -330,7 +364,8 @@ public class fragment_edit_contest extends Fragment {
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
                                                                 .thumbnail(0.25f)
-                                                                .into(jurypic2);                                                      }
+                                                                .into(jurypic2);
+                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -347,8 +382,9 @@ public class fragment_edit_contest extends Fragment {
                                 }
                             });
                 }
-                if(!mCreateForm.getJn1().equals("") &&  !mCreateForm.getJn2().equals("")
-                        && !mCreateForm.getJn3().equals("")){
+                if (!mCreateForm.getJn1().equals("")
+                        && !mCreateForm.getJn2().equals("")
+                        && !mCreateForm.getJn3().equals("")) {
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -368,7 +404,7 @@ public class fragment_edit_contest extends Fragment {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -387,7 +423,8 @@ public class fragment_edit_contest extends Fragment {
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
                                                                 .thumbnail(0.25f)
-                                                                .into(jurypic1);                                                      }
+                                                                .into(jurypic1);
+                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -408,7 +445,7 @@ public class fragment_edit_contest extends Fragment {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -427,7 +464,8 @@ public class fragment_edit_contest extends Fragment {
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
                                                                 .thumbnail(0.25f)
-                                                                .into(jurypic2);                                                      }
+                                                                .into(jurypic2);
+                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -449,7 +487,7 @@ public class fragment_edit_contest extends Fragment {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -469,7 +507,8 @@ public class fragment_edit_contest extends Fragment {
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
                                                                 .thumbnail(0.25f)
-                                                                .into(jurypic3);                                                      }
+                                                                .into(jurypic3);
+                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -486,18 +525,18 @@ public class fragment_edit_contest extends Fragment {
                                 }
                             });
                 }
-                if(mCreateForm.getVt().equals("Jury")||mCreateForm.getVt().equals("Jury and Public")){
-                    String f_string="";
+                if (mCreateForm.getVt().equals("Jury") || mCreateForm.getVt().equals("Jury and Public")) {
+                    String f_string = "";
                     jcCard.setVisibility(View.VISIBLE);
                     jcTv.setVisibility(View.VISIBLE);
                     judgingCriterias = mCreateForm.getCr();
-                    String[] array=judgingCriterias.split("///");
-                    for (String a:
+                    String[] array = judgingCriterias.split("///");
+                    for (String a :
                             array) {
-                        f_string=f_string+"\n"+a;
+                        f_string = f_string + "\n" + a;
 
                     }
-                    Log.d(TAG, "onCreate: "+f_string);
+                    Log.d(TAG, "onCreate: " + f_string);
                     jcTv2.setText(f_string);
 
 
@@ -509,20 +548,7 @@ public class fragment_edit_contest extends Fragment {
                         .error(R.drawable.default_image2)
                         .placeholder(R.drawable.load)
                         .into(poster);
-                title.setText(mCreateForm.getCt());
-                descrip.setText(mCreateForm.getDes());
-                rules.setText(mCreateForm.getRul());
-                voteType.setText(mCreateForm.getVt());
-                regBegin.setText(mCreateForm.getRb());
-                regEnd.setText(mCreateForm.getRe());
-                domain.setText(mCreateForm.getD());
-                openfor.setText(mCreateForm.getOf());
-                hostedby.setText(mCreateForm.getHst());
-                filetype.setText(mCreateForm.getFt());
-                windate.setText(mCreateForm.getWd());
-                p1Tv.setText(mCreateForm.getP1());
-                p2Tv.setText(mCreateForm.getP2());
-                p3Tv.setText(mCreateForm.getP3());
+
             }
 
             @Override
@@ -581,6 +607,7 @@ public class fragment_edit_contest extends Fragment {
                         userTv.setText(username);
 
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -601,48 +628,37 @@ public class fragment_edit_contest extends Fragment {
                     .child(Contestkey)
                     .child(getString(R.string.field_description))
                     .setValue(descrip2).addOnSuccessListener(aVoid -> {
-                        DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
-                        ref2.child(userid)
-                                .child(getString(R.string.created_contest))
-                                .child(Contestkey)
-                                .child(getString(R.string.field_rule))
-                                .setValue(rule2).addOnSuccessListener(aVoid1 -> Toast.makeText(getContext(), "Your changes are saved!", Toast.LENGTH_SHORT).show());
-                    });
+                DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contests));
+                ref2.child(userid)
+                        .child(getString(R.string.created_contest))
+                        .child(Contestkey)
+                        .child(getString(R.string.field_rule))
+                        .setValue(rule2).addOnSuccessListener(aVoid1 -> Toast.makeText(getContext(), "Your changes are saved!", Toast.LENGTH_SHORT).show());
+            });
         });
         return view;
     }
 
     private void juryProfile(String toString) {
-        DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
-
-        Query userquery = ref
-                .child(getString(R.string.dbname_username))
-                .child(toString);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        Query userquery = ref.child(getString(R.string.dbname_username)).child(toString);
         userquery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 if (dataSnapshot.exists()) {
                     String username = dataSnapshot.getValue().toString();
-
                     Intent i = new Intent(getContext(), profile.class);
                     i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
                     i.putExtra(getString(R.string.intent_user), username);
                     startActivity(i);
-
-
                 }
-
             }
-
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.d(TAG, "Query Cancelled");
             }
         });
-
     }
 
     private void setupFirebaseAuth() {
@@ -651,25 +667,8 @@ public class fragment_edit_contest extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         mAuthListener = firebaseAuth -> {
             FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user != null) {
-            } else {
-                Log.d(TAG, "onAuthStateChanged:signed_out");
-            }
+            if (user == null) Log.d(TAG, "onAuthStateChanged:signed_out");
         };
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-
-                //retrieve user information from the database
-                //retrieve image for the user in question
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     private void setgp(String userid, TextView gp) {
@@ -693,10 +692,7 @@ public class fragment_edit_contest extends Fragment {
                                             if (snapshot.exists()) {
                                                 long x = (long) snapshot.getValue();
                                                 gp.setText(String.valueOf(100 - (((x * 100) / y))) + "%");
-                                            } else {
-                                                gp.setText("100%");
-
-                                            }
+                                            } else gp.setText("100%");
                                         }
 
                                         @Override
@@ -705,9 +701,7 @@ public class fragment_edit_contest extends Fragment {
                                         }
                                     });
 
-                        } else {
-                            gp.setText("100%");
-                        }
+                        } else gp.setText("100%");
 
                     }
 
@@ -722,16 +716,12 @@ public class fragment_edit_contest extends Fragment {
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
-
-
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
+        if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
     }
 
 }

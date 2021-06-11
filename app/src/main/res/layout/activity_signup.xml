@@ -45,7 +45,7 @@
                         android:layout_height="120dp"
                         android:background="@drawable/orion_login"
                         android:gravity="center|start"
-                        android:textColor="@color/colorPrimary" />
+                        android:textColor="@color/option_background_pressed" />
 
                     <TextView
                         android:layout_width="wrap_content"

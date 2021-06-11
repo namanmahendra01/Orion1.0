@@ -17,7 +17,7 @@ import com.orion.orion.R;
 import com.orion.orion.Adapters.SectionPagerAdapter;
 import com.orion.orion.login.LoginActivity;
 
-public class joined_contest_overview_activity extends AppCompatActivity {
+public class JoinedContestOverviewActivity extends AppCompatActivity {
     private static final String TAG ="contest";
 
     private Context mContext;
@@ -32,7 +32,7 @@ public class joined_contest_overview_activity extends AppCompatActivity {
         setContentView(R.layout.activity_joined_contest_overview_activity);
         mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
 
-        mContext=joined_contest_overview_activity.this;
+        mContext= JoinedContestOverviewActivity.this;
         Log.d(TAG,"onCreate: started.");
 
         setupFirebaseAuth();

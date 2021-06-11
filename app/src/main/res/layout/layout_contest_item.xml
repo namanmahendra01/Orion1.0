@@ -1,375 +1,400 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        app:cardBackgroundColor="@color/white"
-        app:cardUseCompatPadding="true"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="10dp"
-        app:contentPadding="3dp"
         android:id="@+id/card"
-        android:padding="10dp"
-        android:background="@drawable/grey_border_bottom"
-        android:layout_height="wrap_content">
-    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        android:id="@+id/relLayout1">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-
+        android:background="@drawable/grey_border_bottom"
+        android:padding="10dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="10dp"
+        app:cardUseCompatPadding="true"
+        app:contentPadding="3dp">
 
         <RelativeLayout
+            android:id="@+id/relLayout1"
             android:layout_width="match_parent"
 
             android:layout_height="wrap_content">
-            <RelativeLayout
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal">
+                android:orientation="vertical">
+
+
                 <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:gravity="top"
-                    android:id="@+id/gpTv"
-                    android:layout_height="wrap_content">
-                    <ImageView
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:layout_toRightOf="@+id/gp"
-                        android:src="@drawable/ic_binfo"
-                        android:layout_centerVertical="true"
-                        android:id="@+id/info"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:text="100%"
-                        android:textColor="#FFC107"
-                        android:id="@+id/gp"
-                        android:textSize="15sp"
-                        android:layout_margin="2dp"
-                        android:gravity="center"/>
-                </RelativeLayout>
-                <LinearLayout
-                    android:layout_below="@+id/gpTv"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="2dp"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="center_horizontal"
-                    android:orientation="horizontal">
+
+                    android:layout_height="wrap_content">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal">
+
+                        <RelativeLayout
+                            android:id="@+id/gpTv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="top">
+
+                            <ImageView
+                                android:id="@+id/info"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:layout_centerVertical="true"
+                                android:layout_toRightOf="@+id/gp"
+                                android:src="@drawable/ic_binfo"
+                                app:tint="@color/option_background_pressed" />
+
+                            <TextView
+                                android:id="@+id/gp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="start"
+                                android:layout_margin="2dp"
+                                android:gravity="center"
+                                android:text="100%"
+                                android:textColor="@color/option_background_pressed"
+                                android:textSize="15sp" />
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/gpTv"
+                            android:layout_gravity="center_horizontal"
+                            android:gravity="center_horizontal"
+                            android:orientation="horizontal"
+                            android:paddingBottom="2dp">
+
+                            <Button
+                                android:id="@+id/attemptQuiz"
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginEnd="5dp"
+                                android:background="@drawable/rectangular_round"
+                                android:gravity="center"
+                                android:padding="10dp"
+                                android:text="Attempt Quizz"
+                                android:textAlignment="center"
+                                android:textColor="@color/option_background_pressed"
+                                android:visibility="gone" />
 
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:text="Vote"
-            android:layout_marginTop="5dp"
-            android:textColor="#FFC107"
-            android:visibility="gone"
-            android:padding="10dp"
-            android:gravity="center"
-            android:textAlignment="center"
-            android:id="@+id/voteBtn"
-            android:layout_marginRight="5dp"
-            android:background="@drawable/rectangular_round"/>
-        <Button
-            android:layout_marginLeft="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:text="Participate"
-            android:textColor="#FFC107"
-            android:padding="10dp"
+                            <Button
+                                android:id="@+id/voteBtn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginEnd="5dp"
+                                android:background="@drawable/rectangular_round"
+                                android:gravity="center"
+                                android:padding="10dp"
+                                android:text="Vote"
+                                android:textAlignment="center"
+                                android:textColor="@color/option_background_pressed"
+                                android:visibility="gone" />
+
+                            <Button
+                                android:id="@+id/participateBtn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/rectangular_round"
+                                android:gravity="center"
+                                android:padding="10dp"
+                                android:text="Participate"
+                                android:textAlignment="center"
+                                android:textColor="@color/option_background_pressed"
+                                android:visibility="gone" />
+
+                            <Button
+                                android:id="@+id/regSoonBtn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/rectangular_round"
+                                android:gravity="center"
+                                android:padding="10dp"
+                                android:text="Registration starts soon"
+                                android:textAlignment="center"
+
+                                android:textColor="#03A9F4"
+                                android:visibility="gone" />
+
+                            <Button
+                                android:id="@+id/contestBtn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/rectangular_round"
+                                android:gravity="center"
+                                android:padding="10dp"
+                                android:text="Contest ended"
+                                android:textAlignment="center"
+
+                                android:textColor="#FF1100"
+                                android:visibility="gone" />
+
+                            <Button
+                                android:id="@+id/resultBtn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/rectangular_round"
+                                android:gravity="center"
+                                android:padding="10dp"
+                                android:text="Result Declared"
+                                android:textAlignment="center"
+
+                                android:textColor="#4CAF50"
+                                android:visibility="gone" />
+
+                            <Button
+                                android:id="@+id/limitBtn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/rectangular_round"
+                                android:gravity="center"
+                                android:padding="10dp"
+                                android:text="Participant Limit Reached"
+                                android:textAlignment="center"
+                                android:textColor="#FF1100"
+
+                                android:visibility="gone" />
+
+                            <Button
+                                android:id="@+id/rejectionBtn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="35dp"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="5dp"
+                                android:background="@drawable/rectangular_round"
+                                android:gravity="center"
+                                android:padding="10dp"
+                                android:text="Check Rejection Reason"
+                                android:textAlignment="center"
+                                android:textColor="#FF1100"
+
+                                android:visibility="gone" />
+                        </LinearLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/relStatus"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:id="@+id/statusTv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Status: "
+                                android:textColor="@color/black" />
+
+                            <TextView
+                                android:id="@+id/status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_toRightOf="@+id/statusTv"
+                                android:text="Waiting" />
+                        </RelativeLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right">
 
 
-
-            android:gravity="center"
-            android:textAlignment="center"
-            android:layout_marginTop="5dp"
-
-            android:visibility="gone"
-            android:id="@+id/participateBtn"
-            android:background="@drawable/rectangular_round"/>
-        <Button
-            android:layout_marginLeft="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:textColor="#03A9F4"
-            android:padding="10dp"
-            android:gravity="center"
-            android:textAlignment="center"
-            android:text="Registration starts soon"
-            android:visibility="gone"
-            android:layout_marginTop="5dp"
-
-            android:id="@+id/regSoonBtn"
-            android:background="@drawable/rectangular_round"/>
-        <Button
-            android:layout_marginLeft="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:text="Contest ended"
-            android:gravity="center"
-            android:textAlignment="center"
-            android:textColor="#FF1100"
-            android:padding="10dp"
-            android:id="@+id/contestBtn"
-            android:layout_marginTop="5dp"
-
-            android:visibility="gone"
-            android:background="@drawable/rectangular_round"/>
-        <Button
-            android:layout_marginLeft="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:visibility="gone"
-            android:gravity="center"
-            android:textAlignment="center"
-            android:textColor="#4CAF50"
-            android:padding="10dp"
-            android:text="Result Declared"
-            android:layout_marginTop="5dp"
-
-            android:id="@+id/resultBtn"
-            android:background="@drawable/rectangular_round"/>
-        <Button
-            android:layout_marginLeft="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:visibility="gone"
-            android:textColor="#FF1100"
-            android:gravity="center"
-            android:textAlignment="center"
-            android:padding="10dp"
-            android:text="Participant Limit Reached"
-            android:id="@+id/limitBtn"
-            android:layout_marginTop="5dp"
-
-            android:background="@drawable/rectangular_round"/>
-                    <Button
-                        android:layout_marginLeft="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:visibility="gone"
-                        android:textColor="#FF1100"
-                        android:gravity="center"
-                        android:textAlignment="center"
-                        android:padding="10dp"
-                        android:text="Check Rejection Reason"
-                        android:id="@+id/rejectionBtn"
-                        android:layout_marginTop="5dp"
-
-                        android:background="@drawable/rectangular_round"/>
-    </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:gravity="center_horizontal"
-            android:id="@+id/relStatus">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/statusTv"
-            android:text="Status: "
-            android:textColor="@color/black"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/status"
-            android:layout_toRightOf="@+id/statusTv"
-            android:text="Waiting"/>
-        </RelativeLayout>
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:gravity="right"
-                android:layout_height="wrap_content">
+                        <ImageView
+                            android:id="@+id/optionC"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/ic_eclipse" />
+                    </RelativeLayout>
+                </RelativeLayout>
 
 
                 <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@drawable/ic_eclipse"
-            android:id="@+id/optionC"/>
-            </RelativeLayout>
-        </RelativeLayout>
+                    android:id="@+id/posterD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
 
+                    android:layout_gravity="center_horizontal"
+                    android:adjustViewBounds="true"
+                    android:paddingLeft="60dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="60dp"
+                    android:scaleType="centerInside" />
 
-
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/posterD"
-
-                android:layout_gravity="center_horizontal"
-                android:scaleType="centerInside"
-                android:adjustViewBounds="true"
-                android:paddingRight="60dp"
-                android:paddingLeft="60dp"
-                android:paddingTop="10dp"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/progress"
-                android:src="@drawable/load"
-                android:visibility="gone"
-                android:layout_gravity="center_horizontal"
-                android:scaleType="centerInside"
-                android:adjustViewBounds="true"
-                android:paddingRight="60dp"
-                android:paddingLeft="60dp"
-                android:paddingTop="10dp"/>
-
+                <ImageView
+                    android:id="@+id/progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:adjustViewBounds="true"
+                    android:paddingLeft="60dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="60dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/load"
+                    android:visibility="gone" />
 
 
                 <TextView
+                    android:id="@+id/titleD"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Title"
                     android:layout_gravity="center_horizontal"
                     android:padding="5dp"
-                    android:id="@+id/titleD"
+                    android:text="Title"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="5dp"
-
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Total Prize(₹):"
-                    android:textColor="@color/black"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/totalprizeD"
-                    android:textColor="@color/black"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-
-                android:orientation="horizontal">
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Domain: "
-                    android:textColor="@color/grey"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/domainD"
-                    android:textColor="@color/black"
-                    android:text=""/>
-                <RelativeLayout
-
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_gravity="right"
-                    android:gravity="right"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+
+                    android:padding="5dp">
 
                     <TextView
-                        android:id="@+id/regend"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Registration End: "
+                        android:text="Total Prize(₹):"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/totalprizeD"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+
+                    android:padding="5dp">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Domain: "
                         android:textColor="@color/grey" />
 
                     <TextView
+                        android:id="@+id/domainD"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/regendD"
-                        android:textColor="@color/black"
+                        android:text=""
+                        android:textColor="@color/black" />
 
-                        android:layout_toRightOf="@+id/regend"
-                        android:text=""/>
-                </RelativeLayout>
-            </LinearLayout>
+                    <RelativeLayout
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:gravity="right">
+
+                        <TextView
+                            android:id="@+id/regend"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Registration End: "
+                            android:textColor="@color/grey" />
+
+                        <TextView
+                            android:id="@+id/regendD"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/regend"
+
+                            android:text=""
+                            android:textColor="@color/black" />
+                    </RelativeLayout>
+                </LinearLayout>
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-
-                android:orientation="horizontal">
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Entry Fee(₹): "
-                    android:textColor="@color/grey"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/entryfeeD"
-                    android:textColor="@color/black"
-
-                    android:text=""/>
-                <RelativeLayout
-
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_gravity="right"
-                    android:gravity="right"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+
+                    android:padding="5dp">
+
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Hosted by: "
-                        android:id="@+id/hosted"
-                        android:textColor="@color/grey"/>
+                        android:text="Entry Fee(₹): "
+                        android:textColor="@color/grey" />
 
                     <TextView
+                        android:id="@+id/entryfeeD"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@+id/hosted"
-                        android:id="@+id/hostD"
-                        android:textColor="@color/black"
-                        android:text=""/>
-                </RelativeLayout>
+                        android:text=""
+
+                        android:textColor="@color/black" />
+
+                    <RelativeLayout
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:gravity="right">
+
+                        <TextView
+                            android:id="@+id/hosted"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hosted by: "
+                            android:textColor="@color/grey" />
+
+                        <TextView
+                            android:id="@+id/hostD"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/hosted"
+                            android:text=""
+                            android:textColor="@color/black" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+
             </LinearLayout>
 
-
-        </LinearLayout>
-
-    </RelativeLayout>
+        </RelativeLayout>
 
 
+    </androidx.cardview.widget.CardView>
 
-
-
-</androidx.cardview.widget.CardView>
-<ImageView
-android:layout_width="match_parent"
-android:layout_height="100dp"
-    android:layout_below="@id/card"
-    android:visibility="gone"
-android:id="@+id/sponsor"
-/>
+    <ImageView
+        android:id="@+id/sponsor"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@id/card"
+        android:visibility="gone" />
 </RelativeLayout>

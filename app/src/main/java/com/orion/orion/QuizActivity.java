@@ -1,6 +1,8 @@
 package com.orion.orion;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -23,15 +25,29 @@ import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.type.DateTime;
 import com.orion.orion.contest.create.CreatedActivity;
 import com.orion.orion.login.LoginActivity;
 import com.orion.orion.models.QuizQuestion;
 import com.orion.orion.profile.Account.About;
+import com.orion.orion.util.SNTPClient;
+import com.orion.orion.util.StringManipilation;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
+import java.util.TimeZone;
 
 public class QuizActivity extends AppCompatActivity {
+
     private static final int STREAK_INITIAL_POINTS = 100;
     private static final int STREAK_GROWTH_POINTS = 50;
     private Context mContext;
@@ -40,12 +56,13 @@ public class QuizActivity extends AppCompatActivity {
     private static final int DURATION_INTERVAL = 100;
     private static final int PROGRESS_LENGTH = 1000;
     private static int QUESTION_DURATION;
-
+    private final static String DATE_FORMAT_PATTERN_SNTP = "yyyy-MM-dd'T'HH:mm:ssZ";
+    private final static String DATE_FORMAT_PATTERN_DATETIME = "dd-M-yyyy hh:mm:ss";
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser mUser;
-
+    private DatabaseReference myRef;
 
     private TextView topBarTitle;
     private ImageView backArrow;
@@ -119,9 +136,17 @@ public class QuizActivity extends AppCompatActivity {
 
         endLayout = findViewById(R.id.endLayout);
         doneButton = findViewById(R.id.doneButton);
+
+
+        myRef = FirebaseDatabase.getInstance().getReference();
         QUESTION_DURATION = 10000;
         streakPoints = STREAK_INITIAL_POINTS;
         mProgressBar.setProgress(0);
+
+        Intent intent = getIntent();
+        String contestType = intent.getStringExtra("contestType");
+        String contestId = intent.getStringExtra("contestId");
+        String userId = intent.getStringExtra("userId");
         mCountDownTimer = new CountDownTimer(QUESTION_DURATION, DURATION_INTERVAL) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -136,7 +161,47 @@ public class QuizActivity extends AppCompatActivity {
             }
         };
 
+        myRef.child(getString(R.string.dbname_contests))
+                .child(userId)
+                .child(getString(R.string.created_contest))
+                .child(contestId)
+                .child(getString(R.string.field_quizStartDateTime))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Log.d(TAG, "onDataChange: date here" + snapshot);
+                        if (snapshot.exists()) {
+                            String datetime = snapshot.getValue().toString();
+                            SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_PATTERN_DATETIME);
+                            Date quizDateTime = parseDate(datetime, dateFormat);
+                            Log.d(TAG, "onDataChange: date" + quizDateTime);
+                            SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
+                                @Override
+                                public void onTimeReceived(String rawDate) {
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_PATTERN_SNTP);
+                                    Date currentDateTime = parseDate(rawDate, dateFormat);
+                                    Log.d(TAG, "onDataChange: date" + currentDateTime);
+
+
+                                }
+
+
+                                @Override
+                                public void onError(Exception ex) {
+                                    Log.e(SNTPClient.TAG, ex.getMessage());
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
         setupFirebaseAuth();
+
+
         quizQuestionArrayList = fetchQuizQuestions();
         quizQuestionArrayList = getRandomizedList(quizQuestionArrayList);
 
@@ -149,28 +214,27 @@ public class QuizActivity extends AppCompatActivity {
             fetchNextQuestion(true);
         });
         option1Container.setOnClickListener(v -> {
-            QuizQuestion quizQuestion = quizQuestionArrayList.get(currentQuestionIdx-1);
+            QuizQuestion quizQuestion = quizQuestionArrayList.get(currentQuestionIdx - 1);
             quizQuestion.setSelected(quizQuestion.getOption1());
-            quizQuestionArrayList.set(currentQuestionIdx-1, quizQuestion);
+            quizQuestionArrayList.set(currentQuestionIdx - 1, quizQuestion);
             fetchNextQuestion(false);
-
         });
         option2Container.setOnClickListener(v -> {
-            QuizQuestion quizQuestion = quizQuestionArrayList.get(currentQuestionIdx-1);
+            QuizQuestion quizQuestion = quizQuestionArrayList.get(currentQuestionIdx - 1);
             quizQuestion.setSelected(quizQuestion.getOption2());
-            quizQuestionArrayList.set(currentQuestionIdx-1, quizQuestion);
+            quizQuestionArrayList.set(currentQuestionIdx - 1, quizQuestion);
             fetchNextQuestion(false);
         });
         option3Container.setOnClickListener(v -> {
-            QuizQuestion quizQuestion = quizQuestionArrayList.get(currentQuestionIdx-1);
+            QuizQuestion quizQuestion = quizQuestionArrayList.get(currentQuestionIdx - 1);
             quizQuestion.setSelected(quizQuestion.getOption2());
-            quizQuestionArrayList.set(currentQuestionIdx-1, quizQuestion);
+            quizQuestionArrayList.set(currentQuestionIdx - 1, quizQuestion);
             fetchNextQuestion(false);
         });
         option4Container.setOnClickListener(v -> {
-            QuizQuestion quizQuestion = quizQuestionArrayList.get(currentQuestionIdx-1);
+            QuizQuestion quizQuestion = quizQuestionArrayList.get(currentQuestionIdx - 1);
             quizQuestion.setSelected(quizQuestion.getOption2());
-            quizQuestionArrayList.set(currentQuestionIdx-1, quizQuestion);
+            quizQuestionArrayList.set(currentQuestionIdx - 1, quizQuestion);
             fetchNextQuestion(false);
         });
         doneButton.setOnClickListener(v -> startActivity(new Intent(mContext, CreatedActivity.class)));
@@ -211,8 +275,8 @@ public class QuizActivity extends AppCompatActivity {
             if (timedOut)
                 lastQuestionCorrect = false;
             else
-                points +=getPoints();
-            questionTag.setText("Question " + (currentQuestionIdx+1) + " of "+quizQuestionArrayList.size());
+                points += getPoints();
+            questionTag.setText("Question " + (currentQuestionIdx + 1) + " of " + quizQuestionArrayList.size());
             question.setText(quizQuestionArrayList.get(currentQuestionIdx).getQuestion() + i);
             option1Id.setText("A");
             option2Id.setText("B");
@@ -222,17 +286,16 @@ public class QuizActivity extends AppCompatActivity {
             option2Value.setText(quizQuestionArrayList.get(currentQuestionIdx).getOption2());
             option3Value.setText(quizQuestionArrayList.get(currentQuestionIdx).getOption3());
             option4Value.setText(quizQuestionArrayList.get(currentQuestionIdx).getOption4());
-            YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(questionBox);
-            YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option1Container);
-            YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option2Container);
-            YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option3Container);
-            YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option4Container);
+            YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(questionBox);
+            YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(option1Container);
+            YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(option2Container);
+            YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(option3Container);
+            YoYo.with(Techniques.FadeInLeft).duration(ANIMATION_DURATION).playOn(option4Container);
             i = 0;
             mProgressBar.setProgress(i);
             mCountDownTimer.start();
             currentQuestionIdx++;
         } else {
-
             showEndQuizLayout();
         }
     }
@@ -261,6 +324,35 @@ public class QuizActivity extends AppCompatActivity {
         quizLayout.setVisibility(View.GONE);
         endLayout.setVisibility(View.VISIBLE);
     }
+
+    public static Date parseDate(String stringToParse, SimpleDateFormat sdf) {
+        Date date = null;
+        try {
+            date = sdf.parse(stringToParse);
+            return date;
+        } catch (ParseException e) {
+            Log.d(TAG, "parseDate: " + e);
+        }
+        return null;
+    }
+
+    public String getDifference(Date startDate, Date endDate) {
+        long different = endDate.getTime() - startDate.getTime();
+        long secondsInMilli = 1000;
+        long minutesInMilli = secondsInMilli * 60;
+        long hoursInMilli = minutesInMilli * 60;
+        long daysInMilli = hoursInMilli * 24;
+        long elapsedDays = different / daysInMilli;
+        different = different % daysInMilli;
+        long elapsedHours = different / hoursInMilli;
+        different = different % hoursInMilli;
+        long elapsedMinutes = different / minutesInMilli;
+        different = different % minutesInMilli;
+        long elapsedSeconds = different / secondsInMilli;
+
+        return String.format("%d days, %d hours, %d minutes, %d seconds%n", elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
+    }
+
 
     @Override
     public void onBackPressed() {

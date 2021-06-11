@@ -94,7 +94,7 @@
                         android:layout_height="120dp"
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="20dp"
-                        app:civ_border_color="@color/colorPrimary"
+                        app:civ_border_color="@color/option_background_pressed"
                         app:civ_border_width="2dp" />
 
                     <TextView
@@ -217,7 +217,7 @@
                             android:padding="5dp"
                             android:layout_weight="1"
                             android:src="@drawable/ic_baseline_add_24"
-                            app:tint="@color/colorPrimary" />
+                            app:tint="@color/option_background_pressed" />
                         </LinearLayout>
 
                     </RelativeLayout>

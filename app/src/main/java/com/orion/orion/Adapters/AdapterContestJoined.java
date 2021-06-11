@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,15 +32,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
 import com.orion.orion.contest.ViewContestDetails;
-import com.orion.orion.contest.joined.joined_contest_overview_activity;
+import com.orion.orion.contest.joined.JoinedContestOverviewActivity;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.JoinForm;
 
 import java.util.List;
 
 public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoined.ViewHolder> {
-    private String mAppend = "";
 
+    private String mAppend = "";
     private Context mContext;
     private List<JoinForm> joiningForms;
 
@@ -51,21 +52,18 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         View view= LayoutInflater.from(mContext).inflate(R.layout.layout_contest_item,parent,false);
         return new AdapterContestJoined.ViewHolder(view);
-
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int i) {
-
         JoinForm joiningForm= joiningForms.get(i);
         holder.relStatus.setVisibility(View.VISIBLE);
         String key = joiningForm.getCi();
         String userid=joiningForm.getHst();
-
         setgp(userid, holder.gp);
+
 
         DatabaseReference db = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_participantList));
         db.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -79,7 +77,6 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
 
             }
         });
-
         DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests));
         ref2.child(joiningForm.getUi())
                 .child(mContext.getString(R.string.joined_contest))
@@ -91,9 +88,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
                         if (dataSnapshot.exists()) {
                             holder.rejectBtn.setVisibility(View.VISIBLE);
                             holder.reason=dataSnapshot.getValue().toString();
-
                         }
-
                     }
 
                     @Override
@@ -101,12 +96,6 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
 
                     }
                 });
-        holder.rejectBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                reasonDialoge(holder.reason);
-            }
-        });
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist));
         ref.child(key)
                 .child(mContext.getString(R.string.field_Participant_List))
@@ -118,7 +107,6 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
                             holder.ok = true;
 
                         }
-
                     }
 
                     @Override
@@ -126,106 +114,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
 
                     }
                 });
-        holder.option.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(mContext, holder.option);
-                popupMenu.getMenuInflater().inflate(R.menu.post_menu_contest, popupMenu.getMenu());
-                if (!holder.ok) {
-                    popupMenu.getMenu().getItem(2).setVisible(false);
 
-                }
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId() == R.id.ic_house) {
-                            int sdk = android.os.Build.VERSION.SDK_INT;
-                            if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
-                                ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-                                clipboard.setText(key);
-                            } else {
-                                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-                                android.content.ClipData clip = android.content.ClipData.newPlainText("Key", key);
-                                clipboard.setPrimaryClip(clip);
-                            }
-                        } else if (item.getItemId() == R.id.ic_house1) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                            builder.setTitle("Share");
-                            builder.setMessage(R.string.type_of_share);
-
-//                set buttons
-                            builder.setPositiveButton("Ask for Vote", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    String message = "Vote for me and help me to win this contest." +
-                                            "\nTo Vote:" +
-                                            "\n1) Download Orion:" +"https://play.google.com/store/apps/details?id=" + mContext.getPackageName()+
-                                            "\n3) Enter contest key in contest search: "+ key +
-                                            "\n4) Select contest and then Select Vote"+
-                                            "\n5) Select submission you want to vote for."+
-                                            "\n6) Vote";
-
-                                    Intent share = new Intent(Intent.ACTION_SEND);
-                                    share.setType("text/plain");
-                                    share.putExtra(Intent.EXTRA_TEXT, message);
-                                    mContext.startActivity(Intent.createChooser(share, "Select"));
-
-                                }
-                            });
-                            builder.setNegativeButton("Ask for Participation", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    String message = "Participate in this exciting contest." +
-                                            "\nTo Participate:" +
-                                            "\n1) Download Orion:" +"https://play.google.com/store/apps/details?id=" + mContext.getPackageName()+
-                                            "\n3) Enter contest key in contest search: "+  key+
-                                            "\n4) Select contest and then Select Participate"+
-                                            "\n5) Fill Submission Form."+
-                                            "\n6) Click Submit"+
-                                            "\n Compete with the best!";
-
-                                    Intent share = new Intent(Intent.ACTION_SEND);
-                                    share.setType("text/plain");
-                                    share.putExtra(Intent.EXTRA_TEXT, message);
-                                    mContext.startActivity(Intent.createChooser(share, "Select"));
-                                }
-                            });
-                            builder.create().show();
-                        } else {
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                            builder.setTitle("Report");
-                            builder.setMessage("Are you sure, you want to Report this Contest?");
-
-//                set buttons
-                            builder.setPositiveButton("Report", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    ReportPost(joiningForm.getCi(),joiningForm.getHst(), holder.p);
-
-                                }
-                            });
-                            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            builder.create().show();
-
-                        }
-                        return true;
-                    }
-
-                });
-
-                popupMenu.show();
-
-            }
-
-        });
-
-//
         String status = joiningForm.getSt();
         holder.status.setText(status);
         if (joiningForm.getSt().equals("Rejected")) {
@@ -233,36 +122,91 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
         } else if (joiningForm.getSt().equals("Accepted")) {
             holder.status.setTextColor(Color.GREEN);
         }
+        holder.rejectBtn.setOnClickListener(v -> reasonDialoge(holder.reason));
+        holder.option.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(mContext, holder.option);
+            popupMenu.getMenuInflater().inflate(R.menu.post_menu_contest, popupMenu.getMenu());
+            if (!holder.ok) {
+                popupMenu.getMenu().getItem(2).setVisible(false);
 
-
-        getcontestDetails(joiningForm.getHst(),joiningForm.getCi(),holder.poster
-                ,holder.title,holder.host,holder.regEnd,holder.totalP,holder.entryFee,holder.domain,holder.progress);
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (status.equals("waiting") || status.equals("Rejected")) {
-                    Intent i = new Intent(mContext.getApplicationContext(), ViewContestDetails.class);
-                    i.putExtra("userId", joiningForm.getHst());
-                    i.putExtra("contestId", joiningForm.getCi());
-                    i.putExtra("Vote","No");
-                    i.putExtra("reg", "No");
-                    mContext.startActivity(i);
-                }else{
-
-                    Intent i = new Intent(mContext.getApplicationContext(), joined_contest_overview_activity.class);
-                    i.putExtra("userId", joiningForm.getHst());
-                    i.putExtra("contestId", joiningForm.getCi());
-                    i.putExtra("joiningKey", joiningForm.getJi());
-                    i.putExtra("hostId", joiningForm.getHst());
-
-
-                    mContext.startActivity(i);
-                }
             }
+            popupMenu.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.ic_house) {
+                    int sdk = android.os.Build.VERSION.SDK_INT;
+                    if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
+                        ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                        clipboard.setText(key);
+                    } else {
+                        ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+                        android.content.ClipData clip = android.content.ClipData.newPlainText("Key", key);
+                        clipboard.setPrimaryClip(clip);
+                    }
+                } else if (item.getItemId() == R.id.ic_house1) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("Share");
+                    builder.setMessage(R.string.type_of_share);
+
+//                set buttons
+                    builder.setPositiveButton("Ask for Vote", (dialog, which) -> {
+                        String message = "Vote for me and help me to win this contest." +
+                                "\nTo Vote:" +
+                                "\n1) Download Orion:" +"https://play.google.com/store/apps/details?id=" + mContext.getPackageName()+
+                                "\n3) Enter contest key in contest search: "+ key +
+                                "\n4) Select contest and then Select Vote"+
+                                "\n5) Select submission you want to vote for."+
+                                "\n6) Vote";
+                        Intent share = new Intent(Intent.ACTION_SEND);
+                        share.setType("text/plain");
+                        share.putExtra(Intent.EXTRA_TEXT, message);
+                        mContext.startActivity(Intent.createChooser(share, "Select"));
+
+                    });
+                    builder.setNegativeButton("Ask for Participation", (dialog, which) -> {
+                        String message = "Participate in this exciting contest." +
+                                "\nTo Participate:" +
+                                "\n1) Download Orion:" +"https://play.google.com/store/apps/details?id=" + mContext.getPackageName()+
+                                "\n3) Enter contest key in contest search: "+  key+
+                                "\n4) Select contest and then Select Participate"+
+                                "\n5) Fill Submission Form."+
+                                "\n6) Click Submit"+
+                                "\n Compete with the best!";
+                        Intent share = new Intent(Intent.ACTION_SEND);
+                        share.setType("text/plain");
+                        share.putExtra(Intent.EXTRA_TEXT, message);
+                        mContext.startActivity(Intent.createChooser(share, "Select"));
+                    });
+                    builder.create().show();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                    builder.setTitle("Report");
+                    builder.setMessage("Are you sure, you want to Report this Contest?");
+                    builder.setPositiveButton("Report", (dialog, which) -> ReportPost(joiningForm.getCi(),joiningForm.getHst(), holder.p));
+                    builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+                    builder.create().show();
+                }
+                return true;
+            });
+            popupMenu.show();
+
         });
-
-
+        getcontestDetails(joiningForm.getHst(),joiningForm.getCi(),holder.poster,holder.title,holder.host,holder.regEnd,holder.totalP,holder.entryFee,holder.domain,holder.progress);
+        holder.itemView.setOnClickListener(v -> {
+            Intent i1;
+            if (status.equals("waiting") || status.equals("Rejected")) {
+                i1 = new Intent(mContext.getApplicationContext(), ViewContestDetails.class);
+                i1.putExtra("userId", joiningForm.getHst());
+                i1.putExtra("contestId", joiningForm.getCi());
+                i1.putExtra("Vote","No");
+                i1.putExtra("reg", "No");
+            }else{
+                i1 = new Intent(mContext.getApplicationContext(), JoinedContestOverviewActivity.class);
+                i1.putExtra("userId", joiningForm.getHst());
+                i1.putExtra("contestId", joiningForm.getCi());
+                i1.putExtra("joiningKey", joiningForm.getJi());
+                i1.putExtra("hostId", joiningForm.getHst());
+            }
+            mContext.startActivity(i1);
+        });
     }
     @Override
     public long getItemId(int position) {
@@ -285,12 +229,9 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
         private Button rejectBtn;
         String reason;
         Boolean ok = false;
-
         int p = 0;
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             domain = itemView.findViewById(R.id.domainD);
             title = itemView.findViewById(R.id.titleD);
             regEnd = itemView.findViewById(R.id.regendD);
@@ -307,10 +248,6 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
             relStatus = itemView.findViewById(R.id.relStatus);
             progress = itemView.findViewById(R.id.progress);
             rejectBtn = itemView.findViewById(R.id.rejectionBtn);
-
-
-
-
         }
     }
     private void setgp(String userid, TextView gp) {
@@ -336,7 +273,6 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
                                                 gp.setText(String.valueOf(100 - (((x * 100) / y))) + "%");
                                             } else {
                                                 gp.setText("100%");
-
                                             }
                                         }
 
@@ -371,53 +307,42 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
                     Toast.makeText(mContext, "You already reported this contest.", Toast.LENGTH_SHORT).show();
 
                 } else {
-
-
                     reference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                             .setValue(true)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            .addOnCompleteListener(task -> reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-
-                                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            long i = snapshot.getChildrenCount();
-                                            if ((((i + 1) / p) * 100) > 60) {
-                                                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
-                                                        .child(userId)
-                                                        .child(mContext.getString(R.string.field_contest_reports));
-                                                reference1.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                    @Override
-                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                        if (snapshot.exists()) {
-                                                            long x = (long) snapshot.getValue();
-                                                            reference1
-                                                                    .setValue(x + 1);
-                                                        } else {
-                                                            reference1
-                                                                    .setValue(1);
-                                                        }
-                                                    }
-
-                                                    @Override
-                                                    public void onCancelled(@NonNull DatabaseError error) {
-
-                                                    }
-                                                });
+                                public void onDataChange(@NonNull DataSnapshot snapshot1) {
+                                    long i = snapshot1.getChildrenCount();
+                                    if ((((i + 1) / p) * 100) > 60) {
+                                        DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
+                                                .child(userId)
+                                                .child(mContext.getString(R.string.field_contest_reports));
+                                        reference1.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot1) {
+                                                if (snapshot1.exists()) {
+                                                    long x = (long) snapshot1.getValue();
+                                                    reference1
+                                                            .setValue(x + 1);
+                                                } else {
+                                                    reference1
+                                                            .setValue(1);
+                                                }
                                             }
 
-                                        }
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            }
+                                        });
+                                    }
+                                }
 
-                                        }
-                                    });
-
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
 
                                 }
-                            });
+                            }));
 
                 }
             }
@@ -434,18 +359,12 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
         AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
         alertDialog.setTitle("Rejection Reason");
         alertDialog.setMessage(s);
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", (dialog, which) -> dialog.dismiss());
         alertDialog.show();
     }
     private  void getcontestDetails(String userid, String contestid, ImageView poster, TextView title,
                                     TextView host, TextView regend, TextView totalp, TextView entryfee, TextView domain, ImageView progress){
         DatabaseReference ref= FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
-
                 .child(userid)
                 .child(mContext.getString(R.string.created_contest))
                 .child(contestid);
@@ -453,13 +372,13 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 CreateForm createForm=dataSnapshot.getValue(CreateForm.class);
+                Log.d("TAG", "onDataChange: "+createForm.getCt());
                 title.setText(createForm.getCt());
                 host.setText(createForm.getHst());
                 regend.setText(createForm.getRe());
                 totalp.setText(createForm.getTp());
                 entryfee.setText(createForm.getEf());
                 domain.setText(createForm.getD());
-
                 Glide.with(mContext.getApplicationContext())
                         .load(createForm.getPo())
                         .placeholder(R.drawable.load)
@@ -474,10 +393,5 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
 
             }
         });
-
-
-
-
     }
-
 }

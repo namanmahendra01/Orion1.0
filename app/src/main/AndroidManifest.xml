@@ -27,8 +27,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".QuizActivity"></activity>
-        <activity android:name=".contest.jury_voting_Activity"></activity>
+        <activity android:name=".QuizActivity" />
+        <activity android:name=".contest.jury_voting_Activity" />
         <activity android:name=".contest.create.CreatedActivity" />
         <activity android:name=".contest.joined.JoinedActivity" />
         <activity android:name=".contest.upcoming.UpcomingContestActivity" />
@@ -56,13 +56,12 @@
         <activity android:name=".contest.create.CheckContest" />
         <activity android:name=".contest.ViewContestDetails" />
         <activity android:name=".contest.joined.JoiningForm" />
-        <activity android:name=".contest.joined.joined_contest_overview_activity" />
+        <activity android:name=".contest.joined.JoinedContestOverviewActivity" />
         <activity android:name=".contest.ranking" />
-        <activity android:name=".contest.Contest_Evaluation.Participant_Request" />
-        <activity android:name=".contest.Contest_Evaluation.contest_evaluation_activity" />
+        <activity android:name=".contest.Contest_Evaluation.ParticipantRequestActivity" />
+        <activity android:name=".contest.Contest_Evaluation.ContestEvaluationActivity" />
         <activity android:name=".contest.Contest_Evaluation.activity_view_media" />
         <activity android:name=".contest.result.ResultDeclaredActivity" />
-        <activity android:name=".contest.jury_voting_media" />
         <activity android:name=".contest.public_voting_media" /> <!-- Leaderboard Section -->
         <activity android:name=".LeaderboardActivity" /> <!-- Profile Section -->
         <activity

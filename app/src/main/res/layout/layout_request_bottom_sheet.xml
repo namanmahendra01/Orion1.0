@@ -1,96 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_bottom_sheet_container"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:background="@drawable/bottom_sheet_background"
+    android:orientation="vertical">
 
-    android:id="@+id/layout_bottom_sheet_container"
-    android:background="@drawable/bottom_sheet_background">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:padding="15dp"
         android:text="Participant Detail"
-        android:textSize="20sp"
         android:textColor="@color/black"
-        android:gravity="center_horizontal"/>
+        android:textSize="20sp" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/colorPrimary"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="10dp"
+        android:background="@color/option_background_pressed" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/profileBs"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" Display Name"
-            android:textColor="@color/black"
-            android:id="@+id/displaynameBs"
-            android:textSize="18sp"
-            android:layout_gravity="center_horizontal"/>
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profileBs"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal" />
+
     <TextView
+        android:id="@+id/displaynameBs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="uername"
+        android:layout_gravity="center_horizontal"
+        android:text=" Display Name"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+    <TextView
         android:id="@+id/usernameBs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="40dp"
-        android:layout_gravity="center_horizontal"/>
+        android:text="uername" />
+
     <LinearLayout
+        android:id="@+id/collegeLinear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:id="@+id/collegeLinear"
+        android:layout_gravity="center"
 
         android:layout_marginBottom="10dp"
-        android:layout_gravity="center"
         android:gravity="center"
-        android:orientation="vertical">
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="College/School:"
-            android:id="@+id/col"
-            android:textColor="@color/black"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/col"
-            android:layout_marginLeft="5dp"
-            android:textAlignment="center"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-            android:text=""
-            android:id="@+id/collegeBs"
-           />
-</RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/col"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="College/School:"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/collegeBs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/col"
+
+                android:text=""
+                android:textAlignment="center" />
+        </RelativeLayout>
+
         <TextView
+            android:id="@+id/idBs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="see ID card"
-            android:gravity="right"
-            android:id="@+id/idBs"
             android:layout_marginTop="15dp"
-            android:textSize="12sp"
-            android:textColor="#03A9F4"/>
+            android:gravity="right"
+            android:text="See ID card"
+            android:textColor="#03A9F4"
+            android:textSize="12sp" />
     </LinearLayout>
 
     <TextView
+        android:id="@+id/submissionBs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="See their Submission"
-        android:textColor="#03A9F4"
-        android:id="@+id/submissionBs"
         android:layout_gravity="center"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp"
+        android:text="See their Submission"
+        android:textColor="#03A9F4" />
+
+    <TextView
+        android:id="@+id/submissionDescriptionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="Submission Description"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/submisssionDescription"
+        android:layout_width="match_parent"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text=""
+        android:layout_marginBottom="20dp"
+        android:textColor="@color/grey"/>
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -98,26 +129,25 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Allow"
-            android:textSize="18sp"
             android:id="@+id/allow"
-            android:layout_margin="20dp"
-            android:textColor="#03A9F4" />
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reject"
+            android:layout_margin="20dp"
+            android:text="Allow"
+            android:textColor="#03A9F4"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/reject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="20dp"
 
-            android:id="@+id/reject"
-            android:textSize="18sp"
+            android:text="Reject"
             android:textColor="#F44336"
-             />
+            android:textSize="18sp" />
 
     </LinearLayout>
-
 
 
 </LinearLayout>

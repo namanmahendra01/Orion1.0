@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,24 +44,58 @@ import com.orion.orion.profile.profile;
 public class ViewContestDetails extends AppCompatActivity {
 
     private static final String TAG = "ViewContestDetails";
-    private TextView entryfee, title, descrip, rules, totalprize, maxPart, voteType,gp,userTv,
-            regBegin, regEnd, voteBegin, voteEnd, domain, openfor, juryname1, juryname2, juryname3, jury, jurypl1, jurypl2, jurypl3, hostedby, filetype, windate, p1Tv, p2Tv, p3Tv;
-    private ImageView poster, jurypic1, jurypic2, jurypic3,options;
+
+    private TextView contestType;
+    private TextView quizDateTime;
+    private TableLayout publicVotingContainer;
+    private TextView entryfee;
+    private TextView title;
+    private TextView descrip;
+    private TextView rules;
+    private TextView totalprize;
+    private TextView maxPart;
+    private TextView voteType;
+    private TextView gp;
+    private TextView userTv;
+    private TextView regBegin;
+    private TextView regEnd;
+    private TextView voteBegin;
+    private TextView voteEnd;
+    private TextView domain;
+    private TextView openfor;
+    private TextView juryname1;
+    private TextView juryname2;
+    private TextView juryname3;
+    private TextView jury;
+    private TextView jurypl1;
+    private TextView jurypl2;
+    private TextView jurypl3;
+    private TextView hostedby;
+    private TextView filetype;
+    private TextView windate;
+    private TextView p1Tv;
+    private TextView p2Tv;
+    private TextView p3Tv;
+    private ImageView poster;
+    private ImageView jurypic1;
+    private ImageView jurypic2;
+    private ImageView jurypic3;
+    private ImageView options;
     private String mAppend = "";
     private String posterlink = "";
     private CardView cardView;
     private Button participateBtn, VoteBtn;
-    String username="",currentUser="",hostUsername="";
+    String username = "", currentUser = "", hostUsername = "";
     Boolean ok = false;
     ImageView backArrrow;
-    private TextView jcTv,jcTv2;
-    private String judgingCriterias="";
+    private TextView jcTv, jcTv2;
+    private String judgingCriterias = "";
     private CardView jcCard;
     CreateForm mCreateForm;
     int p = 0;
 
 
-    private String  juryusername1 = "", juryusername2 = "", juryusername3 = "";
+    private String juryusername1 = "", juryusername2 = "", juryusername3 = "";
     private LinearLayout prizeLinear;
     String userId, contestId, vot, reg;
 
@@ -76,6 +111,9 @@ public class ViewContestDetails extends AppCompatActivity {
         setContentView(R.layout.activity_contest_details);
 
         setupFirebaseAuth();
+        contestType = findViewById(R.id.contestTypeTv);
+        quizDateTime = findViewById(R.id.quizDateTime);
+        publicVotingContainer = findViewById(R.id.publicVotingContainer);
         jcTv = findViewById(R.id.jc);
         jcTv2 = findViewById(R.id.jcTv2);
         jcCard = findViewById(R.id.jccard);
@@ -125,14 +163,9 @@ public class ViewContestDetails extends AppCompatActivity {
         reg = i.getStringExtra("reg");
 
         setgp(userId, gp);
-        backArrrow= findViewById(R.id.backarrow);
+        backArrrow = findViewById(R.id.backarrow);
 
-        backArrrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        backArrrow.setOnClickListener(view -> finish());
         DatabaseReference db = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_participantList));
         db.child(contestId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -152,9 +185,10 @@ public class ViewContestDetails extends AppCompatActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        currentUser= dataSnapshot.getValue().toString();
+                        currentUser = dataSnapshot.getValue().toString();
 
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -166,9 +200,9 @@ public class ViewContestDetails extends AppCompatActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                       hostUsername = dataSnapshot.getValue().toString();
-
+                        hostUsername = dataSnapshot.getValue().toString();
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -183,7 +217,7 @@ public class ViewContestDetails extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                           ok = true;
+                            ok = true;
 
                         }
 
@@ -194,70 +228,52 @@ public class ViewContestDetails extends AppCompatActivity {
 
                     }
                 });
-        options.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(ViewContestDetails.this, options);
-                popupMenu.getMenuInflater().inflate(R.menu.post_menu_contest,popupMenu.getMenu());
-                if (!ok) {
-                    popupMenu.getMenu().getItem(2).setVisible(false);
+        options.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(ViewContestDetails.this, options);
+            popupMenu.getMenuInflater().inflate(R.menu.post_menu_contest, popupMenu.getMenu());
+            if (!ok) {
+                popupMenu.getMenu().getItem(2).setVisible(false);
+            }
+            popupMenu.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.ic_house) {
+                    int sdk = android.os.Build.VERSION.SDK_INT;
+                    ClipboardManager clipboard = (ClipboardManager) ViewContestDetails.this.getSystemService(Context.CLIPBOARD_SERVICE);
+                    if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
+                        clipboard.setText(contestId);
+                    } else {
+                        android.content.ClipData clip = android.content.ClipData.newPlainText("Key", contestId);
+                        clipboard.setPrimaryClip(clip);
+                    }
+                } else if (item.getItemId() == R.id.ic_house1) {
+                    String message =
+                            "https://play.google.com/store/apps/details?id=" + ViewContestDetails.this.getPackageName() +
+                                    "Download ORION and share,participate in your domains contests."
+                                    + "Enter Contest key " + contestId + " in Contest"
+                                    + "Vote or Participate";
+                    Intent share = new Intent(Intent.ACTION_SEND);
+                    share.setType("text/plain");
+                    share.putExtra(Intent.EXTRA_TEXT, message);
 
-                }
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if (item.getItemId()==R.id.ic_house) {
-                            int sdk = android.os.Build.VERSION.SDK_INT;
-                            if(sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
-                                ClipboardManager clipboard = (ClipboardManager) ViewContestDetails.this.getSystemService(Context.CLIPBOARD_SERVICE);
-                                clipboard.setText(contestId);
-                            } else {
-                                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) ViewContestDetails.this.getSystemService(Context.CLIPBOARD_SERVICE);
-                                android.content.ClipData clip = android.content.ClipData.newPlainText("Key",contestId);
-                                clipboard.setPrimaryClip(clip);
-                            }
-                        }else if (item.getItemId()==R.id.ic_house1) {
-                            String message =
-                                    "https://play.google.com/store/apps/details?id="+ViewContestDetails.this.getPackageName()+
-                                            "Download ORION and share,participate in your domains contests."
-                                            +"Enter Contest key "+contestId+" in Contest"
-                                            +"Vote or Participate";
-                            Intent share = new Intent(Intent.ACTION_SEND);
-                            share.setType("text/plain");
-                            share.putExtra(Intent.EXTRA_TEXT, message);
+                    ViewContestDetails.this.startActivity(Intent.createChooser(share, "Select"));
+                } else {
 
-                            ViewContestDetails.this.startActivity(Intent.createChooser(share, "Select"));
-                        }else{
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(ViewContestDetails.this);
-                            builder.setTitle("Report");
-                            builder.setMessage("Are you sure, you want to Report this Contest?");
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ViewContestDetails.this);
+                    builder.setTitle("Report");
+                    builder.setMessage("Are you sure, you want to Report this Contest?");
 
 //                set buttons
-                            builder.setPositiveButton("Report", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Log.d(TAG, "DeleteMessage: deleteing message");
-                                    ReportPost(contestId,userId,p);
+                    builder.setPositiveButton("Report", (dialog, which) -> {
+                        Log.d(TAG, "DeleteMessage: deleteing message");
+                        ReportPost(contestId, userId, p);
 
-                                }
-                            });
-                            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            builder.create().show();
-                        }
-                        return true;
-                    }
+                    });
+                    builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+                    builder.create().show();
+                }
+                return true;
+            });
 
-                });
-
-                popupMenu.show();
-
-            }
+            popupMenu.show();
 
         });
 
@@ -268,7 +284,7 @@ public class ViewContestDetails extends AppCompatActivity {
         ref2.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                 mCreateForm = dataSnapshot.getValue(CreateForm.class);
+                mCreateForm = dataSnapshot.getValue(CreateForm.class);
                 assert mCreateForm != null;
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users));
                 ref.child(mCreateForm.getUi())
@@ -285,46 +301,69 @@ public class ViewContestDetails extends AppCompatActivity {
                             }
                         });
 
-                if (mCreateForm.getEf().equals("")) {
+
+                title.setText(mCreateForm.getCt());
+                hostedby.setText(mCreateForm.getHst());
+                descrip.setText(mCreateForm.getDes());
+                rules.setText(mCreateForm.getRul());
+                domain.setText(mCreateForm.getD());
+                openfor.setText(mCreateForm.getOf());
+                contestType.setText(mCreateForm.getCty());
+                if (mCreateForm.getEf().equals(""))
                     entryfee.setText("Free");
-                } else {
+                else
                     entryfee.setText(mCreateForm.getEf());
-                }
                 if (mCreateForm.getTp().equals("")) {
                     prizeLinear.setVisibility(View.GONE);
                     totalprize.setText("-");
-
                 } else {
                     totalprize.setText(mCreateForm.getTp());
                     prizeLinear.setVisibility(View.VISIBLE);
-
                 }
-                if (mCreateForm.getMlt().equals("")) {
+                if (mCreateForm.getCty()!=null && mCreateForm.getCty().equals("Quiz"))
+                    publicVotingContainer.setVisibility(View.GONE);
+                else
+                    publicVotingContainer.setVisibility(View.VISIBLE);
+                //voting type
+                if (mCreateForm.getVt().equals(""))
+                    voteType.setText("-");
+                else
+                    voteType.setText(mCreateForm.getVt());
+                domain.setText(mCreateForm.getD());
+                openfor.setText(mCreateForm.getOf());
+                //participant
+                if (mCreateForm.getMlt().equals(""))
                     maxPart.setText("Unlimited");
-
-                } else {
+                else
                     maxPart.setText(mCreateForm.getMlt());
-
-                }
-                if (mCreateForm.getVb().equals("")) {
+                filetype.setText(mCreateForm.getFt());
+                regBegin.setText(mCreateForm.getRb());
+                regEnd.setText(mCreateForm.getRe());
+                //vote dates
+                if (mCreateForm.getVb().equals("") || mCreateForm.getVe().equals("")) {
                     voteBegin.setText("-");
-
+                    voteEnd.setText("-");
                 } else {
                     voteBegin.setText(mCreateForm.getVb());
-
-                }
-                if (mCreateForm.getVe().equals("")) {
-                    voteEnd.setText("-");
-
-                } else {
                     voteEnd.setText(mCreateForm.getVe());
-
                 }
+                windate.setText(mCreateForm.getWd());
+                quizDateTime.setText(mCreateForm.getQdt());
+
+                p1Tv.setText(mCreateForm.getP1());
+                p2Tv.setText(mCreateForm.getP2());
+                p3Tv.setText(mCreateForm.getP3());
+
+
+                juryusername1 = mCreateForm.getJn1();
+                juryusername2 = mCreateForm.getJn2();
+                juryusername3 = mCreateForm.getJn3();
+
                 if (mCreateForm.getJn1().equals("")) {
                     jury.setVisibility(View.GONE);
                     cardView.setVisibility(View.GONE);
                 }
-                if (!mCreateForm.getJn1().equals("") &&  mCreateForm.getJn2().equals("")){
+                if (!mCreateForm.getJn1().equals("") && mCreateForm.getJn2().equals("")) {
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -343,7 +382,7 @@ public class ViewContestDetails extends AppCompatActivity {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -363,7 +402,8 @@ public class ViewContestDetails extends AppCompatActivity {
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
                                                                 .thumbnail(0.5f)
-                                                                .into(jurypic1);                                                    }
+                                                                .into(jurypic1);
+                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -381,10 +421,10 @@ public class ViewContestDetails extends AppCompatActivity {
                             });
 
 
-
                 }
-                if(!mCreateForm.getJn1().equals("") &&  !mCreateForm.getJn2().equals("")
-                        && mCreateForm.getJn3().equals("")){
+                if (!mCreateForm.getJn1().equals("")
+                        && !mCreateForm.getJn2().equals("")
+                        && mCreateForm.getJn3().equals("")) {
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -402,7 +442,7 @@ public class ViewContestDetails extends AppCompatActivity {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -446,7 +486,7 @@ public class ViewContestDetails extends AppCompatActivity {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -467,7 +507,8 @@ public class ViewContestDetails extends AppCompatActivity {
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
                                                                 .thumbnail(0.5f)
-                                                                .into(jurypic2);                                                      }
+                                                                .into(jurypic2);
+                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -484,8 +525,9 @@ public class ViewContestDetails extends AppCompatActivity {
                                 }
                             });
                 }
-                if(!mCreateForm.getJn1().equals("") &&  !mCreateForm.getJn2().equals("")
-                        && !mCreateForm.getJn3().equals("")){
+                if (!mCreateForm.getJn1().equals("")
+                        && !mCreateForm.getJn2().equals("")
+                        && !mCreateForm.getJn3().equals("")) {
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -505,7 +547,7 @@ public class ViewContestDetails extends AppCompatActivity {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -526,7 +568,8 @@ public class ViewContestDetails extends AppCompatActivity {
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
                                                                 .thumbnail(0.5f)
-                                                                .into(jurypic1);                                                      }
+                                                                .into(jurypic1);
+                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -547,7 +590,7 @@ public class ViewContestDetails extends AppCompatActivity {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -568,7 +611,8 @@ public class ViewContestDetails extends AppCompatActivity {
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
                                                                 .thumbnail(0.5f)
-                                                                .into(jurypic2);                                                      }
+                                                                .into(jurypic2);
+                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -590,7 +634,7 @@ public class ViewContestDetails extends AppCompatActivity {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -611,7 +655,8 @@ public class ViewContestDetails extends AppCompatActivity {
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
                                                                 .thumbnail(0.5f)
-                                                                .into(jurypic3);                                                      }
+                                                                .into(jurypic3);
+                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -630,21 +675,16 @@ public class ViewContestDetails extends AppCompatActivity {
                 }
                 posterlink = mCreateForm.getPo();
 
-                if(mCreateForm.getVt().equals("Jury")||mCreateForm.getVt().equals("Jury and Public")){
-                    String f_string="";
+                if (mCreateForm.getVt().equals("Jury") || mCreateForm.getVt().equals("Jury and Public")) {
+                    String f_string = "";
                     jcCard.setVisibility(View.VISIBLE);
                     jcTv.setVisibility(View.VISIBLE);
                     judgingCriterias = mCreateForm.getCr();
-                    String[] array=judgingCriterias.split("///");
-                    for (String a:
-                            array) {
-                        f_string=f_string+"\n"+a;
-
-                    }
-                    Log.d(TAG, "onCreate: "+f_string);
+                    String[] array = judgingCriterias.split("///");
+                    for (String a : array)
+                        f_string = f_string + "\n" + a;
+                    Log.d(TAG, "onCreate: " + f_string);
                     jcTv2.setText(f_string);
-
-
                 }
                 Glide.with(getApplicationContext())
                         .load(posterlink)
@@ -652,30 +692,6 @@ public class ViewContestDetails extends AppCompatActivity {
                         .error(R.drawable.default_image2)
                         .placeholder(R.drawable.load)
                         .into(poster);
-                title.setText(mCreateForm.getCt());
-                descrip.setText(mCreateForm.getDes());
-                rules.setText(mCreateForm.getRul());
-                voteType.setText(mCreateForm.getVt());
-                regBegin.setText(mCreateForm.getRb());
-                regEnd.setText(mCreateForm.getRe());
-                domain.setText(mCreateForm.getD());
-                openfor.setText(mCreateForm.getOf());
-
-
-                hostedby.setText(mCreateForm.getHst());
-                filetype.setText(mCreateForm.getFt());
-                windate.setText(mCreateForm.getWd());
-                p1Tv.setText(mCreateForm.getP1());
-
-                p2Tv.setText(mCreateForm.getP2());
-
-                p3Tv.setText(mCreateForm.getP3());
-
-                juryusername1 = mCreateForm.getJn1();
-                juryusername2 = mCreateForm.getJn2();
-                juryusername3 = mCreateForm.getJn3();
-
-
             }
 
             @Override
@@ -684,230 +700,116 @@ public class ViewContestDetails extends AppCompatActivity {
             }
         });
 
-        jurypic1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: ooo");
+        jurypic1.setOnClickListener(v -> juryProfile(jurypl1.getText().toString()));
+        juryname1.setOnClickListener(v -> juryProfile(jurypl1.getText().toString()));
+        userTv.setOnClickListener(v -> juryProfile(userTv.getText().toString()));
+        jurypl1.setOnClickListener(v -> juryProfile(jurypl1.getText().toString()));
 
-                juryProfile(jurypl1.getText().toString());
+        jurypic2.setOnClickListener(v -> juryProfile(jurypl2.getText().toString()));
+        juryname2.setOnClickListener(v -> juryProfile(jurypl2.getText().toString()));
+        jurypl2.setOnClickListener(v -> juryProfile(jurypl2.getText().toString()));
 
-
-            }
-        });
-        juryname1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl1.getText().toString());
-
-
-            }
-        });
-        userTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                juryProfile(userTv.getText().toString());
-
-            }
-        });
-        jurypl1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl1.getText().toString());
-
-
-
-            }
-        });
-
-        jurypic2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl2.getText().toString());
-
-
-
-            }
-        });
-        juryname2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl2.getText().toString());
-
-
-
-            }
-        });
-        jurypl2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl2.getText().toString());
-
-
-
-            }
-        });
-
-        jurypic3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl3.getText().toString());
-
-
-
-            }
-        });
-        juryname3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl3.getText().toString());
-
-
-            }
-        });
-        jurypl3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl3.getText().toString());
-
-
-
-            }
-        });
+        jurypic3.setOnClickListener(v -> juryProfile(jurypl3.getText().toString()));
+        juryname3.setOnClickListener(v -> juryProfile(jurypl3.getText().toString()));
+        jurypl3.setOnClickListener(v -> juryProfile(jurypl3.getText().toString()));
 
         if (reg.equals("yes")) {
             participateBtn.setVisibility(View.VISIBLE);
-            participateBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (currentUser.equals(juryusername1)||currentUser.equals(juryusername2)
-                            ||currentUser.equals(juryusername3)||currentUser.equals(hostUsername)) {
-                        Intent i = new Intent(getApplicationContext(), JoiningForm.class);
-                        i.putExtra("userId", userId);
-                        i.putExtra("contestId", contestId);
-                        i.putExtra("isJuryOrHost","true");
-                        startActivity(i);
-                    }else{
-                        Intent i = new Intent(getApplicationContext(), JoiningForm.class);
-                        i.putExtra("userId", userId);
-                        i.putExtra("contestId", contestId);
-                        i.putExtra("isJuryOrHost","false");
-                        startActivity(i);
-                    }
+            participateBtn.setOnClickListener(v -> {
+                if (currentUser.equals(juryusername1) || currentUser.equals(juryusername2)
+                        || currentUser.equals(juryusername3) || currentUser.equals(hostUsername)) {
+                    Intent i1 = new Intent(getApplicationContext(), JoiningForm.class);
+                    i1.putExtra("userId", userId);
+                    i1.putExtra("contestId", contestId);
+                    i1.putExtra("isJuryOrHost", "true");
+                    startActivity(i1);
+                } else {
+                    Intent i1 = new Intent(getApplicationContext(), JoiningForm.class);
+                    i1.putExtra("userId", userId);
+                    i1.putExtra("contestId", contestId);
+                    i1.putExtra("isJuryOrHost", "false");
+                    startActivity(i1);
                 }
             });
-        } else {
-            participateBtn.setVisibility(View.GONE);
-        }
+        } else participateBtn.setVisibility(View.GONE);
 
         if (vot.equals("yes")) {
             VoteBtn.setVisibility(View.VISIBLE);
-
-            VoteBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                    ref.child(getString(R.string.dbname_users))
-                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    users user = new users();
-                                    user = dataSnapshot.getValue(users.class);
-                                    String username = user.getU();
-                                    if (username.equals(juryusername1)) {
-                                        Intent i = new Intent(ViewContestDetails.this, jury_voting_Activity.class);
-                                        i.putExtra("userId", userId);
-                                        i.putExtra("contestId", contestId);
-                                        i.putExtra("jury", "jury1");
-                                        i.putExtra("comment", "comment1");
-                                        i.putExtra("mediaType", mCreateForm.getMlt());
-                                        startActivity(i);
-
-                                    } else if (username.equals(juryusername2)) {
-                                        Intent i = new Intent(ViewContestDetails.this, jury_voting_Activity.class);
-                                        i.putExtra("userId", userId);
-                                        i.putExtra("contestId", contestId);
-                                        i.putExtra("jury", "jury2");
-                                        i.putExtra("comment", "comment2");
-                                        i.putExtra("mediaType", mCreateForm.getMlt());
-
-                                        startActivity(i);
-
-                                    } else if (username.equals(juryusername3)) {
-                                        Intent i = new Intent(ViewContestDetails.this, jury_voting_Activity.class);
-                                        i.putExtra("userId", userId);
-                                        i.putExtra("contestId", contestId);
-                                        i.putExtra("jury", "jury3");
-                                        i.putExtra("comment", "comment3");
-                                        i.putExtra("mediaType", mCreateForm.getMlt());
-
-                                        startActivity(i);
-
-                                    } else {
-                                        Intent i = new Intent(ViewContestDetails.this, public_voting_media.class);
-                                        i.putExtra("userId", userId);
-                                        i.putExtra("contestId", contestId);
-                                        startActivity(i);
-                                    }
+            VoteBtn.setOnClickListener(v -> {
+                DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference();
+                ref1.child(getString(R.string.dbname_users))
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                users user = new users();
+                                user = dataSnapshot.getValue(users.class);
+                                String username = user.getU();
+                                if (username.equals(juryusername1)) {
+                                    Intent i12 = new Intent(ViewContestDetails.this, jury_voting_Activity.class);
+                                    i12.putExtra("userId", userId);
+                                    i12.putExtra("contestId", contestId);
+                                    i12.putExtra("jury", "jury1");
+                                    i12.putExtra("comment", "comment1");
+                                    i12.putExtra("mediaType", mCreateForm.getMlt());
+                                    startActivity(i12);
+                                } else if (username.equals(juryusername2)) {
+                                    Intent i12 = new Intent(ViewContestDetails.this, jury_voting_Activity.class);
+                                    i12.putExtra("userId", userId);
+                                    i12.putExtra("contestId", contestId);
+                                    i12.putExtra("jury", "jury2");
+                                    i12.putExtra("comment", "comment2");
+                                    i12.putExtra("mediaType", mCreateForm.getMlt());
+                                    startActivity(i12);
+                                } else if (username.equals(juryusername3)) {
+                                    Intent i12 = new Intent(ViewContestDetails.this, jury_voting_Activity.class);
+                                    i12.putExtra("userId", userId);
+                                    i12.putExtra("contestId", contestId);
+                                    i12.putExtra("jury", "jury3");
+                                    i12.putExtra("comment", "comment3");
+                                    i12.putExtra("mediaType", mCreateForm.getMlt());
+                                    startActivity(i12);
+                                } else {
+                                    Intent i12 = new Intent(ViewContestDetails.this, public_voting_media.class);
+                                    i12.putExtra("userId", userId);
+                                    i12.putExtra("contestId", contestId);
+                                    startActivity(i12);
                                 }
+                            }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                }
-                            });
-
-
-                }
+                            }
+                        });
             });
 
-        } else {
-            VoteBtn.setVisibility(View.GONE);
-        }
-
+        } else VoteBtn.setVisibility(View.GONE);
     }
 
     private void juryProfile(String toString) {
-        DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
-
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         Query userquery = ref
                 .child(getString(R.string.dbname_username))
                 .child(toString);
         userquery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 if (dataSnapshot.exists()) {
                     username = dataSnapshot.getValue().toString();
-
                     Intent i = new Intent(ViewContestDetails.this, profile.class);
                     i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
                     i.putExtra(getString(R.string.intent_user), username);
                     startActivity(i);
-
-
                 }
-
             }
-
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.d(TAG, "Query Cancelled");
             }
         });
-
     }
-
 
     private void setgp(String userid, TextView gp) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -955,7 +857,7 @@ public class ViewContestDetails extends AppCompatActivity {
                 });
     }
 
-    private void ReportPost(String contestId,String userId, int p) {
+    private void ReportPost(String contestId, String userId, int p) {
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_contestlist))
                 .child(contestId)
@@ -1050,7 +952,8 @@ public class ViewContestDetails extends AppCompatActivity {
                                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 settings.edit().clear().apply();
-                                if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
+                                if (mAuthListener != null)
+                                    mAuth.removeAuthStateListener(mAuthListener);
                                 startActivity(intent);
                             })
                             .show();

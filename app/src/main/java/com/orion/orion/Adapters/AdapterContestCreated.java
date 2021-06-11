@@ -27,7 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
-import com.orion.orion.contest.Contest_Evaluation.contest_evaluation_activity;
+import com.orion.orion.contest.Contest_Evaluation.ContestEvaluationActivity;
 import com.orion.orion.models.CreateForm;
 
 import java.util.List;
@@ -207,7 +207,7 @@ public class AdapterContestCreated extends RecyclerView.Adapter<AdapterContestCr
         holder.totalP.setText(mcreateForm.getTp());
 
         holder.itemView.setOnClickListener(v -> {
-            Intent i1 = new Intent(mContext.getApplicationContext(), contest_evaluation_activity.class);
+            Intent i1 = new Intent(mContext.getApplicationContext(), ContestEvaluationActivity.class);
             i1.putExtra("contestId", mcreateForm.getCi());
             i1.putExtra("userid", mcreateForm.getUi());
             i1.putExtra("title", mcreateForm.getCt());

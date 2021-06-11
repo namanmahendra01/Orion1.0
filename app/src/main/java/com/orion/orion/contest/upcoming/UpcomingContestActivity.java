@@ -68,7 +68,7 @@ public class UpcomingContestActivity extends AppCompatActivity {
     private EditText searchBox;
     int prevHeight;
     int height, dummyHeight;
-    TextView noPost,joined,created;
+    TextView noPost, joined, created;
     LinearLayout blurBg;
     int x = 0;
     private int mResults;
@@ -95,10 +95,10 @@ public class UpcomingContestActivity extends AppCompatActivity {
     String domain = "Overall", entryfee = "Overall";
 
 
+
     private AdapterContestUpcoming contestUpcoming;
     private AdapterContestUpcomingGrid adapterContestUpcomingGrid;
     private AdapterContestSearch adapterContestSearch;
-
 
 
     @Override
@@ -111,21 +111,8 @@ public class UpcomingContestActivity extends AppCompatActivity {
         checkCurrentuser(mAuth.getCurrentUser());
         hideSoftKeyboard();
 
-        joined.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(UpcomingContestActivity.this, JoinedActivity.class);
-                startActivity(i);
-            }
-        });
-        created.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(UpcomingContestActivity.this, CreatedActivity.class);
-                startActivity(i);
-            }
-        });
-
+        joined.setOnClickListener(v -> startActivity(new Intent(this, JoinedActivity.class)));
+        created.setOnClickListener(v -> startActivity(new Intent(this, CreatedActivity.class)));
 
         final GridLayoutManager[] linearLayoutManager1 = {new GridLayoutManager(this, 1)};
         contestlist2 = new ArrayList<>();
@@ -276,7 +263,7 @@ public class UpcomingContestActivity extends AppCompatActivity {
 
     }
 
-    public void initWidgets(){
+    public void initWidgets() {
         upcomingContestRv = findViewById(R.id.recycler_view1);
         contestSearchRv = findViewById(R.id.recyclerKey);
         searchBox = findViewById(R.id.search);
@@ -284,7 +271,7 @@ public class UpcomingContestActivity extends AppCompatActivity {
         entryfeeSpinner = findViewById(R.id.entryfeeSpinner);
         gridB = findViewById(R.id.gridB);
         gridY = findViewById(R.id.gridY);
-        colB =findViewById(R.id.columnB);
+        colB = findViewById(R.id.columnB);
         colY = findViewById(R.id.columnY);
         filterB = findViewById(R.id.filter);
         filterY = findViewById(R.id.filteryellow);
@@ -715,10 +702,11 @@ public class UpcomingContestActivity extends AppCompatActivity {
         }
 
     }
+
     private void setupBottomNavigationView() {
         Log.d(TAG, " setupBottomNavigationView:setting up BottomNavigationView");
         BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.BottomNavViewBar);
-        BottomNaavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx,this);
+        BottomNaavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx, this);
         BottomNaavigationViewHelper.enableNavigation(UpcomingContestActivity.this, this, bottomNavigationViewEx);
 
         Menu menu = bottomNavigationViewEx.getMenu();
@@ -726,10 +714,13 @@ public class UpcomingContestActivity extends AppCompatActivity {
         menuItem.setChecked(true);
 
     }
+
     private void checkCurrentuser(FirebaseUser user) {
         Log.d(TAG, "checkCurrentuser:check if current user logged in");
-        if (user == null) startActivity(new Intent(UpcomingContestActivity.this, LoginActivity.class));
+        if (user == null)
+            startActivity(new Intent(UpcomingContestActivity.this, LoginActivity.class));
     }
+
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
         mAuth = FirebaseAuth.getInstance();
@@ -753,6 +744,7 @@ public class UpcomingContestActivity extends AppCompatActivity {
             } else Log.d(TAG, "onAuthStateChanged: signed_in:" + mUser.getUid());
         };
     }
+
     private void hideSoftKeyboard() {
         if (getCurrentFocus() != null) {
             InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -772,23 +764,18 @@ public class UpcomingContestActivity extends AppCompatActivity {
         super.onStop();
         if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
     }
+
     private Boolean exit = false;
+
     @Override
     public void onBackPressed() {
-        if (exit) {
-            moveTaskToBack(true); // finish activity
-        } else {
-            Toast.makeText(this, "Press Back again to Exit.",
-                    Toast.LENGTH_SHORT).show();
-            exit = true;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    exit = false;
-                }
-            }, 2 * 1000);
-
-        }
-
+        startActivity(new Intent(mContext, UpcomingContestActivity.class));
+//        if (exit) {
+//            moveTaskToBack(true); // finish activity
+//        } else {
+//            Toast.makeText(this, "Press Back again to Exit.", Toast.LENGTH_SHORT).show();
+//            exit = true;
+//            new Handler().postDelayed(() -> exit = false, 2 * 1000);
+//        }
     }
 }

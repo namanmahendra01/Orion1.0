@@ -16,7 +16,7 @@
         android:layout_centerVertical="true"
         android:gravity="center"
         android:text="LOOKS LIKE NO ONE FOLLOWS YOU ¯\\_(ツ)_/¯"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/option_background_pressed"
         android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="gone" />

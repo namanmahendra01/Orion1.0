@@ -19,7 +19,7 @@
                 android:background="@color/black"
                 app:tabTextColor="@color/white"
 
-                app:tabSelectedTextColor="@color/colorPrimary"
+                app:tabSelectedTextColor="@color/option_background_pressed"
 
                 app:tabIndicatorColor="#E3706E">
 

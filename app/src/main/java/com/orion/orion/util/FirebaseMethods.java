@@ -236,20 +236,17 @@ public class FirebaseMethods {
                                         .child(mContext.getString(R.string.dbname_participantList))
                                         .child(contestKey)
                                         .child(joiningkey)
-                                        .child(mContext.getString(R.string.field_id_link)).setValue(firebaseurl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        flag5 = true;
-                                        if (flag5 && flag6) {
-                                            ((JoiningForm) mContext).linearLayout.setVisibility(View.GONE);
-                                            ((JoiningForm) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                            Intent i = new Intent(mContext, JoinedActivity.class);
-                                            mContext.startActivity(i);
-                                            Toast.makeText(mContext, "Your participation request has been submitted.", Toast.LENGTH_SHORT).show();
-                                        }
+                                        .child(mContext.getString(R.string.field_id_link)).setValue(firebaseurl.toString()).addOnSuccessListener(aVoid -> {
+                                            flag5 = true;
+                                            if (flag5 && flag6) {
+                                                ((JoiningForm) mContext).linearLayout.setVisibility(View.GONE);
+                                                ((JoiningForm) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                                Intent i = new Intent(mContext, JoinedActivity.class);
+                                                mContext.startActivity(i);
+                                                Toast.makeText(mContext, "Your participation request has been submitted.", Toast.LENGTH_SHORT).show();
+                                            }
 
-                                    }
-                                });
+                                        });
                             }
                             if (p.equals("p6")) {
 

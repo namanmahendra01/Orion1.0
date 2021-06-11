@@ -165,6 +165,20 @@
     <string name="expanded_marks">xj</string>
     <string name="submission_description">des</string>
     <string name="rejection_reason">rr</string>
+    <string name="field_contestType">cty</string>
+    <string name="field_quesDuration">du</string>
+    <string name="field_quizStartDateTime">qdt</string>
+    <string name="field_questions">ques</string>
+    <string name="quiz_rules">1. You will have to attempt n number of questions\n
+        2. Each question has limited time\n
+        3. Each question has 4 options with 1 correct answer\n
+        4. Each question has equal points
+        5. There is no negative marking\n
+        6. You will marked based on your accuracy, speed and consistency\n
+        7. Any attempt to take cheat will be highly disregarded and might lead to disqualification\n
+        8. You will need to follow the rules as specified separately by the organizer also\n\n
+        If you agree to following rules click on participate button to send participation request to organizer
+    </string>
 
 
     <string-array name="entryfee2">

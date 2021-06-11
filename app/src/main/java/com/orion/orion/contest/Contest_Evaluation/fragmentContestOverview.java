@@ -64,7 +64,7 @@ import java.util.TimeZone;
 
 import static com.android.volley.VolleyLog.TAG;
 
-public class fragment_contest_overview extends Fragment {
+public class fragmentContestOverview extends Fragment {
 
     private TableLayout juryTable, juryTable2;
     private String joiningKey = "";
@@ -73,6 +73,7 @@ public class fragment_contest_overview extends Fragment {
     private ArrayList<ParticipantList> participantLists;
     private ArrayList<ParticipantList> participantLists2;
     private RelativeLayout relWinner;
+
     //    SP
     private Gson gson;
     private SharedPreferences sp;
@@ -83,19 +84,19 @@ public class fragment_contest_overview extends Fragment {
     private static int RETRY_DURATION = 1000;
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
-
+    private RelativeLayout juryRl;
+    private RelativeLayout pointsRl;
 
     public LinearLayout progress;
     private RecyclerView winnerRv;
     private Button pubBtn, pubBtn2;
     private String timestamp = "";
-    RelativeLayout juryRl;
     boolean isPublicAndJuryVote = false;
 
     private String Conteskey;
 
 
-    public fragment_contest_overview() {
+    public fragmentContestOverview() {
     }
 
     @Nullable
@@ -103,7 +104,11 @@ public class fragment_contest_overview extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contest_overview, container, false);
 
+        juryRl = view.findViewById(R.id.jutyRl);
+
         juryTable = view.findViewById(R.id.jurytable);
+        pointsRl = view.findViewById(R.id.pointsRl);
+
         juryTable2 = view.findViewById(R.id.jurytable2);
         pubBtn = view.findViewById(R.id.pubBtn);
         pubBtn2 = view.findViewById(R.id.pubBtn2);
@@ -111,7 +116,6 @@ public class fragment_contest_overview extends Fragment {
         ScrollView scrollView = view.findViewById(R.id.scroll);
         TextView seeRank = view.findViewById(R.id.seeRank);
         progress = view.findViewById(R.id.pro);
-        juryRl = view.findViewById(R.id.jutyRl);
         participantRefresh = view.findViewById(R.id.participant_refresh);
 
 
@@ -127,10 +131,10 @@ public class fragment_contest_overview extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         rankRv.setLayoutManager(linearLayoutManager);
 
-        seeRank.setOnClickListener((View.OnClickListener) view1 -> {
+        seeRank.setOnClickListener(view1 -> {
             Intent i = new Intent(getContext(), ranking.class);
             Bundle args = new Bundle();
-            args.putParcelableArrayList("participant", (ArrayList<? extends Parcelable>) participantLists);
+            args.putParcelableArrayList("participant", participantLists);
             i.putExtra("BUNDLE", args);
             startActivity(i);
         });
@@ -177,13 +181,20 @@ public class fragment_contest_overview extends Fragment {
                                     assert contestDetail != null;
                                     String WinDec = contestDetail.getWd();
                                     boolean result = contestDetail.getR();
+                                    if(contestDetail.getCty()!=null && contestDetail.getCty().equals("Quiz")){
+                                        pointsRl.setVisibility(View.VISIBLE);
+                                        juryRl.setVisibility(View.GONE);
+                                    }
+                                    else{
+                                        pointsRl.setVisibility(View.GONE);
+                                        juryRl.setVisibility(View.VISIBLE);
+                                    }
                                     if (contestDetail.getVt().equals("Jury and Public")) {
                                         isPublicAndJuryVote = true;
                                     }
                                     if (contestDetail.getVt().equals("Public")) {
                                         juryRl.setVisibility(View.GONE);
                                     }
-
 
                                     @SuppressLint("SimpleDateFormat") java.text.DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                                     Date date = null;

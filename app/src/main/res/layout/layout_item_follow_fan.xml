@@ -65,7 +65,7 @@
                 android:layout_weight="3"
 
                 android:background="@drawable/circular_button"
-                android:backgroundTint="@color/colorPrimary"
+                android:backgroundTint="@color/option_background_pressed"
                 android:gravity="center"
                 android:text="Follow"
                 android:textColor="@color/white"

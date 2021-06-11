@@ -1,22 +1,26 @@
 package com.orion.orion.models;
 
+import androidx.annotation.NonNull;
+
+import java.util.ArrayList;
+
 public class CreateForm {
-    public CreateForm(){
+    public CreateForm() {
 
     }
 
-    String ef, ct, des, po, ft, d, vt, rul, rb, re,
+    private String ef, ct, des, po, ft, d, vt, rul, rb, re,
             vb, ve, wd, mlt, p1, p2, p3, tp,
             jn1, jn2, jn3, jp1, jp2, jp3, tim, ci,
-            hst, of, ui, st,cr;
+            hst, of, ui, st, cr, cty, du, qdt;
+
+    private ArrayList<QuizQuestionEncoded> ques = new ArrayList<>();
 
     public CreateForm(String ef, String ct, String des, String po,
                       String ft, String d, String vt, String rul, String rb,
-
                       String re, String vb, String ve, String wd, String mlt, String p1,
-                      String p2, String p3, String tp, String jn1, String jn2, String jn3,String cr,
-
-                      String jp1, String jp2, String jp3, String tim, String ci, String hst, String of, String ui, String st) {
+                      String p2, String p3, String tp, String jn1, String jn2, String jn3, String cr,
+                      String jp1, String jp2, String jp3, String tim, String ci, String hst, String of, String ui, String st, String cty, String du, String qdt, ArrayList<QuizQuestionEncoded> ques) {
         this.ef = ef;
         this.ct = ct;
         this.des = des;
@@ -48,6 +52,10 @@ public class CreateForm {
         this.ui = ui;
         this.st = st;
         this.cr = cr;
+        this.cty = cty;
+        this.du = du;
+        this.qdt = qdt;
+        this.ques = ques;
     }
 
     public String getEf() {
@@ -155,7 +163,6 @@ public class CreateForm {
     }
 
 
-
     public String getMlt() {
         return mlt;
     }
@@ -223,8 +230,6 @@ public class CreateForm {
     }
 
 
-
-
     public String getTim() {
         return tim;
     }
@@ -274,6 +279,7 @@ public class CreateForm {
     public void setCr(String judge_criteria) {
         this.cr = judge_criteria;
     }
+
     public String getCr() {
         return cr;
     }
@@ -281,41 +287,42 @@ public class CreateForm {
     public void setSt(String status) {
         this.st = status;
     }
+
+    public String getCty() {
+        return cty;
+    }
+
+    public void setCty(String cty) {
+        this.cty = cty;
+    }
+
+    public String getDu() {
+        return du;
+    }
+
+    public void setDu(String du) {
+        this.du = du;
+    }
+
+    public String getQdt() {
+        return qdt;
+    }
+
+    public void setQdt(String qdt) {
+        this.qdt = qdt;
+    }
+
+    public ArrayList<QuizQuestionEncoded> getQues() {
+        return ques;
+    }
+
+    public void setQues(ArrayList<QuizQuestionEncoded> ques) {
+        this.ques = ques;
+    }
+
+    @NonNull
     @Override
     public String toString() {
-        return "CreateForm{" +
-                "ef='" + ef + '\'' +
-                ", ct='" + ct + '\'' +
-                ", des='" + des + '\'' +
-                ", po='" + po + '\'' +
-                ", ft='" + ft + '\'' +
-                ", d='" + d + '\'' +
-                ", vt='" + vt + '\'' +
-                ", rul='" + rul + '\'' +
-                ", rb='" + rb + '\'' +
-                ", re='" + re + '\'' +
-                ", vb='" + vb + '\'' +
-                ", ve='" + ve + '\'' +
-                ", wd='" + wd + '\'' +
-                ", mlt='" + mlt + '\'' +
-                ", p1='" + p1 + '\'' +
-                ", p2='" + p2 + '\'' +
-                ", p3='" + p3 + '\'' +
-                ", tp='" + tp + '\'' +
-                ", jn1='" + jn1 + '\'' +
-                ", jn2='" + jn2 + '\'' +
-                ", jn3='" + jn3 + '\'' +
-                ", jp1='" + jp1 + '\'' +
-                ", jp2='" + jp2 + '\'' +
-                ", jp3='" + jp3 + '\'' +
-                ", tim='" + tim + '\'' +
-                ", ci='" + ci + '\'' +
-                ", hst='" + hst + '\'' +
-                ", of='" + of + '\'' +
-                ", ui='" + ui + '\'' +
-                ", st='" + st + '\'' +
-                ", cr='" + cr + '\'' +
-
-                '}';
+        return super.toString();
     }
 }

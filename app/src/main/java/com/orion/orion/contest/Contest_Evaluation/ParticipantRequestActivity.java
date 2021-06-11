@@ -25,7 +25,7 @@ import com.orion.orion.models.ParticipantList;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Participant_Request extends AppCompatActivity {
+public class ParticipantRequestActivity extends AppCompatActivity {
     private static final String TAG = "Participant FRAGMENT";
     private RecyclerView participantRv;
     private ArrayList<ParticipantList> participantLists;
@@ -103,7 +103,7 @@ public class Participant_Request extends AppCompatActivity {
                 mResults = 20;
                 for (int i = 0; i < iteration; i++)
                     paginatedparticipantList.add(participantLists.get(i));
-                adapterParticipantRequest = new AdapterParticipantRequest(Participant_Request.this, paginatedparticipantList);
+                adapterParticipantRequest = new AdapterParticipantRequest(ParticipantRequestActivity.this, paginatedparticipantList);
                 adapterParticipantRequest.setHasStableIds(true);
                 participantRv.setAdapter(adapterParticipantRequest);
             } catch (NullPointerException e) {

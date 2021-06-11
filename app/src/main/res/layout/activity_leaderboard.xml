@@ -41,7 +41,7 @@
                 android:gravity="center_vertical|end"
                 android:paddingRight="25dp"
                 android:textSize="24sp"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/option_background_pressed"
                 android:paddingStart="25dp"/>
 
         </LinearLayout>

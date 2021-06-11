@@ -65,7 +65,7 @@
         android:rotation="-25"
         android:src="@drawable/ic_send_white"
         android:elevation="6dp"
-        app:backgroundTint="@color/colorPrimary"
+        app:backgroundTint="@color/option_background_pressed"
         android:layout_centerVertical="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"

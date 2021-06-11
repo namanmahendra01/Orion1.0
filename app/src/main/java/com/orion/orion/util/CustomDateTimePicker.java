@@ -47,12 +47,7 @@ public class CustomDateTimePicker implements View.OnClickListener {
         iCustomDateTimeListener = customDateTimeListener;
 
         dialog = new Dialog(activity);
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                resetData();
-            }
-        });
+        dialog.setOnDismissListener(dialog -> resetData());
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         View dialogView = getDateTimePickerLayout();
@@ -105,12 +100,9 @@ public class CustomDateTimePicker implements View.OnClickListener {
 
         datePicker = new DatePicker(activity);
         timePicker = new TimePicker(activity);
-        timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-            @Override
-            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                selectedHour = hourOfDay;
-                selectedMinute = minute;
-            }
+        timePicker.setOnTimeChangedListener((view, hourOfDay, minute) -> {
+            selectedHour = hourOfDay;
+            selectedMinute = minute;
         });
 
         viewSwitcher.addView(timePicker);
@@ -410,6 +402,6 @@ public class CustomDateTimePicker implements View.OnClickListener {
         if (integerToPad >= 10 || integerToPad < 0)
             return String.valueOf(integerToPad);
         else
-            return "0" + String.valueOf(integerToPad);
+            return "0" + integerToPad;
     }
 }

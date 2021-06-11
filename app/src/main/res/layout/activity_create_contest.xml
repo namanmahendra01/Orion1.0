@@ -28,14 +28,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorPrimary" />
+            android:background="@color/option_background_pressed" />
 
         <View
             android:id="@+id/active2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"
+            android:background="@color/option_background_pressed"
             android:visibility="invisible" />
 
         <View
@@ -43,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"
+            android:background="@color/option_background_pressed"
             android:visibility="invisible" />
     </LinearLayout>
 
@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/currentActive"
         android:background="@color/white"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -237,6 +237,12 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Submission" />
+
+                        <RadioButton
+                            android:id="@+id/offline"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Offline" />
                     </RadioGroup>
 
 
@@ -309,7 +315,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/currentActive"
         android:background="@color/white"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -627,7 +633,7 @@
                             android:layout_weight="8.5"
                             android:maxLines="1"
                             android:padding="2dp"
-                            android:textColor="@color/colorPrimary" />
+                            android:textColor="@color/option_background_pressed" />
 
                         <ImageView
                             android:id="@+id/cross1"
@@ -659,7 +665,7 @@
                             android:layout_weight="8.5"
                             android:maxLines="1"
                             android:padding="2dp"
-                            android:textColor="@color/colorPrimary" />
+                            android:textColor="@color/option_background_pressed" />
 
                         <ImageView
                             android:id="@+id/cross2"
@@ -691,7 +697,7 @@
                             android:layout_weight="8.5"
                             android:maxLines="1"
                             android:padding="2dp"
-                            android:textColor="@color/colorPrimary" />
+                            android:textColor="@color/option_background_pressed" />
 
                         <ImageView
                             android:id="@+id/cross3"
@@ -723,7 +729,7 @@
                             android:layout_weight="8.5"
                             android:maxLines="1"
                             android:padding="2dp"
-                            android:textColor="@color/colorPrimary" />
+                            android:textColor="@color/option_background_pressed" />
 
                         <ImageView
                             android:id="@+id/cross4"
@@ -755,7 +761,7 @@
                             android:layout_weight="8.5"
                             android:maxLines="1"
                             android:padding="2dp"
-                            android:textColor="@color/colorPrimary" />
+                            android:textColor="@color/option_background_pressed" />
 
                         <ImageView
                             android:id="@+id/cross5"
@@ -787,7 +793,7 @@
                             android:layout_weight="8.5"
                             android:maxLines="1"
                             android:padding="2dp"
-                            android:textColor="@color/colorPrimary" />
+                            android:textColor="@color/option_background_pressed" />
 
                         <ImageView
                             android:id="@+id/cross6"
@@ -819,7 +825,7 @@
                             android:layout_weight="8.5"
                             android:maxLines="1"
                             android:padding="2dp"
-                            android:textColor="@color/colorPrimary" />
+                            android:textColor="@color/option_background_pressed" />
 
                         <ImageView
                             android:id="@+id/cross7"
@@ -851,7 +857,7 @@
                             android:layout_weight="8.5"
                             android:maxLines="1"
                             android:padding="2dp"
-                            android:textColor="@color/colorPrimary" />
+                            android:textColor="@color/option_background_pressed" />
 
                         <ImageView
                             android:id="@+id/cross8"
@@ -883,7 +889,7 @@
                             android:layout_weight="8.5"
                             android:maxLines="1"
                             android:padding="2dp"
-                            android:textColor="@color/colorPrimary" />
+                            android:textColor="@color/option_background_pressed" />
 
                         <ImageView
                             android:id="@+id/cross9"
@@ -914,7 +920,7 @@
                             android:layout_weight="8.5"
                             android:maxLines="1"
                             android:padding="2dp"
-                            android:textColor="@color/colorPrimary" />
+                            android:textColor="@color/option_background_pressed" />
 
                         <ImageView
                             android:id="@+id/cross10"
@@ -1006,6 +1012,8 @@
                             android:id="@+id/option1Value"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:nextFocusDown="@+id/option2"
+                            android:imeOptions="actionNext"
                             android:hint="Enter Option 1 here" />
 
                     </LinearLayout>
@@ -1028,6 +1036,8 @@
                             android:id="@+id/option2Value"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:nextFocusDown="@+id/option3"
+                            android:imeOptions="actionNext"
                             android:hint="Enter Option 2 here" />
 
                     </LinearLayout>
@@ -1050,6 +1060,7 @@
                             android:id="@+id/option3Value"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:imeOptions="actionDone"
                             android:hint="Enter Option 3 here" />
 
                     </LinearLayout>
@@ -1156,7 +1167,7 @@
                         android:paddingStart="10dp"
                         android:paddingLeft="10dp"
                         android:src="@drawable/ic_calender"
-                        app:tint="@color/colorPrimary" />
+                        app:tint="@color/option_background_pressed" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -1224,7 +1235,7 @@
                         android:layout_gravity="right"
                         android:paddingStart="10dp"
                         android:src="@drawable/ic_calender"
-                        app:tint="@color/colorPrimary"
+                        app:tint="@color/option_background_pressed"
                         tools:ignore="RtlSymmetry" />
 
                     <TextView
@@ -1295,7 +1306,7 @@
                         android:layout_gravity="end"
                         android:paddingStart="10dp"
                         android:src="@drawable/ic_baseline_clock_24"
-                        app:tint="@color/colorPrimary"
+                        app:tint="@color/option_background_pressed"
                         tools:ignore="RtlHardcoded,RtlSymmetry" />
 
                     <TextView
@@ -1349,7 +1360,7 @@
                         android:layout_gravity="right"
                         android:paddingStart="10dp"
                         android:src="@drawable/ic_calender"
-                        app:tint="@color/colorPrimary"
+                        app:tint="@color/option_background_pressed"
                         tools:ignore="RtlSymmetry" />
 
                     <TextView
@@ -1407,12 +1418,11 @@
         android:layout_height="match_parent"
         android:layout_below="@id/currentActive"
         android:background="@color/white"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:orientation="vertical"
             android:paddingBottom="50dp">
 
@@ -1700,7 +1710,7 @@
         android:layout_margin="5dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/circular_button"
-        android:backgroundTint="@color/colorPrimary"
+        android:backgroundTint="@color/option_background_pressed"
 
         android:elevation="5dp"
         android:text="NEXT"

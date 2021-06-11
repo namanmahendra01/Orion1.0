@@ -1,8 +1,14 @@
 package com.orion.orion.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class QuizQuestion implements Comparable<QuizQuestion>{
+import java.io.Serializable;
+
+public class QuizQuestion implements Comparable<QuizQuestion>, Parcelable {
     private String question;
     private String option1;
     private String option2;
@@ -10,6 +16,34 @@ public class QuizQuestion implements Comparable<QuizQuestion>{
     private String option4;
     private String answer;
     private String selected;
+
+    protected QuizQuestion(Parcel in) {
+        question = in.readString();
+        option1 = in.readString();
+        option2 = in.readString();
+        option3 = in.readString();
+        option4 = in.readString();
+        answer = in.readString();
+        selected = in.readString();
+    }
+
+    public static final Creator<QuizQuestion> CREATOR = new Creator<QuizQuestion>() {
+        @Override
+        public QuizQuestion createFromParcel(Parcel in) {
+            return new QuizQuestion(in);
+        }
+
+        @Override
+        public QuizQuestion[] newArray(int size) {
+            return new QuizQuestion[size];
+        }
+    };
+
+    @NonNull
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 
     public QuizQuestion() {
         question = "";
@@ -102,5 +136,21 @@ public class QuizQuestion implements Comparable<QuizQuestion>{
 
     public void setSelected(String selected) {
         this.selected = selected;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(question);
+        dest.writeString(option1);
+        dest.writeString(option2);
+        dest.writeString(option3);
+        dest.writeString(option4);
+        dest.writeString(answer);
+        dest.writeString(selected);
     }
 }

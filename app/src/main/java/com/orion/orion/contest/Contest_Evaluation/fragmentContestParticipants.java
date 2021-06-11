@@ -45,7 +45,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 
-public class fragment_contest_participants extends Fragment {
+public class fragmentContestParticipants extends Fragment {
 
     private static final String TAG = "Participant FRAGMENT";
     private RecyclerView participantRv;
@@ -68,7 +68,7 @@ public class fragment_contest_participants extends Fragment {
 
     private AdapterParticipantList adapterParticipantList;
 
-    public fragment_contest_participants() {
+    public fragmentContestParticipants() {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -118,7 +118,7 @@ public class fragment_contest_participants extends Fragment {
                 });
 
         request.setOnClickListener(v -> {
-            Intent i = new Intent(getActivity(), Participant_Request.class);
+            Intent i = new Intent(getActivity(), ParticipantRequestActivity.class);
             i.putExtra("ContestKey", Conteskey);
             startActivity(i);
         });

@@ -1,6 +1,7 @@
 package com.orion.orion.contest.joined;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import com.google.gson.reflect.TypeToken;
 import com.orion.orion.Adapters.AdapterContestCreated;
 import com.orion.orion.Adapters.AdapterContestJoined;
 import com.orion.orion.R;
+import com.orion.orion.contest.upcoming.UpcomingContestActivity;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.JoinForm;
 
@@ -53,25 +55,25 @@ import java.util.Locale;
 public class JoinedActivity extends AppCompatActivity {
 
     private static final String TAG = "JOINED FRAGMENT";
-    RecyclerView joinedContestRv;
-    private ArrayList<JoinForm> contestlist;
-    private ArrayList<JoinForm> paginatedContestlist;
-    TextView noPost;
-    SwipeRefreshLayout contestRefresh;
-    boolean flag1 = false;
     private static int RETRY_DURATION = 1000;
     private static final Handler handler = new Handler(Looper.getMainLooper());
-    ProgressBar bottomProgress;
+
+    private ImageView backArrrow;
+    private TextView topBarTitle;
+    private TextView noPost;
+    private RecyclerView joinedContestRv;
+    private SwipeRefreshLayout contestRefresh;
+    private ProgressBar bottomProgress;
 
     //    SP
     Gson gson;
     SharedPreferences sp;
     private FirebaseAuth fAuth;
     private int mResults;
-    ImageView backArrrow;
+    private ArrayList<JoinForm> contestlist;
+    private ArrayList<JoinForm> paginatedContestlist;
     private AdapterContestJoined contestJoined;
-
-
+    boolean flag1 = false;
 
 
     @Override
@@ -80,19 +82,16 @@ public class JoinedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_joined);
 
 
-
+        backArrrow= findViewById(R.id.backarrow);
+        topBarTitle = findViewById(R.id.titleTopBar);
         contestRefresh = findViewById(R.id.contest_refresh);
         noPost = findViewById(R.id.noPost);
         bottomProgress = findViewById(R.id.pro2);
         joinedContestRv = findViewById(R.id.recycler_view2);
-        backArrrow= findViewById(R.id.backarrow);
 
-        backArrrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        topBarTitle.setText("Joined Contest");
+
+        backArrrow.setOnClickListener(view -> onBackPressed());
         fAuth = FirebaseAuth.getInstance();
         contestlist = new ArrayList<>();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -324,9 +323,7 @@ public class JoinedActivity extends AppCompatActivity {
         flag1 = true;
         paginatedContestlist = new ArrayList<>();
         if (contestlist != null && contestlist.size() != 0) {
-
             try {
-
 
                 int iteration = contestlist.size();
                 if (iteration > 5) {
@@ -399,22 +396,15 @@ public class JoinedActivity extends AppCompatActivity {
 
     }
     private Boolean exit = false;
+
     @Override
     public void onBackPressed() {
-        if (exit) {
-            moveTaskToBack(true); // finish activity
-        } else {
-            Toast.makeText(this, "Press Back again to Exit.",
-                    Toast.LENGTH_SHORT).show();
-            exit = true;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    exit = false;
-                }
-            }, 2 * 1000);
-
-        }
-
+        startActivity(new Intent(this, UpcomingContestActivity.class));
+//        if (exit) moveTaskToBack(true); // finish activity
+//        else {
+//            Toast.makeText(this, "Press Back again to Exit.", Toast.LENGTH_SHORT).show();
+//            exit = true;
+//            new Handler().postDelayed(() -> exit = false, 2 * 1000);
+//        }
     }
 }

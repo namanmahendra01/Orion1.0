@@ -90,7 +90,7 @@ public class SplashActivity extends AppCompatActivity {
     private void popupSnackbarForCompleteUpdate() {
         Snackbar snackbar = Snackbar.make(findViewById(R.id.activity_splash_layout), "An update has just been downloaded.", Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction("RESTART", view -> appUpdateManager.completeUpdate());
-        snackbar.setActionTextColor(getResources().getColor(R.color.colorPrimary));
+        snackbar.setActionTextColor(getResources().getColor(R.color.option_background_pressed));
         snackbar.show();
     }
 

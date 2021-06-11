@@ -1,28 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="@color/white"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/white">
 
-    <include layout="@layout/snippet_created_contest_bar"
-        android:id="@+id/top"/>
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <RelativeLayout
+        android:id="@+id/top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/top"
-        android:id="@+id/contest_refresh">
+        android:layout_marginBottom="10dp">
+
+        <include layout="@layout/snippet_top_bar" />
+    </RelativeLayout>
+
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/contest_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/top">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view3"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/recycler_view3">
+                android:layout_height="wrap_content">
 
             </androidx.recyclerview.widget.RecyclerView>
+
             <ProgressBar
                 android:id="@+id/pro2"
                 style="?android:attr/progressBarStyle"
@@ -35,27 +44,29 @@
 
         </RelativeLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:src="@drawable/ic_add"
-        android:elevation="6dp"
-        app:backgroundTint="@color/colorPrimary"
-        app:fabSize="normal"
-        android:layout_margin="16dp"
         android:id="@+id/float_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_gravity="end|bottom"
-        android:layout_alignParentRight="true" />
+        android:layout_margin="16dp"
+        android:elevation="6dp"
+        android:src="@drawable/ic_add"
+        app:backgroundTint="@color/option_background_pressed"
+        app:fabSize="normal" />
+
     <TextView
+        android:id="@+id/noPost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="NO CONTEST CREATED"
-        android:id="@+id/noPost"
-        android:visibility="gone"
-        android:gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:textSize="18sp"/>
+        android:gravity="center"
+        android:text="NO CONTEST CREATED"
+        android:textSize="18sp"
+        android:visibility="gone" />
 </RelativeLayout>

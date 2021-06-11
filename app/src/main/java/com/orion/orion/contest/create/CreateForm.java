@@ -69,6 +69,7 @@ import com.orion.orion.util.CustomDateTimePicker;
 import com.orion.orion.util.Permissions;
 
 import java.io.File;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -129,6 +130,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     private RadioGroup QuizSubmission;
     private RadioButton quiz;
     private RadioButton submission;
+    private RadioButton offline;
     private RadioGroup PictureVideoDocument;
     private RadioButton picture;
     private RadioButton mediaLink;
@@ -227,6 +229,8 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     private String date3 = "";
     private String date4 = "";
     private String date5 = "";
+    private String datetime = "";
+    private String duration = "";
     private String participantType = "Unlimited";
     private String noOfParticipants = "";
     private String fees = "";
@@ -291,14 +295,38 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                               String weekDayFullName, String weekDayShortName,
                               int hour24, int hour12, int min, int sec,
                               String AM_PM) {
-                //                        ((TextInputEditText) findViewById(R.id.edtEventDateTime))
-                mDisplayDateTimeQS.setText("");
-                mDisplayDateTimeQS.setText(String.format("%d-%d-%d %d:%d:%d", year, monthNumber + 1, calendarSelected.get(Calendar.DAY_OF_MONTH), hour24, min, sec));
+
+                String date = calendarSelected.get(Calendar.DAY_OF_MONTH) + "-" + (monthNumber + 1) + "-" + year;
+                Log.d(TAG, "onSet: date : " + date);
+                Log.d(TAG, "onSet: date1 : " + date1);
+                Log.d(TAG, "onSet: date2 : " + date2);
+                Log.d(TAG, "onSet: date5 : " + date5);
+                Log.d(TAG, "onSet: isDateAfter(date1, date) : " + (date1.equals("") || isDateAfter(date1, date)));
+                Log.d(TAG, "onSet: isDateAfter(date2, date) : " + (date2.equals("") || isDateAfter(date2, date)));
+                Log.d(TAG, "onSet: isDateAfter(date, date5) : " + (date5.equals("") || isDateAfter(date, date5)));
+
+
+                if ((date1.equals("") || isDateAfter(date1, date))
+                        && (date2.equals("") || isDateAfter(date2, date))
+                        && (date5.equals("") || isDateAfter(date, date5))) {
+                    String format = date + " " + hour24 + ":" + min + ":" + sec;
+                    mDisplayDateTimeQS.setText(format);
+                    datetime = format;
+
+                } else {
+                    Toast.makeText(mContext, "Please selecta valid time!", Toast.LENGTH_LONG).show();
+                    YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateRB);
+                    mDisplayDateTimeQS.setText("");
+                    mDisplayDateTimeQS.requestFocus();
+                    datetime = "";
+                }
             }
 
             @Override
             public void onCancel() {
-
+                mDisplayDateTimeQS.setText("");
+                mDisplayDateTimeQS.requestFocus();
+                datetime = "";
             }
         });
 
@@ -351,6 +379,11 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     questionAdditionBox.setVisibility(View.GONE);
                     quizStartDateTimeContainer.setVisibility(View.GONE);
                     quizStartDateTimePickerContainer.setVisibility(View.GONE);
+                }
+                if(offline.getId() == checkedId){
+                    contestType = offline.getText().toString();
+                    submissionTypeContainer.setVisibility(View.VISIBLE);
+                    judgingCriteriaBox.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -434,7 +467,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
 
         });
         addQuestionButton.setOnClickListener(v -> {
-            if (question.getText().toString().equals("") || option1value.getText().toString().equals("") || option2value.getText().toString().equals("") || option3value.getText().toString().equals("") || option4value.getText().toString().equals("") || option_selected_num < 1 || option_selected_num > 1) {
+            if (question.getText().toString().equals("") || option1value.getText().toString().equals("") || option2value.getText().toString().equals("") || option3value.getText().toString().equals("") || option4value.getText().toString().equals("") || option_selected_num < 1 || option_selected_num > 4) {
                 if (question.getText().toString().equals("")) {
                     YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(question);
                     question.requestFocus();
@@ -1038,7 +1071,8 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
             mDateSetListener = (view, year1, month1, dayOfMonth) -> {
                 month1 = month1 + 1;
                 date1 = dayOfMonth + "-" + month1 + "-" + year1;
-                if ((isDateAfter(date1, date2) || date2.equals("")) && (isDateAfter(date1, date3) || date3.equals("")) && (isDateAfter(date1, date4) || date4.equals("")) && (isDateAfter(date1, date5) || date5.equals(""))) {
+                String dateQuiz = datetime.split(" ")[0];
+                if ((isDateAfter(date1, date2) || date2.equals("")) && (dateQuiz.equals("") || isDateAfter(date1, dateQuiz)) && (isDateAfter(date1, date3) || date3.equals("")) && (isDateAfter(date1, date4) || date4.equals("")) && (isDateAfter(date1, date5) || date5.equals(""))) {
                     mDisplayDateRB.setText(date1);
                 } else {
                     mDisplayDateRB.setText("");
@@ -1058,7 +1092,8 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
             mDateSetListener2 = (view, year14, month14, dayOfMonth) -> {
                 month14 = month14 + 1;
                 date2 = dayOfMonth + "-" + month14 + "-" + year14;
-                if ((isDateAfter(date1, date2) || date1.equals("")) && (isDateAfter(date2, date3) || date3.equals("")) && (isDateAfter(date2, date4) || date4.equals("")) && (isDateAfter(date2, date5) || date5.equals(""))) {
+                String dateQuiz = datetime.split(" ")[0];
+                if ((isDateAfter(date1, date2) || date1.equals("")) && (dateQuiz.equals("") || isDateAfter(date2, dateQuiz))&& (isDateAfter(date2, date3) || date3.equals("")) && (isDateAfter(date2, date4) || date4.equals("")) && (isDateAfter(date2, date5) || date5.equals(""))) {
                     mDisplayDateRE.setText(date2);
                 } else {
                     mDisplayDateRE.setText("");
@@ -1113,9 +1148,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
             Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.show();
         });
-        mDisplayDateTimeQS.setOnClickListener(v -> {
-            customDateTimePicker.showDialog();
-        });
+        mDisplayDateTimeQS.setOnClickListener(v -> customDateTimePicker.showDialog());
         mDisplayDateWin.setOnClickListener(v -> {
             Calendar cal = Calendar.getInstance();
             int year = cal.get(Calendar.YEAR);
@@ -1124,7 +1157,12 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
             mDateSetListener5 = (view, year15, month15, dayOfMonth) -> {
                 month15 = month15 + 1;
                 date5 = dayOfMonth + "-" + month15 + "-" + year15;
-                if ((isDateAfter(date1, date5) || date1.equals("")) && (isDateAfter(date2, date5) || date2.equals("")) && (isDateAfter(date3, date5) || date3.equals("")) && (isDateAfter(date4, date5) || date4.equals(""))) {
+                String dateQuiz = datetime.split(" ")[0];
+                if ((isDateAfter(date1, date5) || date1.equals(""))
+                        && (isDateAfter(date2, date5) || date2.equals(""))
+                        && (isDateAfter(dateQuiz, date5) || dateQuiz.equals(""))
+                        && (isDateAfter(date3, date5) || date3.equals(""))
+                        && (isDateAfter(date4, date5) || date4.equals(""))) {
                     mDisplayDateWin.setText(date5);
                 } else {
                     mDisplayDateWin.setText("");
@@ -1257,7 +1295,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                         Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
                         selectDomain.requestFocus();
                     }
-                } else if (contestType.equals("Submission") && fileType.equals("")) {
+                } else if ( (contestType.equals("Submission") || contestType.equals("Offline")) && fileType.equals("")) {
                     YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(PictureVideoDocument);
                     Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
                     PictureVideoDocument.requestFocus();
@@ -1272,9 +1310,32 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     active2.setVisibility(View.VISIBLE);
                 }
             } else if (layoutActive == 2) {
-                if (contestType.equals("Quiz")) {
-//                    if(quizQuestionArrayList.size()<5 || )
-                } else {
+                if (contestType.equals("Quiz"))
+                    if (quizQuestionArrayList.size() < 1 || datetime.equals("") || durationSelector.getSelectedItem().toString().equals("") || date1.equals("") || date2.equals("") || date5.equals("")) {
+                        if (quizQuestionArrayList.size() < 1)
+                            Toast.makeText(mContext, "You need to enter 5 questions atleast", Toast.LENGTH_LONG).show();
+                        if (datetime.equals("")) {
+                            YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(mDisplayDateTimeQS);
+                            mDisplayDateTimeQS.requestFocus();
+                            mDisplayDateTimeQS.setError("Empty!");
+                        }
+                        if (date1.equals(""))
+                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateRB);
+                        if (date2.equals(""))
+                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateRE);
+                        if (date5.equals(""))
+                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateWin);
+                        if (durationSelector.getSelectedItem().toString().equals(""))
+                            YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(durationSelector);
+                    } else {
+                        duration = durationSelector.getSelectedItem().toString();
+                        layout3.setVisibility(View.VISIBLE);
+                        layout2.setVisibility(View.GONE);
+                        active2.setVisibility(View.INVISIBLE);
+                        active3.setVisibility(View.VISIBLE);
+                        layoutActive = 3;
+                    }
+                else {
                     if (votingType.equals("") || date1.equals("") || date2.equals("") || date5.equals("")) {
                         if (votingType.equals("")) {
                             YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(VotingType);
@@ -1761,22 +1822,28 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     i.putExtra("title", title);
                     i.putExtra("descrip", des);
                     i.putExtra("poster", posterLink);
-                    i.putExtra("filetype", fileType);
+                    i.putExtra("contestType", contestType);
+                    i.putExtra("filetype",fileType);
+                    if(datetime.equals(""))
+                        i.putExtra("startTime", "-");
+                    else
+                        i.putExtra("startTime", datetime);
+                    i.putExtra("duration", duration);
+                        i.putExtra("duration", duration);
+                    if(quizQuestionArrayList.size()==0)
+                        i.putExtra("questionList","");
+                    else{
+                        i.putParcelableArrayListExtra("questionList",quizQuestionArrayList);
+                    }
                     i.putExtra("domain", domain);
                     i.putExtra("votetype", votingType);
                     i.putExtra("rule", extraRule);
                     i.putExtra("regBegin", date1.replace("/", "-"));
                     i.putExtra("regEnd", date2.replace("/", "-"));
-                    if (date3.equals("")) {
-                        i.putExtra("voteBegin", "-");
-                    } else {
-                        i.putExtra("voteBegin", date3.replace("/", "-"));
-                    }
-                    if (date4.equals("")) {
-                        i.putExtra("voteEnd", "-");
-                    } else {
-                        i.putExtra("voteEnd", date4.replace("/", "-"));
-                    }
+                    if (date3.equals("")) i.putExtra("voteBegin", "-");
+                    else i.putExtra("voteBegin", date3.replace("/", "-"));
+                    if (date4.equals("")) i.putExtra("voteEnd", "-");
+                    else i.putExtra("voteEnd", date4.replace("/", "-"));
                     i.putExtra("winDeclare", date5.replace("/", "-"));
                     i.putExtra("numParticipants", participantType);
                     i.putExtra("maxLimit", noOfParticipants);
@@ -1797,9 +1864,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     }
                     startActivity(i);
                 })
-                .setNegativeButton("No", (dialog, id) -> {
-                    dialog.cancel();
-                })
+                .setNegativeButton("No", (dialog, id) -> dialog.cancel())
                 .show();
     }
 
@@ -1914,6 +1979,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
         QuizSubmission = findViewById(R.id.QuizSubmission);
         quiz = findViewById(R.id.quiz);
         submission = findViewById(R.id.submission);
+        offline = findViewById(R.id.offline);
         PictureVideoDocument = findViewById(R.id.PictureVideoDocument);
         picture = findViewById(R.id.picture);
         mediaLink = findViewById(R.id.Media_Link);

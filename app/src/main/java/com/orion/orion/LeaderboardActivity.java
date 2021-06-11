@@ -183,7 +183,7 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
                 R.color.scheme5,
                 R.color.scheme6,
                 R.color.scheme7,
-                R.color.colorPrimary,
+                R.color.option_background_pressed,
                 R.color.scheme9,
                 R.color.brown,
                 R.color.yellow,

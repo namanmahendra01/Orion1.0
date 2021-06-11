@@ -33,9 +33,9 @@
                 android:id="@+id/posterIv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
-                android:layout_centerHorizontal="true"
                 android:src="@drawable/load" />
 
             <LinearLayout
@@ -59,9 +59,9 @@
                     android:layout_height="wrap_content"
                     android:text=""
                     android:textColor="@color/black"
-                    android:textSize="17sp"
-                     />
+                    android:textSize="17sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/createdBy"
                 android:layout_width="wrap_content"
@@ -70,8 +70,8 @@
                 android:layout_centerHorizontal="true"
                 android:background="@drawable/rectangular_border"
                 android:gravity="center"
-                android:padding="10dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="10dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -84,10 +84,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
 
-                    android:textStyle="bold"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/option_background_pressed"
                     android:textSize="17sp"
-                    />
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
@@ -110,7 +109,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="100%"
-                    android:textColor="#FFC107"
+                    android:textColor="@color/option_background_pressed"
                     android:textSize="17sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -130,8 +129,7 @@
                     android:layout_weight="1"
                     android:text="1st prize(₹):"
                     android:textColor="@color/black"
-                    android:textSize="15sp"
-                     />
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/p1Tv"
@@ -149,8 +147,7 @@
                     android:layout_weight="1"
                     android:text="2nd prize(₹):"
                     android:textColor="@color/black"
-                    android:textSize="15sp"
-                   />
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/p2Tv"
@@ -170,8 +167,7 @@
                     android:layout_weight="1"
                     android:text="3rd prize(₹):"
                     android:textColor="@color/black"
-                    android:textSize="15sp"
-                   />
+                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/p3Tv"
@@ -186,18 +182,20 @@
 
 
             </LinearLayout>
+
             <TextView
+                android:id="@+id/text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/text"
+                android:layout_below="@+id/prizell"
+                android:layout_marginBottom="5dp"
                 android:gravity="center"
-                android:textSize="14sp"
+                android:text="You can edit only Description and Rules of this Contest."
                 android:textAlignment="center"
                 android:textColor="#F44336"
-                android:visibility="gone"
-                android:layout_marginBottom="5dp"
-                android:text="You can edit only Description and Rules of this Contest."
-                android:layout_below="@+id/prizell"/>
+                android:textSize="14sp"
+                android:visibility="gone" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -213,52 +211,54 @@
                     android:layout_centerHorizontal="true"
 
                     android:layout_margin="10dp"
-                    android:visibility="gone"
-
                     android:layout_marginBottom="15dp"
+
                     android:background="@drawable/rectangular_border"
-                    android:textColor="@color/colorPrimary"
                     android:text="Prticipate"
-                    android:textAlignment="gravity" />
+                    android:textAlignment="gravity"
+                    android:textColor="@color/option_background_pressed"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/voteBtn"
                     android:layout_width="wrap_content"
-android:visibility="gone"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_margin="10dp"
                     android:layout_marginBottom="15dp"
-                    android:textColor="@color/colorPrimary"
                     android:background="@drawable/rectangular_border"
                     android:text="Vote"
-                    android:textAlignment="gravity" />
+                    android:textAlignment="gravity"
+                    android:textColor="@color/option_background_pressed"
+                    android:visibility="gone" />
+
                 <Button
                     android:id="@+id/postContest"
                     android:layout_width="wrap_content"
-                    android:visibility="gone"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_margin="10dp"
                     android:layout_marginBottom="15dp"
-                    android:textColor="@color/colorPrimary"
-                    android:padding="5dp"
                     android:background="@drawable/rectangular_border"
+                    android:padding="5dp"
                     android:text="Submit Contest"
-                    android:textAlignment="gravity" />
+                    android:textAlignment="gravity"
+                    android:textColor="@color/option_background_pressed"
+                    android:visibility="gone" />
+
                 <Button
                     android:id="@+id/save"
                     android:layout_width="wrap_content"
-                    android:visibility="gone"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_margin="10dp"
                     android:layout_marginBottom="15dp"
-                    android:textColor="@color/colorPrimary"
                     android:background="@drawable/rectangular_border"
-                    android:text="Save Edit"
                     android:padding="5dp"
-                    android:textAlignment="gravity" />
+                    android:text="Save Edit"
+                    android:textAlignment="gravity"
+                    android:textColor="@color/option_background_pressed"
+                    android:visibility="gone" />
             </LinearLayout>
 
 
@@ -272,80 +272,82 @@ android:visibility="gone"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold" />
+
             <RelativeLayout
+                android:id="@+id/desRelative"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/text"
 
-                android:id="@+id/desRelative">
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Descritpion:"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:layout_below="@+id/text">
 
-            <EditText
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Descritpion:"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-                android:id="@+id/descripEv"
-                android:visibility="gone"
-                android:layout_width="match_parent"
+                <EditText
 
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/description"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/rectangular_border"
-                android:padding="5dp"
-                />
+                    android:id="@+id/descripEv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
 
-            <TextView
+                    android:layout_below="@+id/description"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/rectangular_border"
+                    android:padding="5dp"
+                    android:visibility="gone" />
 
-                android:id="@+id/descripTv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/description"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/rectangular_border"
-                android:padding="5dp"
-               />
+                <TextView
+
+                    android:id="@+id/descripTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/description"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/rectangular_border"
+                    android:padding="5dp" />
             </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/desRelative"
+            <RelativeLayout
+                android:id="@+id/ruleRelative"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
 
-            android:id="@+id/ruleRelative">
-            <TextView
-                android:id="@+id/rule"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Rules: "
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-            <EditText
-                android:id="@+id/ruleEv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rule"
-                android:visibility="gone"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/rectangular_border"
-                android:padding="5dp"
-                />
-            <TextView
-                android:id="@+id/ruleTv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rule"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/rectangular_border"
-                android:padding="5dp"
-                 />
-        </RelativeLayout>
+                android:layout_below="@+id/desRelative">
+
+                <TextView
+                    android:id="@+id/rule"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Rules: "
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/ruleEv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rule"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/rectangular_border"
+                    android:padding="5dp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/ruleTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/rule"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/rectangular_border"
+                    android:padding="5dp" />
+            </RelativeLayout>
+
             <TextView
                 android:id="@+id/details"
                 android:layout_width="match_parent"
@@ -372,355 +374,455 @@ android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <TableRow
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="15dp"
+                        android:layout_height="wrap_content">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text="Entry Fee(₹)"
+                                android:textColor="@color/grey" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+
+                                android:text="Total Prize(₹)"
+                                android:textColor="@color/grey" />
+
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:id="@+id/entryfeeTv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:textColor="@color/black" />
+
+                            <TextView
+                                android:id="@+id/totalprizeTv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+
+                                android:textColor="@color/black" />
+
+                        </TableRow>
+
+                    </TableLayout>
+
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="15dp"
+                        android:layout_height="wrap_content">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text="Contest Type"
+                                android:textColor="@color/grey" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text="Voting Type"
+                                android:textColor="@color/grey" />
+
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:id="@+id/contestTypeTv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text=""
+                                android:textColor="@color/black" />
+
+                            <TextView
+                                android:id="@+id/voteTypeTv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text=""
+                                android:textColor="@color/black" />
+
+                        </TableRow>
+                    </TableLayout>
+
+
+                    <!--                    Domain + Open for-->
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="15dp"
+                        android:layout_height="wrap_content">
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text="Domain"
+                                android:textColor="@color/grey" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+
+                                android:text="Open for"
+                                android:textColor="@color/grey" />
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:id="@+id/domainTV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text=""
+                                android:textColor="@color/black" />
+
+                            <TextView
+                                android:id="@+id/openForTv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text=""
+                                android:textColor="@color/black" />
+
+                        </TableRow>
+                    </TableLayout>
+
+                    <!--                    Max number of participants + Submission type-->
+                    <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:layout_weight="1">
+                        android:layout_marginBottom="15dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <TableRow
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:text="Entry Fee(₹)"
-                            android:textColor="@color/grey" />
+                            android:layout_weight="1">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text="Max no. of Participants"
+                                android:textColor="@color/grey" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text="Submission Type"
+                                android:textColor="@color/grey" />
+
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
+                            android:layout_weight="1">
 
-                            android:text="Total Prize(₹)"
-                            android:textColor="@color/grey" />
+                            <TextView
+                                android:id="@+id/maxPartTv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+
+                                android:text=""
+                                android:textColor="@color/black" />
+
+                            <TextView
+                                android:id="@+id/fileTv"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+
+                                android:gravity="center_horizontal"
+                                android:text=""
+                                android:textColor="@color/black" />
 
 
-                    </TableRow>
+                        </TableRow>
+                    </TableLayout>
 
-                    <TableRow
+                    <!--                    Registration Dates-->
+                    <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="15dp"
-                        android:layout_weight="1">
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="15dp">
 
-                        <TextView
-                            android:id="@+id/entryfeeTv"
-                            android:layout_width="wrap_content"
+                        <TableRow
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:textColor="@color/black" />
+                            android:layout_weight="1">
 
-                        <TextView
-                            android:id="@+id/totalprizeTv"
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text="Registration Begin"
+                                android:textColor="@color/grey" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+
+                                android:text="Registration End"
+                                android:textColor="@color/grey" />
+
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
+                            android:layout_weight="1">
 
-                            android:textColor="@color/black" />
+                            <TextView
+                                android:id="@+id/regB"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text=""
+                                android:textColor="@color/black" />
 
-                    </TableRow>
+                            <TextView
+                                android:id="@+id/regE"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text=""
+                                android:textColor="@color/black" />
 
-                    <TableRow
+                        </TableRow>
+                    </TableLayout>
+
+
+                    <!--                    Public Voting Dates-->
+                    <TableLayout
+                        android:id="@+id/publicVotingContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="15dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <TableRow
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:text="Max number of Participant"
-                            android:textColor="@color/grey" />
+                            android:layout_weight="1">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text="Public Voting Begin"
+                                android:textColor="@color/grey" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+
+                                android:text="Public Voting End"
+                                android:textColor="@color/grey" />
+
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
+                            android:layout_weight="1">
 
-                            android:text="Voting Type"
-                            android:textColor="@color/grey" />
+                            <TextView
+                                android:id="@+id/votB"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+
+                                android:gravity="center_horizontal"
+                                android:text=""
+                                android:textColor="@color/black" />
+
+                            <TextView
+                                android:id="@+id/votE"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+
+                                android:gravity="center_horizontal"
+                                android:text=""
+                                android:textColor="@color/black" />
+                        </TableRow>
+                    </TableLayout>
 
 
-                    </TableRow>
-
-                    <TableRow
+                    <!--                    Winner Announcement Date + Quiz  Time-->
+                    <TableLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="15dp"
-                        android:layout_weight="1">
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="15dp">
 
-                        <TextView
-                            android:id="@+id/maxPartTv"
-                            android:layout_width="wrap_content"
+                        <TableRow
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
+                            android:layout_weight="1">
 
-                            android:text=""
-                            android:textColor="@color/black" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text="Winner Announcement Date"
+                                android:textColor="@color/grey" />
 
-                        <TextView
-                            android:id="@+id/voteTypeTv"
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text="Quiz Date and Time"
+                                android:textColor="@color/grey" />
+
+
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
+                            android:layout_weight="1">
 
-                            android:text=""
+                            <TextView
+                                android:id="@+id/winDate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
 
-                            android:textColor="@color/black" />
+                                android:gravity="center_horizontal"
+                                android:text=""
+                                android:textColor="@color/black" />
 
-                    </TableRow>
+                            <TextView
+                                android:id="@+id/quizDateTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text=""
+                                android:textColor="@color/black" />
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        </TableRow>
+                    </TableLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:text="Registration Begin"
-                            android:textColor="@color/grey" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-
-                            android:text="Registration End"
-                            android:textColor="@color/grey" />
-
-
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="15dp"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:id="@+id/regB"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:text=""
-                            android:textColor="@color/black" />
-
-                        <TextView
-                            android:id="@+id/regE"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:text=""
-                            android:textColor="@color/black" />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:text="Domain"
-                            android:textColor="@color/grey" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-
-                            android:text="Open for"
-                            android:textColor="@color/grey" />
-
-
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="15dp"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:id="@+id/domainTV"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:text=""
-                            android:textColor="@color/black" />
-
-                        <TextView
-                            android:id="@+id/openForTv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:text=""
-                            android:textColor="@color/black" />
-
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:text="Public Voting Begin"
-                            android:textColor="@color/grey" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-
-                            android:text="Public Voting End"
-                            android:textColor="@color/grey" />
-
-
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="15dp"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:id="@+id/votB"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-
-                            android:gravity="center_horizontal"
-                            android:text=""
-                            android:textColor="@color/black" />
-
-                        <TextView
-                            android:id="@+id/votE"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-
-                            android:gravity="center_horizontal"
-                            android:text=""
-                            android:textColor="@color/black" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-                            android:text="Winner Announcement Date"
-                            android:textColor="@color/grey" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_horizontal"
-
-                            android:text="File Type Allowed"
-                            android:textColor="@color/grey" />
-
-
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="15dp"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:id="@+id/winDate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-
-                            android:gravity="center_horizontal"
-                            android:text=""
-                            android:textColor="@color/black" />
-
-                        <TextView
-                            android:id="@+id/fileTv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-
-                            android:gravity="center_horizontal"
-                            android:text=""
-                            android:textColor="@color/black" />
-
-                    </TableRow>
 
                 </TableLayout>
 
             </androidx.cardview.widget.CardView>
+
             <TextView
                 android:id="@+id/jc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/detailTable"
                 android:text="Judging criteria:"
                 android:textColor="@color/black"
-                android:layout_below="@+id/detailTable"
-                android:visibility="gone"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                />
+                android:visibility="gone" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/jccard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/jc"
+                android:layout_centerHorizontal="true"
+                android:visibility="gone"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="2dp"
-                android:layout_centerHorizontal="true"
-                android:visibility="gone"
 
                 app:cardUseCompatPadding="true"
                 app:contentPadding="3dp">
+
                 <TextView
+                    android:id="@+id/jcTv2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:id="@+id/jcTv2"
-                    android:textSize="18sp"
                     android:layout_gravity="center"
+                    android:layout_weight="1"
                     android:gravity="center_horizontal|center_vertical"
-                    android:textColor="@color/grey" />
+                    android:textColor="@color/grey"
+                    android:textSize="18sp" />
             </androidx.cardview.widget.CardView>
 
             <TextView
@@ -915,37 +1017,38 @@ android:visibility="gone"
     </ScrollView>
 
     <LinearLayout
+        android:id="@+id/pro"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:id="@+id/pro"
         android:background="#CC333232"
-        android:visibility="gone"
-        android:orientation="vertical">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/white_border"
+            android:layout_gravity="center"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
-            android:layout_gravity="center">
+            android:background="@drawable/white_border">
+
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                />
+                android:layout_marginLeft="10dp" />
+
             <TextView
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/progressBar"
                 android:layout_centerInParent="true"
-                android:textColor="@color/black"
+                android:layout_centerHorizontal="true"
                 android:text="Submitting..."
-                android:textSize="20sp"
-                />
+                android:textColor="@color/black"
+                android:textSize="20sp" />
         </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

@@ -67,7 +67,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/circular_gradient_background"
-                android:backgroundTint="@color/colorPrimary"
+                android:backgroundTint="@color/option_background_pressed"
                 android:elevation="2dp"
                 android:text="START"
                 android:textSize="18sp"
@@ -169,6 +169,7 @@
 
 
                     <include
+
                         android:id="@+id/option1"
                         layout="@layout/snippet_option_select"
                         android:layout_width="match_parent"
@@ -233,7 +234,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/circular_gradient_background"
-                android:backgroundTint="@color/colorPrimary"
+                android:backgroundTint="@color/option_background_pressed"
                 android:elevation="2dp"
                 android:text="Done"
                 android:textSize="18sp"

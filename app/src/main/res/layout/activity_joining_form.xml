@@ -6,18 +6,23 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     tools:context=".contest.joined.JoiningForm">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/reLayout1">
 
-        <include layout="@layout/snippet_top_bar"/>
-    </RelativeLayout>
     <RelativeLayout
+        android:id="@+id/reLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/snippet_top_bar" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/relLayout"
-        android:layout_below="@+id/reLayout1">
+        android:layout_below="@+id/reLayout1"
+        android:background="@color/white"
+        android:padding="15dp"
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,253 +32,284 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Submission Form"
                 android:layout_gravity="center_horizontal"
-                android:textAlignment="center"
-                android:textColor="@color/colorPrimary"
-                android:textSize="20sp"
                 android:layout_margin="10dp"
-                android:textStyle="bold"
-                android:layout_marginBottom="30dp"
-                />
+                android:text="Submission Form"
+                android:textAlignment="center"
+                android:textColor="@color/option_background_pressed"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
+            <!--            College name-->
             <LinearLayout
+                android:id="@+id/college"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:id="@+id/college"
-                android:visibility="gone"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
-                android:orientation="horizontal">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
                     android:text="College/School: "
                     android:textColor="@color/black"
-                    android:layout_marginLeft="20dp"
-                    android:textSize="15sp"/>
+                    android:textSize="15sp" />
 
                 <EditText
                     android:id="@+id/collegeEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:layout_gravity="center"
-                    android:textAlignment="center"
-                    android:paddingRight="5dp"
-                    android:textSize="15sp"
-                    android:paddingLeft="5dp"
-
-                    android:maxLines="1"
+                    android:layout_marginEnd="10dp"
                     android:background="@drawable/rectangular_border"
-                    android:layout_marginRight="10dp"/>
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:textAlignment="center"
+                    android:textSize="15sp" />
 
             </LinearLayout>
+
+            <!--            ID image selection-->
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-            <LinearLayout
+                android:id="@+id/collegeidLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:id="@+id/collegeid"
-                android:visibility="gone"
-
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Select College/School ID Image: "
-                    android:textColor="@color/black"
-                    android:layout_marginLeft="20dp"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="center_vertical"
-                    android:textSize="15sp"/>
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Select"
-                    android:id="@+id/selectid"
-
-                    android:background="@drawable/white_round_button"
-                    android:layout_marginRight="10dp"/>
-
-
-
-            </LinearLayout>
-                <ImageView
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:maxHeight="150dp"
-                    android:layout_margin="5dp"
-                    android:id="@+id/idIv"
-                    android:visibility="gone"
-                    android:layout_gravity="center_horizontal"/>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
                 android:visibility="visible"
+                android:weightSum="2">
 
-                android:id="@+id/mediaLinearLayout"
-                android:orientation="horizontal">
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Paste Link to media: "
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|start"
+                    android:text="Submit Id Image: "
                     android:textColor="@color/black"
-                    android:layout_marginLeft="20dp"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="center"
+                    android:textSize="16sp" />
 
-
-                    android:textSize="15sp"/>
-                <EditText
+                <Button
+                    android:id="@+id/selectid"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:textAlignment="center"
-                    android:paddingRight="5dp"
-                    android:textSize="15sp"
-                    android:paddingLeft="5dp"
-
-                    android:id="@+id/url_submission"
-                    android:background="@drawable/rectangular_border"
-                  />
-
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/white_round_button"
+                    android:padding="2dp"
+                    android:text="Select"
+                    android:textSize="16sp" />
 
 
             </LinearLayout>
 
+            <!--            ID image View-->
+            <ImageView
+                android:id="@+id/idIv"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="5dp"
+                android:maxHeight="150dp"
+                android:visibility="visible" />
+
+            <!--            Media Link selection-->
             <LinearLayout
+                android:id="@+id/mediaLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:id="@+id/ImageLinearLayout"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Submit Submission Image: "
-                    android:textColor="@color/black"
-                    android:layout_marginLeft="20dp"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="center_vertical"
-                    android:textSize="15sp"/>
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="Select"
-                    android:id="@+id/selectSubmission"
-                    android:background="@drawable/white_round_button"
-                    android:layout_marginRight="10dp"/>
+                android:orientation="horizontal"
+                android:visibility="visible"
+                android:weightSum="10">
 
+                <TextView
+                    android:id="@+id/linkText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal|start"
+                    android:layout_weight="6"
+                    android:gravity="top|start"
+                    android:text="Paste media link/id here: "
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/url_submission"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="4"
+                    android:background="@drawable/rectangular_border"
+                    android:gravity="center"
+                    android:lines="5"
+                    android:maxLines="1"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:textAlignment="center"
+                    android:textSize="15sp" />
 
 
             </LinearLayout>
 
+            <!--            Submission Image-->
+            <LinearLayout
+                android:id="@+id/ImageLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|start"
+                    android:text="Submit Submission Image: "
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/selectSubmission"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/white_round_button"
+                    android:padding="2dp"
+                    android:text="Select"
+                    android:textSize="14sp" />
+
+
+            </LinearLayout>
+
+            <!--            Submission Image View-->
             <ImageView
                 android:id="@+id/submisionIv"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:maxHeight="150dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_margin="5dp" />
+                android:layout_margin="5dp"
+                android:maxHeight="150dp" />
 
-            <EditText
+
+            <!--            Quiz rules-->
+            <TextView
+                android:id="@+id/quizRules"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Write description of submission...(optional) "
+                android:layout_gravity="center"
                 android:background="@drawable/rectangular_border"
-                android:padding="10dp"
-                android:layout_margin="5dp"
-                android:id="@+id/des"/>
+                android:gravity="start|top"
+                android:lineHeight="20sp"
+                android:padding="12dp"
+                android:text="1. You will have to attempt n number of questions\n\n2. Each question has limited time\n\n3. Each question has 4 options with 1 correct answer\n\n4. Each question has equal points\n\n5. There is no negative marking\n\n6. You will marked based on your accuracy, speed and consistency\n\n7. Any attempt to cheat will be highly disregarded and might lead to disqualification\n\n8. You will need to follow the rules as specified separately by the organizer also\n\n\nIf you agree to following rules click on participate button to send participation request to organizer"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <!--            Description-->
+            <EditText
+                android:id="@+id/des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/rectangular_border"
+                android:hint="Write description of submission...(optional) "
+                android:lines="3"
+                android:paddingLeft="5dp"
+                tools:ignore="RtlSymmetry" />
 
             <Button
+                android:id="@+id/submitBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="40dp"
-                android:background="@color/white"
-                android:id="@+id/submitBtn"
-                android:text="Submit"/>
-
-
-
+                android:background="@drawable/circular_gradient_background"
+                android:backgroundTint="@color/option_background_pressed"
+                android:text="Submit"
+                android:textColor="@color/black" />
 
         </LinearLayout>
 
 
-
-
-
     </RelativeLayout>
 
-<TextView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/warn"
-    android:visibility="gone"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/reLayout1">
 
-android:text="You already filled this form."
-    android:layout_alignParentEnd="true"
-    android:layout_alignParentBottom="true"
-    android:gravity="center"
-    android:background="#CC333232"
-    android:textSize="18sp"
-    android:layout_marginTop="50dp"
-    android:textColor="#F44336"
-    android:layout_alignParentRight="true" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/decline"
-        android:visibility="gone"
-        android:text="You are not allowed to participant in this contest as either you are host or jury member."
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:gravity="center"
-        android:background="#CC333232"
-        android:textSize="18sp"
-        android:layout_marginTop="50dp"
-        android:textColor="#F44336"
-        android:layout_alignParentRight="true" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:id="@+id/pro"
-        android:background="#CC333232"
-        android:visibility="gone"
-        android:orientation="vertical">
-        <RelativeLayout
+        <TextView
+            android:id="@+id/warn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/white_border"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_gravity="center">
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:background="#CC333232"
+            android:gravity="center"
+            android:text="You already filled this form."
+            android:textColor="#F44336"
+            android:textSize="18sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/decline"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:background="#CC333232"
+            android:gravity="center"
+            android:text="You are not allowed to participant in this contest as either you are host or jury member."
+            android:textColor="#F44336"
+            android:textSize="18sp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/pro"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#CC333232"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-              />
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/progressBar"
-                android:layout_centerInParent="true"
-                android:textColor="@color/black"
-                android:text="Submitting..."
-                android:textSize="20sp"
-                />
-        </RelativeLayout>
-    </LinearLayout>
+                android:layout_gravity="center"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:background="@drawable/white_border">
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="10dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/progressBar"
+                    android:layout_centerInParent="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="Submitting..."
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+
 </RelativeLayout>

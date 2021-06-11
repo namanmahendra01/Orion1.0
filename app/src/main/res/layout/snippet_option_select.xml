@@ -1,6 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/option_background">
 
 
     <LinearLayout
@@ -11,7 +12,7 @@
         android:orientation="horizontal"
         android:padding="10dp"
         android:elevation="4dp"
-        android:outlineAmbientShadowColor="@color/colorPrimary"
+        android:outlineAmbientShadowColor="@color/option_background_pressed"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="15dp"

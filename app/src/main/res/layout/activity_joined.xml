@@ -1,22 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
-    <include layout="@layout/snippet_joined_contest_bar"
-        android:id="@+id/top"/>
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+
+
+    <RelativeLayout
+        android:id="@+id/top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/top"
-        android:id="@+id/contest_refresh">
+        android:layout_marginBottom="10dp">
+
+        <include layout="@layout/snippet_top_bar" />
+    </RelativeLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/contest_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/top">
+
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/recycler_view2">
+            android:layout_height="wrap_content">
 
         </androidx.recyclerview.widget.RecyclerView>
+
         <ProgressBar
             android:id="@+id/pro2"
             style="?android:attr/progressBarStyle"
@@ -30,13 +41,13 @@
 
 
     <TextView
+        android:id="@+id/noPost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="NO CONTEST JOINED"
-        android:id="@+id/noPost"
-        android:visibility="gone"
-        android:gravity="center"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:textSize="18sp"/>
+        android:gravity="center"
+        android:text="NO CONTEST JOINED"
+        android:textSize="18sp"
+        android:visibility="gone" />
 </RelativeLayout>

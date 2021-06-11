@@ -69,7 +69,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|bottom"
                                 android:text="0"
-                                android:textColor="@color/colorPrimary"
+                                android:textColor="@color/option_background_pressed"
                                 android:textSize="20sp"
                                 />
 
@@ -106,7 +106,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|bottom"
                                 android:text="0"
-                                android:textColor="@color/colorPrimary"
+                                android:textColor="@color/option_background_pressed"
                                 android:textSize="20sp"
                                 />
 
@@ -147,7 +147,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|bottom"
                                 android:text="0"
-                                android:textColor="@color/colorPrimary"
+                                android:textColor="@color/option_background_pressed"
                                 android:textSize="20sp"
                                  />
 
@@ -184,7 +184,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|bottom"
                                 android:text="0"
-                                android:textColor="@color/colorPrimary"
+                                android:textColor="@color/option_background_pressed"
                                 android:textSize="20sp"
                                />
 
@@ -225,7 +225,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|bottom"
                                 android:text="0"
-                                android:textColor="@color/colorPrimary"
+                                android:textColor="@color/option_background_pressed"
                                 android:textSize="20sp"
                                 />
 
@@ -262,7 +262,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|bottom"
                                 android:text="0"
-                                android:textColor="@color/colorPrimary"
+                                android:textColor="@color/option_background_pressed"
                                 android:textSize="20sp"
                                  />
 
@@ -301,7 +301,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|bottom"
                                 android:text="0"
-                                android:textColor="@color/colorPrimary"
+                                android:textColor="@color/option_background_pressed"
                                 android:textSize="20sp" />
 
                             <TextView
@@ -336,7 +336,7 @@
                                 android:layout_weight="1"
                                 android:gravity="center_horizontal|bottom"
                                 android:text="0"
-                                android:textColor="@color/colorPrimary"
+                                android:textColor="@color/option_background_pressed"
                                 android:textSize="20sp" />
 
                             <TextView
@@ -379,7 +379,7 @@
                     android:paddingBottom="3dp"
                     android:text="ABOUT"
                     android:textStyle="bold"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/option_background_pressed"
                     android:textSize="18sp" />
 
                 <TextView
@@ -442,7 +442,7 @@
                         android:paddingRight="15dp"
                         android:visibility="gone"
                         android:text="Share Skill +"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/option_background_pressed"
                         android:textSize="18sp" />
 
 
@@ -585,7 +585,7 @@
                         android:layout_gravity="center"
                         android:fontFamily="@font/orion"
                         android:text="Domain"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/option_background_pressed"
                         android:textSize="30sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
