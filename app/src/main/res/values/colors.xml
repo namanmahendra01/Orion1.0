@@ -6,6 +6,8 @@
 
     <!--  Manual Colours  -->
     <color name="white">#ffffff</color>
+    <color name="white_grey">#E5E6EB</color>
+    <color name="green">#2E7D32</color>
     <color name="grey">#9C9797</color>
     <color name="black">#000000</color>
     <color name="light_orange">#f6a412</color>
