@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -38,11 +40,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Adapters.AdapterContestSearch;
 import com.orion.orion.Adapters.AdapterContestUpcoming;
 import com.orion.orion.Adapters.AdapterContestUpcomingGrid;
+import com.orion.orion.Adapters.AdapterMainFeedContest;
 import com.orion.orion.QuizActivity;
 import com.orion.orion.R;
 import com.orion.orion.contest.create.CreatedActivity;
@@ -53,29 +59,37 @@ import com.orion.orion.util.BottomNaavigationViewHelper;
 import com.orion.orion.util.SNTPClient;
 import com.orion.orion.util.StringManipilation;
 
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.TimeZone;
+
+import static java.security.AccessController.getContext;
 
 public class UpcomingContestActivity extends AppCompatActivity {
     private static final String TAG = "UPCOMING FRAGMENT";
     RecyclerView upcomingContestRv, contestSearchRv, upcomingFilterRv;
     private ArrayList<ContestDetail> contestlist;
+    private ArrayList<ContestDetail> contestlist4;
+
     private FirebaseAuth fAuth;
     private EditText searchBox;
     int prevHeight;
+
     int height, dummyHeight;
-    TextView noPost,joined,created;
+    TextView noPost, joined, created;
     LinearLayout blurBg;
-    int x = 0;
+    int x = 0, y = 0;
     private int mResults;
     ProgressBar bottomProgress;
     private static final int ACTIVITY_NUM = 0;
     private static final int CREATE_CONTEST = 1;
     private int mResults2;
+    private ArrayList<String> mFollowing;
     RelativeLayout relativeLayout;
     ImageView gridB, gridY, colY, colB, filterB, filterY, cross;
     private ArrayList<ContestDetail> contestlist2;
@@ -83,22 +97,25 @@ public class UpcomingContestActivity extends AppCompatActivity {
     private ArrayList<ContestDetail> paginatedcontestlist;
     private ArrayList<ContestDetail> paginatedcontestSearch;
     SwipeRefreshLayout contesRefresh;
-    boolean flag1 = false;
+    boolean flag1 = false, flag3 = false, flag4 = false;
     private Context mContext;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser mUser;
     private static int RETRY_DURATION = 1000;
     private static final Handler handler = new Handler(Looper.getMainLooper());
-
+    private RecyclerView contestRv;
     private Spinner domainspinner, entryfeeSpinner;
     String domain = "Overall", entryfee = "Overall";
-
-
     private AdapterContestUpcoming contestUpcoming;
+    private AdapterMainFeedContest contestUpcoming2;
+    //    SP
+    Gson gson;
+    SharedPreferences sp;
+
+
     private AdapterContestUpcomingGrid adapterContestUpcomingGrid;
     private AdapterContestSearch adapterContestSearch;
-
 
 
     @Override
@@ -110,6 +127,24 @@ public class UpcomingContestActivity extends AppCompatActivity {
         setupFirebaseAuth();
         checkCurrentuser(mAuth.getCurrentUser());
         hideSoftKeyboard();
+
+
+        //          Initialize SharedPreference variables
+        sp = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        gson = new Gson();
+
+
+        contestRv.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        contestRv.setLayoutManager(linearLayoutManager2);
+
+        linearLayoutManager2.setItemPrefetchEnabled(true);
+        linearLayoutManager2.setInitialPrefetchItemCount(20);
+        contestRv.setItemViewCacheSize(9);
+        contestRv.setDrawingCacheEnabled(true);
+        contestRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+
+        contestlist4 = new ArrayList<>();
 
         joined.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,12 +195,24 @@ public class UpcomingContestActivity extends AppCompatActivity {
         filterB.setOnClickListener(v -> {
             filterY.setVisibility(View.VISIBLE);
             filterB.setVisibility(View.GONE);
-            expand(relativeLayout, 1000);
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    expand(relativeLayout, 1000);
+
+                }
+            });
         });
+
         filterY.setOnClickListener(v -> {
             filterY.setVisibility(View.GONE);
             filterB.setVisibility(View.VISIBLE);
-            expand(relativeLayout, 1000);
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    expand(relativeLayout, 1000);
+                }
+            });
         });
         colB.setOnClickListener(v -> {
             gridB.setVisibility(View.VISIBLE);
@@ -184,6 +231,32 @@ public class UpcomingContestActivity extends AppCompatActivity {
             searchBox.setText("");
             blurBg.setVisibility(View.GONE);
         });
+
+
+        upcomingContestRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (!recyclerView.canScrollVertically(1) && dy > 0) {
+                    //scrolled to BOTTOM
+                } else if (!recyclerView.canScrollVertically(-1) && dy < 0) {
+                    //scrolled to TOP
+                    if(relativeLayout.getVisibility() != View.VISIBLE) {
+                        expand(relativeLayout, 500);
+
+                    }
+
+                }else if(dy>0&&recyclerView.getScrollState()== RecyclerView.SCROLL_STATE_DRAGGING){
+                    if(relativeLayout.getVisibility() == View.VISIBLE){
+                        expand(relativeLayout, 500);
+
+
+                    }
+                }
+            }
+        });
+
+
+
         contestSearchRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -272,11 +345,421 @@ public class UpcomingContestActivity extends AppCompatActivity {
             }
         });
 
+        getFollowerListFromSP();
+
         getContestFiltered(domain, entryfee);
 
     }
 
-    public void initWidgets(){
+    //  fetching FollowerList  from SharedPreferences
+    private void getFollowerListFromSP() {
+        String json = sp.getString("fl", null);
+
+        Type type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        mFollowing = gson.fromJson(json, type);
+        if (mFollowing == null) {    //        if no arrayList is present
+            mFollowing = new ArrayList<>();
+
+            Log.d(TAG, "getFollowerListFromSP: 1");
+            getFollowing();   //            make new Arraylist
+
+        } else {
+            Log.d(TAG, "getFollowerListFromSP: 1");
+
+            checkFollowingUpdate();  //         Check if we followed or unfollowed anyone
+
+        }
+
+    }
+
+    private void getFollowing() {
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+        Query query = reference
+                .child(getString(R.string.dbname_following))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    int x = 0;
+                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                        x++;
+                        Log.d(TAG, "getFollowerListFromSP: 2");
+                        mFollowing.add(singleSnapshot.getKey());
+                        if (x == dataSnapshot.getChildrenCount()) {
+
+//                        Add newly Created ArrayList to Shared Preferences
+                            SharedPreferences.Editor editor = sp.edit();
+                            String json = gson.toJson(mFollowing);
+                            editor.putString("fl", json);
+                            editor.apply();
+
+                            getcontest();
+                        }
+                    }
+
+
+                } else {
+
+//                        Add newly Created ArrayList to Shared Preferences
+                    SharedPreferences.Editor editor = sp.edit();
+                    String json = gson.toJson(mFollowing);
+                    editor.putString("fl", json);
+                    editor.apply();
+
+                    getcontest();
+
+                }
+
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d(TAG, "Query Cancelled");
+            }
+        });
+    }
+
+    private void checkContestUpdate() {
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+        db.child(getString(R.string.dbname_users))
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(getString(R.string.contest_update))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot1) {
+//                        If snapshot exist,new contest are there
+                        if (snapshot1.exists()) {
+                            Collections.reverse(contestlist4);
+                            for (DataSnapshot snapshot : snapshot1.getChildren()) {
+
+                                final int[] flag = {0};
+                                DatabaseReference db1 = FirebaseDatabase.getInstance().getReference();
+                                db1.child(getString(R.string.dbname_contestlist))
+                                        .child(snapshot.getKey())
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                flag[0]++;
+                                                ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
+                                                if (contestDetail != null && !contestDetail.getR()) {
+                                                    contestlist4.add(contestDetail);
+
+                                                }
+                                                if (flag[0] == snapshot1.getChildrenCount()) {          //when all update added
+
+                                                    Collections.reverse(contestlist4);
+                                                    //                Add newly Created ArrayList to Shared Preferences
+                                                    SharedPreferences.Editor editor = sp.edit();
+                                                    String json = gson.toJson(contestlist4);
+                                                    editor.putString("cl", json);
+                                                    editor.apply();
+
+                                                    contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
+                                                    contestUpcoming2.setHasStableIds(true);
+
+                                                    contestRv.setAdapter(contestUpcoming2);
+
+                                                    contestUpcoming2.notifyDataSetChanged();
+                                                    flag4 = true;
+
+
+//                                                    delete update
+                                                    DatabaseReference db3 = FirebaseDatabase.getInstance().getReference();
+                                                    db3.child(getString(R.string.dbname_users))
+                                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                                            .child(getString(R.string.contest_update))
+                                                            .removeValue();
+                                                }
+                                            }
+
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
+
+
+                            }
+                        } else {
+                            Log.d(TAG, "getFollowerListFromSP: 5");
+                            contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
+                            contestUpcoming2.setHasStableIds(true);
+
+                            contestRv.setAdapter(contestUpcoming2);
+
+                            contestUpcoming2.notifyDataSetChanged();
+                            flag4 = true;
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    private void getcontest() {
+        if (contestlist4 == null || contestlist4.size() == 0) {
+
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+            for (int i = 0; i < mFollowing.size(); i++) {
+
+                final int count = i;
+
+
+                Query query = reference
+                        .child(getString(R.string.dbname_contestlist))
+                        .orderByChild(getString(R.string.field_user_id))
+                        .equalTo(mFollowing.get(i));
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
+                            if (!contestDetail.getR()) {
+                                contestlist4.add(contestDetail);
+                            }
+                        }
+
+                        Collections.sort(contestlist4, new Comparator<ContestDetail>() {
+                            @Override
+                            public int compare(ContestDetail o1, ContestDetail o2) {
+                                return o2.getTim().compareTo(o1.getTim());
+                            }
+                        });
+//                Add newly Created ArrayList to Shared Preferences
+                        SharedPreferences.Editor editor = sp.edit();
+                        String json = gson.toJson(contestlist4);
+                        editor.putString("cl", json);
+                        editor.apply();
+
+                        contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
+                        contestUpcoming2.setHasStableIds(true);
+
+                        contestRv.setAdapter(contestUpcoming2);
+
+                        contestUpcoming2.notifyDataSetChanged();
+                        flag3 = true;
+
+                    }
+
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+
+            if (mFollowing.size() == 0) {
+                flag3 = true;
+            }
+        } else {
+            checkContestUpdate();
+        }
+
+    }
+
+
+    private void checkFollowingUpdate() {
+        Log.d(TAG, "getFollowerListFromSP: 2");
+        int c = 0;
+
+        String json = sp.getString("addfollowing", null);
+        Type type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        ArrayList<String> list = new ArrayList<>();
+        list = gson.fromJson(json, type);
+        if (list == null || list.size() == 0) {    //        not followed anyone
+            c++;
+        } else {              //    we followed someone....update everylist
+
+            addToContestList(list);
+            Log.d(TAG, "getFollowerListFromSP: 21");
+
+        }
+
+        json = sp.getString("removefollowing", null);
+        type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        ArrayList<String> ulist = new ArrayList<>();
+        ulist = gson.fromJson(json, type);
+        if (ulist == null || ulist.size() == 0) {    //         not unfollowed anyone
+            c++;
+        } else {                  //    we unfollowed someone....update everylist
+
+            Log.d(TAG, "getFollowerListFromSP: 22");
+            removeFromContestList(ulist);
+
+        }
+
+        if (c == 2) {    //  if ther is no update
+            Log.d(TAG, "getFollowerListFromSP: 3");
+            getContestListFromSP();
+
+        } else {
+            SharedPreferences.Editor editor = sp.edit();
+            json = gson.toJson(null);
+            editor.putString("addfollowing", json);
+            editor.apply();
+            json = gson.toJson(null);
+            editor.putString("removefollowing", json);
+            editor.apply();
+        }
+    }
+
+
+    //  fetching ContestList  from SharedPreferences
+    private void getContestListFromSP() {
+        String json = sp.getString("cl", null);
+        Type type = new TypeToken<ArrayList<ContestDetail>>() {
+        }.getType();
+        contestlist4 = gson.fromJson(json, type);
+        if (contestlist4 == null || contestlist4.size() == 0) {    //        if no arrayList is present
+
+            contestlist4 = new ArrayList<>();
+            Log.d(TAG, "checkContestUpdate: 00");
+            getcontest();   //            make new Arraylist
+
+        } else {
+            Log.d(TAG, "getFollowerListFromSP: 4");
+            checkContestUpdate();
+
+
+        }
+
+    }
+
+    private void removeFromContestList(ArrayList<String> list) {
+
+        String json = sp.getString("cl", null);
+        Type type = new TypeToken<ArrayList<ContestDetail>>() {
+        }.getType();
+        ArrayList<ContestDetail> list1 = new ArrayList<>();
+        list1 = gson.fromJson(json, type);
+        if (list1 == null) {
+            list1 = new ArrayList<>();
+        }
+
+
+        if (list1.size() != 0) {
+            for (int i = 0; i < list.size(); i++) {
+                for (int x = 0; x < list1.size(); x++) {
+                    if (list1.get(x).getUi().equals(list.get(i))) {
+                        list1.remove(list1.get(x));
+                        x--;
+                    }
+                }
+
+            }
+        }
+
+//                        Add newly Created ArrayList to Shared Preferences
+        SharedPreferences.Editor editor = sp.edit();
+        json = gson.toJson(list1);
+        editor.putString("cl", json);
+        editor.apply();
+
+        contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
+        contestUpcoming2.setHasStableIds(true);
+
+        contestRv.setAdapter(contestUpcoming2);
+
+        contestUpcoming2.notifyDataSetChanged();
+        flag3 = true;
+
+
+    }
+
+    private void addToContestList(ArrayList<String> list) {
+        String json = sp.getString("cl", null);
+        Type type = new TypeToken<ArrayList<ContestDetail>>() {
+        }.getType();
+        contestlist4 = gson.fromJson(json, type);
+        if (contestlist4 == null || contestlist4.size() == 0) {    //        if no arrayList is present
+            contestlist4 = new ArrayList<>();
+
+        }
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+
+        for (int i = 0; i < list.size(); i++) {
+
+            final int count = i;
+
+
+            Query query = reference
+                    .child(getString(R.string.dbname_contestlist))
+                    .orderByChild(getString(R.string.field_user_id))
+                    .equalTo(list.get(i));
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    if (dataSnapshot.exists()) {
+                        Collections.reverse(contestlist4);
+                        int x = 0;
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            x++;
+                            ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
+                            if (!contestDetail.getR()) {
+                                contestlist4.add(contestDetail);
+                            }
+                            if (x == dataSnapshot.getChildrenCount() && count == list.size() - 1) {
+
+                                Collections.reverse(contestlist4);
+
+//                        Add newly Created ArrayList to Shared Preferences
+                                SharedPreferences.Editor editor = sp.edit();
+                                String json = gson.toJson(contestlist4);
+                                editor.putString("cl", json);
+                                editor.apply();
+
+                                contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
+                                contestUpcoming2.setHasStableIds(true);
+
+                                contestRv.setAdapter(contestUpcoming2);
+
+                                contestUpcoming2.notifyDataSetChanged();
+                                flag3 = true;
+
+                            }
+                        }
+
+
+                    } else {
+                        contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
+                        contestUpcoming2.setHasStableIds(true);
+
+                        contestRv.setAdapter(contestUpcoming2);
+
+                        contestUpcoming2.notifyDataSetChanged();
+                        flag3 = true;
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+
+
+    }
+
+    public void initWidgets() {
+        contestRv = findViewById(R.id.recyclerContest);
         upcomingContestRv = findViewById(R.id.recycler_view1);
         contestSearchRv = findViewById(R.id.recyclerKey);
         searchBox = findViewById(R.id.search);
@@ -284,7 +767,7 @@ public class UpcomingContestActivity extends AppCompatActivity {
         entryfeeSpinner = findViewById(R.id.entryfeeSpinner);
         gridB = findViewById(R.id.gridB);
         gridY = findViewById(R.id.gridY);
-        colB =findViewById(R.id.columnB);
+        colB = findViewById(R.id.columnB);
         colY = findViewById(R.id.columnY);
         filterB = findViewById(R.id.filter);
         filterY = findViewById(R.id.filteryellow);
@@ -715,10 +1198,11 @@ public class UpcomingContestActivity extends AppCompatActivity {
         }
 
     }
+
     private void setupBottomNavigationView() {
         Log.d(TAG, " setupBottomNavigationView:setting up BottomNavigationView");
         BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.BottomNavViewBar);
-        BottomNaavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx,this);
+        BottomNaavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx, this);
         BottomNaavigationViewHelper.enableNavigation(UpcomingContestActivity.this, this, bottomNavigationViewEx);
 
         Menu menu = bottomNavigationViewEx.getMenu();
@@ -726,10 +1210,13 @@ public class UpcomingContestActivity extends AppCompatActivity {
         menuItem.setChecked(true);
 
     }
+
     private void checkCurrentuser(FirebaseUser user) {
         Log.d(TAG, "checkCurrentuser:check if current user logged in");
-        if (user == null) startActivity(new Intent(UpcomingContestActivity.this, LoginActivity.class));
+        if (user == null)
+            startActivity(new Intent(UpcomingContestActivity.this, LoginActivity.class));
     }
+
     private void setupFirebaseAuth() {
         Log.d(TAG, "setup FirebaseAuth: setting up firebase auth.");
         mAuth = FirebaseAuth.getInstance();
@@ -753,6 +1240,7 @@ public class UpcomingContestActivity extends AppCompatActivity {
             } else Log.d(TAG, "onAuthStateChanged: signed_in:" + mUser.getUid());
         };
     }
+
     private void hideSoftKeyboard() {
         if (getCurrentFocus() != null) {
             InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -772,7 +1260,9 @@ public class UpcomingContestActivity extends AppCompatActivity {
         super.onStop();
         if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
     }
+
     private Boolean exit = false;
+
     @Override
     public void onBackPressed() {
         if (exit) {

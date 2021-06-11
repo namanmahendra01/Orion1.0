@@ -5,11 +5,10 @@
     app:cardBackgroundColor="@color/white"
     app:cardUseCompatPadding="true"
     app:cardCornerRadius="10dp"
-    app:cardElevation="10dp"
+    app:cardElevation="5dp"
     app:contentPadding="3dp"
-    android:padding="10dp"
     android:background="@drawable/grey_border_bottom"
-    android:layout_height="wrap_content">
+    android:layout_height="120dp">
 
     <RelativeLayout
         android:layout_width="100dp"

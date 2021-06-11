@@ -10,9 +10,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/username"
         android:textSize="16sp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_gravity="right"
         android:text="naman"
+
         android:layout_marginRight="10dp"
         android:layout_marginBottom="4dp"
         android:textColor="@color/light_blue"

@@ -20,7 +20,8 @@
         <activity android:name=".contest.jury_voting_Activity" />
         <activity android:name=".contest.create.CreatedActivity" />
         <activity android:name=".contest.joined.JoinedActivity" />
-        <activity android:name=".contest.upcoming.UpcomingContestActivity" />
+        <activity android:name=".contest.upcoming.UpcomingContestActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".NotificationActivity" />
         <activity android:name=".chat.MessagesActivity" /> <!-- Activities -->
         <!-- Splash Screen -->

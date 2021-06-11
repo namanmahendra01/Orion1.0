@@ -26,7 +26,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,12 +47,14 @@ import java.util.Collections;
 public class CreatedActivity extends AppCompatActivity {
     private static final String TAG = "JOINED FRAGMENT";
     RecyclerView createdContestRv;
-    FloatingActionButton floatbtn;
+//    FloatingActionButton floatbtn;
     private ArrayList<com.orion.orion.models.CreateForm> contestlist;
     private ArrayList<com.orion.orion.models.CreateForm> paginatedContestlist;
     private int mResults;
     private AdapterContestCreated contestCreated;
     ProgressBar bottomProgress;
+    FloatingActionMenu floatMenuBtn;
+    FloatingActionButton floatingActionButton1, floatingActionButton2, floatingActionButton3;
 
 
     TextView noPost;
@@ -72,13 +75,39 @@ public class CreatedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_created);
 
 
-        floatbtn = findViewById(R.id.float_btn);
+//        floatbtn = findViewById(R.id.float_btn);
         contestRefresh=findViewById(R.id.contest_refresh);
         noPost=findViewById(R.id.noPost);
         bottomProgress=findViewById(R.id.pro2);
         createdContestRv = findViewById(R.id.recycler_view3);
         backArrrow= findViewById(R.id.backarrow);
+        floatMenuBtn= findViewById(R.id.menu);
+        floatingActionButton1= findViewById(R.id.menu_item);
+        floatingActionButton2= findViewById(R.id.menu_item2);
+        floatingActionButton3= findViewById(R.id.menu_item3);
 
+
+        floatingActionButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(CreatedActivity.this, CreateForm.class);
+                startActivity(i);
+            }
+        });
+        floatingActionButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(CreatedActivity.this, CreateForm.class);
+                startActivity(i);
+            }
+        });
+        floatingActionButton3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(CreatedActivity.this, CreateForm.class);
+                startActivity(i);
+            }
+        });
         backArrrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,11 +124,11 @@ public class CreatedActivity extends AppCompatActivity {
         createdContestRv.setDrawingCacheEnabled(true);
         createdContestRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
         createdContestRv.setLayoutManager(linearLayoutManager);
-
-        floatbtn.setOnClickListener(v -> {
-            Intent i = new Intent(CreatedActivity.this, CreateForm.class);
-            startActivity(i);
-        });
+//
+//        floatbtn.setOnClickListener(v -> {
+//            Intent i = new Intent(CreatedActivity.this, CreateForm.class);
+//            startActivity(i);
+//        });
         createdContestRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {

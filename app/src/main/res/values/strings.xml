@@ -167,6 +167,7 @@
     <string name="rejection_reason">rr</string>
     <string name="dbname_Participant_Chat_Room">ParticipantChatRoom</string>
     <string name="search_activity">Search Activity</string>
+    <string name="contest_update">cu</string>
 
 
     <string-array name="entryfee2">
