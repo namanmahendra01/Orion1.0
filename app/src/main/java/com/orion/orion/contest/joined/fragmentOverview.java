@@ -60,7 +60,7 @@ import java.util.TimeZone;
 
 import static com.android.volley.VolleyLog.TAG;
 
-public class fragment_overview extends Fragment {
+public class fragmentOverview extends Fragment {
 
     private TableLayout juryTable, juryTable2;
 
@@ -90,7 +90,7 @@ public class fragment_overview extends Fragment {
     private static int RETRY_DURATION = 1000;
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
-    public fragment_overview() {
+    public fragmentOverview() {
     }
 
     @Nullable

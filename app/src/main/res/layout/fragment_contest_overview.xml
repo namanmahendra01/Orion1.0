@@ -62,7 +62,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Enter Chat Room"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/colorAccent"
                     android:id="@+id/chatRoom"
                     android:padding="5dp"
                     android:gravity="center"
@@ -168,6 +168,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
+                        android:id="@+id/paramType"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
@@ -191,46 +192,47 @@
                 </RelativeLayout>
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/pointsRl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/jutyRl">
+<!--            <RelativeLayout-->
+<!--                android:id="@+id/pointsRl"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_below="@+id/jutyRl">-->
 
-                <RelativeLayout
-                    android:id="@+id/pointsTable"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+<!--                <RelativeLayout-->
+<!--                    android:id="@+id/pointsTable"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content">-->
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:gravity="center"
-                        android:text="Quiz Points"
-                        android:textColor="@color/option_background_pressed"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-                </RelativeLayout>
+<!--                    <TextView-->
+<!--                        android:id="@+id/paramType"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_centerHorizontal="true"-->
+<!--                        android:gravity="center"-->
+<!--                        android:text="Quiz Points"-->
+<!--                        android:textColor="@color/option_background_pressed"-->
+<!--                        android:textSize="18sp"-->
+<!--                        android:textStyle="bold" />-->
+<!--                </RelativeLayout>-->
 
-                <RelativeLayout
-                    android:id="@+id/relLayout3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/pointsTable"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginBottom="30dp">
+<!--                <RelativeLayout-->
+<!--                    android:id="@+id/relLayout3"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_below="@+id/pointsTable"-->
+<!--                    android:layout_marginTop="0dp"-->
+<!--                    android:layout_marginBottom="30dp">-->
 
-                    <include layout="@layout/snippet_points_table" />
+<!--                    <include layout="@layout/snippet_points_table" />-->
 
-                </RelativeLayout>
-            </RelativeLayout>
+<!--                </RelativeLayout>-->
+<!--            </RelativeLayout>-->
 
             <RelativeLayout
                 android:id="@+id/resultTable"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/pointsRl">
+                android:layout_below="@+id/jutyRl">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -248,7 +250,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/resultTable">
 
-                <include layout="@layout/layout_jury_public_total" />
+                <include layout="@layout/snippet_jury_public_total" />
 
             </RelativeLayout>
 

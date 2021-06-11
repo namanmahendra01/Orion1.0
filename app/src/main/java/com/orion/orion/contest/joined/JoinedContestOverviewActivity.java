@@ -43,9 +43,9 @@ public class JoinedContestOverviewActivity extends AppCompatActivity {
 
     private void setupViewPager() {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new fragment_joinedContest_details());
-        adapter.addFragment(new fragment_overview());
-        adapter.addFragment(new fragment_marks_and_votes());
+        adapter.addFragment(new fragmentJoinedContestDetails());
+        adapter.addFragment(new fragmentOverview());
+        adapter.addFragment(new fragmentMarksAndVotes());
         mViewPager.setAdapter(adapter);
         TabLayout tablayout = (TabLayout) findViewById(R.id.tabs);
         tablayout.setupWithViewPager(mViewPager);

@@ -95,6 +95,12 @@ public class fragmentContestOverview extends Fragment {
 
     private String Conteskey;
 
+    private TextView paramType;
+    private TextView param1;
+    private TextView param2;
+    private TextView param3;
+    private TextView totalParam1;
+    private TextView totalParam2;
 
     public fragmentContestOverview() {
     }
@@ -107,7 +113,6 @@ public class fragmentContestOverview extends Fragment {
         juryRl = view.findViewById(R.id.jutyRl);
 
         juryTable = view.findViewById(R.id.jurytable);
-        pointsRl = view.findViewById(R.id.pointsRl);
 
         juryTable2 = view.findViewById(R.id.jurytable2);
         pubBtn = view.findViewById(R.id.pubBtn);
@@ -118,6 +123,12 @@ public class fragmentContestOverview extends Fragment {
         progress = view.findViewById(R.id.pro);
         participantRefresh = view.findViewById(R.id.participant_refresh);
 
+        paramType = view.findViewById(R.id.paramType);
+        param1 = view.findViewById(R.id.param1);
+        param2 = view.findViewById(R.id.param2);
+        param3 = view.findViewById(R.id.param3);
+        totalParam1 = view.findViewById(R.id.totalParam1);
+        totalParam2 = view.findViewById(R.id.totalParam2);
 
         mFirebaseMethods = new FirebaseMethods(getActivity());
 
@@ -139,7 +150,6 @@ public class fragmentContestOverview extends Fragment {
             startActivity(i);
         });
 
-//          Initialize SharedPreference variables
         sp = getContext().getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
         gson = new Gson();
 
@@ -156,8 +166,6 @@ public class fragmentContestOverview extends Fragment {
         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Colombo"), new SNTPClient.Listener() {
             @Override
             public void onTimeReceived(String rawDate) {
-                // rawDate -> 2019-11-05T17:51:01+0530
-                //*************************************************************************
                 String currentTime = StringManipilation.getTime(rawDate);
                 @SuppressLint("SimpleDateFormat") java.text.DateFormat formatter1 = new SimpleDateFormat("dd-MM-yyyy");
                 Date date1 = null;
@@ -181,13 +189,13 @@ public class fragmentContestOverview extends Fragment {
                                     assert contestDetail != null;
                                     String WinDec = contestDetail.getWd();
                                     boolean result = contestDetail.getR();
-                                    if(contestDetail.getCty()!=null && contestDetail.getCty().equals("Quiz")){
-                                        pointsRl.setVisibility(View.VISIBLE);
-                                        juryRl.setVisibility(View.GONE);
-                                    }
-                                    else{
-                                        pointsRl.setVisibility(View.GONE);
-                                        juryRl.setVisibility(View.VISIBLE);
+                                    if (contestDetail.getCty() != null && contestDetail.getCty().equals("Quiz")) {
+                                        paramType.setText("Points Table");
+                                        param1.setText("Accuracy");
+                                        param2.setText("Speed");
+                                        param3.setText("Consistency");
+                                        totalParam1.setText("Points");
+                                        totalParam2.setText("-");
                                     }
                                     if (contestDetail.getVt().equals("Jury and Public")) {
                                         isPublicAndJuryVote = true;
@@ -211,7 +219,6 @@ public class fragmentContestOverview extends Fragment {
                                             try {
                                                 synchronized (this) {
                                                     wait(1000);
-
                                                     if (getActivity() != null) {
                                                         getActivity().runOnUiThread(() -> {
                                                             if (result) {
@@ -230,23 +237,17 @@ public class fragmentContestOverview extends Fragment {
                                                         });
                                                     }
                                                 }
-                                                } catch(InterruptedException e){
-                                                    e.printStackTrace();
-                                                }
+                                            } catch (InterruptedException e) {
+                                                e.printStackTrace();
                                             }
-
-                                            ;
                                         }
-
-                                        ;
+                                    };
                                     thread.start();
-                                    }
-
+                                }
                             }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
-
                             }
                         });
 
@@ -264,9 +265,7 @@ public class fragmentContestOverview extends Fragment {
             @Override
             public void onRefresh() {
                 flag1 = false;
-
                 getParticipantListFromSP(true);
-
                 checkRefresh();
             }
 
@@ -282,11 +281,9 @@ public class fragmentContestOverview extends Fragment {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Publish Result");
             builder.setMessage("Are you sure, you want to publish result?");
-//                set buttons
             builder.setPositiveButton("Publish", (dialog, which) -> getWinners(participantLists, true));
             builder.setNegativeButton("Not now", (dialog, which) -> dialog.dismiss());
             builder.create().show();
-
         });
         getParticipantListFromSP(false);
         return view;
@@ -294,7 +291,6 @@ public class fragmentContestOverview extends Fragment {
 
     private void publishResultAutomatically() {
         progress.setVisibility(View.VISIBLE);
-
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child(getString(R.string.dbname_participantList))
                 .child(Conteskey)
@@ -328,13 +324,13 @@ public class fragmentContestOverview extends Fragment {
         try {
             for (int x = 0; x < 3; x++) {
                 participantLists2.add(participantLists.get(x));
-                if (x==participantLists.size()-1){
+                if (x == participantLists.size() - 1) {
                     break;
                 }
             }
         } catch (IndexOutOfBoundsException e) {
         }
-        Log.d(TAG, "getWinners: cgy"+participantLists2.size());
+        Log.d(TAG, "getWinners: cgy" + participantLists2.size());
         mFirebaseMethods.publishResut(manual, Conteskey, participantLists, progress, getActivity(), participantLists2);
         pubBtn2.setVisibility(View.VISIBLE);
         relWinner.setVisibility(View.VISIBLE);
@@ -349,7 +345,7 @@ public class fragmentContestOverview extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            ParticipantList    participantList = snapshot.getValue(ParticipantList.class);
+                            ParticipantList participantList = snapshot.getValue(ParticipantList.class);
                             assert participantList != null;
                             joiningKey = participantList.getJi();
                             DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference();
@@ -361,36 +357,28 @@ public class fragmentContestOverview extends Fragment {
                                     .addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            juryMarks  juryMarks = dataSnapshot.getValue(juryMarks.class);
+                                            juryMarks juryMarks = dataSnapshot.getValue(juryMarks.class);
                                             TableRow tbrow = new TableRow(getActivity());
                                             tbrow.setLayoutParams(new TableLayout.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
                                             tbrow.setWeightSum(5);
                                             TextView t1v = new TextView(getActivity());
                                             getU(finalParticipantList.getUi(), t1v);
                                             t1v.setOnClickListener(v -> {
-                                                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
-
+                                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
                                                 Query userquery = ref
                                                         .child(getString(R.string.dbname_username))
                                                         .child(t1v.getText().toString());
                                                 userquery.addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                                                         if (dataSnapshot.exists()) {
-                                                           String username = dataSnapshot.getValue().toString();
-
+                                                            String username = dataSnapshot.getValue().toString();
                                                             Intent i = new Intent(getContext(), profile.class);
                                                             i.putExtra(getString(R.string.calling_activity), getString(R.string.home));
-
                                                             i.putExtra(getString(R.string.intent_user), username);
                                                             startActivity(i);
-
-
                                                         }
-
                                                     }
-
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -477,7 +465,7 @@ public class fragmentContestOverview extends Fragment {
                                             TextView t1v = new TextView(getActivity());
                                             getU(finalParticipantList.getUi(), t1v);
                                             t1v.setOnClickListener(v -> {
-                                                DatabaseReference ref =FirebaseDatabase.getInstance().getReference();
+                                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
                                                 Query userquery = ref
                                                         .child(getString(R.string.dbname_username))
@@ -600,9 +588,8 @@ public class fragmentContestOverview extends Fragment {
                 addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String user = dataSnapshot.getValue().toString();
-                            textView.setText(user);
-
+                        String user = dataSnapshot.getValue().toString();
+                        textView.setText(user);
                     }
 
                     @Override
@@ -610,12 +597,8 @@ public class fragmentContestOverview extends Fragment {
 
                     }
                 });
-
-
     }
 
-
-    //  fetching ParticipantList  from SharedPreferences
     private void getParticipantListFromSP(boolean forReferesh) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(getString(R.string.dbname_participantList))
@@ -627,40 +610,26 @@ public class fragmentContestOverview extends Fragment {
                         participantLists2.clear();
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             ParticipantList participantList = snapshot.getValue(ParticipantList.class);
-
                             participantLists.add(participantList);
                         }
-                        Collections.sort(participantLists, new Comparator<ParticipantList>() {
-                            @Override
-                            public int compare(ParticipantList o1, ParticipantList o2) {
-                                return Integer.compare(o1.getTs(), o2.getTs());
-                            }
-                        });
+                        Collections.sort(participantLists, (o1, o2) -> Integer.compare(o1.getTs(), o2.getTs()));
                         Collections.reverse(participantLists);
                         try {
-                            int o=0;
+                            int o = 0;
                             for (int x = 0; x < participantLists.size(); x++) {
                                 o++;
                                 participantLists2.add(participantLists.get(x));
-                                if (o==3){
-                                    break;
-                                }
-
+                                if (o == 3) break;
                             }
-
                         } catch (IndexOutOfBoundsException e) {
                             Log.e(TAG, "onDataChange: " + e.getMessage());
                         }
-
                         if (!forReferesh) {
-                            if (juryRl.getVisibility() != View.GONE) {
+                            if (juryRl.getVisibility() != View.GONE)
                                 juryMarksTable(Conteskey);
-                            }
                             juryAndPublicMarksTable(Conteskey);
-
                         }
                         getRank();
-
                     }
 
                     @Override
@@ -668,22 +637,17 @@ public class fragmentContestOverview extends Fragment {
 
                     }
                 });
-
-
-
     }
+
     private void getRank() {
-
         displayParticipantRank();
-
         AdapterWinners winnerList = new AdapterWinners(getContext(), participantLists2);
         winnerList.setHasStableIds(true);
-
         winnerRv.setAdapter(winnerList);
     }
 
     private void displayParticipantRank() {
-        flag1=true;
+        flag1 = true;
         ArrayList<ParticipantList> paginatedParticipantLists = new ArrayList<>();
         if (participantLists != null) {
             try {
@@ -694,20 +658,15 @@ public class fragmentContestOverview extends Fragment {
                 for (int i = 0; i < iteration; i++) {
                     paginatedParticipantLists.add(participantLists.get(i));
                 }
-
                 AdapterRankList rankList = new AdapterRankList(getContext(), paginatedParticipantLists);
                 rankList.setHasStableIds(true);
                 rankRv.setAdapter(rankList);
 
             } catch (NullPointerException e) {
                 Log.e(TAG, "Null pointer exception" + e.getMessage());
-
             } catch (IndexOutOfBoundsException e) {
                 Log.e(TAG, "index out of bound" + e.getMessage());
-
             }
-
         }
     }
-
 }

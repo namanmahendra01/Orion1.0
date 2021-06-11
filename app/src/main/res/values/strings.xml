@@ -182,6 +182,8 @@
     <string name="dbname_Participant_Chat_Room">ParticipantChatRoom</string>
     <string name="search_activity">Search Activity</string>
     <string name="contest_update">cu</string>
+    <string name="option_seperator_delimintor">0oo0</string>
+    <string name="field_quiz_taken">qt</string>
 
 
     <string-array name="entryfee2">

@@ -6,9 +6,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
+import com.orion.orion.contest.Contest_Evaluation.fragmentContestEdit;
 import com.orion.orion.models.CreateForm;
 
 import com.orion.orion.models.users;
@@ -33,10 +36,13 @@ import com.orion.orion.profile.profile;
 
 import static com.android.volley.VolleyLog.TAG;
 
-public class fragment_joinedContest_details extends Fragment {
-    public fragment_joinedContest_details(){}
+public class fragmentJoinedContestDetails extends Fragment {
+    public fragmentJoinedContestDetails(){}
 
 
+    private TextView contestType;
+    private TextView quizDateTime;
+    private TableLayout publicVotingContainer;
     private TextView entryfee,title,totalprize,maxPart,voteType,gp,
             regBegin,regEnd,voteBegin,voteEnd,domain,openfor,juryname1,juryname2,juryname3,jury
             ,jurypl1,jurypl2,jurypl3,hostedby,filetype,windate,p1Tv,p2Tv,p3Tv,userTv,rules2,descrip,rules;
@@ -69,6 +75,9 @@ public class fragment_joinedContest_details extends Fragment {
 
         setupFirebaseAuth();
 
+        contestType = view.findViewById(R.id.contestTypeTv);
+        quizDateTime = view.findViewById(R.id.quizDateTime);
+        publicVotingContainer = view.findViewById(R.id.publicVotingContainer);
         entryfee=view.findViewById(R.id.entryfeeTv);
         title=view.findViewById(R.id.titleTv);
         descrip=view.findViewById(R.id.descripTv);
@@ -102,22 +111,12 @@ public class fragment_joinedContest_details extends Fragment {
         p3Tv=view.findViewById(R.id.p3Tv);
         prizeLinear=view.findViewById(R.id.prizell);
         userTv = view.findViewById(R.id.usernameCreator);
-
         jcTv = view.findViewById(R.id.jc);
         jcTv2 = view.findViewById(R.id.jcTv2);
         jcCard = view.findViewById(R.id.jccard);
-
         gp = view.findViewById(R.id.gp);
-
         topLayout = view.findViewById(R.id.reLayout1);
-
         topLayout.setVisibility(View.GONE);
-
-
-
-
-
-
 
         Bundle b1=getActivity().getIntent().getExtras();
         Contestkey=b1.getString("contestId");
@@ -149,46 +148,64 @@ public class fragment_joinedContest_details extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 CreateForm mCreateForm=dataSnapshot.getValue(CreateForm.class);
-                if (mCreateForm.getEf().equals("")){
+                title.setText(mCreateForm.getCt());
+                hostedby.setText(mCreateForm.getHst());
+                descrip.setText(mCreateForm.getDes());
+                rules.setText(mCreateForm.getRul());
+                if (mCreateForm.getEf().equals(""))
                     entryfee.setText("Free");
-                }else{
+                else
                     entryfee.setText(mCreateForm.getEf());
-                }
-                if (mCreateForm.getTp().equals("")){
+                if (mCreateForm.getTp().equals("")) {
                     prizeLinear.setVisibility(View.GONE);
                     totalprize.setText("-");
-
-                }else{
+                } else {
                     totalprize.setText(mCreateForm.getTp());
                     prizeLinear.setVisibility(View.VISIBLE);
-
                 }
-                if (mCreateForm.getMlt().equals("")){
+//                contestType
+                contestType.setText(mCreateForm.getCty());
+                if (mCreateForm.getCty().equals("Quiz"))
+                    publicVotingContainer.setVisibility(View.GONE);
+                else
+                    publicVotingContainer.setVisibility(View.VISIBLE);
+                //voting type
+                if (mCreateForm.getVt().equals(""))
+                    voteType.setText("-");
+                else
+                    voteType.setText(mCreateForm.getVt());
+                domain.setText(mCreateForm.getD());
+                openfor.setText(mCreateForm.getOf());
+                //participant
+                if (mCreateForm.getMlt().equals(""))
                     maxPart.setText("Unlimited");
-
-                }else{
+                else
                     maxPart.setText(mCreateForm.getMlt());
-
-                }
-                if (mCreateForm.getVb().equals("")){
+                filetype.setText(mCreateForm.getFt());
+                regBegin.setText(mCreateForm.getRb());
+                regEnd.setText(mCreateForm.getRe());
+                //vote dates
+                if (mCreateForm.getVb().equals("") || mCreateForm.getVe().equals("")) {
                     voteBegin.setText("-");
-
-                }else{
-                    voteBegin.setText(mCreateForm.getVb());
-
-                }
-                if (mCreateForm.getVe().equals("")){
                     voteEnd.setText("-");
-
-                }else{
+                } else {
+                    voteBegin.setText(mCreateForm.getVb());
                     voteEnd.setText(mCreateForm.getVe());
-
                 }
-                if (mCreateForm.getJn1().equals("") ){
+                windate.setText(mCreateForm.getWd());
+                quizDateTime.setText(mCreateForm.getQdt());
+
+                p1Tv.setText(mCreateForm.getP1());
+                p2Tv.setText(mCreateForm.getP2());
+                p3Tv.setText(mCreateForm.getP3());
+
+
+                if (mCreateForm.getJn1().equals("")) {
                     jury.setVisibility(View.GONE);
                     cardView.setVisibility(View.GONE);
                 }
-                if (!mCreateForm.getJn1().equals("") &&  mCreateForm.getJn2().equals("")){
+                if (!mCreateForm.getJn1().equals("")
+                        && mCreateForm.getJn2().equals("")) {
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -200,14 +217,13 @@ public class fragment_joinedContest_details extends Fragment {
                     jurypic3.setVisibility(View.GONE);
                     juryname3.setVisibility(View.GONE);
                     jurypl3.setVisibility(View.GONE);
-
                     DatabaseReference db = FirebaseDatabase.getInstance().getReference();
                     db.child(getString(R.string.dbname_username))
                             .child(mCreateForm.getJn1())
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -219,15 +235,15 @@ public class fragment_joinedContest_details extends Fragment {
 
                                                         juryname1.setText(user.getDn());
                                                         jurypl1.setText(user.getU());
-                                                        Log.d(TAG, "onDataChange: " + user.getDn());
 
-                                                        Glide.with(getActivity().getApplicationContext())
+                                                        Glide.with(fragmentJoinedContestDetails.this)
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
                                                                 .thumbnail(0.25f)
-                                                                .into(jurypic1);                                                         }
+                                                                .into(jurypic1);
+                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -245,10 +261,10 @@ public class fragment_joinedContest_details extends Fragment {
                             });
 
 
-
                 }
-                if(!mCreateForm.getJn1().equals("") &&  !mCreateForm.getJn2().equals("")
-                        && mCreateForm.getJn3().equals("")){
+                if (!mCreateForm.getJn1().equals("")
+                        && !mCreateForm.getJn2().equals("")
+                        && mCreateForm.getJn3().equals("")) {
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -266,7 +282,7 @@ public class fragment_joinedContest_details extends Fragment {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -278,7 +294,6 @@ public class fragment_joinedContest_details extends Fragment {
 
                                                         juryname1.setText(user.getDn());
                                                         jurypl1.setText(user.getU());
-                                                        Log.d(TAG, "onDataChange: " + user.getDn());
 
                                                         Glide.with(getActivity().getApplicationContext())
                                                                 .load(user.getPp())
@@ -286,7 +301,8 @@ public class fragment_joinedContest_details extends Fragment {
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
                                                                 .thumbnail(0.25f)
-                                                                .into(jurypic1);                                                        }
+                                                                .into(jurypic1);
+                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -308,7 +324,7 @@ public class fragment_joinedContest_details extends Fragment {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -328,7 +344,8 @@ public class fragment_joinedContest_details extends Fragment {
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
                                                                 .thumbnail(0.25f)
-                                                                .into(jurypic2);                                                        }
+                                                                .into(jurypic2);
+                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -345,8 +362,9 @@ public class fragment_joinedContest_details extends Fragment {
                                 }
                             });
                 }
-                if(!mCreateForm.getJn1().equals("") &&  !mCreateForm.getJn2().equals("")
-                        && !mCreateForm.getJn3().equals("")){
+                if (!mCreateForm.getJn1().equals("")
+                        && !mCreateForm.getJn2().equals("")
+                        && !mCreateForm.getJn3().equals("")) {
                     jury.setVisibility(View.VISIBLE);
                     cardView.setVisibility(View.VISIBLE);
                     jurypic1.setVisibility(View.VISIBLE);
@@ -366,7 +384,7 @@ public class fragment_joinedContest_details extends Fragment {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -378,7 +396,6 @@ public class fragment_joinedContest_details extends Fragment {
 
                                                         juryname1.setText(user.getDn());
                                                         jurypl1.setText(user.getU());
-                                                        Log.d(TAG, "onDataChange: " + user.getDn());
 
                                                         Glide.with(getActivity().getApplicationContext())
                                                                 .load(user.getPp())
@@ -386,7 +403,8 @@ public class fragment_joinedContest_details extends Fragment {
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
                                                                 .thumbnail(0.25f)
-                                                                .into(jurypic1);                                                        }
+                                                                .into(jurypic1);
+                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -407,7 +425,7 @@ public class fragment_joinedContest_details extends Fragment {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -419,7 +437,6 @@ public class fragment_joinedContest_details extends Fragment {
 
                                                         juryname2.setText(user.getDn());
                                                         jurypl2.setText(user.getU());
-                                                        Log.d(TAG, "onDataChange: " + user.getDn());
 
                                                         Glide.with(getActivity().getApplicationContext())
                                                                 .load(user.getPp())
@@ -427,7 +444,8 @@ public class fragment_joinedContest_details extends Fragment {
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
                                                                 .thumbnail(0.25f)
-                                                                .into(jurypic2);                                                        }
+                                                                .into(jurypic2);
+                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -449,7 +467,7 @@ public class fragment_joinedContest_details extends Fragment {
                             .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()){
+                                    if (dataSnapshot.exists()) {
 
                                         db.child(getString(R.string.dbname_users))
                                                 .child(dataSnapshot.getValue().toString())
@@ -469,7 +487,8 @@ public class fragment_joinedContest_details extends Fragment {
                                                                 .error(R.drawable.default_image2)
                                                                 .placeholder(R.drawable.load)
                                                                 .thumbnail(0.25f)
-                                                                .into(jurypic3);                                                        }
+                                                                .into(jurypic3);
+                                                    }
 
                                                     @Override
                                                     public void onCancelled(@NonNull DatabaseError error) {
@@ -486,49 +505,29 @@ public class fragment_joinedContest_details extends Fragment {
                                 }
                             });
                 }
-                posterlink=mCreateForm.getPo();
+                if (mCreateForm.getVt().equals("Jury") || mCreateForm.getVt().equals("Jury and Public")) {
+                    String f_string = "";
+                    jcCard.setVisibility(View.VISIBLE);
+                    jcTv.setVisibility(View.VISIBLE);
+                    judgingCriterias = mCreateForm.getCr();
+                    String[] array = judgingCriterias.split("///");
+                    for (String a :
+                            array) {
+                        f_string = f_string + "\n" + a;
 
+                    }
+                    Log.d(TAG, "onCreate: " + f_string);
+                    jcTv2.setText(f_string);
+
+
+                }
+                posterlink = mCreateForm.getPo();
                 Glide.with(getActivity().getApplicationContext())
                         .load(posterlink)
                         .placeholder(R.drawable.load)
                         .error(R.drawable.default_image2)
                         .placeholder(R.drawable.load)
                         .into(poster);
-                if(mCreateForm.getVt().equals("Jury")||mCreateForm.getVt().equals("Jury and Public")){
-                    String f_string="";
-                    jcCard.setVisibility(View.VISIBLE);
-                    jcTv.setVisibility(View.VISIBLE);
-                    judgingCriterias = mCreateForm.getCr();
-                    String[] array=judgingCriterias.split("///");
-                    for (String a:
-                            array) {
-                        f_string=f_string+"\n"+a;
-
-                    }
-                    Log.d(TAG, "onCreate: "+f_string);
-                    jcTv2.setText(f_string);
-
-
-                }
-                title.setText(mCreateForm.getCt());
-                descrip.setText(mCreateForm.getDes());
-                rules.setText(mCreateForm.getRul());
-                voteType.setText(mCreateForm.getVt());
-                regBegin.setText(mCreateForm.getRb());
-                regEnd.setText(mCreateForm.getRe());
-                domain.setText(mCreateForm.getD());
-                openfor.setText(mCreateForm.getOf());
-
-                hostedby.setText(mCreateForm.getHst());
-                filetype.setText(mCreateForm.getFt());
-                windate.setText(mCreateForm.getWd());
-                p1Tv.setText(mCreateForm.getP1());
-
-                p2Tv.setText(mCreateForm.getP2());
-
-                p3Tv.setText(mCreateForm.getP3());
-
-
 
             }
 
@@ -538,102 +537,15 @@ public class fragment_joinedContest_details extends Fragment {
             }
         });
 
-        userTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                juryProfile(userTv.getText().toString());
-
-            }
-        });
-        jurypic1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl1.getText().toString());
-
-
-            }
-        });
-        juryname1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl1.getText().toString());
-
-
-            }
-        });
-        jurypl1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl1.getText().toString());
-
-
-
-            }
-        });
-
-        jurypic2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl2.getText().toString());
-
-
-
-            }
-        });
-        juryname2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl2.getText().toString());
-
-
-
-            }
-        });
-        jurypl2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl2.getText().toString());
-
-
-
-            }
-        });
-
-        jurypic3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl3.getText().toString());
-
-
-
-            }
-        });
-        juryname3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl3.getText().toString());
-
-
-            }
-        });
-        jurypl3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                juryProfile(jurypl3.getText().toString());
-
-
-
-            }
-        });
+        jurypic1.setOnClickListener(v -> juryProfile(jurypl1.getText().toString()));
+        juryname1.setOnClickListener(v -> juryProfile(jurypl1.getText().toString()));
+        jurypl1.setOnClickListener(v -> juryProfile(jurypl1.getText().toString()));
+        jurypic2.setOnClickListener(v -> juryProfile(jurypl2.getText().toString()));
+        juryname2.setOnClickListener(v -> juryProfile(jurypl2.getText().toString()));
+        jurypl2.setOnClickListener(v -> juryProfile(jurypl2.getText().toString()));
+        jurypic3.setOnClickListener(v -> juryProfile(jurypl3.getText().toString()));
+        juryname3.setOnClickListener(v -> juryProfile(jurypl3.getText().toString()));
+        jurypl3.setOnClickListener(v -> juryProfile(jurypl3.getText().toString()));
 
 
         return view;

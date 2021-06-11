@@ -72,6 +72,8 @@ dependencies {
     implementation 'com.daimajia.easing:library:2.4@aar'
     implementation 'com.daimajia.androidanimations:library:2.4@aar'
 
+    //floating Actionbutton
+    implementation 'com.github.clans:fab:1.6.4'
 
     //exoplayer
 //    implementation 'com.google.android.exoplayer:exoplayer:2.13.3'

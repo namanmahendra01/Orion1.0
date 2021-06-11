@@ -35,7 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.android.volley.VolleyLog.TAG;
 
-public class fragment_marks_and_votes extends Fragment {
+public class fragmentMarksAndVotes extends Fragment {
 
     private int participants = 0;
     String joiningKey = "";
@@ -61,7 +61,7 @@ public class fragment_marks_and_votes extends Fragment {
     String[] criteriaArray;
 
 
-    public fragment_marks_and_votes() {
+    public fragmentMarksAndVotes() {
     }
 
     @Nullable

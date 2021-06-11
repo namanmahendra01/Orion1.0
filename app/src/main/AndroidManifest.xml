@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.orion.orion">
 
+
     <application
         android:name=".util.MyApplication"
         android:allowBackup="true"
@@ -15,6 +16,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+
         <activity android:name=".contest.Contest_Evaluation.ChatRoomActivity" />
         <activity android:name=".QuizActivity" />
         <activity android:name=".contest.jury_voting_Activity" />

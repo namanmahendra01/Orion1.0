@@ -25,12 +25,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.orion.orion.QuizActivity;
 import com.orion.orion.R;
 import com.orion.orion.contest.ViewContestDetails;
 import com.orion.orion.contest.joined.JoiningForm;
@@ -55,8 +57,6 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
     private String mAppend = "";
 
     String timestamp="";
-
-
 
     private Context mContext;
     private List<ContestDetail> mContestDetail;
@@ -126,9 +126,31 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
 
                     }
                 });
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_participantList));
+        if(mcontest.getCty()!=null && mcontest.getCty().equals("Quiz"))
+            ref.child(key)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.exists())
+                                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                                    String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                    String particiaptingUser = dataSnapshot.child(mContext.getString(R.string.field_user_id)).getValue().toString();
+                                    //                                Log.d(TAG, "onDataChange: afa currentUser"+currentUser);
+                                    //                                Log.d(TAG, "onDataChange: afa particiaptingUser"+particiaptingUser);
+                                    if(currentUser.equals(particiaptingUser)){
+                                        holder.attemptQuizz.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                        }
 
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist));
+                        }
+                    });
+
+        ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist));
         ref.child(key)
                 .child(mContext.getString(R.string.field_Participant_List))
 
@@ -570,6 +592,20 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
 
             }
         });
+        holder.attemptQuizz.setOnClickListener(v ->{
+            Intent intent = new Intent(mContext.getApplicationContext(), QuizActivity.class);
+            if(mcontest.getCty()!=null)
+                intent.putExtra("contestType", mcontest.getCty());
+            else
+                intent.putExtra("contestType", "");
+            intent.putExtra("userId", mcontest.getUi());
+            intent.putExtra("contestId", mcontest.getCi());
+            if (holder.username.equals(holder.juryusername1) || holder.username.equals(holder.juryusername2) || holder.username.equals(holder.juryusername3) || holder.username.equals(holder.hostUsername))
+                Toast.makeText(mContext, "You are the host", Toast.LENGTH_SHORT).show();
+            else
+                intent.putExtra("isJuryOrHost", "false");
+            mContext.startActivity(intent);
+        });
 
 
         holder.entryFee.setText(mcontest.getEf());
@@ -734,13 +770,17 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
         private TextView domain, title, regEnd, entryFee, host, totalP, gp;
         private ImageView poster,option,progress,info;
         private Button voteBtn, participateBtn, regSoonBtn, contestBtn, resultBtn,limitBtn;
-        private String   username="",
-         hostUsername="";
+
+        private Button attemptQuizz;
+
+        private String   username="", hostUsername="";
+
         String vote="No";
         String reg="No";
         String voteS="";
         String voteE="";
         Boolean ok = false;
+
 
 
         int p = 0;
@@ -764,6 +804,7 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
             progress = itemView.findViewById(R.id.progress);
             info = itemView.findViewById(R.id.info);
             limitBtn = itemView.findViewById(R.id.limitBtn);
+            attemptQuizz = itemView.findViewById(R.id.attemptQuiz);
 
 
 

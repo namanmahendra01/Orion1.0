@@ -10,13 +10,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -38,34 +43,29 @@ import com.orion.orion.contest.upcoming.UpcomingContestActivity;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
-import com.orion.orion.models.CreateForm;
 
 public class CreatedActivity extends AppCompatActivity {
     private static final String TAG = "JOINED FRAGMENT";
+    RecyclerView createdContestRv;
+    //    FloatingActionButton floatbtn;
+    private ArrayList<com.orion.orion.models.CreateForm> contestlist;
+    private ArrayList<com.orion.orion.models.CreateForm> paginatedContestlist;
+    private int mResults;
+    private AdapterContestCreated contestCreated;
+    ProgressBar bottomProgress;
     FloatingActionMenu floatMenuBtn;
     FloatingActionButton floatingActionButton1, floatingActionButton2, floatingActionButton3;
 
 
+    TextView noPost;
+    SwipeRefreshLayout contestRefresh;
+    boolean flag1 = false;
     private static int RETRY_DURATION = 1000;
     private static final Handler handler = new Handler(Looper.getMainLooper());
-
-    private ImageView backArrrow;
-    private TextView topBarTitle;
-    private RecyclerView createdContestRv;
-    private FloatingActionButton floatbtn;
-    private ProgressBar bottomProgress;
-    private TextView noPost;
-    private SwipeRefreshLayout contestRefresh;
-
+    ImageView backArrrow;
     //    SP
     private Gson gson;
     private SharedPreferences sp;
-
-    private int mResults;
-    boolean flag1 = false;
-    private AdapterContestCreated contestCreated;
-    private ArrayList<CreateForm> contestlist;
-    private ArrayList<CreateForm> paginatedContestlist;
 
 
 
@@ -75,21 +75,11 @@ public class CreatedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_created);
 
 
-        floatbtn = findViewById(R.id.float_btn);
-        backArrrow= findViewById(R.id.backarrow);
-        topBarTitle = findViewById(R.id.titleTopBar);
-
 //        floatbtn = findViewById(R.id.float_btn);
         contestRefresh=findViewById(R.id.contest_refresh);
         noPost=findViewById(R.id.noPost);
         bottomProgress=findViewById(R.id.pro2);
         createdContestRv = findViewById(R.id.recycler_view3);
-
-        topBarTitle = findViewById(R.id.titleTopBar);
-        topBarTitle.setText("Created Contest");
-        backArrrow.setOnClickListener(view -> {
-            startActivity(new Intent(getApplicationContext(), UpcomingContestActivity.class));
-//            onBackPressed();
         backArrrow= findViewById(R.id.backarrow);
         floatMenuBtn= findViewById(R.id.menu);
         floatingActionButton1= findViewById(R.id.menu_item);
@@ -134,11 +124,6 @@ public class CreatedActivity extends AppCompatActivity {
         createdContestRv.setDrawingCacheEnabled(true);
         createdContestRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
         createdContestRv.setLayoutManager(linearLayoutManager);
-
-        floatbtn.setOnClickListener(v -> {
-            Intent i = new Intent(getApplicationContext(), com.orion.orion.contest.create.CreateForm.class);
-            startActivity(i);
-        });
 //
 //        floatbtn.setOnClickListener(v -> {
 //            Intent i = new Intent(CreatedActivity.this, CreateForm.class);
@@ -188,7 +173,7 @@ public class CreatedActivity extends AppCompatActivity {
                             contestlist.clear();
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-                                CreateForm createForm = snapshot.getValue(CreateForm.class);
+                                com.orion.orion.models.CreateForm createForm = snapshot.getValue(com.orion.orion.models.CreateForm.class);
 
                                 contestlist.add(createForm);
                             }
@@ -219,7 +204,7 @@ public class CreatedActivity extends AppCompatActivity {
     private void getCreateListFromSP() {
         String json = sp.getString("createlist", null);
 
-        Type type = new TypeToken<ArrayList<CreateForm>>() {
+        Type type = new TypeToken<ArrayList<com.orion.orion.models.CreateForm>>() {
         }.getType();
         contestlist = gson.fromJson(json, type);
         if (contestlist == null) {    //        if no arrayList is present
@@ -249,7 +234,7 @@ public class CreatedActivity extends AppCompatActivity {
 
                             for (DataSnapshot snapshot1:snapshot.getChildren()){
                                 x++;
-                                for (CreateForm a:contestlist){
+                                for (com.orion.orion.models.CreateForm a:contestlist){
 
 
                                     if (a.getCi().equals(snapshot1.getKey())){
@@ -352,7 +337,7 @@ public class CreatedActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot snapshot1:snapshot.getChildren()){
-                            CreateForm createForm = snapshot1.getValue(CreateForm.class);
+                            com.orion.orion.models.CreateForm createForm = snapshot1.getValue(com.orion.orion.models.CreateForm.class);
 
                             contestlist.add(createForm);
                         }

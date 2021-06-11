@@ -431,7 +431,10 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
         holder.info.setOnClickListener(view -> gpAlertDialog());
         holder.participateBtn.setOnClickListener(v -> {
             Intent i12 = new Intent(mContext.getApplicationContext(), JoiningForm.class);
-            i12.putExtra("contestType", contest.getCty());
+            if(contest.getCty()!=null)
+                i12.putExtra("contestType", contest.getCty());
+            else
+                i12.putExtra("contestType", "");
             i12.putExtra("userId", contest.getUi());
             i12.putExtra("contestId", contest.getCi());
             if (holder.username.equals(holder.juryusername1) || holder.username.equals(holder.juryusername2) || holder.username.equals(holder.juryusername3) || holder.username.equals(holder.hostUsername))
@@ -480,7 +483,10 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
         });
         holder.attemptQuizz.setOnClickListener(v ->{
             Intent intent = new Intent(mContext.getApplicationContext(), QuizActivity.class);
-            intent.putExtra("contestType", contest.getCty());
+            if(contest.getCty()!=null)
+                intent.putExtra("contestType", contest.getCty());
+            else
+                intent.putExtra("contestType", "");
             intent.putExtra("userId", contest.getUi());
             intent.putExtra("contestId", contest.getCi());
             if (holder.username.equals(holder.juryusername1) || holder.username.equals(holder.juryusername2) || holder.username.equals(holder.juryusername3) || holder.username.equals(holder.hostUsername))

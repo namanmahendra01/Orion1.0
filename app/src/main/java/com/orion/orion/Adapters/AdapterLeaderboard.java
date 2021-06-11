@@ -23,10 +23,12 @@ public class AdapterLeaderboard extends RecyclerView.Adapter<AdapterLeaderboard.
 
     private final ArrayList<ItemLeaderboard> mList;
     Context mContext;
+    int RANK;
 
     public AdapterLeaderboard(ArrayList<ItemLeaderboard> mList, Context mContext) {
         this.mList = mList;
         this.mContext = mContext;
+        this.RANK = 1;
     }
 
     @NonNull
@@ -48,8 +50,14 @@ public class AdapterLeaderboard extends RecyclerView.Adapter<AdapterLeaderboard.
     public void onBindViewHolder(@NonNull AdapterLeaderboard.ViewHolder holder, int position) {
         ItemLeaderboard currentItem = mList.get(position);
 
-        String rank = Integer.toString(position + 1);
-        holder.Position.setText(rank);
+//        String rank = Integer.toString(position + 1);
+        if(!holder.Position.getText().equals(""))
+            if(position==0)
+                holder.Position.setText(Integer.toString(RANK));
+            else if(mList.get(position-1).getPostionParameter().equals(currentItem.getPostionParameter()))
+                holder.Position.setText(Integer.toString(RANK));
+            else
+                holder.Position.setText(Integer.toString(++RANK));
         holder.PositionName.setText(currentItem.getPostionName());
         holder.PositionParameter.setText(currentItem.getPostionParameter());
         Glide.with(holder.itemView.getContext().getApplicationContext())

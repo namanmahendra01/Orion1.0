@@ -571,7 +571,7 @@ public class CheckContest extends AppCompatActivity {
         for(QuizQuestion quizQuestion : quizQuestionArrayList){
             QuizQuestionEncoded temp = new QuizQuestionEncoded();
             temp.setQu(quizQuestion.getQuestion());
-            temp.setOpt(quizQuestion.getOption1() + "*|*" + quizQuestion.getOption2()+ "*|*" +quizQuestion.getOption3()+ "*|*" +quizQuestion.getOption4());
+            temp.setOpt(quizQuestion.getOption1() + getString(R.string.option_seperator_delimintor) + quizQuestion.getOption2()+ getString(R.string.option_seperator_delimintor) +quizQuestion.getOption3()+ getString(R.string.option_seperator_delimintor) +quizQuestion.getOption4());
             temp.setAns(quizQuestion.getAnswer());
             quizQuestionEncodedArrayList.add(temp);
         }

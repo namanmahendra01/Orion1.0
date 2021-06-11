@@ -189,7 +189,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
             popupMenu.show();
 
         });
-        getcontestDetails(joiningForm.getHst(),joiningForm.getCi(),holder.poster,holder.title,holder.host,holder.regEnd,holder.totalP,holder.entryFee,holder.domain,holder.progress);
+        getcontestDetails(joiningForm.getHst(), joiningForm.getCi(),holder.poster,holder.title,holder.host,holder.regEnd,holder.totalP,holder.entryFee,holder.domain,holder.progress);
         holder.itemView.setOnClickListener(v -> {
             Intent i1;
             if (status.equals("waiting") || status.equals("Rejected")) {
@@ -362,7 +362,7 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", (dialog, which) -> dialog.dismiss());
         alertDialog.show();
     }
-    private  void getcontestDetails(String userid, String contestid, ImageView poster, TextView title,
+    private void getcontestDetails(String userid, String contestid, ImageView poster, TextView title,
                                     TextView host, TextView regend, TextView totalp, TextView entryfee, TextView domain, ImageView progress){
         DatabaseReference ref= FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contests))
                 .child(userid)
@@ -371,21 +371,23 @@ public class AdapterContestJoined extends RecyclerView.Adapter<AdapterContestJoi
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                CreateForm createForm=dataSnapshot.getValue(CreateForm.class);
-                Log.d("TAG", "onDataChange: "+createForm.getCt());
-                title.setText(createForm.getCt());
-                host.setText(createForm.getHst());
-                regend.setText(createForm.getRe());
-                totalp.setText(createForm.getTp());
-                entryfee.setText(createForm.getEf());
-                domain.setText(createForm.getD());
-                Glide.with(mContext.getApplicationContext())
-                        .load(createForm.getPo())
-                        .placeholder(R.drawable.load)
-                        .error(R.drawable.default_image2)
-                        .placeholder(R.drawable.load)
-                        .thumbnail(0.5f)
-                        .into(poster);
+                if (dataSnapshot.exists()) {
+                    CreateForm createForm = dataSnapshot.getValue(CreateForm.class);
+                    Log.d("TAG", "onDataChange: " + createForm.getCt());
+                    title.setText(createForm.getCt());
+                    host.setText(createForm.getHst());
+                    regend.setText(createForm.getRe());
+                    totalp.setText(createForm.getTp());
+                    entryfee.setText(createForm.getEf());
+                    domain.setText(createForm.getD());
+                    Glide.with(mContext.getApplicationContext())
+                            .load(createForm.getPo())
+                            .placeholder(R.drawable.load)
+                            .error(R.drawable.default_image2)
+                            .placeholder(R.drawable.load)
+                            .thumbnail(0.5f)
+                            .into(poster);
+                }
             }
 
             @Override

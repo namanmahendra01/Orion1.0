@@ -163,7 +163,7 @@ public class fragmentContestEdit extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 CreateForm mCreateForm = dataSnapshot.getValue(CreateForm.class);
 
-                if (mCreateForm.getCty().equals("")) {
+                if (mCreateForm.getCty()!=null && mCreateForm.getCty().equals("")) {
 
                 } else {
 

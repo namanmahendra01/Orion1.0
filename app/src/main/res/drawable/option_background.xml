@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true"
-        android:drawable="@drawable/option_background_pressed" />
+        android:drawable="@drawable/option_background_pressed"></item>
     <item  android:state_focused="false"
-        android:drawable="@drawable/option_background_normal" />
+        android:drawable="@drawable/option_background_normal" />zz
 </selector>
