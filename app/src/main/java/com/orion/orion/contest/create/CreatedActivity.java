@@ -21,7 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,6 +42,10 @@ import com.orion.orion.models.CreateForm;
 
 public class CreatedActivity extends AppCompatActivity {
     private static final String TAG = "JOINED FRAGMENT";
+    FloatingActionMenu floatMenuBtn;
+    FloatingActionButton floatingActionButton1, floatingActionButton2, floatingActionButton3;
+
+
     private static int RETRY_DURATION = 1000;
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
@@ -74,6 +79,7 @@ public class CreatedActivity extends AppCompatActivity {
         backArrrow= findViewById(R.id.backarrow);
         topBarTitle = findViewById(R.id.titleTopBar);
 
+//        floatbtn = findViewById(R.id.float_btn);
         contestRefresh=findViewById(R.id.contest_refresh);
         noPost=findViewById(R.id.noPost);
         bottomProgress=findViewById(R.id.pro2);
@@ -84,6 +90,39 @@ public class CreatedActivity extends AppCompatActivity {
         backArrrow.setOnClickListener(view -> {
             startActivity(new Intent(getApplicationContext(), UpcomingContestActivity.class));
 //            onBackPressed();
+        backArrrow= findViewById(R.id.backarrow);
+        floatMenuBtn= findViewById(R.id.menu);
+        floatingActionButton1= findViewById(R.id.menu_item);
+        floatingActionButton2= findViewById(R.id.menu_item2);
+        floatingActionButton3= findViewById(R.id.menu_item3);
+
+
+        floatingActionButton1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(CreatedActivity.this, CreateForm.class);
+                startActivity(i);
+            }
+        });
+        floatingActionButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(CreatedActivity.this, CreateForm.class);
+                startActivity(i);
+            }
+        });
+        floatingActionButton3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(CreatedActivity.this, CreateForm.class);
+                startActivity(i);
+            }
+        });
+        backArrrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
         });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         contestlist = new ArrayList<>();
@@ -100,6 +139,11 @@ public class CreatedActivity extends AppCompatActivity {
             Intent i = new Intent(getApplicationContext(), com.orion.orion.contest.create.CreateForm.class);
             startActivity(i);
         });
+//
+//        floatbtn.setOnClickListener(v -> {
+//            Intent i = new Intent(CreatedActivity.this, CreateForm.class);
+//            startActivity(i);
+//        });
         createdContestRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -417,20 +461,7 @@ public class CreatedActivity extends AppCompatActivity {
     private Boolean exit = false;
     @Override
     public void onBackPressed() {
-        if (exit) {
-            moveTaskToBack(true); // finish activity
-        } else {
-            Toast.makeText(this, "Press Back again to Exit.",
-                    Toast.LENGTH_SHORT).show();
-            exit = true;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    exit = false;
-                }
-            }, 2 * 1000);
-
-        }
-
+        Intent i = new Intent(CreatedActivity.this, UpcomingContestActivity.class);
+        startActivity(i);
     }
 }

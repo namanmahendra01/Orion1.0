@@ -58,7 +58,22 @@
                 android:id="@+id/resultLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Enter Chat Room"
+                    android:textColor="@color/colorPrimary"
+                    android:id="@+id/chatRoom"
+                    android:padding="5dp"
+                    android:gravity="center"
+                    android:textAllCaps="true"
+                    android:layout_margin="3dp"
+                    android:layout_marginTop="5dp"
 
+                    android:background="@drawable/rectangular_border"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="16dp"
+                    />
                 <Button
                     android:id="@+id/pubBtn"
                     android:layout_width="wrap_content"

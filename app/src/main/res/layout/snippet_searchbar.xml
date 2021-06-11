@@ -1,0 +1,57 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/profileToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/rectangular_border">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:weightSum="10">
+            <ImageView
+                android:id="@+id/searchicon"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_search_logo" />
+            <EditText
+                android:id="@+id/search"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+
+                android:textAlignment="textStart"
+                android:layout_weight="8"
+                android:background="@null"
+                android:hint="Search username..."
+                android:maxLines="1"
+
+                android:textColor="#000000"
+                android:textSize="18sp" />
+
+
+
+
+            <ImageView
+                android:id="@+id/cross"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_white_cross"
+                android:visibility="gone" />
+
+
+        </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+
+</merge>

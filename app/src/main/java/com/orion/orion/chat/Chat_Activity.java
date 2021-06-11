@@ -77,19 +77,17 @@ Chat_Activity extends AppCompatActivity {
     String request;
     public String newMessageKey = "";
     Context context = Chat_Activity.this;
-    public String timeStamp, timestamp2;
+    public String timeStamp;
 
     ValueEventListener seenListener;
     ValueEventListener recievelistener;
     DatabaseReference userRefForSeen;
-    DatabaseReference DbRef;
-    private Query queryr1, queryr2;
+
+    private Query queryr1;
     LinearLayout sendRequestLayout;
 
     List<Chat> chatlist;
-    List<Chat> chatList2;
     AdapterChat adapterchat1;
-    AdapterChat adapterchat2;
 
     private RequestQueue requestQueue;
 
@@ -780,7 +778,7 @@ Chat_Activity extends AppCompatActivity {
                     paginatedchatlist.add(chatlist.get(i));
                 }
                 Log.d(TAG, "displaychat: sss" + paginatedchatlist.size());
-                adapterchat1 = new AdapterChat(Chat_Activity.this, paginatedchatlist);
+                adapterchat1 = new AdapterChat(Chat_Activity.this, paginatedchatlist, "Chat");
                 adapterchat1.setHasStableIds(true);
 //                    set adapter to recycler view
                 recyclerView.setAdapter(adapterchat1);

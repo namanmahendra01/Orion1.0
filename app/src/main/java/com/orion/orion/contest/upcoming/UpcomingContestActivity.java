@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -38,11 +40,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Adapters.AdapterContestSearch;
 import com.orion.orion.Adapters.AdapterContestUpcoming;
 import com.orion.orion.Adapters.AdapterContestUpcomingGrid;
+import com.orion.orion.Adapters.AdapterMainFeedContest;
 import com.orion.orion.QuizActivity;
 import com.orion.orion.R;
 import com.orion.orion.contest.create.CreatedActivity;
@@ -53,29 +59,37 @@ import com.orion.orion.util.BottomNaavigationViewHelper;
 import com.orion.orion.util.SNTPClient;
 import com.orion.orion.util.StringManipilation;
 
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.TimeZone;
+
+import static java.security.AccessController.getContext;
 
 public class UpcomingContestActivity extends AppCompatActivity {
     private static final String TAG = "UPCOMING FRAGMENT";
     RecyclerView upcomingContestRv, contestSearchRv, upcomingFilterRv;
     private ArrayList<ContestDetail> contestlist;
+    private ArrayList<ContestDetail> contestlist4;
+
     private FirebaseAuth fAuth;
     private EditText searchBox;
     int prevHeight;
+
     int height, dummyHeight;
     TextView noPost, joined, created;
     LinearLayout blurBg;
-    int x = 0;
+    int x = 0, y = 0;
     private int mResults;
     ProgressBar bottomProgress;
     private static final int ACTIVITY_NUM = 0;
     private static final int CREATE_CONTEST = 1;
     private int mResults2;
+    private ArrayList<String> mFollowing;
     RelativeLayout relativeLayout;
     ImageView gridB, gridY, colY, colB, filterB, filterY, cross;
     private ArrayList<ContestDetail> contestlist2;
@@ -83,16 +97,20 @@ public class UpcomingContestActivity extends AppCompatActivity {
     private ArrayList<ContestDetail> paginatedcontestlist;
     private ArrayList<ContestDetail> paginatedcontestSearch;
     SwipeRefreshLayout contesRefresh;
-    boolean flag1 = false;
+    boolean flag1 = false, flag3 = false, flag4 = false;
     private Context mContext;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseUser mUser;
     private static int RETRY_DURATION = 1000;
     private static final Handler handler = new Handler(Looper.getMainLooper());
-
+    private RecyclerView contestRv;
     private Spinner domainspinner, entryfeeSpinner;
     String domain = "Overall", entryfee = "Overall";
+    private AdapterMainFeedContest contestUpcoming2;
+    //    SP
+    Gson gson;
+    SharedPreferences sp;
 
 
 
@@ -113,6 +131,39 @@ public class UpcomingContestActivity extends AppCompatActivity {
 
         joined.setOnClickListener(v -> startActivity(new Intent(this, JoinedActivity.class)));
         created.setOnClickListener(v -> startActivity(new Intent(this, CreatedActivity.class)));
+
+        //          Initialize SharedPreference variables
+        sp = getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+        gson = new Gson();
+
+
+        contestRv.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        contestRv.setLayoutManager(linearLayoutManager2);
+
+        linearLayoutManager2.setItemPrefetchEnabled(true);
+        linearLayoutManager2.setInitialPrefetchItemCount(20);
+        contestRv.setItemViewCacheSize(9);
+        contestRv.setDrawingCacheEnabled(true);
+        contestRv.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_LOW);
+
+        contestlist4 = new ArrayList<>();
+
+        joined.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(UpcomingContestActivity.this, JoinedActivity.class);
+                startActivity(i);
+            }
+        });
+        created.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(UpcomingContestActivity.this, CreatedActivity.class);
+                startActivity(i);
+            }
+        });
+
 
         final GridLayoutManager[] linearLayoutManager1 = {new GridLayoutManager(this, 1)};
         contestlist2 = new ArrayList<>();
@@ -147,12 +198,24 @@ public class UpcomingContestActivity extends AppCompatActivity {
         filterB.setOnClickListener(v -> {
             filterY.setVisibility(View.VISIBLE);
             filterB.setVisibility(View.GONE);
-            expand(relativeLayout, 1000);
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    expand(relativeLayout, 1000);
+
+                }
+            });
         });
+
         filterY.setOnClickListener(v -> {
             filterY.setVisibility(View.GONE);
             filterB.setVisibility(View.VISIBLE);
-            expand(relativeLayout, 1000);
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    expand(relativeLayout, 1000);
+                }
+            });
         });
         colB.setOnClickListener(v -> {
             gridB.setVisibility(View.VISIBLE);
@@ -171,6 +234,32 @@ public class UpcomingContestActivity extends AppCompatActivity {
             searchBox.setText("");
             blurBg.setVisibility(View.GONE);
         });
+
+
+        upcomingContestRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (!recyclerView.canScrollVertically(1) && dy > 0) {
+                    //scrolled to BOTTOM
+                } else if (!recyclerView.canScrollVertically(-1) && dy < 0) {
+                    //scrolled to TOP
+                    if(relativeLayout.getVisibility() != View.VISIBLE) {
+                        expand(relativeLayout, 500);
+
+                    }
+
+                }else if(dy>0&&recyclerView.getScrollState()== RecyclerView.SCROLL_STATE_DRAGGING){
+                    if(relativeLayout.getVisibility() == View.VISIBLE){
+                        expand(relativeLayout, 500);
+
+
+                    }
+                }
+            }
+        });
+
+
+
         contestSearchRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -259,10 +348,32 @@ public class UpcomingContestActivity extends AppCompatActivity {
             }
         });
 
+        getFollowerListFromSP();
+
         getContestFiltered(domain, entryfee);
 
     }
+    
+    private void getFollowerListFromSP() {
+        String json = sp.getString("fl", null);
 
+        Type type = new TypeToken<ArrayList<String>>() {
+        }.getType();
+        mFollowing = gson.fromJson(json, type);
+        if (mFollowing == null) {    //        if no arrayList is present
+            mFollowing = new ArrayList<>();
+
+            Log.d(TAG, "getFollowerListFromSP: 1");
+            getFollowing();   //            make new Arraylist
+
+        } else {
+            Log.d(TAG, "getFollowerListFromSP: 1");
+
+            checkFollowingUpdate();  //         Check if we followed or unfollowed anyone
+
+        }
+
+    }
     public void initWidgets() {
         upcomingContestRv = findViewById(R.id.recycler_view1);
         contestSearchRv = findViewById(R.id.recyclerKey);

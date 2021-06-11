@@ -4,6 +4,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:id="@+id/rel1"
         android:layout_height="wrap_content">
 
         <de.hdodenhof.circleimageview.CircleImageView

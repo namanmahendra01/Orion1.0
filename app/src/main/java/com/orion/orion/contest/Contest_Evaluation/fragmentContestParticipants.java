@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +58,7 @@ public class fragmentContestParticipants extends Fragment {
     boolean notify = false;
     private FirebaseMethods mFirebaseMethods;
 
+    private TextView chatRoomBtn;
     private SwipeRefreshLayout participantRefresh;
     boolean flag1 = false;
     private static int RETRY_DURATION = 1000;
@@ -82,6 +84,7 @@ public class fragmentContestParticipants extends Fragment {
         mFirebaseMethods = new FirebaseMethods(getActivity());
         participantRefresh = view.findViewById(R.id.participant_refresh);
         partNum = view.findViewById(R.id.partNum);
+        chatRoomBtn = view.findViewById(R.id.chatRoom);
 
         Bundle b = getActivity().getIntent().getExtras();
         Conteskey = b.getString("contestId");
@@ -123,6 +126,14 @@ public class fragmentContestParticipants extends Fragment {
             startActivity(i);
         });
 
+        chatRoomBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), ChatRoomActivity.class);
+                i.putExtra("ContestId", Conteskey);
+                startActivity(i);
+            }
+        });
 
         participantRv = view.findViewById(R.id.recycler_view4);
         participantRv.setHasFixedSize(true);

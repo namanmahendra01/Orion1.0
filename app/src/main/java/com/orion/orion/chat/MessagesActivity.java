@@ -101,7 +101,7 @@ public class MessagesActivity extends AppCompatActivity {
     private void getUserList() {
         userlist = new ArrayList<>();
         myRef = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_Chats)).child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 userlist.clear();
@@ -122,27 +122,51 @@ public class MessagesActivity extends AppCompatActivity {
 
     private void loadChats(List<String> userlist) {
         chatList = new ArrayList<>();
-        for (int i = 0; i < userlist.size(); i++) {
-            DatabaseReference db = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_ChatList));
-            db.child(userlist.get(i)).orderByKey().limitToLast(1).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
-                        Log.d(TAG, "onDataChange: chat" + dataSnapshot1.getValue());
-                        Chat chat = dataSnapshot1.getValue(Chat.class);
-                        chatList.add(chat);
-                    }
-                    if (chatList.size() == userlist.size()) {
+        final int[] x = {0};
+        if(userlist.size()!=0) {
+            for (int i = 0; i < userlist.size(); i++) {
+                DatabaseReference db = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_ChatList));
+                int finalI = i;
+                db.child(userlist.get(i)).orderByKey().limitToLast(1).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
+                            ArrayList<Chat> chats= new ArrayList<>(chatList);
+                            Chat c2=dataSnapshot1.getValue(Chat.class);
+                            if (chatList.size()!=0) {
+                                for (Chat c : chats) {
+                                    if (c.getSid().equals(c2.getSid())) {
+                                        chatList.remove(c);
+                                        chatList.add(c2);
+                                        break;
+
+
+                                    } else if(!c.getSid().equals(c2.getSid())&&!c.getMid().equals(c2.getMid())){
+
+                                        chatList.add(c2);
+                                        break;
+
+                                    }
+                                }
+                            }else{
+
+                                chatList.add(c2);
+
+                            }
+
+
+                        }
                         sortChatList(chatList, userlist);
                         Log.d(TAG, "onDataChange: chat size1" + chatList.size());
+
                     }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                }
-            });
+                    }
+                });
+            }
         }
     }
 
@@ -172,7 +196,7 @@ public class MessagesActivity extends AppCompatActivity {
                         refer.child(snapshot.getValue().toString())
                                 .orderByKey()
                                 .limitToLast(1)
-                                .addValueEventListener(new ValueEventListener() {
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         String lmsg = "default";
@@ -201,6 +225,7 @@ public class MessagesActivity extends AppCompatActivity {
 
     private void displayChatList() {
         Log.d(TAG, "display first 10 chatslist");
+
         paginateduserList = new ArrayList<>();
         if (userlist2 != null) {
             try {

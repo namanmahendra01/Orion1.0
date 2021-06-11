@@ -4,18 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.orion.orion">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
-
-    <dist:module dist:instant="true" />
-
     <application
         android:name=".util.MyApplication"
         android:allowBackup="true"
@@ -27,11 +15,13 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <activity android:name=".contest.Contest_Evaluation.ChatRoomActivity" />
         <activity android:name=".QuizActivity" />
         <activity android:name=".contest.jury_voting_Activity" />
         <activity android:name=".contest.create.CreatedActivity" />
         <activity android:name=".contest.joined.JoinedActivity" />
-        <activity android:name=".contest.upcoming.UpcomingContestActivity" />
+        <activity android:name=".contest.upcoming.UpcomingContestActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".NotificationActivity" />
         <activity android:name=".chat.MessagesActivity" /> <!-- Activities -->
         <!-- Splash Screen -->
@@ -63,7 +53,7 @@
         <activity android:name=".contest.Contest_Evaluation.activity_view_media" />
         <activity android:name=".contest.result.ResultDeclaredActivity" />
         <activity android:name=".contest.public_voting_media" /> <!-- Leaderboard Section -->
-        <activity android:name=".LeaderboardActivity" /> <!-- Profile Section -->
+        <activity android:name=".LeaderboardActivity" android:windowSoftInputMode="adjustPan" /> <!-- Profile Section -->
         <activity
             android:name=".profile.profile"
             android:noHistory="true" />
@@ -92,6 +82,17 @@
             </intent-filter>
         </service>
     </application>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -100,8 +101,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <dist:module dist:instant="true" />
 
     <dist:module dist:instant="true" />
 

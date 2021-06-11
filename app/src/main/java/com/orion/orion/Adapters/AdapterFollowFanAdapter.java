@@ -3,6 +3,7 @@ package com.orion.orion.Adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.orion.orion.R;
 import com.orion.orion.models.ItemFollow;
 import com.orion.orion.models.users;
@@ -26,6 +29,7 @@ import com.orion.orion.profile.profile;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.SNTPClient;
 
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,6 +41,8 @@ import java.util.TimeZone;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.orion.orion.util.SNTPClient.TAG;
 
 public class AdapterFollowFanAdapter extends RecyclerView.Adapter<AdapterFollowFanAdapter.ViewHolder> {
 
@@ -95,6 +101,63 @@ public class AdapterFollowFanAdapter extends RecyclerView.Adapter<AdapterFollowF
         holder.followButton.setOnClickListener(v -> {
             //unfollowing
             if (itemFollow.isFollowing()) {
+                String mUser=itemFollow.getUserId();
+                //remove from following list
+                SharedPreferences sp = mContext.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                Gson gson = new Gson();
+                String json = sp.getString("fl", null);
+                Type type = new TypeToken<ArrayList<String>>() {
+                }.getType();
+                ArrayList<String> list;
+                list = gson.fromJson(json, type);
+                if (list != null) list.remove(mUser);
+                //save following list
+                SharedPreferences.Editor editor = sp.edit();
+                json = gson.toJson(list);
+                editor.putString("fl", json);
+                editor.apply();
+
+                //update following list
+                json = sp.getString("removefollowing", null);
+                type = new TypeToken<ArrayList<String>>() {
+                }.getType();
+                ArrayList<String> ulist;
+                ulist = gson.fromJson(json, type);
+                if (ulist == null) {
+                    ulist = new ArrayList<>();
+                    ulist.add(mUser);
+                } else {
+                    if (!ulist.contains(mUser)) {
+                        Log.d(TAG, "onCreate: check9" + ulist);
+                        ulist.add(mUser);
+                    }
+                }
+
+                //save update list
+                editor = sp.edit();
+                json = gson.toJson(ulist);
+                editor.putString("removefollowing", json);
+                editor.apply();
+
+                //update following list
+                json = sp.getString("addfollowing", null);
+                type = new TypeToken<ArrayList<String>>() {
+                }.getType();
+                ArrayList<String> ulist2 = new ArrayList<String>();
+                ulist2 = gson.fromJson(json, type);
+                if (ulist2 != null) {
+                    Log.d(TAG, "onCreate: checkk1" + ulist2);
+                    if (ulist2.contains(mUser)) {
+                        ulist2.remove(mUser);
+                        Log.d(TAG, "onCreate: checkk2" + ulist2);
+                        //save update list
+                        editor = sp.edit();
+                        json = gson.toJson(ulist2);
+                        editor.putString("addfollowing", json);
+                        editor.apply();
+                    }
+                }
+
                 myRef.child(mContext.getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(itemFollow.getUserId()).removeValue();
                 myRef.child(mContext.getString(R.string.dbname_follower)).child(itemFollow.getUserId()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).removeValue();
                 myRef.child(mContext.getString(R.string.dbname_users)).child(itemFollow.getUserId()).child(mContext.getString(R.string.changedFollowers)).setValue("true");
@@ -133,6 +196,88 @@ public class AdapterFollowFanAdapter extends RecyclerView.Adapter<AdapterFollowF
             //follow
             else {
                 notify[0] = true;
+
+                //addfollowing list
+                String mUser=itemFollow.getUserId();
+                SharedPreferences sp = mContext.getSharedPreferences("shared preferences", Context.MODE_PRIVATE);
+                Gson gson = new Gson();
+                String json = sp.getString("fl", null);
+                Type type = new TypeToken<ArrayList<String>>() {
+                }.getType();
+                ArrayList<String> list;
+                list = gson.fromJson(json, type);
+                if (list == null) {
+                    list = new ArrayList<>();
+                    list.add(mUser);
+                } else if (!list.contains(mUser)) list.add(mUser);
+                //save following list
+                SharedPreferences.Editor editor = sp.edit();
+                json = gson.toJson(list);
+                editor.putString("fl", json);
+                editor.apply();
+
+                //update following list
+                json = sp.getString("removefollowing", null);
+                type = new TypeToken<ArrayList<String>>() {
+                }.getType();
+                ArrayList<String> ulist2 = new ArrayList<String>();
+                ulist2 = gson.fromJson(json, type);
+                if (ulist2 == null) {
+                    Log.d(TAG, "onCreate: checkk4");
+                    //              update following list
+                    json = sp.getString("addfollowing", null);
+                    type = new TypeToken<ArrayList<String>>() {
+                    }.getType();
+
+                    ArrayList<String> ulist = new ArrayList<String>();
+                    ulist = gson.fromJson(json, type);
+                    if (ulist == null) {
+                        ulist = new ArrayList<String>();
+                        ulist.add(mUser);
+                    } else {
+                        if (!ulist.contains(mUser)) {
+                            ulist.add(mUser);
+
+                        }
+
+
+                    }
+//                save update list
+                    editor = sp.edit();
+                    json = gson.toJson(ulist);
+                    editor.putString("addfollowing", json);
+                    editor.apply();
+                } else {
+                    if (ulist2.contains(mUser)) {
+                        ulist2.remove(mUser);
+//                save update list
+                        Log.d(TAG, "onCreate: checkk5");
+
+                        editor = sp.edit();
+                        json = gson.toJson(ulist2);
+                        editor.putString("removefollowing", json);
+                        editor.apply();
+                    } else {
+                        Log.d(TAG, "onCreate: checkk6");
+
+                        //              update following list
+                        json = sp.getString("addfollowing", null);
+                        type = new TypeToken<ArrayList<String>>() {
+                        }.getType();
+
+                        ArrayList<String> ulist = new ArrayList<String>();
+                        ulist = gson.fromJson(json, type);
+                        if (ulist == null) {
+                            ulist = new ArrayList<>();
+                            ulist.add(mUser);
+                        } else if (!ulist.contains(mUser)) ulist.add(mUser);
+                        //save update list
+                        editor = sp.edit();
+                        json = gson.toJson(ulist);
+                        editor.putString("addfollowing", json);
+                        editor.apply();
+                    }
+                }
                 myRef.child(mContext.getString(R.string.dbname_following)).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(itemFollow.getUserId()).setValue(true);
                 myRef.child(mContext.getString(R.string.dbname_follower)).child(itemFollow.getUserId()).child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(true);
                 myRef.child(mContext.getString(R.string.dbname_users)).child(itemFollow.getUserId()).child(mContext.getString(R.string.changedFollowers)).setValue("true");
@@ -189,12 +334,12 @@ public class AdapterFollowFanAdapter extends RecyclerView.Adapter<AdapterFollowF
                         })
                         .addOnFailureListener(e -> {
                         });
-                Log.e(SNTPClient.TAG, rawDate);
+                Log.e(TAG, rawDate);
             }
 
             @Override
             public void onError(Exception ex) {
-                Log.e(SNTPClient.TAG, ex.getMessage());
+                Log.e(TAG, ex.getMessage());
             }
         });
 

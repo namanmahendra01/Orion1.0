@@ -179,6 +179,9 @@
         8. You will need to follow the rules as specified separately by the organizer also\n\n
         If you agree to following rules click on participate button to send participation request to organizer
     </string>
+    <string name="dbname_Participant_Chat_Room">ParticipantChatRoom</string>
+    <string name="search_activity">Search Activity</string>
+    <string name="contest_update">cu</string>
 
 
     <string-array name="entryfee2">

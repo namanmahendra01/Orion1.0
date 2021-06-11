@@ -37,6 +37,7 @@ import com.google.gson.reflect.TypeToken;
 import com.orion.orion.Adapters.AdapterContestCreated;
 import com.orion.orion.Adapters.AdapterContestJoined;
 import com.orion.orion.R;
+import com.orion.orion.contest.create.CreatedActivity;
 import com.orion.orion.contest.upcoming.UpcomingContestActivity;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.JoinForm;
@@ -406,5 +407,7 @@ public class JoinedActivity extends AppCompatActivity {
 //            exit = true;
 //            new Handler().postDelayed(() -> exit = false, 2 * 1000);
 //        }
+        Intent i = new Intent(JoinedActivity.this, UpcomingContestActivity.class);
+        startActivity(i);
     }
 }

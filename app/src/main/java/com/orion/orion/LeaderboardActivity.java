@@ -12,11 +12,17 @@ import android.location.Geocoder;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,9 +38,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.orion.orion.Adapters.AdapterLeaderboard;
+import com.orion.orion.Adapters.UserListAdapter;
 import com.orion.orion.dialogs.BottomSheetFilter;
 import com.orion.orion.login.LoginActivity;
 import com.orion.orion.models.ItemLeaderboard;
+import com.orion.orion.models.users;
+import com.orion.orion.profile.profile;
 import com.orion.orion.util.BottomNaavigationViewHelper;
 import com.orion.orion.util.FirebaseMethods;
 import com.orion.orion.util.SNTPClient;
@@ -79,9 +88,14 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
     private RecyclerView mRecyclerView;
     private AdapterLeaderboard mAdapter;
     private DatabaseReference reference;
+    private EditText mSearchParam;
+    private ListView mListView;
+    private List<users> mUserList;
     //TextView usernameProfile;
     private String time;
     private String locationParameter;
+    private UserListAdapter mAdapter2;
+    ImageView cross;
     //    private String typeParameter;
     private String domainParameter;
     //variables
@@ -104,6 +118,8 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         setupBottomNavigationView();
         setupFirebaseAuth();
         initializeWidgets();
+        initTextListener();
+        hideSoftKeyboard();
 
 
         SNTPClient.getDate(TimeZone.getTimeZone("Asia/Kolkata"), new SNTPClient.Listener() {
@@ -138,7 +154,11 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
 
             }
         });
-
+        cross.setOnClickListener(view -> {
+            mSearchParam.setText("");
+            mUserList.clear();
+            if (mAdapter != null) mAdapter.notifyDataSetChanged();
+        });
         checkOrGetLocation();
         filter();
 
@@ -243,7 +263,87 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         }
         filter();
     }
+    private void initTextListener() {
+        mUserList = new ArrayList<>();
+        mSearchParam.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = mSearchParam.getText().toString();
+                searchForMatch(text);
+            }
+        });
+    }
+
+    private void searchForMatch(String keyword) {
+        Log.d(TAG, "searching for a match" + keyword);
+        mUserList.clear();
+        if (keyword.length() == 0) {
+            cross.setVisibility(View.GONE);
+
+        } else {
+            cross.setVisibility(View.VISIBLE);
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+            Query query = reference.child(getString(R.string.dbname_username)).orderByKey()
+                    .startAt(keyword).endAt(keyword + "\uf8ff");
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+
+                        reference.child(getString(R.string.dbname_users))
+                                .child(singleSnapshot.getValue().toString())
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                        mUserList.add(snapshot.getValue(users.class));
+                                        updateUserList();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+
+    private void updateUserList() {
+        mAdapter2 = new UserListAdapter(LeaderboardActivity.this, R.layout.layout_user_listitem, mUserList);
+        mListView.setAdapter(mAdapter2);
+        mListView.setOnItemClickListener((parent, view, position, id) -> {
+            Log.d(TAG, "selected user" + mUserList.get(position).toString());
+            Intent intent = new Intent(LeaderboardActivity.this, profile.class);
+            intent.putExtra(getString(R.string.calling_activity),getString(R.string.search_activity));
+            intent.putExtra(getString(R.string.intent_user), mUserList.get(position).getUi());
+            startActivity(intent);
+        });
+
+    }
+
+    private void hideSoftKeyboard() {
+        if (getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+    }
     private void updateLeaderboard(String currentTimeStamp) {
         //initializing formatting for current date
         int currentYear = Integer.parseInt(currentTimeStamp.substring(0, 4));
@@ -1034,6 +1134,11 @@ public class LeaderboardActivity extends AppCompatActivity implements BottomShee
         mContext = LeaderboardActivity.this;
         firebaseMethods = new FirebaseMethods(mContext);
         mRecyclerView = findViewById(R.id.recyclerView);
+        cross = findViewById(R.id.cross);
+        mSearchParam = findViewById(R.id.search);
+
+        mListView = findViewById(R.id.listview);
+
         mRecyclerView.setLayoutManager(new LinearLayoutManager(LeaderboardActivity.this));
         //initializing widgets
         userItemUsername = findViewById(R.id.userItemUsername);

@@ -132,7 +132,7 @@ private HashMap<String,String> LastMessagemap;
         DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         db.child(context.getString(R.string.dbname_users))
                 .child(hisUid)
-                .addValueEventListener(new ValueEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         users user = dataSnapshot.getValue(users.class);
