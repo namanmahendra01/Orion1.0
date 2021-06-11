@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -28,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
-import com.orion.orion.contest.Contest_Evaluation.fragmentContestEdit;
 import com.orion.orion.models.CreateForm;
 
 import com.orion.orion.models.users;
@@ -36,8 +34,8 @@ import com.orion.orion.profile.profile;
 
 import static com.android.volley.VolleyLog.TAG;
 
-public class fragmentJoinedContestDetails extends Fragment {
-    public fragmentJoinedContestDetails(){}
+public class fragmentJC_Details extends Fragment {
+    public fragmentJC_Details(){}
 
 
     private TextView contestType;
@@ -236,7 +234,7 @@ public class fragmentJoinedContestDetails extends Fragment {
                                                         juryname1.setText(user.getDn());
                                                         jurypl1.setText(user.getU());
 
-                                                        Glide.with(fragmentJoinedContestDetails.this)
+                                                        Glide.with(fragmentJC_Details.this)
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)

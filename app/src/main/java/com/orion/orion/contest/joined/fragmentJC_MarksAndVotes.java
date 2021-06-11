@@ -35,7 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.android.volley.VolleyLog.TAG;
 
-public class fragmentMarksAndVotes extends Fragment {
+public class fragmentJC_MarksAndVotes extends Fragment {
 
     private int participants = 0;
     String joiningKey = "";
@@ -61,7 +61,7 @@ public class fragmentMarksAndVotes extends Fragment {
     String[] criteriaArray;
 
 
-    public fragmentMarksAndVotes() {
+    public fragmentJC_MarksAndVotes() {
     }
 
     @Nullable
@@ -84,20 +84,16 @@ public class fragmentMarksAndVotes extends Fragment {
                 .child(hostId)
                 .child(getString(R.string.created_contest))
                 .child(Conteskey)
-
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                         if (snapshot.exists()) {
                             criterias = snapshot.child(getString(R.string.field_judge_criteria)).getValue().toString();
-                            if (criterias.contains("///")) {
-                                criteriaArray = criterias.split("///");
-
-                            } else {
-                                criteriaArray[0] = criterias;
-                            }
-
+//                            if (criterias.contains("///")) {
+//                                criteriaArray = criterias.split("///");
+//                            } else {
+//                                criteriaArray[0] = criterias;
+//                            }
                         }
                     }
 
@@ -106,7 +102,7 @@ public class fragmentMarksAndVotes extends Fragment {
 
                     }
                 });
-
+//
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         reference.child(getString(R.string.dbname_contests))
                 .child(hostId)
@@ -117,14 +113,12 @@ public class fragmentMarksAndVotes extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()){
                             if(!dataSnapshot.child(getString(R.string.field_jury_name_1)).getValue().toString().equals("")){
-
                                 initializeWidget1(itemView);
                                 jmark1.setVisibility(android.view.View.VISIBLE);
                             }
                             if(!dataSnapshot.child(getString(R.string.field_jury_name_2)).getValue().toString().equals("")){
                                 initializeWidget2(itemView);
                                 jmark2.setVisibility(android.view.View.VISIBLE);
-
                             }
                             if(!dataSnapshot.child(getString(R.string.field_jury_name_3)).getValue().toString().equals("")){
                                 initializeWidget3(itemView);
@@ -132,8 +126,6 @@ public class fragmentMarksAndVotes extends Fragment {
 
                             }
                         }
-
-
                     }
 
                     @Override
@@ -141,39 +133,24 @@ public class fragmentMarksAndVotes extends Fragment {
 
                     }
                 });
-
-
-
         votesRv = itemView.findViewById(R.id.votelistRv);
         votesRv.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         votesRv.setLayoutManager(linearLayoutManager);
-
-
         votesRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-
-                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
-
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE)
                     displayMoreVoterList();
-
-                }
             }
         });
-
         votingLists = new ArrayList<>();
-
         getRank(Conteskey, joiningKey);
-
-
         return itemView;
-
     }
 
     private void initializeWidget3(android.view.View itemView) {
-
 
         lec13 = itemView.findViewById(R.id.markLL13);
         lec23 = itemView.findViewById(R.id.markLL23);
@@ -211,9 +188,7 @@ public class fragmentMarksAndVotes extends Fragment {
         feedBack3=itemView.findViewById(R.id.feedback3);
         ts3=itemView.findViewById(R.id.tsEt3);
 
-
         setCriteriaViews(c13, c23, c33, c43, c53, c63, c73, c83, c93, c103,lec13, lec23, lec33, lec43, lec53, lec63, lec73, lec83, lec93, lec103);
-
         setMarks(ec13, ec23, ec33, ec43, ec53, ec63, ec73, ec83, ec93, ec103, feedBack3,ts3,"j3","c3","xj3");
 
     }

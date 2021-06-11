@@ -46,7 +46,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 
-public class fragmentContestParticipants extends Fragment {
+public class fragmentCE_Participants extends Fragment {
 
     private static final String TAG = "Participant FRAGMENT";
     private RecyclerView participantRv;
@@ -70,7 +70,7 @@ public class fragmentContestParticipants extends Fragment {
 
     private AdapterParticipantList adapterParticipantList;
 
-    public fragmentContestParticipants() {
+    public fragmentCE_Participants() {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

@@ -47,7 +47,7 @@
         <activity android:name=".contest.create.CreateForm" />
         <activity android:name=".contest.create.CheckContest" />
         <activity android:name=".contest.ViewContestDetails" />
-        <activity android:name=".contest.joined.JoiningForm" />
+        <activity android:name=".contest.joined.JoiningFormActivity" />
         <activity android:name=".contest.joined.JoinedContestOverviewActivity" />
         <activity android:name=".contest.ranking" />
         <activity android:name=".contest.Contest_Evaluation.ParticipantRequestActivity" />

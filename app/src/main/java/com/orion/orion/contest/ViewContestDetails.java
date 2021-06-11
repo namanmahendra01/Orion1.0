@@ -7,12 +7,10 @@ import androidx.cardview.widget.CardView;
 import android.app.AlertDialog;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -34,7 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.R;
-import com.orion.orion.contest.joined.JoiningForm;
+import com.orion.orion.contest.joined.JoiningFormActivity;
 import com.orion.orion.login.LoginActivity;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.users;
@@ -718,13 +716,13 @@ public class ViewContestDetails extends AppCompatActivity {
             participateBtn.setOnClickListener(v -> {
                 if (currentUser.equals(juryusername1) || currentUser.equals(juryusername2)
                         || currentUser.equals(juryusername3) || currentUser.equals(hostUsername)) {
-                    Intent i1 = new Intent(getApplicationContext(), JoiningForm.class);
+                    Intent i1 = new Intent(getApplicationContext(), JoiningFormActivity.class);
                     i1.putExtra("userId", userId);
                     i1.putExtra("contestId", contestId);
                     i1.putExtra("isJuryOrHost", "true");
                     startActivity(i1);
                 } else {
-                    Intent i1 = new Intent(getApplicationContext(), JoiningForm.class);
+                    Intent i1 = new Intent(getApplicationContext(), JoiningFormActivity.class);
                     i1.putExtra("userId", userId);
                     i1.putExtra("contestId", contestId);
                     i1.putExtra("isJuryOrHost", "false");

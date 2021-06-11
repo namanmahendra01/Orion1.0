@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -28,7 +27,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -63,9 +61,9 @@ import static com.orion.orion.util.FileUtils.getDocumentCacheDir;
 import static com.orion.orion.util.FileUtils.getFileName;
 import static com.orion.orion.util.FileUtils.saveFileFromUri;
 
-public class JoiningForm extends AppCompatActivity {
-    private static final String TAG = "JoiningForm";
-    private final Context mContext = JoiningForm.this;
+public class JoiningFormActivity extends AppCompatActivity {
+    private static final String TAG = "JoiningFormActivity";
+    private final Context mContext = JoiningFormActivity.this;
 
     private TextView mTopBarTitle;
     private TextView linkText;
@@ -112,7 +110,7 @@ public class JoiningForm extends AppCompatActivity {
         setupFirebaseAuth();
         mTopBarTitle = findViewById(R.id.titleTopBar);
         mTopBarTitle.setText("Joining Contest");
-        mFirebaseMethods = new FirebaseMethods(JoiningForm.this);
+        mFirebaseMethods = new FirebaseMethods(JoiningFormActivity.this);
 
         Intent i = getIntent();
         contestType = i.getStringExtra("contestType");
@@ -243,7 +241,7 @@ public class JoiningForm extends AppCompatActivity {
                                                             linearLayout.setVisibility(View.GONE);
                                                             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                                             startActivity(new Intent(mContext, JoinedActivity.class));
-                                                            Toast.makeText(JoiningForm.this, "Your submission has been submitted.", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(JoiningFormActivity.this, "Your submission has been submitted.", Toast.LENGTH_SHORT).show();
                                                         }
                                                     });
                                         });
@@ -258,7 +256,7 @@ public class JoiningForm extends AppCompatActivity {
                             }
                         });
                     } else {
-                        Toast.makeText(JoiningForm.this, "Please fill all the entries correctly!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(JoiningFormActivity.this, "Please fill all the entries correctly!", Toast.LENGTH_SHORT).show();
                     }
             }).setNegativeButton("No", (dialog, which) -> dialog.dismiss());
             builder.create().show();
@@ -386,7 +384,7 @@ public class JoiningForm extends AppCompatActivity {
     }
 
     public void verifyPermission(String[] permissions) {
-        ActivityCompat.requestPermissions(JoiningForm.this, permissions, VERIFY_PERMISSION_REQUEST);
+        ActivityCompat.requestPermissions(JoiningFormActivity.this, permissions, VERIFY_PERMISSION_REQUEST);
     }
 
     public boolean checkPermissionArray(String[] permissions) {
@@ -397,7 +395,7 @@ public class JoiningForm extends AppCompatActivity {
     }
 
     public boolean checkPermissions(String permission) {
-        int permissionRequest = ActivityCompat.checkSelfPermission(JoiningForm.this, permission);
+        int permissionRequest = ActivityCompat.checkSelfPermission(JoiningFormActivity.this, permission);
         return permissionRequest == PackageManager.PERMISSION_GRANTED;
     }
 

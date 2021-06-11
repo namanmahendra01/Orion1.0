@@ -38,8 +38,8 @@ import com.orion.orion.profile.profile;
 
 import static com.android.volley.VolleyLog.TAG;
 
-public class fragmentContestEdit extends Fragment {
-    public fragmentContestEdit() {
+public class fragmentCE_Edit extends Fragment {
+    public fragmentCE_Edit() {
     }
 
     private TextView contestType;
@@ -256,7 +256,7 @@ public class fragmentContestEdit extends Fragment {
                                                         juryname1.setText(user.getDn());
                                                         jurypl1.setText(user.getU());
 
-                                                        Glide.with(fragmentContestEdit.this)
+                                                        Glide.with(fragmentCE_Edit.this)
                                                                 .load(user.getPp())
                                                                 .placeholder(R.drawable.load)
                                                                 .error(R.drawable.default_image2)

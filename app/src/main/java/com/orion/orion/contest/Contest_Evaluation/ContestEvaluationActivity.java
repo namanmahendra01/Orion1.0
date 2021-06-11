@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -51,9 +50,9 @@ public class ContestEvaluationActivity extends AppCompatActivity {
 
     private void setupViewPager() {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new fragmentContestEdit());
-        adapter.addFragment(new fragmentContestParticipants());
-        adapter.addFragment(new fragmentContestOverview());
+        adapter.addFragment(new fragmentCE_Edit());
+        adapter.addFragment(new fragmentCE_Participants());
+        adapter.addFragment(new fragmentCE_Overview());
         mViewPager.setAdapter(adapter);
         TabLayout tablayout = findViewById(R.id.tabs);
         tablayout.setupWithViewPager(mViewPager);

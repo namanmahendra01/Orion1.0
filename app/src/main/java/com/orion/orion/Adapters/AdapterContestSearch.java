@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,7 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.QuizActivity;
 import com.orion.orion.R;
 import com.orion.orion.contest.ViewContestDetails;
-import com.orion.orion.contest.joined.JoiningForm;
+import com.orion.orion.contest.joined.JoiningFormActivity;
 import com.orion.orion.contest.jury_voting_Activity;
 import com.orion.orion.contest.public_voting_media;
 import com.orion.orion.contest.result.ResultDeclaredActivity;
@@ -516,13 +515,13 @@ public class AdapterContestSearch extends RecyclerView.Adapter<AdapterContestSea
 
                 if (holder.username.equals(holder.juryusername1)||holder.username.equals(holder.juryusername2)
                         ||holder.username.equals(holder.juryusername3)||holder.username.equals(holder.hostUsername)) {
-                    Intent i = new Intent(mContext.getApplicationContext(), JoiningForm.class);
+                    Intent i = new Intent(mContext.getApplicationContext(), JoiningFormActivity.class);
                     i.putExtra("userId", mcontest.getUi());
                     i.putExtra("contestId", mcontest.getCi());
                     i.putExtra("isJuryOrHost","true");
                     mContext.startActivity(i);
                 }else{
-                    Intent i = new Intent(mContext.getApplicationContext(), JoiningForm.class);
+                    Intent i = new Intent(mContext.getApplicationContext(), JoiningFormActivity.class);
                     i.putExtra("userId", mcontest.getUi());
                     i.putExtra("contestId", mcontest.getCi());
                     i.putExtra("isJuryOrHost","false");

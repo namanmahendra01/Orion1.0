@@ -39,7 +39,7 @@ import com.orion.orion.R;
 import com.orion.orion.contest.create.CheckContest;
 import com.orion.orion.contest.create.CreatedActivity;
 import com.orion.orion.contest.joined.JoinedActivity;
-import com.orion.orion.contest.joined.JoiningForm;
+import com.orion.orion.contest.joined.JoiningFormActivity;
 import com.orion.orion.models.CreateForm;
 import com.orion.orion.models.ParticipantList;
 
@@ -239,8 +239,8 @@ public class FirebaseMethods {
                                         .child(mContext.getString(R.string.field_id_link)).setValue(firebaseurl.toString()).addOnSuccessListener(aVoid -> {
                                             flag5 = true;
                                             if (flag5 && flag6) {
-                                                ((JoiningForm) mContext).linearLayout.setVisibility(View.GONE);
-                                                ((JoiningForm) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                                ((JoiningFormActivity) mContext).linearLayout.setVisibility(View.GONE);
+                                                ((JoiningFormActivity) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                                 Intent i = new Intent(mContext, JoinedActivity.class);
                                                 mContext.startActivity(i);
                                                 Toast.makeText(mContext, "Your participation request has been submitted.", Toast.LENGTH_SHORT).show();
@@ -265,8 +265,8 @@ public class FirebaseMethods {
                                     public void onSuccess(Void aVoid) {
                                         flag6 = true;
                                         if (flag5 && flag6) {
-                                            ((JoiningForm) mContext).linearLayout.setVisibility(View.GONE);
-                                            ((JoiningForm) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            ((JoiningFormActivity) mContext).linearLayout.setVisibility(View.GONE);
+                                            ((JoiningFormActivity) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                             Intent i = new Intent(mContext, JoinedActivity.class);
                                             mContext.startActivity(i);
                                             Toast.makeText(mContext, "Your participation request has been submitted.", Toast.LENGTH_SHORT).show();

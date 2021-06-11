@@ -64,7 +64,7 @@ import java.util.TimeZone;
 
 import static com.android.volley.VolleyLog.TAG;
 
-public class fragmentContestOverview extends Fragment {
+public class fragmentCE_Overview extends Fragment {
 
     private TableLayout juryTable, juryTable2;
     private String joiningKey = "";
@@ -102,7 +102,7 @@ public class fragmentContestOverview extends Fragment {
     private TextView totalParam1;
     private TextView totalParam2;
 
-    public fragmentContestOverview() {
+    public fragmentCE_Overview() {
     }
 
     @Nullable

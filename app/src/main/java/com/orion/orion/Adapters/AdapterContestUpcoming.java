@@ -32,7 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.orion.orion.QuizActivity;
 import com.orion.orion.R;
 import com.orion.orion.contest.ViewContestDetails;
-import com.orion.orion.contest.joined.JoiningForm;
+import com.orion.orion.contest.joined.JoiningFormActivity;
 import com.orion.orion.contest.public_voting_media;
 import com.orion.orion.contest.result.ResultDeclaredActivity;
 import com.orion.orion.contest.jury_voting_Activity;
@@ -430,7 +430,7 @@ public class AdapterContestUpcoming extends RecyclerView.Adapter<AdapterContestU
         holder.gp.setOnClickListener(view -> gpAlertDialog());
         holder.info.setOnClickListener(view -> gpAlertDialog());
         holder.participateBtn.setOnClickListener(v -> {
-            Intent i12 = new Intent(mContext.getApplicationContext(), JoiningForm.class);
+            Intent i12 = new Intent(mContext.getApplicationContext(), JoiningFormActivity.class);
             if(contest.getCty()!=null)
                 i12.putExtra("contestType", contest.getCty());
             else

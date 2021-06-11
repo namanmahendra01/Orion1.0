@@ -60,7 +60,7 @@ import java.util.TimeZone;
 
 import static com.android.volley.VolleyLog.TAG;
 
-public class fragmentOverview extends Fragment {
+public class fragmentJC_Overview extends Fragment {
 
     private TableLayout juryTable, juryTable2;
 
@@ -90,7 +90,14 @@ public class fragmentOverview extends Fragment {
     private static int RETRY_DURATION = 1000;
     private static final Handler handler = new Handler(Looper.getMainLooper());
 
-    public fragmentOverview() {
+    private TextView paramType;
+    private TextView param1;
+    private TextView param2;
+    private TextView param3;
+    private TextView totalParam1;
+    private TextView totalParam2;
+
+    public fragmentJC_Overview() {
     }
 
     @Nullable
@@ -113,6 +120,13 @@ public class fragmentOverview extends Fragment {
 
         seeRank = view.findViewById(R.id.seeRank);
         participantRefresh = view.findViewById(R.id.participant_refresh);
+
+        paramType = view.findViewById(R.id.paramType);
+        param1 = view.findViewById(R.id.param1);
+        param2 = view.findViewById(R.id.param2);
+        param3 = view.findViewById(R.id.param3);
+        totalParam1 = view.findViewById(R.id.totalParam1);
+        totalParam2 = view.findViewById(R.id.totalParam2);
 
         chatRoom.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,14 +188,24 @@ public class fragmentOverview extends Fragment {
 
         ref.child(getString(R.string.dbname_contestlist))
                 .child(Conteskey)
-                .child(getString(R.string.field_vote_type))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
-                            if (snapshot.getValue().toString().equals("Public")) {
-                                juryRl.setVisibility(View.GONE);
+                            ContestDetail contestDetail = snapshot.getValue(ContestDetail.class);
+                            assert contestDetail != null;
+                            String WinDec = contestDetail.getWd();
+                            boolean result = contestDetail.getR();
+                            if (contestDetail.getCty() != null && contestDetail.getCty().equals("Quiz")) {
+                                paramType.setText("Points Table");
+                                param1.setText("Accuracy");
+                                param2.setText("Speed");
+                                param3.setText("Consistency");
+                                totalParam1.setText("Points");
+                                totalParam2.setText("-");
                             }
+                            if(contestDetail.getVt().equals("Public"))
+                                juryRl.setVisibility(View.GONE);
                         }
                     }
 
