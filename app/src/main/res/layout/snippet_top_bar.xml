@@ -5,6 +5,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:id="@+id/topB"
         android:background="@drawable/white_border">
 
         <androidx.appcompat.widget.Toolbar

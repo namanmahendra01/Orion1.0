@@ -6,18 +6,12 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
-        android:id="@+id/top"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp">
-
-        <include layout="@layout/snippet_top_bar" />
-    </RelativeLayout>
+    <include layout="@layout/snippet_top_bar"
+        android:id="@+id/topB"/>
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/top"
+        android:layout_below="@+id/topB"
         android:id="@+id/contest_refresh">
         <RelativeLayout
             android:layout_width="match_parent"
@@ -47,19 +41,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         fab:menu_fab_size="normal"
+        app:menu_colorNormal="@color/colorPrimary"
         fab:menu_showShadow="true"
         fab:menu_shadowColor="#66000000"
         fab:menu_shadowRadius="4dp"
         fab:menu_shadowXOffset="1dp"
         fab:menu_shadowYOffset="3dp"
-        fab:menu_colorNormal="#DA4336"
         fab:menu_colorPressed="#E75043"
-        fab:menu_colorRipple="#99FFFFFF"
+        fab:menu_colorRipple="#99000000"
         fab:menu_animationDelayPerItem="50"
         fab:menu_icon="@drawable/fab_add"
         fab:menu_buttonSpacing="0dp"
@@ -71,7 +65,7 @@
         fab:menu_labels_paddingBottom="4dp"
         fab:menu_labels_paddingLeft="8dp"
         fab:menu_labels_padding="8dp"
-        fab:menu_labels_textColor="#FFFFFF"
+        fab:menu_labels_textColor="#000000"
         fab:menu_labels_textSize="14sp"
         fab:menu_labels_cornerRadius="3dp"
         fab:menu_labels_colorNormal="#333333"
@@ -81,11 +75,10 @@
         fab:menu_labels_singleLine="false"
         fab:menu_labels_ellipsize="none"
         fab:menu_labels_maxLines="-1"
-        fab:menu_labels_style="@style/YourCustomLabelsStyle"
         fab:menu_labels_position="left"
         fab:menu_openDirection="up"
-        fab:menu_backgroundColor="@android:color/transparent"
-        fab:menu_fab_label="your_label_here"
+        fab:menu_backgroundColor="#706D6D"
+        app:menu_fab_label="Select Event Type"
         fab:menu_fab_show_animation="@anim/my_show_animation"
         fab:menu_fab_hide_animation="@anim/my_hide_animation">
 
@@ -93,26 +86,27 @@
             android:id="@+id/menu_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_add"
+            android:src="@drawable/ic_onlineevent"
+            app:fab_colorNormal="@color/colorPrimary"
             fab:fab_size="mini"
-            fab:fab_label="Menu item 1" />
+            app:fab_label="Online Event\nLike organizing online photography,singing contests,etc" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/menu_item2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_add"
+            android:src="@drawable/ic_offline_event"
+            app:fab_colorNormal="@color/colorPrimary"
             fab:fab_size="mini"
-            fab:fab_label="Menu item 1" />
-
+            app:fab_label="Offline Event\nLike organizing gaming contest,cricket match,etc" />
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/menu_item3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_add"
+            android:src="@drawable/ic_quizevent__1_"
             fab:fab_size="mini"
-            fab:fab_label="Menu item 1" />
-
+            app:fab_colorNormal="@color/colorPrimary"
+            app:fab_label="Quiz\nFor organizing online quiz" />
     </com.github.clans.fab.FloatingActionMenu>
     <TextView
         android:layout_width="wrap_content"

@@ -128,6 +128,8 @@ public class fragmentJC_Overview extends Fragment {
         totalParam1 = view.findViewById(R.id.totalParam1);
         totalParam2 = view.findViewById(R.id.totalParam2);
 
+        chatRoom.setVisibility(View.VISIBLE);
+
         chatRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

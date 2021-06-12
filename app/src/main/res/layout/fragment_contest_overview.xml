@@ -65,6 +65,7 @@
                     android:textColor="@color/colorAccent"
                     android:id="@+id/chatRoom"
                     android:padding="5dp"
+                    android:visibility="gone"
                     android:gravity="center"
                     android:textAllCaps="true"
                     android:layout_margin="3dp"

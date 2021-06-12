@@ -3,6 +3,8 @@
     <color name="option_background_pressed">#f29492</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#f29492</color>
+    <color name="colorPrimary">#f29492</color>
+
 
     <!--  Manual Colours  -->
     <color name="white">#ffffff</color>
