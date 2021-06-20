@@ -36,7 +36,7 @@ import com.orion.orion.Notifications.Data;
 import com.orion.orion.Notifications.Sender;
 import com.orion.orion.Notifications.Token;
 import com.orion.orion.R;
-import com.orion.orion.contest.create.CheckContest;
+import com.orion.orion.contest.create.CC_CheckActivity;
 import com.orion.orion.contest.create.CreatedActivity;
 import com.orion.orion.contest.joined.JoinedActivity;
 import com.orion.orion.contest.joined.JoiningFormActivity;
@@ -143,8 +143,8 @@ public class FirebaseMethods {
                                     public void onSuccess(Void aVoid) {
                                         flag1 = true;
                                         if (flag1 && flag2 && flag3 && flag4) {
-                                            ((CheckContest) mContext).progress.setVisibility(View.GONE);
-                                            ((CheckContest) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            ((CC_CheckActivity) mContext).progress.setVisibility(View.GONE);
+                                            ((CC_CheckActivity) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                             Intent i = new Intent(mContext, CreatedActivity.class);
                                             mContext.startActivity(i);
                                             Toast.makeText(mContext, "Your Contest request has been submitted.", Toast.LENGTH_SHORT).show();
@@ -166,8 +166,8 @@ public class FirebaseMethods {
                                     public void onSuccess(Void aVoid) {
                                         flag2 = true;
                                         if (flag1 && flag2 && flag3 && flag4) {
-                                            ((CheckContest) mContext).progress.setVisibility(View.GONE);
-                                            ((CheckContest) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            ((CC_CheckActivity) mContext).progress.setVisibility(View.GONE);
+                                            ((CC_CheckActivity) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                             Intent i = new Intent(mContext, CreatedActivity.class);
                                             mContext.startActivity(i);
                                             Toast.makeText(mContext, "Your Contest request has been submitted.", Toast.LENGTH_SHORT).show();
@@ -189,8 +189,8 @@ public class FirebaseMethods {
                                     public void onSuccess(Void aVoid) {
                                         flag3 = true;
                                         if (flag1 && flag2 && flag3 && flag4) {
-                                            ((CheckContest) mContext).progress.setVisibility(View.GONE);
-                                            ((CheckContest) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            ((CC_CheckActivity) mContext).progress.setVisibility(View.GONE);
+                                            ((CC_CheckActivity) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                             Intent i = new Intent(mContext, CreatedActivity.class);
                                             mContext.startActivity(i);
                                             Toast.makeText(mContext, "Your Contest request has been submitted.", Toast.LENGTH_SHORT).show();
@@ -212,8 +212,8 @@ public class FirebaseMethods {
                                     public void onSuccess(Void aVoid) {
                                         flag4 = true;
                                         if (flag1 && flag2 && flag3 && flag4) {
-                                            ((CheckContest) mContext).progress.setVisibility(View.GONE);
-                                            ((CheckContest) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            ((CC_CheckActivity) mContext).progress.setVisibility(View.GONE);
+                                            ((CC_CheckActivity) mContext).getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                             Intent i = new Intent(mContext, CreatedActivity.class);
                                             mContext.startActivity(i);
                                             Toast.makeText(mContext, "Your Contest request has been submitted.", Toast.LENGTH_SHORT).show();

@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -26,8 +25,9 @@ import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,11 +47,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.google.android.gms.common.util.ArrayUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -60,6 +61,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.orion.orion.Adapters.AdapterQuestionList;
 import com.orion.orion.R;
 import com.orion.orion.dialogs.AddQuestionDialog;
 import com.orion.orion.dialogs.BottomSheetDomain;
@@ -69,14 +71,11 @@ import com.orion.orion.util.CustomDateTimePicker;
 import com.orion.orion.util.Permissions;
 
 import java.io.File;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 import static com.orion.orion.profile.ProfileActivity.VERIFY_PERMISSION_REQUEST;
@@ -86,9 +85,10 @@ import static com.orion.orion.util.FileUtils.getFileName;
 import static com.orion.orion.util.FileUtils.saveFileFromUri;
 
 
-public class CreateForm extends AppCompatActivity implements BottomSheetDomain.BottomSheetListener {
-    private static final String TAG = "CreateForm";
+public class CC_FillFormActivity extends AppCompatActivity implements BottomSheetDomain.BottomSheetListener, AddQuestionDialog.OnAddButtonClickListener {
+    private static final String TAG = "CC_FillFormActivity";
     private static final int ANIMATION_DURATION = 100;
+    private static final int MAX_QUIZ_QUESTION = 5;
     boolean isKitKat;
     int layoutActive = 1;
 
@@ -142,19 +142,21 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
 
     //question
 
-    private EditText question;
-    private ImageView option1;
-    private ImageView option2;
-    private ImageView option3;
-    private ImageView option4;
-    private EditText option1value;
-    private EditText option2value;
-    private EditText option3value;
-    private EditText option4value;
+    //    private EditText question;
+//    private ImageView option1;
+//    private ImageView option2;
+//    private ImageView option3;
+//    private ImageView option4;
+//    private EditText option1value;
+//    private EditText option2value;
+//    private EditText option3value;
+//    private EditText option4value;
+    private LinearLayout durationContainer;
     private Spinner durationSelector;
     private LinearLayout quizStartDateTimeContainer;
     private LinearLayout quizStartDateTimePickerContainer;
     private LinearLayout judgingCriteriaBox;
+    private RecyclerView recyclerView;
     private RelativeLayout questionAdditionBox;
     private TextView addQuestionButton;
     private RadioGroup VotingType;
@@ -244,6 +246,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     private int option_selected_num;
     private ArrayList<QuizQuestion> quizQuestionArrayList;
     private QuizQuestion quizQuestion;
+    private AdapterQuestionList adapterQuestionList;
 
 
     //firebase
@@ -274,7 +277,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_contest);
 
-        mContext = CreateForm.this;
+        mContext = CC_FillFormActivity.this;
 
 
         setupFirebaseAuth();
@@ -287,6 +290,11 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         durationSelector.setAdapter(adapter);
 
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapterQuestionList = new AdapterQuestionList(mContext, quizQuestionArrayList);
+        recyclerView.setAdapter(adapterQuestionList);
+
         customDateTimePicker = new CustomDateTimePicker(this, new CustomDateTimePicker.ICustomDateTimeListener() {
             @Override
             public void onSet(Dialog dialog, Calendar calendarSelected,
@@ -297,15 +305,13 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                               String AM_PM) {
 
                 String date = calendarSelected.get(Calendar.DAY_OF_MONTH) + "-" + (monthNumber + 1) + "-" + year;
-                Log.d(TAG, "onSet: date : " + date);
-                Log.d(TAG, "onSet: date1 : " + date1);
-                Log.d(TAG, "onSet: date2 : " + date2);
-                Log.d(TAG, "onSet: date5 : " + date5);
-                Log.d(TAG, "onSet: isDateAfter(date1, date) : " + (date1.equals("") || isDateAfter(date1, date)));
-                Log.d(TAG, "onSet: isDateAfter(date2, date) : " + (date2.equals("") || isDateAfter(date2, date)));
-                Log.d(TAG, "onSet: isDateAfter(date, date5) : " + (date5.equals("") || isDateAfter(date, date5)));
-
-
+//                Log.d(TAG, "onSet: date : " + date);
+//                Log.d(TAG, "onSet: date1 : " + date1);
+//                Log.d(TAG, "onSet: date2 : " + date2);
+//                Log.d(TAG, "onSet: date5 : " + date5);
+//                Log.d(TAG, "onSet: isDateAfter(date1, date) : " + (date1.equals("") || isDateAfter(date1, date)));
+//                Log.d(TAG, "onSet: isDateAfter(date2, date) : " + (date2.equals("") || isDateAfter(date2, date)));
+//                Log.d(TAG, "onSet: isDateAfter(date, date5) : " + (date5.equals("") || isDateAfter(date, date5)));
                 if ((date1.equals("") || isDateAfter(date1, date))
                         && (date2.equals("") || isDateAfter(date2, date))
                         && (date5.equals("") || isDateAfter(date, date5))) {
@@ -380,7 +386,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     quizStartDateTimeContainer.setVisibility(View.GONE);
                     quizStartDateTimePickerContainer.setVisibility(View.GONE);
                 }
-                if(offline.getId() == checkedId){
+                if (offline.getId() == checkedId) {
                     contestType = offline.getText().toString();
                     submissionTypeContainer.setVisibility(View.VISIBLE);
                     judgingCriteriaBox.setVisibility(View.VISIBLE);
@@ -399,147 +405,21 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
             BottomSheetDomain bottomSheetDomain = new BottomSheetDomain();
             bottomSheetDomain.show(getSupportFragmentManager(), "Domain Selection");
         });
-        option1.setOnClickListener(v -> {
-            Drawable buttonDrawable = option1.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.GREEN);
 
-            buttonDrawable = option2.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
-            buttonDrawable = option3.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
-            buttonDrawable = option4.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
-            option_selected_num = 1;
-        });
-        option2.setOnClickListener(v -> {
-            Drawable buttonDrawable = option2.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.GREEN);
-            buttonDrawable = option1.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
-            buttonDrawable = option3.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
-            buttonDrawable = option4.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
-            option_selected_num = 2;
-
-        });
-        option3.setOnClickListener(v -> {
-
-            Drawable buttonDrawable = option3.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.GREEN);
-
-            buttonDrawable = option1.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
-            buttonDrawable = option2.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
-            buttonDrawable = option4.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
-            option_selected_num = 3;
-
-        });
-        option4.setOnClickListener(v -> {
-            Drawable buttonDrawable = option4.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.GREEN);
-
-            buttonDrawable = option1.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
-            buttonDrawable = option2.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
-            buttonDrawable = option3.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
-            option_selected_num = 4;
-
-        });
         addQuestionButton.setOnClickListener(v -> {
-            if (question.getText().toString().equals("") || option1value.getText().toString().equals("") || option2value.getText().toString().equals("") || option3value.getText().toString().equals("") || option4value.getText().toString().equals("") || option_selected_num < 1 || option_selected_num > 4) {
-                if (question.getText().toString().equals("")) {
-                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(question);
-                    question.requestFocus();
-                    question.setError("Empty!");
-                } else if (option1value.getText().toString().equals("")) {
-                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option1value);
-                    option1value.requestFocus();
-                    option1value.setError("Empty!");
-                } else if (option2value.getText().toString().equals("")) {
-                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option2value);
-                    option2value.requestFocus();
-                    option2value.setError("Empty!");
-                } else if (option3value.getText().toString().equals("")) {
-                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option3value);
-                    option3value.requestFocus();
-                    option3value.setError("Empty!");
-                } else if (option4value.getText().toString().equals("")) {
-                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option4value);
-                    option4value.requestFocus();
-                    option4value.setError("Empty!");
-                } else {
-                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option1);
-                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option2);
-                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option3);
-                    YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(option4);
-                    Toast.makeText(mContext, "Make a selection", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                //adding questions to arraylist
-                quizQuestion = new QuizQuestion();
-                quizQuestion.setQuestion(question.getText().toString());
-                quizQuestion.setOption1(option1value.getText().toString().trim());
-                quizQuestion.setOption2(option2value.getText().toString().trim());
-                quizQuestion.setOption3(option3value.getText().toString().trim());
-                quizQuestion.setOption4(option4value.getText().toString().trim());
-                if (option_selected_num == 1)
-                    quizQuestion.setAnswer(quizQuestion.getOption1());
-                else if (option_selected_num == 2)
-                    quizQuestion.setAnswer(quizQuestion.getOption2());
-                else if (option_selected_num == 3)
-                    quizQuestion.setAnswer(quizQuestion.getOption3());
-                else
-                    quizQuestion.setAnswer(quizQuestion.getOption4());
-                quizQuestionArrayList.add(quizQuestion);
+            AddQuestionDialog dialog = new AddQuestionDialog();
+            dialog.show(getSupportFragmentManager(), "Add");
+//            Log.d(TAG, "addQuestionButton: "+dialog.getQuizQuestion().getQuestion());
+//            Log.d(TAG, "addQuestionButton: "+dialog.getQuizQuestion().getQuestion());
+//            Log.d(TAG, "addQuestionButton: "+dialog.getQuizQuestion().getQuestion());
+//            Log.d(TAG, "addQuestionButton: "+dialog.getQuizQuestion().getQuestion());
 
-                //resetting the fields
-                question.setText("");
-                option1value.setText("");
-                option2value.setText("");
-                option3value.setText("");
-                option4value.setText("");
-                option_selected_num = 0;
-                Drawable buttonDrawable = option1.getBackground();
-                buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-                DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
-                buttonDrawable = option2.getBackground();
-                buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-                DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
-                buttonDrawable = option3.getBackground();
-                buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-                DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
-                buttonDrawable = option4.getBackground();
-                buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-                DrawableCompat.setTint(buttonDrawable, Color.DKGRAY);
-            }
-        });
-//        durationSelector.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
+
+//            if(quizQuestionArrayList.size()<dialog.getQuizQuestionArrayList().size()) {
+//                quizQuestionArrayList.clear();
+//                quizQuestionArrayList.addAll(dialog.getQuizQuestionArrayList());
 //            }
-//        });
+        });
         VotingType.setOnCheckedChangeListener((group, checkedId) -> {
             for (int i = 0; i < group.getChildCount(); i++) {
                 if (Public.getId() == checkedId) {
@@ -845,7 +725,6 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
         });
         cross7.setOnClickListener(v -> {
             criteriaFields.add(7);
-
             criteriaTv7.setText("");
             criteriaLL7.setVisibility(View.GONE);
         });
@@ -1080,7 +959,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     date1 = "";
                 }
             };
-            DatePickerDialog dialog = new DatePickerDialog(CreateForm.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener, year, month, day);
+            DatePickerDialog dialog = new DatePickerDialog(CC_FillFormActivity.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener, year, month, day);
             Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.show();
         });
@@ -1093,7 +972,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                 month14 = month14 + 1;
                 date2 = dayOfMonth + "-" + month14 + "-" + year14;
                 String dateQuiz = datetime.split(" ")[0];
-                if ((isDateAfter(date1, date2) || date1.equals("")) && (dateQuiz.equals("") || isDateAfter(date2, dateQuiz))&& (isDateAfter(date2, date3) || date3.equals("")) && (isDateAfter(date2, date4) || date4.equals("")) && (isDateAfter(date2, date5) || date5.equals(""))) {
+                if ((isDateAfter(date1, date2) || date1.equals("")) && (dateQuiz.equals("") || isDateAfter(date2, dateQuiz)) && (isDateAfter(date2, date3) || date3.equals("")) && (isDateAfter(date2, date4) || date4.equals("")) && (isDateAfter(date2, date5) || date5.equals(""))) {
                     mDisplayDateRE.setText(date2);
                 } else {
                     mDisplayDateRE.setText("");
@@ -1102,7 +981,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                 }
             };
 
-            DatePickerDialog dialog = new DatePickerDialog(CreateForm.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener2, year, month, day);
+            DatePickerDialog dialog = new DatePickerDialog(CC_FillFormActivity.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener2, year, month, day);
             Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.show();
         });
@@ -1123,7 +1002,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                 }
             };
 
-            DatePickerDialog dialog = new DatePickerDialog(CreateForm.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener3, year, month, day);
+            DatePickerDialog dialog = new DatePickerDialog(CC_FillFormActivity.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener3, year, month, day);
             Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.show();
         });
@@ -1144,7 +1023,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                 }
             };
 
-            DatePickerDialog dialog = new DatePickerDialog(CreateForm.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener4, year, month, day);
+            DatePickerDialog dialog = new DatePickerDialog(CC_FillFormActivity.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener4, year, month, day);
             Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.show();
         });
@@ -1170,7 +1049,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     date5 = "";
                 }
             };
-            DatePickerDialog dialog = new DatePickerDialog(CreateForm.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener5, year, month, day);
+            DatePickerDialog dialog = new DatePickerDialog(CC_FillFormActivity.this, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener5, year, month, day);
             Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             dialog.show();
         });
@@ -1238,7 +1117,6 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                 prizeThird = "";
             }
         });
-
         previousButton.setOnClickListener(v -> {
             if (layoutActive == 2) {
                 layout2.setVisibility(View.GONE);
@@ -1295,13 +1173,12 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                         Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
                         selectDomain.requestFocus();
                     }
-                } else if ( (contestType.equals("Submission") || contestType.equals("Offline")) && fileType.equals("")) {
+                } else if ((contestType.equals("Submission") || contestType.equals("Offline")) && fileType.equals("")) {
                     YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(PictureVideoDocument);
                     Toast.makeText(mContext, "Please make a selection", Toast.LENGTH_SHORT).show();
                     PictureVideoDocument.requestFocus();
                 } else {
-                    Log.d(TAG, "onCreate: button clicked");
-                    Log.d(TAG, "onCreate: " + title + hosted + des + openFor + fileType);
+//                    Log.d(TAG, "onCreate: " + title + hosted + des + openFor + fileType);
                     layout1.setVisibility(View.GONE);
                     previousButton.setVisibility(View.VISIBLE);
                     layout2.setVisibility(View.VISIBLE);
@@ -1310,10 +1187,13 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                     active2.setVisibility(View.VISIBLE);
                 }
             } else if (layoutActive == 2) {
-                if (contestType.equals("Quiz"))
-                    if (quizQuestionArrayList.size() < 1 || datetime.equals("") || durationSelector.getSelectedItem().toString().equals("") || date1.equals("") || date2.equals("") || date5.equals("")) {
-                        if (quizQuestionArrayList.size() < 1)
-                            Toast.makeText(mContext, "You need to enter 5 questions atleast", Toast.LENGTH_LONG).show();
+                if (contestType.equals("Quiz")) {
+                    Log.d(TAG, "list size: "+quizQuestionArrayList.size());
+//                    quizQuestionArrayList.clear();
+//                    quizQuestionArrayList.addAll(adapterQuestionList.getQuestionList());
+                    if (quizQuestionArrayList.size() < MAX_QUIZ_QUESTION || datetime.equals("") || durationSelector.getSelectedItem().toString().equals("") || date1.equals("") || date2.equals("") || date5.equals("")) {
+                        if (quizQuestionArrayList.size() < MAX_QUIZ_QUESTION)
+                            Toast.makeText(mContext, "You need to enter " + MAX_QUIZ_QUESTION + " questions at least", Toast.LENGTH_LONG).show();
                         if (datetime.equals("")) {
                             YoYo.with(Techniques.Bounce).duration(ANIMATION_DURATION).playOn(mDisplayDateTimeQS);
                             mDisplayDateTimeQS.requestFocus();
@@ -1327,7 +1207,9 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                             YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(mDisplayDateWin);
                         if (durationSelector.getSelectedItem().toString().equals(""))
                             YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(durationSelector);
+                        durationContainer.setVisibility(View.VISIBLE);
                     } else {
+                        durationContainer.setVisibility(View.GONE);
                         duration = durationSelector.getSelectedItem().toString();
                         layout3.setVisibility(View.VISIBLE);
                         layout2.setVisibility(View.GONE);
@@ -1335,7 +1217,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                         active3.setVisibility(View.VISIBLE);
                         layoutActive = 3;
                     }
-                else {
+                } else {
                     if (votingType.equals("") || date1.equals("") || date2.equals("") || date5.equals("")) {
                         if (votingType.equals("")) {
                             YoYo.with(Techniques.Shake).duration(ANIMATION_DURATION).playOn(VotingType);
@@ -1817,23 +1699,23 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
                 .setTitle("Create Contest")
                 .setCancelable(false)
                 .setPositiveButton("Yes", (dialog, id) -> {
-                    Intent i = new Intent(CreateForm.this, CheckContest.class);
+                    Intent i = new Intent(CC_FillFormActivity.this, CC_CheckActivity.class);
                     i.putExtra("entryfee", fees);
                     i.putExtra("title", title);
                     i.putExtra("descrip", des);
                     i.putExtra("poster", posterLink);
                     i.putExtra("contestType", contestType);
-                    i.putExtra("filetype",fileType);
-                    if(datetime.equals(""))
+                    i.putExtra("filetype", fileType);
+                    if (datetime.equals(""))
                         i.putExtra("startTime", "-");
                     else
                         i.putExtra("startTime", datetime);
                     i.putExtra("duration", duration);
-                        i.putExtra("duration", duration);
-                    if(quizQuestionArrayList.size()==0)
-                        i.putExtra("questionList","");
-                    else{
-                        i.putParcelableArrayListExtra("questionList",quizQuestionArrayList);
+                    i.putExtra("duration", duration);
+                    if (quizQuestionArrayList.size() == 0)
+                        i.putExtra("questionList", "");
+                    else {
+                        i.putParcelableArrayListExtra("questionList", quizQuestionArrayList);
                     }
                     i.putExtra("domain", domain);
                     i.putExtra("votetype", votingType);
@@ -1986,16 +1868,8 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
         selectDomain = findViewById(R.id.selectDomain);
 
         //layout 2 widgets
-
-        question = findViewById(R.id.question);
-        option1 = findViewById(R.id.option1);
-        option2 = findViewById(R.id.option2);
-        option3 = findViewById(R.id.option3);
-        option4 = findViewById(R.id.option4);
-        option1value = findViewById(R.id.option1Value);
-        option2value = findViewById(R.id.option2Value);
-        option3value = findViewById(R.id.option3Value);
-        option4value = findViewById(R.id.option4Value);
+        durationContainer = findViewById(R.id.durationContainer);
+        recyclerView = findViewById(R.id.recyclerView);
         durationSelector = findViewById(R.id.durationSelector);
         quizStartDateTimeContainer = findViewById(R.id.quizStartDateTimeContainer);
         quizStartDateTimePickerContainer = findViewById(R.id.quizStartDateTimePickerContainer);
@@ -2259,7 +2133,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     }
 
     public void verifyPermission(String[] permissions) {
-        ActivityCompat.requestPermissions(CreateForm.this, permissions, VERIFY_PERMISSION_REQUEST);
+        ActivityCompat.requestPermissions(CC_FillFormActivity.this, permissions, VERIFY_PERMISSION_REQUEST);
     }
 
     public boolean checkPermissionArray(String[] permissions) {
@@ -2268,7 +2142,7 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
     }
 
     public boolean checkPermissions(String permission) {
-        int permissionRequest = ActivityCompat.checkSelfPermission(CreateForm.this, permission);
+        int permissionRequest = ActivityCompat.checkSelfPermission(CC_FillFormActivity.this, permission);
         return permissionRequest == PackageManager.PERMISSION_GRANTED;
     }
 
@@ -2311,4 +2185,12 @@ public class CreateForm extends AppCompatActivity implements BottomSheetDomain.B
         if (mAuthListener != null) mAuth.removeAuthStateListener(mAuthListener);
     }
 
+    @Override
+    public void onClick(QuizQuestion quizQuestion, boolean isEdit, int position) {
+        if (!quizQuestion.isEmpty()) {
+            quizQuestionArrayList.add(quizQuestion);
+            adapterQuestionList.notifyItemInserted(quizQuestionArrayList.size() - 1);
+        }
+        Log.d(TAG, "onClick: " + quizQuestionArrayList.size());
+    }
 }

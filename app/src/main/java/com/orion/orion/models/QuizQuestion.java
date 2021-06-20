@@ -27,6 +27,9 @@ public class QuizQuestion implements Comparable<QuizQuestion>, Parcelable {
         selected = in.readString();
     }
 
+    public boolean isEmpty(){
+        return this.question.isEmpty() && this.option1.isEmpty() && this.option2.isEmpty() && this.option3.isEmpty() && this.option4.isEmpty() && this.answer.isEmpty();
+    }
     public static final Creator<QuizQuestion> CREATOR = new Creator<QuizQuestion>() {
         @Override
         public QuizQuestion createFromParcel(Parcel in) {

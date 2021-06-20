@@ -29,7 +29,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.orion.orion.QuizActivity;
 import com.orion.orion.R;
 import com.orion.orion.login.LoginActivity;
 import com.orion.orion.models.CreateForm;
@@ -42,7 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class CheckContest extends AppCompatActivity {
+public class CC_CheckActivity extends AppCompatActivity {
     private static final String TAG = "ViewContestFragment";
 
     private CardView cardView;
@@ -122,7 +121,7 @@ public class CheckContest extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contest_details);
         Log.d(TAG, "onCreate: started.");
-        mFirebaseMethods = new FirebaseMethods(CheckContest.this);
+        mFirebaseMethods = new FirebaseMethods(CC_CheckActivity.this);
         setupFirebaseAuth();
 
         progress = findViewById(R.id.pro);
@@ -634,7 +633,7 @@ public class CheckContest extends AppCompatActivity {
                 .setValue(hashMap);
         Log.d(TAG, "postcontest: "+quizQuestionEncodedArrayList.size());
         db.child(getString(R.string.dbname_request)).child(getString(R.string.dbname_contests)).child(newContestKey).setValue(hashMap2);
-        Toast.makeText(CheckContest.this, "Form Submitted", Toast.LENGTH_SHORT).show();
+        Toast.makeText(CC_CheckActivity.this, "Form Submitted", Toast.LENGTH_SHORT).show();
         mFirebaseMethods.uploadContest(imageCount, jpic1, null, newContestKey, p1, "");
         mFirebaseMethods.uploadContest(imageCount, jpic2, null, newContestKey, p2, "");
         mFirebaseMethods.uploadContest(imageCount, jpic3, null, newContestKey, p3, "");

@@ -1,137 +1,203 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="15dp">
+    android:layout_height="wrap_content">
 
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/question"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="400dp"
+        android:minWidth="400dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/rectangular_border"
-        android:gravity="top"
-        android:hint="Question"
-        android:imeOptions="actionDone"
-        android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
-        android:lines="5"
-        android:padding="10dp"
-        android:textColor="@color/black"
-        android:textColorHint="@color/grey"
-        android:textSize="18sp" />
+        android:padding="15dp">
 
-
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/optionsBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:weightSum="4"
-        android:layout_below="@id/question"
-        android:paddingTop="10dp">
-
-
-        <LinearLayout
-            android:layout_weight="1"
+        <RelativeLayout
+            android:id="@+id/info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="10">
+            android:layout_alignParentTop="true">
 
-            <ImageView
-                android:id="@+id/option1"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center"
-                android:background="@drawable/ic_baseline_check_circle_24"
-                android:textSize="16sp" />
-            
-            <EditText
-                android:id="@+id/option1Value"
+            <TextView
+                android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter Option 1 here"/>
+                android:fontFamily="@font/orion"
+                android:text="Add your quiz questions here :-"
+                android:textColor="@color/colorAccent"
+                android:textSize="32sp" />
 
-        </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title"
+                android:layout_marginTop="25dp"
+                android:text="Remember,\n\n1) Each question is compulsory.\n2) Each question should have 4 options.\n3) Each question must have only a single answer.\n4) Each question's weightage is same.\n5) In case of same option they both will either be wrong or correct."
+                android:textColor="@color/grey" />
 
-        <LinearLayout
+
+        </RelativeLayout>
+
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/question"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="10">
+            android:layout_below="@id/info"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/rectangular_border"
+            android:gravity="top"
+            android:hint="Question"
+            android:imeOptions="actionNext"
+            android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
+            android:lines="5"
+            android:nextFocusDown="@id/option1Value"
+            android:padding="10dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/grey"
+            android:textSize="18sp" />
 
-            <ImageView
-                android:id="@+id/option2"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center"
-                android:background="@drawable/ic_baseline_check_circle_24"
-                android:textSize="16sp" />
 
-            <EditText
-                android:id="@+id/option2Value"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter Option 2 here"/>
-
-        </LinearLayout>
-
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/optionsBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="10">
+            android:layout_below="@id/question"
+            android:layout_marginTop="25dp"
+            android:orientation="vertical"
+            android:weightSum="4">
 
-            <ImageView
-                android:id="@+id/option3"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center"
-                android:background="@drawable/ic_baseline_check_circle_24"
-                android:textSize="16sp" />
 
-            <EditText
-                android:id="@+id/option3Value"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter Option 3 here"/>
+                android:layout_weight="1"
+                android:weightSum="10">
 
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/option1"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_baseline_check_circle_24"
+                    android:textSize="16sp"
+                    app:tint="@android:color/darker_gray" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+                <EditText
+                    android:id="@+id/option1Value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:inputType="textMultiLine"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:hint="Option 1"
+                    android:gravity="start"
+                    android:imeOptions="actionNext"
+                    android:nextFocusDown="@id/option2Value" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="10">
+
+                <ImageView
+                    android:id="@+id/option2"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_baseline_check_circle_24"
+                    android:textSize="16sp"
+                    app:tint="@android:color/darker_gray"/>
+
+                <EditText
+                    android:id="@+id/option2Value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:inputType="textMultiLine"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:hint="Option 2"
+                    android:gravity="start"
+                    android:imeOptions="actionNext"
+                    android:nextFocusDown="@id/option3Value" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="10">
+
+                <ImageView
+                    android:id="@+id/option3"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_baseline_check_circle_24"
+                    android:textSize="16sp"
+                    app:tint="@android:color/darker_gray"/>
+
+                <EditText
+                    android:id="@+id/option3Value"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:ellipsize="end"
+                    android:gravity="start"
+                    android:hint="Option 3"
+                    android:imeOptions="actionNext"
+                    android:inputType="textMultiLine"
+                    android:maxLines="3"
+                    android:nextFocusDown="@id/option4Value" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="10">
+
+                <ImageView
+                    android:id="@+id/option4"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_baseline_check_circle_24"
+                    android:textSize="16sp"
+                    app:tint="@android:color/darker_gray"/>
+
+                <EditText
+                    android:id="@+id/option4Value"
+                    android:layout_width="match_parent"
+                    android:inputType="textMultiLine"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:hint="Option 4"
+                    android:gravity="start"
+                    android:imeOptions="actionDone" />
+
+            </LinearLayout>
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <Button
+            android:id="@+id/addButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:weightSum="10">
+            android:layout_below="@id/optionsBox"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/circular_button"
+            android:backgroundTint="@color/option_background_pressed"
+            android:text="ADD"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
-            <ImageView
-                android:id="@+id/option4"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center"
-                android:background="@drawable/ic_baseline_check_circle_24"
-                android:textSize="16sp" />
-
-            <EditText
-                android:id="@+id/option4Value"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter Option 4 here"/>
-
-        </LinearLayout>
-        
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-    <Button
-        android:id="@+id/addButton"
-        android:layout_marginTop="20dp"
-        android:layout_below="@id/optionsBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:background="@drawable/circular_button"
-        android:backgroundTint="@color/option_background_pressed"
-        android:text="ADD"
-        android:textColor="@color/white"
-        android:textSize="16sp" />
-
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

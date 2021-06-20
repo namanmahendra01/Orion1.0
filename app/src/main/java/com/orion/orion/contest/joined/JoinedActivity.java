@@ -82,7 +82,6 @@ public class JoinedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joined);
 
-
         backArrrow= findViewById(R.id.backarrow);
         topBarTitle = findViewById(R.id.titleTopBar);
         contestRefresh = findViewById(R.id.contest_refresh);

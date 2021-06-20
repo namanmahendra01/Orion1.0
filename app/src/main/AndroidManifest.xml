@@ -44,8 +44,8 @@
             android:noHistory="true" /> <!-- Home Section -->
         <activity android:name=".chat.Message_Request" />
         <activity android:name=".chat.Chat_Activity" /> <!-- Contest Section -->
-        <activity android:name=".contest.create.CreateForm" />
-        <activity android:name=".contest.create.CheckContest" />
+        <activity android:name=".contest.create.CC_FillFormActivity" />
+        <activity android:name=".contest.create.CC_CheckActivity" />
         <activity android:name=".contest.ViewContestDetails" />
         <activity android:name=".contest.joined.JoiningFormActivity" />
         <activity android:name=".contest.joined.JoinedContestOverviewActivity" />

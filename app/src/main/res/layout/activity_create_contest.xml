@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingBottom="15dp"
     android:background="@color/white">
 
     <RelativeLayout
@@ -315,12 +316,324 @@
         android:layout_height="match_parent"
         android:layout_below="@id/currentActive"
         android:background="@color/white"
-        android:visibility="gone">
+        android:visibility="visible"
+        android:layout_marginBottom="25dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="25dp"
+                android:gravity="center|start"
+                android:text="Date Entries :"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/circular_corner_rectangle_white_border"
+                android:backgroundTint="@color/white"
+                android:elevation="10dp"
+                android:orientation="vertical"
+                android:padding="10dp">
+                <!--Registration Dates-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:paddingStart="10dp"
+                        android:paddingLeft="10dp"
+                        android:src="@drawable/ic_calender"
+                        app:tint="@color/option_background_pressed" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center|left"
+                        android:paddingStart="15dp"
+                        android:paddingLeft="15dp"
+                        android:text="Registration"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginLeft="40dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/datepicker1"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/white_border"
+                        android:elevation="2dp"
+                        android:focusable="false"
+                        android:hint="Start Date"
+                        android:imeOptions="actionNext"
+                        android:inputType="none"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="10dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/grey" />
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/datepicker2"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/white_border"
+                        android:elevation="2dp"
+                        android:focusable="false"
+                        android:hint="End Date"
+                        android:imeOptions="actionNext"
+                        android:inputType="none"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/grey" />
+                </LinearLayout>
+                <!--Public Voting Dates-->
+                <LinearLayout
+                    android:id="@+id/publicVotingContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="right"
+                        android:paddingStart="10dp"
+                        android:src="@drawable/ic_calender"
+                        app:tint="@color/option_background_pressed"
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center|left"
+                        android:paddingStart="15dp"
+                        android:text="Public Voting"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        tools:ignore="RtlSymmetry" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/publicVotingContainerDates"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginLeft="40dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/datepicker3"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/white_border"
+                        android:elevation="2dp"
+                        android:focusable="false"
+                        android:hint="Start Date"
+                        android:imeOptions="actionNext"
+                        android:inputType="none"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="10dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/grey" />
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/datepicker4"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/white_border"
+                        android:elevation="2dp"
+                        android:focusable="false"
+                        android:hint="End Date"
+                        android:imeOptions="actionNext"
+                        android:inputType="none"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/grey" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/quizStartDateTimeContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="end"
+                        android:paddingStart="10dp"
+                        android:src="@drawable/ic_baseline_clock_24"
+                        app:tint="@color/option_background_pressed"
+                        tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center|start"
+                        android:paddingStart="15dp"
+                        android:text="Quiz Start Time"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        tools:ignore="RtlSymmetry" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/quizStartDateTimePickerContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/datetimePicker"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/white_border"
+                        android:elevation="2dp"
+                        android:focusable="false"
+                        android:gravity="center"
+                        android:hint="Select date time"
+                        android:imeOptions="actionNext"
+                        android:inputType="none"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="10dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/grey" />
+
+                </LinearLayout>
+
+                <!--Winners Announcement  Dates-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="right"
+                        android:paddingStart="10dp"
+                        android:src="@drawable/ic_calender"
+                        app:tint="@color/option_background_pressed"
+                        tools:ignore="RtlSymmetry" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center|left"
+                        android:paddingStart="15dp"
+                        android:text="Results Announcement"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        tools:ignore="RtlSymmetry" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/datepicker5"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/white_border"
+                        android:elevation="2dp"
+                        android:focusable="false"
+                        android:gravity="center"
+                        android:hint="Select date"
+                        android:imeOptions="actionNext"
+                        android:inputType="none"
+                        android:paddingStart="15dp"
+                        android:paddingEnd="10dp"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/grey" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/durationContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/circular_corner_rectangle_white_border"
+                android:backgroundTint="@color/white"
+                android:elevation="10dp"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|start"
+                    android:text="Duration : "
+                    android:textColor="@color/black"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/durationSelector"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:gravity="center|start" />
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -345,6 +658,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginRight="15dp"
+                android:layout_marginBottom="50dp"
                 android:background="@drawable/circular_corner_rectangle_white_border"
                 android:backgroundTint="@color/white"
                 android:elevation="10dp"
@@ -943,12 +1257,13 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginRight="15dp"
+                android:layout_marginBottom="50dp"
                 android:background="@drawable/circular_corner_rectangle_white_border"
                 android:backgroundTint="@color/white"
                 android:elevation="10dp"
                 android:orientation="vertical"
                 android:padding="10dp"
-                android:visibility="gone">
+                android:visibility="visible">
 
 
                 <TextView
@@ -965,449 +1280,20 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/question"
-                    android:layout_below="@id/addQuestionButton"
+                <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/rectangular_border"
-                    android:gravity="top"
-                    android:hint="Question"
-                    android:imeOptions="actionDone"
-                    android:inputType="textCapSentences|textNoSuggestions|textMultiLine"
-                    android:lines="5"
-                    android:padding="10dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/grey"
-                    android:textSize="18sp" />
+                    android:layout_below="@id/addQuestionButton">
 
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/optionsBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/question"
-                    android:orientation="vertical"
-                    android:paddingTop="10dp"
-                    android:weightSum="4">
-
-
-                    <LinearLayout
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:weightSum="10">
+                        android:layout_height="wrap_content" />
 
-                        <ImageView
-                            android:id="@+id/option1"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/ic_baseline_check_circle_24"
-                            android:backgroundTint="@android:color/darker_gray"
-                            android:textSize="16sp" />
-
-                        <EditText
-                            android:id="@+id/option1Value"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:nextFocusDown="@+id/option2"
-                            android:imeOptions="actionNext"
-                            android:hint="Enter Option 1 here" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:weightSum="10">
-
-                        <ImageView
-                            android:id="@+id/option2"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/ic_baseline_check_circle_24"
-                            android:backgroundTint="@android:color/darker_gray"
-                            android:textSize="16sp" />
-
-                        <EditText
-                            android:id="@+id/option2Value"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:nextFocusDown="@+id/option3"
-                            android:imeOptions="actionNext"
-                            android:hint="Enter Option 2 here" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:weightSum="10">
-
-                        <ImageView
-                            android:id="@+id/option3"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/ic_baseline_check_circle_24"
-                            android:backgroundTint="@android:color/darker_gray"
-                            android:textSize="16sp" />
-
-                        <EditText
-                            android:id="@+id/option3Value"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:imeOptions="actionDone"
-                            android:hint="Enter Option 3 here" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:weightSum="10">
-
-                        <ImageView
-                            android:id="@+id/option4"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/ic_baseline_check_circle_24"
-                            android:backgroundTint="@android:color/darker_gray"
-                            android:textSize="16sp" />
-
-                        <EditText
-                            android:id="@+id/option4Value"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Enter Option 4 here" />
-
-                    </LinearLayout>
-
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
+                </ScrollView>
 
             </RelativeLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginStart="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginRight="15dp"
-                android:background="@drawable/circular_corner_rectangle_white_border"
-                android:backgroundTint="@color/white"
-                android:elevation="10dp"
-                android:padding="10dp">
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center|start"
-                    android:text="Duration : "
-                    android:textColor="@color/black"
-                    android:textSize="18dp"
-                    android:textStyle="bold" />
-
-                <Spinner
-                    android:id="@+id/durationSelector"
-                    android:layout_marginStart="25dp"
-                    android:gravity="center|start"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginLeft="25dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginEnd="25dp"
-                android:layout_marginRight="25dp"
-                android:gravity="center|start"
-                android:text="Date Entries :"
-                android:textColor="@color/black"
-                android:textSize="18dp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="50dp"
-                android:background="@drawable/circular_corner_rectangle_white_border"
-                android:backgroundTint="@color/white"
-                android:elevation="10dp"
-                android:orientation="vertical"
-                android:padding="10dp">
-                <!--Registration Dates-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:paddingStart="10dp"
-                        android:paddingLeft="10dp"
-                        android:src="@drawable/ic_calender"
-                        app:tint="@color/option_background_pressed" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center|left"
-                        android:paddingStart="15dp"
-                        android:paddingLeft="15dp"
-                        android:text="Registration"
-                        android:textColor="@color/black"
-                        android:textSize="20sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginLeft="40dp"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/datepicker1"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/white_border"
-                        android:elevation="2dp"
-                        android:focusable="false"
-                        android:hint="Start Date"
-                        android:imeOptions="actionNext"
-                        android:inputType="none"
-                        android:paddingStart="15dp"
-                        android:paddingEnd="10dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/grey" />
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/datepicker2"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/white_border"
-                        android:elevation="2dp"
-                        android:focusable="false"
-                        android:hint="End Date"
-                        android:imeOptions="actionNext"
-                        android:inputType="none"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/grey" />
-                </LinearLayout>
-                <!--Public Voting Dates-->
-                <LinearLayout
-                    android:id="@+id/publicVotingContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="right"
-                        android:paddingStart="10dp"
-                        android:src="@drawable/ic_calender"
-                        app:tint="@color/option_background_pressed"
-                        tools:ignore="RtlSymmetry" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center|left"
-                        android:paddingStart="15dp"
-                        android:text="Public Voting"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        tools:ignore="RtlSymmetry" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/publicVotingContainerDates"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginLeft="40dp"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/datepicker3"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/white_border"
-                        android:elevation="2dp"
-                        android:focusable="false"
-                        android:hint="Start Date"
-                        android:imeOptions="actionNext"
-                        android:inputType="none"
-                        android:paddingStart="15dp"
-                        android:paddingEnd="10dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/grey" />
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/datepicker4"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/white_border"
-                        android:elevation="2dp"
-                        android:focusable="false"
-                        android:hint="End Date"
-                        android:imeOptions="actionNext"
-                        android:inputType="none"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/grey" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/quizStartDateTimeContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="end"
-                        android:paddingStart="10dp"
-                        android:src="@drawable/ic_baseline_clock_24"
-                        app:tint="@color/option_background_pressed"
-                        tools:ignore="RtlHardcoded,RtlSymmetry" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center|start"
-                        android:paddingStart="15dp"
-                        android:text="Quiz Start Time"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        tools:ignore="RtlSymmetry" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/quizStartDateTimePickerContainer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/datetimePicker"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/white_border"
-                        android:elevation="2dp"
-                        android:focusable="false"
-                        android:gravity="center"
-                        android:hint="Select date time"
-                        android:imeOptions="actionNext"
-                        android:inputType="none"
-                        android:paddingStart="15dp"
-                        android:paddingEnd="10dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/grey" />
-
-                </LinearLayout>
-
-                <!--Winners Announcement  Dates-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="right"
-                        android:paddingStart="10dp"
-                        android:src="@drawable/ic_calender"
-                        app:tint="@color/option_background_pressed"
-                        tools:ignore="RtlSymmetry" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center|left"
-                        android:paddingStart="15dp"
-                        android:text="Results Announcement"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        tools:ignore="RtlSymmetry" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/datepicker5"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/white_border"
-                        android:elevation="2dp"
-                        android:focusable="false"
-                        android:gravity="center"
-                        android:hint="Select date"
-                        android:imeOptions="actionNext"
-                        android:inputType="none"
-                        android:paddingStart="15dp"
-                        android:paddingEnd="10dp"
-                        android:textColor="@color/black"
-                        android:textColorHint="@color/grey" />
-
-                </LinearLayout>
-
-
-
-
-
-
-            </LinearLayout>
-
 
         </LinearLayout>
     </ScrollView>
@@ -1418,7 +1304,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/currentActive"
         android:background="@color/white"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -1690,12 +1576,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/circular_button"
         android:backgroundTint="#E5E6EB"
         android:elevation="5dp"
-
         android:padding="10dp"
         android:text="Previous"
         android:textColor="@color/white"
@@ -1705,13 +1590,13 @@
         android:id="@+id/nextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_margin="5dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginBottom="10dp"
+        android:windowSoftInputMode="adjustResize"
         android:background="@drawable/circular_button"
         android:backgroundTint="@color/option_background_pressed"
-
         android:elevation="5dp"
         android:text="NEXT"
         android:textColor="@color/white"

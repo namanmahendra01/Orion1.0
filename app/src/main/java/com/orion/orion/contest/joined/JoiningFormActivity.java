@@ -169,7 +169,7 @@ public class JoiningFormActivity extends AppCompatActivity {
         submitBtn.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setTitle("Submit Joining Form");
-            builder.setMessage("Are you sure you want to submit this CreateForm?");
+            builder.setMessage("Are you sure you want to submit this CC_FillFormActivity?");
             builder.setPositiveButton("Yes", (dialog, which) -> {
                 if (mediaLink != null)
                     if (checkValidity()) {
