@@ -73,11 +73,13 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:background="@drawable/pink_round_button"
+                    android:gravity="center"
                     android:layout_height="wrap_content">
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerContest"
                         android:layout_width="match_parent"
-                        android:layout_height="120dp"
+                        android:layout_height="130dp"
+                        android:visibility="gone"
                         android:nestedScrollingEnabled="false"
                         tools:listitem="@layout/layout_contest_item_small"
                         android:orientation="horizontal"

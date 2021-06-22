@@ -674,15 +674,20 @@ public class ViewContestDetails extends AppCompatActivity {
                 posterlink = mCreateForm.getPo();
 
                 if (mCreateForm.getVt().equals("Jury") || mCreateForm.getVt().equals("Jury and Public")) {
-                    String f_string = "";
-                    jcCard.setVisibility(View.VISIBLE);
-                    jcTv.setVisibility(View.VISIBLE);
-                    judgingCriterias = mCreateForm.getCr();
-                    String[] array = judgingCriterias.split("///");
-                    for (String a : array)
-                        f_string = f_string + "\n" + a;
-                    Log.d(TAG, "onCreate: " + f_string);
-                    jcTv2.setText(f_string);
+                    try{
+                        String f_string = "";
+                        jcCard.setVisibility(View.VISIBLE);
+                        jcTv.setVisibility(View.VISIBLE);
+                        judgingCriterias = mCreateForm.getCr();
+                        String[] array = judgingCriterias.split("///");
+                        for (String a : array)
+                            f_string = f_string + "\n" + a;
+                        Log.d(TAG, "onCreate: " + f_string);
+                        jcTv2.setText(f_string);
+                    }catch(NullPointerException e){
+
+                    }
+
                 }
                 Glide.with(getApplicationContext())
                         .load(posterlink)

@@ -49,7 +49,7 @@ public class CreatedActivity extends AppCompatActivity {
     FloatingActionButton floatingActionButton1, floatingActionButton2, floatingActionButton3;
 
 
-    TextView noPost;
+    TextView noPost,topbar;
     SwipeRefreshLayout contestRefresh;
     boolean flag1 = false;
     private static int RETRY_DURATION = 1000;
@@ -77,6 +77,9 @@ public class CreatedActivity extends AppCompatActivity {
         floatingActionButton1= findViewById(R.id.menu_item);
         floatingActionButton2= findViewById(R.id.menu_item2);
         floatingActionButton3= findViewById(R.id.menu_item3);
+        topbar= findViewById(R.id.titleTopBar);
+
+        topbar.setText("CREATED CONTEST");
 
 
         floatingActionButton1.setOnClickListener(new View.OnClickListener() {

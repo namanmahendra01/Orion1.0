@@ -34,6 +34,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import static com.orion.orion.util.SNTPClient.TAG;
+
 public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeedContest.ViewHolder> {
     //    SP
     Gson gson;
@@ -70,7 +72,7 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(mContext.getString(R.string.dbname_contestlist));
                 ref.child(contestDetail.getCi())
-                .child("result")
+                .child(mContext.getString(R.string.field_result))
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -243,14 +245,14 @@ public class AdapterMainFeedContest extends RecyclerView.Adapter<AdapterMainFeed
                 //*************************************************************************
 
 
-                Log.e(SNTPClient.TAG, rawDate);
+                Log.e(TAG, rawDate);
 
             }
 
 
             @Override
             public void onError(Exception ex) {
-                Log.e(SNTPClient.TAG, ex.getMessage());
+                Log.e(TAG, ex.getMessage());
             }
         });
 

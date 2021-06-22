@@ -89,7 +89,7 @@
             android:src="@drawable/ic_onlineevent"
             app:fab_colorNormal="@color/colorPrimary"
             fab:fab_size="mini"
-            app:fab_label="Online Event\nLike organizing online photography,singing contests,etc" />
+            app:fab_label="Online Event" />
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/menu_item2"
@@ -98,7 +98,7 @@
             android:src="@drawable/ic_offline_event"
             app:fab_colorNormal="@color/colorPrimary"
             fab:fab_size="mini"
-            app:fab_label="Offline Event\nLike organizing gaming contest,cricket match,etc" />
+            app:fab_label="Offline Event" />
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/menu_item3"
             android:layout_width="wrap_content"
@@ -106,7 +106,7 @@
             android:src="@drawable/ic_quizevent__1_"
             fab:fab_size="mini"
             app:fab_colorNormal="@color/colorPrimary"
-            app:fab_label="Quiz\nFor organizing online quiz" />
+            app:fab_label="Quiz" />
     </com.github.clans.fab.FloatingActionMenu>
     <TextView
         android:layout_width="wrap_content"

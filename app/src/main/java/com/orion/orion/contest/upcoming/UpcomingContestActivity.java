@@ -408,6 +408,7 @@ public class UpcomingContestActivity extends AppCompatActivity {
                     String json = gson.toJson(mFollowing);
                     editor.putString("fl", json);
                     editor.apply();
+                    contestRv.setVisibility(View.GONE);
 
                     getcontest();
 
@@ -457,13 +458,15 @@ public class UpcomingContestActivity extends AppCompatActivity {
                                                     String json = gson.toJson(contestlist4);
                                                     editor.putString("cl", json);
                                                     editor.apply();
+                                                    if(contestlist4.size()!=0) {
+                                                        contestRv.setVisibility(View.VISIBLE);
+                                                        contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
+                                                        contestUpcoming2.setHasStableIds(true);
 
-                                                    contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
-                                                    contestUpcoming2.setHasStableIds(true);
+                                                        contestRv.setAdapter(contestUpcoming2);
 
-                                                    contestRv.setAdapter(contestUpcoming2);
-
-                                                    contestUpcoming2.notifyDataSetChanged();
+                                                        contestUpcoming2.notifyDataSetChanged();
+                                                    }
                                                     flag4 = true;
 
 
@@ -486,13 +489,16 @@ public class UpcomingContestActivity extends AppCompatActivity {
 
                             }
                         } else {
-                            Log.d(TAG, "getFollowerListFromSP: 5");
-                            contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
-                            contestUpcoming2.setHasStableIds(true);
+                            contestRv.setVisibility(View.VISIBLE);
+                            if(contestlist4.size()!=0) {
 
-                            contestRv.setAdapter(contestUpcoming2);
+                                contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
+                                contestUpcoming2.setHasStableIds(true);
 
-                            contestUpcoming2.notifyDataSetChanged();
+                                contestRv.setAdapter(contestUpcoming2);
+
+                                contestUpcoming2.notifyDataSetChanged();
+                            }
                             flag4 = true;
                         }
                     }
@@ -540,13 +546,18 @@ public class UpcomingContestActivity extends AppCompatActivity {
                         String json = gson.toJson(contestlist4);
                         editor.putString("cl", json);
                         editor.apply();
+                        if(contestlist4.size()!=0) {
 
-                        contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
-                        contestUpcoming2.setHasStableIds(true);
+                            contestRv.setVisibility(View.VISIBLE);
 
-                        contestRv.setAdapter(contestUpcoming2);
+                            contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
+                            contestUpcoming2.setHasStableIds(true);
 
-                        contestUpcoming2.notifyDataSetChanged();
+                            contestRv.setAdapter(contestUpcoming2);
+
+                            contestUpcoming2.notifyDataSetChanged();
+                        }
+
                         flag3 = true;
 
                     }
@@ -668,13 +679,17 @@ public class UpcomingContestActivity extends AppCompatActivity {
         json = gson.toJson(list1);
         editor.putString("cl", json);
         editor.apply();
+        if(contestlist4.size()!=0) {
 
-        contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
-        contestUpcoming2.setHasStableIds(true);
+            contestRv.setVisibility(View.VISIBLE);
 
-        contestRv.setAdapter(contestUpcoming2);
+            contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
+            contestUpcoming2.setHasStableIds(true);
 
-        contestUpcoming2.notifyDataSetChanged();
+            contestRv.setAdapter(contestUpcoming2);
+
+            contestUpcoming2.notifyDataSetChanged();
+        }
         flag3 = true;
 
 
@@ -723,13 +738,17 @@ public class UpcomingContestActivity extends AppCompatActivity {
                                 String json = gson.toJson(contestlist4);
                                 editor.putString("cl", json);
                                 editor.apply();
+                                if(contestlist4.size()!=0) {
 
-                                contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
-                                contestUpcoming2.setHasStableIds(true);
+                                    contestRv.setVisibility(View.VISIBLE);
 
-                                contestRv.setAdapter(contestUpcoming2);
+                                    contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
+                                    contestUpcoming2.setHasStableIds(true);
 
-                                contestUpcoming2.notifyDataSetChanged();
+                                    contestRv.setAdapter(contestUpcoming2);
+
+                                    contestUpcoming2.notifyDataSetChanged();
+                                }
                                 flag3 = true;
 
                             }
@@ -737,12 +756,17 @@ public class UpcomingContestActivity extends AppCompatActivity {
 
 
                     } else {
-                        contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
-                        contestUpcoming2.setHasStableIds(true);
+                        if(contestlist4.size()!=0) {
 
-                        contestRv.setAdapter(contestUpcoming2);
+                            contestRv.setVisibility(View.VISIBLE);
 
-                        contestUpcoming2.notifyDataSetChanged();
+                            contestUpcoming2 = new AdapterMainFeedContest(UpcomingContestActivity.this, contestlist4);
+                            contestUpcoming2.setHasStableIds(true);
+
+                            contestRv.setAdapter(contestUpcoming2);
+
+                            contestUpcoming2.notifyDataSetChanged();
+                        }
                         flag3 = true;
                     }
                 }
